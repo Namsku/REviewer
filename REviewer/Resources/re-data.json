@@ -1,0 +1,548 @@
+{
+    "Bio": {
+      "ItemIDs": {
+        "0": {
+          "Name": "Nothing",
+          "Type": "Nothing",
+          "Img": "nothing"
+        },
+        "1": {
+          "Name": "Combat Knife",
+          "Type": "Nothing",
+          "Img": "combat_knife"
+        },
+        "2": {
+          "Name": "Beretta",
+          "Type": "Weapon",
+          "Img": "beretta"
+        },
+        "3": {
+          "Name": "Shotgun",
+          "Type": "Weapon",
+          "Img": "shotgun"
+        },
+        "4": {
+          "Name": "DumDum Colt",
+          "Type": "Weapon",
+          "Color": "Yellow",
+          "Img": "colt_python"
+        },
+        "5": {
+          "Name": "Colt Python",
+          "Type": "Weapon",
+          "Img": "colt_python"
+        },
+        "6": {
+          "Name": "Flame Thrower",
+          "Type": "Weapon",
+          "Img": "flamethrower"
+        },
+        "7": {
+          "Name": "Bazooka Explosive",
+          "Type": "Weapon",
+          "Color": "Green",
+          "Img": "bazooka"
+        },
+        "8": {
+          "Name": "Bazooka Acid",
+          "Type": "Weapon",
+          "Color": "Yellow",
+          "Img": "bazooka"
+        },
+        
+        "9": {
+          "Name": "Bazooka Flame",
+          "Type": "Weapon",
+          "Color": "Red",
+          "Img": "bazooka"
+        },
+        "10": {
+          "Name": "Rocket Launcher",
+          "Type": "Weapon",
+          "Img": "rocket_launcher"
+        },
+        "11": {
+          "Name": "Clip",
+          "Type": "Ammo",
+          "Img": "clip"
+        },
+        "12": {
+          "Name": "Shotgun Shells",
+          "Type": "Ammo",
+          "Img": "shotgun_shells"
+        },
+        "13": {
+          "Name": "DumDum Rounds",
+          "Type": "Ammo",
+          "Color": "Yellow",
+          "Img": "magnum_rounds"
+        },
+        "14": {
+          "Name": "Magnum Rounds",
+          "Type": "Ammo",
+          "Img": "magnum_rounds"
+        },
+        "15": {
+          "Name": "Flame Thrower Fuel",
+          "Type": "Ammo",
+          "Img": "fuel"
+        },
+        "16": {
+          "Name": "Explosive Rounds",
+          "Type": "Ammo",
+          "Img": "explosive_rounds",
+          "Color": "Green"
+        },
+        "17": {
+          "Name": "Acid Rounds",
+          "Type": "Ammo",
+          "Img": "acid_rounds",
+          "Color": "Yellow"
+        },
+        "18": {
+          "Name": "Flame Rounds",
+          "Type": "Ammo",
+          "Img": "flame_rounds",
+          "Color": "Red"
+        },
+        "19": {
+          "Name": "Empty Bottle",
+          "Type": "Optionnal Key Item",
+          "Img": "empty_bottle"
+        },
+        "20": {
+          "Name": "Water",
+          "Type": "Optionnal Key Item",
+          "Img": "water"
+        },
+        "21": {
+          "Name": "Umb No2",
+          "Type": "Optionnal Key Item",
+          "Img": "umb_no2"
+        },
+        "22": {
+          "Name": "Umb No4",
+          "Type": "Optionnal Key Item",
+          "Img": "umb_no4"
+        },
+        "23": {
+          "Name": "Umb No7",
+          "Type": "Optionnal Key Item",
+          "Img": "umb_no7"
+        },
+        "24": {
+          "Name": "Umb No13",
+          "Type": "Optionnal Key Item",
+          "Img": "umb_no13"
+        },
+        "25": {
+          "Name": "Yellow 6",
+          "Type": "Optionnal Key Item",
+          "Img": "yellow_6"
+        },
+        "26": {
+          "Name": "NP003",
+          "Type": "Optionnal Key Item",
+          "Img": "np_003"
+        },
+        "27": {
+          "Name": "VJolt",
+          "Type": "Optionnal Key Item",
+          "Img": "v_jolt"
+        },
+        "28": {
+          "Name": "Broken Shotgun",
+          "Type": "Key Item",
+          "Img": "broken_shotgun"
+        },
+        "29": {
+          "Name": "Square Crank",
+          "Type": "Key Item",
+          "Img": "square_crank"
+        },
+        "30": {
+          "Name": "Hex Crank",
+          "Type": "Key Item",
+          "Img": "hex_crank"
+        },
+        "31": {
+          "Name": "Wood Emblem",
+          "Type": "Key Item",
+          "Img": "emblem"
+        },
+        "32": {
+          "Name": "Gold Emblem",
+          "Type": "Key Item",
+          "Img": "gold_emblem"
+        },
+        "33": {
+          "Name": "Blue Jewel",
+          "Type": "Key Item",
+          "Img": "blue_jewel"
+        },
+        "34": {
+          "Name": "Red Jewel",
+          "Type": "Key Item",
+          "Img": "red_jewel"
+        },
+        "35": {
+          "Name": "Music Notes",
+          "Type": "Key Item",
+          "Img": "music_notes"
+        },
+        "36": {
+          "Name": "Wolf Medal",
+          "Type": "Optionnal Key Item",
+          "Img": "wolf_medal"
+        },
+        "37": {
+          "Name": "Eagle Medal",
+          "Type": "Optionnal Key Item",
+          "Img": "eagle_medal"
+        },
+        "38": {
+          "Name": "Chemical",
+          "Type": "Key Item",
+          "Img": "herbicide"
+        },
+        "39": {
+          "Name": "Battery",
+          "Type": "Key Item",
+          "Img": "battery"
+        },
+        "40": {
+          "Name": "MO Disk",
+          "Type": "Key Item",
+          "Img": "mo_disk"
+        },
+        "41": {
+          "Name": "Wind Crest",
+          "Type": "Key Item",
+          "Img": "wind_crest"
+        },
+        "42": {
+          "Name": "Flare",
+          "Type": "Key Item",
+          "Img": "flare"
+        },
+        "43": {
+          "Name": "Slides",
+          "Type": "Optionnal Key Item",
+          "Img": "slides"
+        },
+        "44": {
+          "Name": "Moon Crest",
+          "Type": "Key Item",
+          "Img": "moon_crest"
+        },
+        "45": {
+          "Name": "Star Crest",
+          "Type": "Key Item",
+          "Img": "star_crest"
+        },
+        "46": {
+          "Name": "Sun Crest",
+          "Type": "Key Item",
+          "Img": "sun_crest"
+        },
+        "47": {
+          "Name": "Ink Ribbon",
+          "Type": "Item",
+          "Img": "ink_ribbon"
+        },
+        "48": {
+          "Name": "Lighter",
+          "Type": "Key Item",
+          "Img": "lighter"
+        },
+        "49": {
+          "Name": "Lock Pick",
+          "Type": "Key Item",
+          "Img": "lockpick"
+        },
+        "50": {
+          "Name": "Can Of Oil",
+          "Type": "Optionnal Key Item",
+          "Img": "unknown"
+        },
+        "51": {
+          "Name": "Sword Key",
+          "Type": "Key Item",
+          "Img": "sword_key"
+        },
+        "52": {
+          "Name": "Armor Key",
+          "Type": "Key Item",
+          "Img": "armor_key"
+        },
+        "53": {
+          "Name": "Shield Key",
+          "Type": "Key Item",
+          "Img": "shield_key"
+        },
+        "54": {
+          "Name": "Helmet Key",
+          "Type": "Key Item",
+          "Img": "helmet_key"
+        },
+        "55": {
+          "Name": "Master Key",
+          "Type": "Key Item",
+          "Img": "master_key"
+        },
+        "56": {
+          "Name": "Special Key",
+          "Type": "Key Item",
+          "Img": "closet_key"
+        },
+        "57": {
+          "Name": "Dorm Key002",
+          "Type": "Key Item",
+          "Img": "_002_key"
+        },
+        "58": {
+          "Name": "Dorm Key003",
+          "Type": "Key Item",
+          "Img": "_003_key"
+        },
+        "59": {
+          "Name": "Control Room Key",
+          "Type": "Key Item",
+          "Img": "control_room_key"
+        },
+        "60": {
+          "Name": "Power Room Key",
+          "Type": "Key Item",
+          "Img": "power_room_key"
+        },
+        "61": {
+          "Name": "Small Key",
+          "Type": "Key Item",
+          "Img": "desk_key"
+        },
+        "62": {
+          "Name": "Red Book",
+          "Type": "Key Item",
+          "Img": "red_book"
+        },
+        "63": {
+          "Name": "Doom Book2",
+          "Type": "Key Item",
+          "Img": "doom_book_1"
+        },
+        "64": {
+          "Name": "Doom Book1",
+          "Type": "Key Item",
+          "Img": "doom_book_2"
+        },
+        "65": {
+          "Name": "First Aid Spray",
+          "Type": "Nothing",
+          "Img": "first_aid_spray"
+        },
+        "66": {
+          "Name": "Serum",
+          "Type": "Key Item",
+          "Img": "serum"
+        },
+        "67": {
+          "Name": "Red Herb",
+          "Type": "Nothing",
+          "Img": "red_herb"
+        },
+        "68": {
+          "Name": "Green Herb",
+          "Type": "Nothing",
+          "Img": "green_herb"
+        },
+        "69": {
+          "Name": "Blue Herb",
+          "Type": "Nothing",
+          "Img": "blue_herb"
+        },
+        "70": {
+          "Name": "Herb G+R",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_gr"
+        },
+        "71": {
+          "Name": "Herb G+G",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_gg"
+        },
+        "72": {
+          "Name": "Herb G+B",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_gb"
+        },
+        "73": {
+          "Name": "Herb G+R+B",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_grb"
+        },
+        "74": {
+          "Name": "Herb G+G+G",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_ggg"
+        },
+        "75": {
+          "Name": "Herb G+G+B",
+          "Type": "Nothing",
+          "Img": "mixed_herbs_ggb"
+        },
+        "76": {
+          "Name": "Pickaxe",
+          "Type": "Item",
+          "Img": "unknown"
+        },
+        "77": {
+          "Name": "Broken Radio",
+          "Type": "Item",
+          "Img": "unknown"
+        },
+        "111": {
+          "Name": "Uzi",
+          "Type": "Weapon",
+          "Img": "uzi"
+        },
+        "112": {
+          "Name": "MiniGun",
+          "Type": "Weapon",
+          "Img": "minimi"
+        },
+        "255": {
+          "Name": "MissingNo",
+          "Type": "Weapon",
+          "Img": "unknown"
+        }
+      },
+      "DupItems": {
+            "Battery": 2,
+            "MO Disk": 3,
+            "Small Key": 6
+        },
+      "RoomIDs": {
+        "100": "SAVE ROOM",
+        "101": "1F LEFT STAIRS",
+        "102": "VACANT ROOM",
+        "103": "F PASSAGE",
+        "104": "TEA ROOM",
+        "105": "DINING ROOM",
+        "106": "MAIN HALL",
+        "107": "GALLERY",
+        "108": "L PASSAGE",
+        "109": "TRAP PASSAGE",
+        "110": "1F ELEVATOR",
+        "111": "DRESSING ROOM",
+        "112": "WARDROBE",
+        "113": "BATHROOM",
+        "114": "BOILER",
+        "115": "ALMOST A SANDWICH",
+        "116": "LIVING ROOM",
+        "117": "LARGE GALLERY",
+        "118": "ROOM UNDER STAIRS",
+        "119": "STUDY",
+        "200": "1F > B1 ELEVATOR",
+        "201": "2F LEFT STAIRS",
+        "202": "DINING ROOM 2F",
+        "203": "HALL 2F",
+        "204": "C PASSAGE",
+        "205": "ARMOR ROOM",
+        "206": "DOLL ROOM",
+        "207": "2F RIGHT STAIRS",
+        "208": "DEER ROOM",
+        "209": "BEDROOM",
+        "210": "ATTIC",
+        "211": "TERRACE PASSAGE",
+        "212": "TERRACE",
+        "213": "FRONT ELEVATOR",
+        "214": "ROUGH PASSAGE",
+        "215": "STUFFED ROOM",
+        "216": "LIBRARY A",
+        "217": "LIBRARY B",
+        "218": "HIDDEN LIBRARY",
+        "219": "SHED",
+        "300": "FIRST HOUSE OUT",
+        "301": "WATER GATE",
+        "302": "FALLS",
+        "303": "HELIPORT",
+        "304": "SECOND HOUSE GATE",
+        "305": "FOUNTAIN",
+        "306": "ITEM PASSAGE",
+        "307": "LADDER PASSAGE",
+        "308": "BRANCH PASSAGE",
+        "309": "DARKNESS PASSAGE",
+        "310": "COURT TO LABO",
+        "400": "ENTER PASSAGE",
+        "401": "ROOM 001",
+        "402": "ROOM 001 BATHROOM",
+        "403": "SAVE ROOM",
+        "404": "BAR",
+        "405": "CENTER PASSAGE",
+        "406": "ROOM 002",
+        "407": "ROOM 002 BATHROOM",
+        "408": "HONEYCOMB PASSAGE",
+        "409": "DRUG STOREHOUSE",
+        "410": "ARMS STOREHOUSE",
+        "411": "CONTROL ROOM",
+        "500": "UNDER FOUNTAIN",
+        "501": "HELIPORT PASSAGE",
+        "502": "LADDER ROOM",
+        "503": "STAIRS",
+        "504": "CONFERENCE ROOM",
+        "505": "CO PASSAGE",
+        "506": "SMALL LABORATORY",
+        "507": "MORTUARY",
+        "508": "DOUBLE LOCK",
+        "509": "PRIVATE ROOM A",
+        "510": "MAZE B",
+        "511": "ENGINE ROOM",
+        "512": "CELL",
+        "513": "TYRANT ROOM",
+        "514": "FRONT OF TYRANT",
+        "515": "B4 ELEVATOR",
+        "999": "UNKNOWN",
+        "10A": "BACK PASSAGE",
+        "10B": "1F RIGHT STAIRS",
+        "10C": "GREEN HOUSE",
+        "10D": "TIGER STATUE ROOM",
+        "10E": "EMPLOYEE ROOM",
+        "10F": "BAR",
+        "11A": "ROOFED PASSAGE",
+        "11B": "STORE ROOM",
+        "11C": "WARDROBE S",
+        "20A": "STUDY ROOM",
+        "20B": "FRONT LESSON ROOM",
+        "20C": "LESSON ROOM",
+        "20D": "PILLAR PASSAGE",
+        "20E": "FRONT OF ATTIC",
+        "20F": "DINING",
+        "21A": "UNDER PASSAGE 1",
+        "21B": "UNDER PASSAGE 2",
+        "21C": "UNDER KITCHEN",
+        "30A": "ENRICO ROOM",
+        "30B": "PIROCK PASSAGE",
+        "30C": "BLACK TIGER ROOM",
+        "30D": "STRAIGHT PASSAGE",
+        "30E": "SAVE ROOM",
+        "30F": "CRANK PASSAGE",
+        "40A": "ROOM 003",
+        "40B": "ROOM 003 BATHROOM",
+        "40C": "PLANT BOSS ROOM",
+        "40D": "UNDER PASSAGE",
+        "40E": "WATER TANK",
+        "40F": "SECURITY ROOM",
+        "50A": "PRIVATE ROOM B",
+        "50B": "FRONT OF CELL",
+        "50C": "FRONT OF ELEVATOR",
+        "50D": "ESCAPE ELEVATOR",
+        "50E": "SAVE ROOM",
+        "50F": "MAZE A"
+      },
+      "KeyRooms": [
+        "11A",
+        "205",
+        "305"
+      ]
+    }
+}
