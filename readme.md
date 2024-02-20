@@ -104,8 +104,3 @@ I would like to thank the following individuals and projects for their contribut
 
 - Biorand - for their support and collaboration.
 - Resident Evil speedrunning community - for their valuable feedback and testing.
-
-## Contact
-
-For any inquiries or support, please contact the REviewer team at [email protected]
-
