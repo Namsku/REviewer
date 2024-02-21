@@ -37,7 +37,7 @@ namespace REviewer.Modules
         }
 
         _currentRootObject = rootObject;
-        _monitoringTimer = new System.Threading.Timer(state => Monitor((RootObject)state!), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
+        _monitoringTimer = new System.Threading.Timer(state => Monitor((RootObject)state!), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(55));
     }
 
         public void Stop()

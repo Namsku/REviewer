@@ -69,7 +69,7 @@ namespace REviewer.Modules.RE
 }
 
         [MessagePackObject]
-        public class KeyItem
+        public class KeyItem : ICloneable
         {
             // Constructor
             public KeyItem(Property data, int state, string room)
@@ -89,11 +89,22 @@ namespace REviewer.Modules.RE
             public string Room { get; set; }
             [Key(2)]
             public int State { get; set; }
+
+            public object Clone()
+            {
+                return new KeyItem
+                {
+                    // Copy all properties
+                    Data = (Property)this.Data.Clone(), // Assuming Property implements ICloneable
+                    Room = this.Room,
+                    State = this.State
+                };
+            }
         }
 
 
         [MessagePackObject]
-        public class PlayerRaceProgress
+        public class PlayerRaceProgress : ICloneable
         {
             public PlayerRaceProgress()
             {
@@ -154,7 +165,10 @@ namespace REviewer.Modules.RE
 
             [Key(18)]
             public int _tickTimer { get; set; }
-
+            [Key(19)]
+            public byte[] UUID { get; set; }
+            [Key(20)]
+            public byte[] _real_itembox { get; set; }
 
             [IgnoreMember]
             public FileSystemWatcher Watcher = new();
@@ -163,6 +177,37 @@ namespace REviewer.Modules.RE
             {
                 var common = new Common();
                 SavePath = common.GetSavePath(savePath);
+            }
+
+            public object Clone()
+            {
+                return new PlayerRaceProgress
+                {
+                    // Copy all properties
+                    KeyItems = this.KeyItems.Select(item => (KeyItem)item.Clone()).ToList(),
+                    KeyRooms = new Dictionary<string, List<string>>(this.KeyRooms),
+                    Saves = this.Saves,
+                    Deaths = this.Deaths,
+                    Resets = this.Resets,
+                    Debugs = this.Debugs,
+                    Segments = this.Segments,
+                    old_state = this.old_state,
+                    stage = this.stage,
+                    room = this.room,
+                    LastRoomName = this.LastRoomName,
+                    FullRoomName = this.FullRoomName,
+                    SavePath = this.SavePath,
+                    _fulltimer = this._fulltimer,
+                    _segtimer1 = this._segtimer1,
+                    _segtimer2 = this._segtimer2,
+                    _segtimer3 = this._segtimer3,
+                    _segtimer4 = this._segtimer4,
+                    _tickTimer = this._tickTimer,
+                    UUID = (byte[])this.UUID?.Clone(),
+                    _real_itembox = (byte[])this._real_itembox?.Clone(),
+                    // FileSystemWatcher is not cloneable, so we create a new one
+                    Watcher = new FileSystemWatcher()
+                };
             }
         }
 

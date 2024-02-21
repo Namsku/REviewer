@@ -11,10 +11,10 @@ using Newtonsoft.Json;
 namespace REviewer.Modules.RE
 {
     [MessagePackObject]
-    public class Property
+    public class Property : ICloneable
     {
         public Property()
-        { 
+        {
         }
 
         [Key(0)]
@@ -25,6 +25,25 @@ namespace REviewer.Modules.RE
         public required string Color { get; set; }
         [IgnoreMember]
         public required Bitmap Img { get; set; }
+
+        public object Clone()
+        {
+            // Create a new Bitmap object from the existing one
+            Bitmap clonedImg = null;
+            if (Img != null)
+            {
+                clonedImg = new Bitmap(Img);
+            }
+
+            return new Property
+            {
+                // Copy all properties
+                Name = this.Name,
+                Type = this.Type,
+                Color = this.Color,
+                Img = clonedImg
+            };
+        }
     }
 
     public class ItemIDs

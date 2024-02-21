@@ -263,7 +263,7 @@
         "50": {
           "Name": "Can Of Oil",
           "Type": "Optionnal Key Item",
-          "Img": "unknown"
+          "Img": "umbrella"
         },
         "51": {
           "Name": "Sword Key",
@@ -393,12 +393,12 @@
         "76": {
           "Name": "Pickaxe",
           "Type": "Item",
-          "Img": "unknown"
+          "Img": "umbrella"
         },
         "77": {
           "Name": "Broken Radio",
           "Type": "Item",
-          "Img": "unknown"
+          "Img": "umbrella"
         },
         "111": {
           "Name": "Uzi",
@@ -413,7 +413,7 @@
         "255": {
           "Name": "MissingNo",
           "Type": "Weapon",
-          "Img": "unknown"
+          "Img": "umbrella"
         }
       },
       "DupItems": {
@@ -501,7 +501,7 @@
         "513": "TYRANT ROOM",
         "514": "FRONT OF TYRANT",
         "515": "B4 ELEVATOR",
-        "999": "UNKNOWN",
+        "999": "umbrella",
         "10A": "BACK PASSAGE",
         "10B": "1F RIGHT STAIRS",
         "10C": "GREEN HOUSE",

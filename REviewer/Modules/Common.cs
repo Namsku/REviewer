@@ -6,6 +6,26 @@ using Newtonsoft.Json;
 
 namespace REviewer.Modules
 {
+    public class UniqueIdGenerator
+    {
+        public byte[] GenerateUniqueId()
+        {
+            // Get the current timestamp as a byte array
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            byte[] timestampBytes = BitConverter.GetBytes(timestamp);
+
+            // Generate a random 6-byte number
+            byte[] randomBytes = new byte[6];
+            RandomNumberGenerator.Fill(randomBytes);
+
+            // Combine the timestamp and random number to get a 14-byte unique ID
+            byte[] id = new byte[14];
+            Buffer.BlockCopy(timestampBytes, 0, id, 0, 8);
+            Buffer.BlockCopy(randomBytes, 0, id, 8, 6);
+
+            return id;
+        }
+    }
     public class Common
     {
         // Get the whole process list, and find the process with the given name

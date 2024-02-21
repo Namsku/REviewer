@@ -24,10 +24,10 @@ namespace REviewer.Modules.RE
         }
 
 
-        // Get room name from room ID if not found return "UNKNOWN"
+        // Get room name from room ID if not found return "umbrella"
         public string GetRoomName(string roomID)
         {
-            return _ids.TryGetValue(roomID, out var roomName) ? roomName : "UNKNOWN";
+            return _ids.TryGetValue(roomID, out var roomName) ? roomName : "umbrella";
         }
     }
 }

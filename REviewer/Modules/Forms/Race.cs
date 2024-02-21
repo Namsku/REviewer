@@ -2,20 +2,11 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing.Text;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json.Nodes;
-using System.Windows.Forms;
 using REviewer.Modules.RE;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static REviewer.Modules.RE.GameData;
 using Label = System.Windows.Forms.Label;
 using Newtonsoft.Json;
-using static REviewer.Modules.RE.ItemIDs;
-using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using MessagePack;
 
@@ -194,6 +185,30 @@ namespace REviewer.Modules.Forms
                 // Add event handlers.
                 _race_db.Watcher.Created += new FileSystemEventHandler(OnCreated);
 
+                // Subscribe to the Changed event
+                _race_db.Watcher.Changed += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"File changed: {e.FullPath}");
+                };
+
+                // Subscribe to the Created event
+                _race_db.Watcher.Created += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"File created: {e.FullPath}");
+                };
+
+                // Subscribe to the Deleted event
+                _race_db.Watcher.Deleted += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"File deleted: {e.FullPath}");
+                };
+
+                // Subscribe to the Renamed event
+                _race_db.Watcher.Renamed += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"File renamed from {e.OldFullPath} to {e.FullPath}");
+                };
+
                 // Begin watching.
                 _race_db.Watcher.EnableRaisingEvents = true;
             }
@@ -201,10 +216,37 @@ namespace REviewer.Modules.Forms
 
         private void OnCreated(object source, FileSystemEventArgs e) => InvokeUI(() =>
         {
+            UniqueIdGenerator uuid = new UniqueIdGenerator();
+            var uid = uuid.GenerateUniqueId();
             _race_db.Saves += 1;
+            _race_db.UUID = uid;
+            _race_db._real_itembox = GetItemBoxData();
+
             SaveState();
             labelSaves.Text = _race_db.Saves.ToString();
 
+            // Open the file
+            using (var stream = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite))
+            {
+
+                // Go to position 0x2C4 and read the first 0x10 bytes
+                stream.Position = 0x2C4;
+                byte[] bytes = new byte[0x10];
+                stream.Read(bytes, 0, bytes.Length);
+
+                // Replace the last 0x10 bytes with the bytes read from position 0x2C4
+                stream.Position = stream.Length - 0x10;
+                stream.Write(bytes, 0, bytes.Length);
+
+                // Generate the new bytes to write at position 0x2C4
+                byte[] newBytes = new byte[16];
+                BitConverter.GetBytes((ushort)0xDEAD).CopyTo(newBytes, 0);
+                Array.Copy(uid, 0, newBytes, 2, Math.Min(14, uid.Length));
+
+                // Write the new bytes at position 0x2C4
+                stream.Position = 0x2C4;
+                stream.Write(newBytes, 0, newBytes.Length);
+            }
         });
 
         private void SaveState()
@@ -222,20 +264,24 @@ namespace REviewer.Modules.Forms
         public void SerializeObject<T>(T obj) where T : PlayerRaceProgress
         {
             var directoryPath = "saves/";
-            _saves.Add((PlayerRaceProgress) obj);
+            // Make an exact copy of the object
+            T copy_obj = (T)obj.Clone();
 
-            byte[] objectData = MessagePackSerializer.Serialize(obj);
+            _saves.Add(copy_obj);
+
+            byte[] objectData = MessagePackSerializer.Serialize(copy_obj);
 
             using (SHA256 sha256 = SHA256.Create())
             {
                 byte[] hashBytes = sha256.ComputeHash(objectData);
                 string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
 
-                string filePath = Path.Combine(directoryPath, hashString + ".dat");
+                // Append a unique identifier to the filename
+                string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".dat");
                 File.WriteAllBytes(filePath, objectData);
             }
         }
-
+        
         public T DeserializeObject<T>(string filePath)
         {
             byte[] objectData = File.ReadAllBytes(filePath);
@@ -495,16 +541,12 @@ namespace REviewer.Modules.Forms
 
         }
 
-        private void UpdateRaceKeyItem(int value, string room, int state)
+        private void UpdateRaceKeyItem(int value, string room, int state, bool force = false)
         {
-            // 0 - Not found
-            // 1 - Seen
-            // 2 - Taken
-            // value = GetKeyItemPosition(value, room, state);
-
             value = GetKeyItemPosition(value, room, state);
 
-            if (_race_db.KeyItems[value].State < state)
+            // If 'force' is true or the current state is less than the new state, update the state and picture
+            if (force || _race_db.KeyItems[value].State < state)
             {
                 _race_db.KeyItems[value].State = state;
                 UpdatePictureKeyItemState(value);
@@ -541,10 +583,11 @@ namespace REviewer.Modules.Forms
             // change background color of the picture box
             pictureKeyItems[value].BackColor = state switch
             {
+               -1 => Color.Transparent,
                 0 => Color.Transparent,
                 1 => Color.FromArgb(198, 155, 101),
                 2 => Color.FromArgb(159, 185, 118),
-                _ => pictureKeyItems[value].BackColor // Default case
+                _ => Color.Transparent // Default case
             };
         }
 
@@ -671,11 +714,16 @@ namespace REviewer.Modules.Forms
 
         private void LoadState()
         {
+            byte[] inventory_data = GetItemBoxData();
+            byte[] modded = new byte[inventory_data.Length - 2];
+            Array.Copy(inventory_data, 2, modded, 0, modded.Length);
+
             foreach (var save in _saves)
             {
-                if (save._tickTimer == _re1.Game.Timer.Value)
+                if (save.UUID.SequenceEqual(modded))
                 {
-                    InitKeyItems();
+
+                    System.Diagnostics.Debug.WriteLine("--> Found Save");
 
                     if(_race_db.Segments < save.Segments)
                     {
@@ -706,38 +754,56 @@ namespace REviewer.Modules.Forms
                     }
                     
                     _race_db.KeyRooms = save.KeyRooms;
-                    _race_db.KeyItems = save.KeyItems;
+                    LoadKeyItems(save.KeyItems);
+
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Write(_re1.ItemBox.Slots[i].Item, (int) save._real_itembox[2*i]);
+                        Write(_re1.ItemBox.Slots[i].Quantity, (int) save._real_itembox[2*i + 1]);
+                    }
                 }
+
+                System.Diagnostics.Debug.WriteLine("Load State");
             }
         }
 
-        private void LoadKeyItems(GameData.KeyItem keyItem)
+        private byte[] GetItemBoxData()
         {
-            // Create a new list to hold the updated key items
-            List<KeyItem> updatedKeyItems = new List<KeyItem>();
-
-            // Find the corresponding key item in _race_db.KeyItems
-            KeyItem existingKeyItem = _race_db.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
-
-            // If the key item exists in _race_db.KeyItems, use the existing Property.Img value
-            if (existingKeyItem != null)
+            byte[] inventory = new byte[16];
+            for (int i = 0; i < 8; i++)
             {
-                keyItem.Data.Img = existingKeyItem.Data.Img;
-
-                // If the state or room is different, call UpdateRaceKeyItem
-                if (existingKeyItem.State != keyItem.State || existingKeyItem.Room != keyItem.Room)
-                {
-                    // Assuming the value parameter for UpdateRaceKeyItem is the index of the key item in the list
-                    int value = _race_db.KeyItems.IndexOf(existingKeyItem);
-                    UpdateRaceKeyItem(value, keyItem.Room, keyItem.State);
-                }
+                inventory[2*i] = (byte) _re1.ItemBox.Slots[i].Item.Value;
+                inventory[2*i + 1] = (byte) _re1.ItemBox.Slots[i].Quantity.Value;
             }
 
-            // Add the key item to the updated list
-            updatedKeyItems.Add(keyItem);
+            return inventory;
+        }
 
-            // Replace _race_db.KeyItems with the updated list
-            _race_db.KeyItems = updatedKeyItems;
+        private void LoadKeyItems(List<GameData.KeyItem> keyItems)
+        {
+            int i = 0;
+
+            foreach (var keyItem in keyItems)
+            {
+                // Find the corresponding key item in _race_db.KeyItems
+                KeyItem existingKeyItem = _race_db.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
+
+                // If the key item exists in _race_db.KeyItems, use the existing Property.Img value
+                if (existingKeyItem != null)
+                {
+                    // If the state or room is different, call UpdateRaceKeyItem
+                    
+                    if (existingKeyItem.State != keyItem.State || existingKeyItem.Room != keyItem.Room)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Updating Key Item");
+                        // Assuming the value parameter for UpdateRaceKeyItem is the index of the key item in the list
+                        int value = _db_items.GetPropertyIdByName(keyItem.Data.Name);
+                        UpdateRaceKeyItem(value, keyItem.Room, keyItem.State, true);
+                    }
+                    i++;
+                }
+            }
         }
 
         private void Updated_Timer(object sender, EventArgs e) => InvokeUI(() =>
