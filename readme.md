@@ -85,6 +85,11 @@ It's possible that you have only 1 segment timer, in this case, the segment time
 
 The reset button is used to reset the game state, so it will reset the inventory and item box. If you want to reset the game state without losing your inventory, you can use the "Reset" button in the game menu.
 
+### My game save is crashing, what can I do?
+
+REviewer is patching the game save to for instaurate the communication between the game and the tool, so it's possible that the game save is crashing. To fix this, you need to load the save with the tool.
+If you want to play without the tool, you need to patch the save itself. I will implement a short tool to do this in the future.
+
 ### What means the color background behind the key items?
 
 - Green: The item is in the inventory/Item Box, or it has been used
