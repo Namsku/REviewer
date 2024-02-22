@@ -240,7 +240,7 @@ namespace REviewer.Modules.Forms
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MainMenuStrip = menuStrip1;
             Name = "MainWindow";
-            Text = $"REviewer - {ConfigurationManager.AppSettings["Version"]}";
+            Text = "REviewer";
             FormClosed += MainWindow_FormClosed;
             groupBoxSelectGame.ResumeLayout(false);
             groupBoxDebug.ResumeLayout(false);

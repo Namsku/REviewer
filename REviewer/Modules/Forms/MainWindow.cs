@@ -1,4 +1,5 @@
-﻿using REviewer.Modules.RE;
+﻿using System.Configuration;
+using REviewer.Modules.RE;
 
 namespace REviewer.Modules.Forms
 {
@@ -7,6 +8,7 @@ namespace REviewer.Modules.Forms
         public MainWindow()
         {
             InitializeComponent();
+            this.Text = $"REviewer - {ConfigurationManager.AppSettings["Version"]}";
             comboBoxSelectGame.SelectedIndex = 0;
         }
 
