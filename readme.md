@@ -20,7 +20,7 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 ## Work In Progress
 
-- [x] RE1 (Mediakit version) [60%]
+- [x] RE1 (Mediakit version) [50%]
 - [ ] RE2 (SourceNext)
 - [ ] RE3 (SourceNext)
 - [ ] CVX (PS2)
