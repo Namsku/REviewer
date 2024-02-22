@@ -2,7 +2,7 @@
 
 REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) versions of Resident Evil games, with a focus on compatibility with Biorand.
 
-**Note: REviewer is currently in alpha stage and may contain bugs. Use with caution.**
+**Note: REviewer is currently in alpha stage and EXTREMELY UNSTABLE. Use with caution.**
 
 
 ## Overview
