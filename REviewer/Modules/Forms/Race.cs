@@ -36,7 +36,9 @@ namespace REviewer.Modules.Forms
         Dictionary<byte, List<int>> _health_table = new Dictionary<byte, List<int>>
         {
             { 0 , new List<int> { 140, 106,  71,  36, 0 } },
-            { 1 , new List<int> { 96,   73,  49,  25, 0 } }
+            { 1 , new List<int> { 96,   73,  49,  25, 0 } },
+            { 2 , new List<int> { 96,   73,  49,  25, 0 } },
+            { 3 , new List<int> { 96,   73,  49,  25, 0 } },
         };
 
         public Race(GameData.RootObject GameData, string gameName)
@@ -894,7 +896,7 @@ namespace REviewer.Modules.Forms
 
         private void CheckHealthLabel(int value)
         {
-            var health_table = _health_table[(byte)_re1.Player.Character.Value];
+            var health_table = _health_table[(byte)(_re1.Player.Character.Value % 4)];
             var status = _re1.Player.CharacterHealthState.Value;
             Color[] colors = [Color.DarkGreen, Color.FromArgb(159, 185, 118), Color.FromArgb(215, 191, 128), Color.FromArgb(198, 155, 101), Color.FromArgb(205, 116, 118), Color.FromArgb(250, 240, 216)];
             labelHealth.Text = value.ToString();

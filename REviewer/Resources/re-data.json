@@ -328,12 +328,12 @@
         "63": {
           "Name": "Doom Book2",
           "Type": "Key Item",
-          "Img": "doom_book_1"
+          "Img": "doom_book_2"
         },
         "64": {
           "Name": "Doom Book1",
           "Type": "Key Item",
-          "Img": "doom_book_2"
+          "Img": "doom_book_1"
         },
         "65": {
           "Name": "First Aid Spray",
