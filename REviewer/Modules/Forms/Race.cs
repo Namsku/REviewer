@@ -91,6 +91,7 @@ namespace REviewer.Modules.Forms
                         catch (ObjectDisposedException)
                         {
                             // Handle the ObjectDisposedException gracefully
+                            Logger.Logging.Error("ObjectDisposedException in InvokeUI");
                         }
                     }
                 }
