@@ -22,7 +22,7 @@ namespace REviewer.Modules.Forms
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;
-        private readonly int _inventoryCapacitySize = 8;
+        private int _inventoryCapacitySize = 6;
 
         private Font _pixelBoyHealthFont;
         private Font _pixelBoySegments;
@@ -173,7 +173,7 @@ namespace REviewer.Modules.Forms
 
         private void InitInventory()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < _inventoryCapacitySize; i++)
             {
                 int slotNumber = i; // To capture the variable in the closure
                 UpdateSlotPicture(slotNumber);
@@ -333,7 +333,7 @@ namespace REviewer.Modules.Forms
             labelCharacter.ForeColor = CustomColors.White;
 
             labelGameCompleted.Font = _pixelBoySegments;
-            labelGameCompleted.ForeColor = CustomColors.White;
+            labelGameCompleted.ForeColor = CustomColors.Red;
             labelGameCompleted.Visible = false;
 
             _raceWatch.Reset();
@@ -843,7 +843,8 @@ namespace REviewer.Modules.Forms
         private void CheckInventoryCapacity(int value, PictureBox slot7, PictureBox slot8, Label capacity7, Label capacity8)
         {
             bool isVisible = (value & 0xFF000000) != 0x08000000;
-
+            _inventoryCapacitySize = isVisible ? 8 : 6;
+            
             slot7.Visible = isVisible;
             slot8.Visible = isVisible;
 
