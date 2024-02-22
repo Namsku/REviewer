@@ -22,7 +22,7 @@ namespace REviewer.Modules.Forms
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;
-        private int _inventoryCapacitySize = 6;
+        private int _inventoryCapacitySize = 8;
 
         private Font _pixelBoyHealthFont;
         private Font _pixelBoySegments;
@@ -300,50 +300,56 @@ namespace REviewer.Modules.Forms
 
         private void InitLabels()
         {
-            labelTimer.Font = _pixelBoyDefault;
-            labelTimer.ForeColor = CustomColors.White;
+            try{
+                labelTimer.Font = _pixelBoyDefault;
+                labelTimer.ForeColor = CustomColors.White;
 
-            CheckHealthLabel(_game.Player.Health.Value);
-            labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)_game.Player.Character.Value];
+                CheckHealthLabel(_game.Player.Health.Value);
+                labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)_game.Player.Character.Value];
 
-            _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x05) + 1).ToString();
+                _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x05) + 1).ToString();
 
-            labelSegTimer1.Font = _pixelBoySegments;
-            labelSegTimer2.Font = _pixelBoySegments;
-            labelSegTimer3.Font = _pixelBoySegments;
-            labelSegTimer4.Font = _pixelBoySegments;
+                labelSegTimer1.Font = _pixelBoySegments;
+                labelSegTimer2.Font = _pixelBoySegments;
+                labelSegTimer3.Font = _pixelBoySegments;
+                labelSegTimer4.Font = _pixelBoySegments;
 
-            labelSegTimer1.ForeColor = CustomColors.White;
-            labelSegTimer2.ForeColor = CustomColors.White;
-            labelSegTimer3.ForeColor = CustomColors.White;
-            labelSegTimer4.ForeColor = CustomColors.White;
+                labelSegTimer1.ForeColor = CustomColors.White;
+                labelSegTimer2.ForeColor = CustomColors.White;
+                labelSegTimer3.ForeColor = CustomColors.White;
+                labelSegTimer4.ForeColor = CustomColors.White;
 
-            labelDeaths.Font = _pixelBoyDefault;
-            labelDeaths.ForeColor = CustomColors.White;
+                labelDeaths.Font = _pixelBoyDefault;
+                labelDeaths.ForeColor = CustomColors.White;
 
-            labelDebug.Font = _pixelBoyDefault;
-            labelDebug.ForeColor = CustomColors.White;
+                labelDebug.Font = _pixelBoyDefault;
+                labelDebug.ForeColor = CustomColors.White;
 
-            labelResets.Font = _pixelBoyDefault;
-            labelResets.ForeColor = CustomColors.White;
+                labelResets.Font = _pixelBoyDefault;
+                labelResets.ForeColor = CustomColors.White;
 
-            labelSaves.Font = _pixelBoyDefault;
-            labelSaves.ForeColor = CustomColors.White;
+                labelSaves.Font = _pixelBoyDefault;
+                labelSaves.ForeColor = CustomColors.White;
 
-            labelCharacter.Font = _pixelBoyDefault;
-            labelCharacter.ForeColor = CustomColors.White;
+                labelCharacter.Font = _pixelBoyDefault;
+                labelCharacter.ForeColor = CustomColors.White;
 
-            labelGameCompleted.Font = _pixelBoySegments;
-            labelGameCompleted.ForeColor = CustomColors.Red;
-            labelGameCompleted.Visible = false;
+                labelGameCompleted.Font = _pixelBoySegments;
+                labelGameCompleted.ForeColor = CustomColors.Red;
+                labelGameCompleted.Visible = false;
 
-            _raceWatch.Reset();
-            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                _raceWatch.Reset();
+                labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
-            labelDeaths.Text = _raceDatabase.Deaths.ToString();
-            labelDebug.Text = _raceDatabase.Debugs.ToString();
-            labelResets.Text = _raceDatabase.Resets.ToString();
-            labelSaves.Text = _raceDatabase.Saves.ToString();
+                labelDeaths.Text = _raceDatabase.Deaths.ToString();
+                labelDebug.Text = _raceDatabase.Debugs.ToString();
+                labelResets.Text = _raceDatabase.Resets.ToString();
+                labelSaves.Text = _raceDatabase.Saves.ToString();
+            }
+            catch (Exception e)
+            {
+                Logger.Logging.Error($"Exception: {e.Message}\nStack Trace: {e.StackTrace}");
+            }
         }
 
         private void InitCharacterHealthState()
@@ -371,6 +377,8 @@ namespace REviewer.Modules.Forms
                     new Stopwatch()
                 ];
             }
+
+            _raceWatch.Reset();
             labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
             labelSegTimer1.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
             labelSegTimer2.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
@@ -456,7 +464,7 @@ namespace REviewer.Modules.Forms
         private void UpdateLastItemFoundPicture()
         {
             byte value = (byte)_game.Player.LastItemFound.Value;
-            if (_itemDatabase.GetPropertyById(value).Type == "Key Item" && _raceDatabase.FullRoomName == null)
+            if (_itemDatabase.GetPropertyById(value).Type == "Key Item") // && _raceDatabase.FullRoomName == null)
             {
                 _raceDatabase.Stage = ((_game.Player.Stage.Value % 5) + 1).ToString();
                 _raceDatabase.Room = _game.Player.Room.Value.ToString("X2");
@@ -623,7 +631,7 @@ namespace REviewer.Modules.Forms
 
             UpdateSlotCapacity(_slotLabels[value], value);
         }
-        private void UpdateSlotCapacity(Label label, int value)
+        private void UpdateSlotCapacity(Label label, int value) => InvokeUI(() =>
         {
             if (value > _inventoryCapacitySize)
             {
@@ -641,7 +649,7 @@ namespace REviewer.Modules.Forms
                 "Red" => CustomColors.Red,
                 _ => CustomColors.Default,
             };
-        }
+        });
 
 
         private void Updated_Health(object sender, EventArgs e) => InvokeUI(() =>
@@ -944,8 +952,9 @@ namespace REviewer.Modules.Forms
 
         }
 
-        private void ButtonReset_Click(object sender, EventArgs e)
+        private void ButtonReset_Click(object sender, EventArgs e) => InvokeUI(() =>
         {
+
             // clear everything completely
             _raceDatabase = null;
             _pictureKeyItems = null;
@@ -959,19 +968,21 @@ namespace REviewer.Modules.Forms
                 Segments = 0
             };
 
-            InitKeyItems();
-            InitKeyRooms();
-
-            InitLabels();
             InitChronometers();
 
-            CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+            // Dirty hotfix
+            for (int i = 0; i < 2; i++)
+            {
+                InitInventory();
+                InitKeyItems();
+                InitKeyRooms();
+            }
 
-            InitInventory();
             InitCharacterHealthState();
 
+            CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
             // SubscribeToEvents();
-        }
+        });
 
         private void ErasePlayerData()
         {
