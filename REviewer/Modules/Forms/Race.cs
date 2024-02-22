@@ -175,7 +175,7 @@ namespace REviewer.Modules.Forms
         }
 
         private void InitInventory()
-        {
+        {5
             for (int i = 0; i < _inventoryCapacitySize; i++)
             {
                 int slotNumber = i; // To capture the variable in the closure
@@ -309,7 +309,7 @@ namespace REviewer.Modules.Forms
                 CheckHealthLabel(_game.Player.Health.Value);
                 labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)_game.Player.Character.Value];
 
-                _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x05) + 1).ToString();
+                _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x04) + 1).ToString();
 
                 labelSegTimer1.Font = _pixelBoySegments;
                 labelSegTimer2.Font = _pixelBoySegments;
@@ -906,7 +906,7 @@ namespace REviewer.Modules.Forms
 
         private void CheckHealthLabel(int value)
         {
-            var health_table = _healthTable[(byte)(_game.Player.Character.Value % 4)];
+            var health_table = _healthTable[(byte)(_game.Player.Character.Value & 0x03)];
             var status = _game.Player.CharacterHealthState.Value;
             Color[] colors = [Color.DarkGreen, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
             labelHealth.Text = value.ToString();
