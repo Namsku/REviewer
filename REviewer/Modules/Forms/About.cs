@@ -19,13 +19,13 @@ namespace REviewer.Modules.Forms
             CenterControl(buttonAboutQuit);
         }
 
-        private void buttonAboutQuit_Click(object sender, EventArgs e)
+        private void ButtonAboutQuit_Click(object sender, EventArgs e)
         {
             // Quit the form
             this.Close();
         }
 
-        private void linkLabelDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabelDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Mark the link as visited
             linkLabelDiscord.LinkVisited = true;
@@ -34,7 +34,7 @@ namespace REviewer.Modules.Forms
             OpenUrl(DiscordLink);
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Mark the link as visited
             linkLabelGithub.LinkVisited = true;
@@ -43,7 +43,7 @@ namespace REviewer.Modules.Forms
             OpenUrl(GithubLink);
         }
 
-        private void OpenUrl(string url)
+        private static void OpenUrl(string url)
         {
             try
             {

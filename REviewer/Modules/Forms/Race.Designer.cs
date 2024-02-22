@@ -14,8 +14,7 @@
         protected override void Dispose(bool disposing)
         {
             // Dispose your Font here
-            ResidentEvilFont?.Dispose();
-            PixelBoy?.Dispose();
+            _pixelBoyDefault?.Dispose();
 
             if (disposing && (components != null))
             {
@@ -56,13 +55,13 @@
             labelResets = new Label();
             labelSaves = new Label();
             labelDeaths = new Label();
-            button1 = new Button();
+            buttonReset = new Button();
             pictureBoxItemSelected = new PictureBox();
             pictureBoxLastItem = new PictureBox();
             labelSegTimer2 = new Label();
             labelSegTimer3 = new Label();
             labelHealth = new Label();
-            button4 = new Button();
+            buttonCheckSeed = new Button();
             pictureBoxKeyItem19 = new PictureBox();
             pictureBoxKeyItem18 = new PictureBox();
             pictureBoxKeyItem16 = new PictureBox();
@@ -100,6 +99,7 @@
             pictureBoxKeyItem35 = new PictureBox();
             pictureBoxKeyItem36 = new PictureBox();
             panel1 = new Panel();
+            labelGameCompleted = new Label();
             labelSegTimer4 = new Label();
             pictureBox15 = new PictureBox();
             pictureBoxKeyItem41 = new PictureBox();
@@ -454,15 +454,15 @@
             labelDeaths.TabIndex = 4;
             labelDeaths.Text = "0";
             // 
-            // button1
+            // buttonReset
             // 
-            button1.Location = new Point(12, 1120);
-            button1.Name = "button1";
-            button1.Size = new Size(66, 34);
-            button1.TabIndex = 7;
-            button1.Text = "Reset";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            buttonReset.Location = new Point(12, 1120);
+            buttonReset.Name = "buttonReset";
+            buttonReset.Size = new Size(66, 34);
+            buttonReset.TabIndex = 7;
+            buttonReset.Text = "Reset";
+            buttonReset.UseVisualStyleBackColor = true;
+            buttonReset.Click += ButtonReset_Click;
             // 
             // pictureBoxItemSelected
             // 
@@ -518,15 +518,15 @@
             labelHealth.TabIndex = 46;
             labelHealth.Text = "140";
             // 
-            // button4
+            // buttonCheckSeed
             // 
-            button4.Location = new Point(425, 1120);
-            button4.Name = "button4";
-            button4.Size = new Size(73, 34);
-            button4.TabIndex = 14;
-            button4.Text = "Check";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            buttonCheckSeed.Location = new Point(339, 1120);
+            buttonCheckSeed.Name = "buttonCheckSeed";
+            buttonCheckSeed.Size = new Size(159, 34);
+            buttonCheckSeed.TabIndex = 14;
+            buttonCheckSeed.Text = "Check Seed";
+            buttonCheckSeed.UseVisualStyleBackColor = true;
+            buttonCheckSeed.Click += Button4_Click;
             // 
             // pictureBoxKeyItem19
             // 
@@ -1000,6 +1000,7 @@
             // 
             panel1.BackColor = Color.FromArgb(41, 44, 51);
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(labelGameCompleted);
             panel1.Controls.Add(labelSegTimer4);
             panel1.Controls.Add(pictureBox15);
             panel1.Controls.Add(pictureBoxKeyItem41);
@@ -1008,11 +1009,11 @@
             panel1.Controls.Add(pictureBoxKeyItem38);
             panel1.Controls.Add(pictureBoxKeyItem37);
             panel1.Controls.Add(pictureBox14);
-            panel1.Controls.Add(button4);
+            panel1.Controls.Add(buttonCheckSeed);
             panel1.Controls.Add(pictureBox13);
             panel1.Controls.Add(labelCharacter);
             panel1.Controls.Add(pictureBox12);
-            panel1.Controls.Add(button1);
+            panel1.Controls.Add(buttonReset);
             panel1.Controls.Add(pictureBox11);
             panel1.Controls.Add(labelSegTimer3);
             panel1.Controls.Add(labelSegTimer2);
@@ -1091,6 +1092,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(517, 1168);
             panel1.TabIndex = 15;
+            // 
+            // labelGameCompleted
+            // 
+            labelGameCompleted.AutoSize = true;
+            labelGameCompleted.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelGameCompleted.Location = new Point(6, 1077);
+            labelGameCompleted.Name = "labelGameCompleted";
+            labelGameCompleted.Size = new Size(399, 35);
+            labelGameCompleted.TabIndex = 121;
+            labelGameCompleted.Text = "Game Completed!   Reset the tool!";
             // 
             // labelSegTimer4
             // 
@@ -1390,7 +1401,7 @@
         private FolderBrowserDialog folderBrowserDialog1;
         private Label labelCharacter;
         private Label labelSegTimer1;
-        private Button button1;
+        private Button buttonReset;
         private Label labelSlot1Quantity;
         private PictureBox pictureBoxItemSlot1;
         private Label labelSlot8Quantity;
@@ -1415,7 +1426,7 @@
         private Label labelResets;
         private Label labelSaves;
         private Label labelDeaths;
-        private Button button4;
+        private Button buttonCheckSeed;
         private Label labelSlot2Quantity;
         private PictureBox pictureBoxItemSlot2;
         private PictureBox pictureBoxKeyItem19;
@@ -1476,5 +1487,6 @@
         private PictureBox pictureBoxKeyItem37;
         private Label labelSegTimer4;
         private PictureBox pictureBox15;
+        private Label labelGameCompleted;
     }
 }

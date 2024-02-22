@@ -48,8 +48,8 @@ namespace REviewer.Modules.RE
 
     public class ItemIDs
     {
-        private string _processName;
-        private Dictionary<string, int> _duplicateItems;
+        private readonly string? _processName;
+        private readonly Dictionary<string, int> _duplicateItems;
         public Dictionary<byte, Property> Items;
 
         public class Item

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
@@ -9,31 +8,37 @@ using Label = System.Windows.Forms.Label;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using MessagePack;
+using REviewer.Modules.Common;
+using REviewer.Modules.Common.REviewer.Modules.Common;
 
 namespace REviewer.Modules.Forms
 {
     public partial class Race : Form
     {
-        private GameData.RootObject _re1;
-        private readonly ItemIDs _db_items;
+        private readonly GameData.RootObject _game;
+        private readonly ItemIDs _itemDatabase;
 
-        private Stopwatch chronometer = new Stopwatch();
-        private List<Stopwatch> _segment_chronometers = [];
-        private int? previousTimerValue = null;
-        private Font PixelBoyHealth;
-        private Font PixelBoySegments;
-        private Font ResidentEvilFont;
-        private Font PixelBoy;
-        private Dictionary<int, Label> slotLabels;
-        private Dictionary<int, PictureBox> pictures;
-        private Dictionary<int, PictureBox>? pictureKeyItems;
-        private GameData.PlayerRaceProgress? _race_db;
-        private string _gameName;
+        private readonly Stopwatch _raceWatch = new();
+        private List<Stopwatch> _segmentWatch = [];
+
+        private readonly int? _previousTimerValue = null;
+        private int _previousSelectedSlot = 0;
+        private readonly int _inventoryCapacitySize = 8;
+
+        private Font _pixelBoyHealthFont;
+        private Font _pixelBoySegments;
+        private Font _pixelBoyDefault;
+
+        private Dictionary<int, Label> _slotLabels;
+        private Dictionary<int, PictureBox> _pictures;
+        private Dictionary<int, PictureBox>? _pictureKeyItems;
+
+        private readonly string _gameName;
+
+        private GameData.PlayerRaceProgress? _raceDatabase;
         private List<GameData.PlayerRaceProgress> _saves;
-        private int _old_selected_slot = 0;
 
-        private int _inventory_size = 8;
-        Dictionary<byte, List<int>> _health_table = new Dictionary<byte, List<int>>
+        private readonly Dictionary<byte, List<int>> _healthTable = new()
         {
             { 0 , new List<int> { 140, 106,  71,  36, 0 } },
             { 1 , new List<int> { 96,   73,  49,  25, 0 } },
@@ -41,10 +46,11 @@ namespace REviewer.Modules.Forms
             { 3 , new List<int> { 96,   73,  49,  25, 0 } },
         };
 
+        private static readonly string[] _itemTypes = ["Key Item", "Optionnal Key Item", "Nothing"];
+
         public Race(GameData.RootObject GameData, string gameName)
         {
-            LoadCustomFontRE();
-            LoadCustomFontOrbitron();
+            LoadDefaultPixelBoyFont();
             LoadCustomFontPixelBoyHealth();
             LoadCustomFontPixelBoySegments();
 
@@ -52,15 +58,15 @@ namespace REviewer.Modules.Forms
             InitInventorySlots();
             InitLoadState();
 
-            _re1 = GameData;
+            _game = GameData;
             _gameName = gameName;
-            _db_items = new ItemIDs(gameName);
-            _race_db = new PlayerRaceProgress(gameName);
+            _itemDatabase = new ItemIDs(gameName);
+            _raceDatabase = new PlayerRaceProgress(gameName);
         }
 
         private void InitLoadState()
         {
-            _saves = new List<GameData.PlayerRaceProgress>();
+            _saves = [];
 
             var directoryPath = "saves/";
             var files = System.IO.Directory.GetFiles(directoryPath, "*.dat");
@@ -77,9 +83,16 @@ namespace REviewer.Modules.Forms
             {
                 if (InvokeRequired)
                 {
-                    if (_re1 != null) // Add null check for Race struct
+                    if (_game != null) // Add null check for Race struct
                     {
-                        Invoke(action);
+                        try
+                        {
+                            Invoke(action);
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // Handle the ObjectDisposedException gracefully
+                        }
                     }
                 }
                 else
@@ -92,7 +105,7 @@ namespace REviewer.Modules.Forms
         private static Font LoadCustomFont(byte[] fontData, float size, FontStyle style, GraphicsUnit unit)
         {
             // Create a private font collection
-            PrivateFontCollection privateFontCollection = new PrivateFontCollection();
+            PrivateFontCollection privateFontCollection = new();
 
             // Load the font into the private font collection
             int dataLength = fontData.Length;
@@ -106,24 +119,19 @@ namespace REviewer.Modules.Forms
             return new Font(fontFamily, size, style, unit);
         }
 
-        private void LoadCustomFontRE()
+        private void LoadDefaultPixelBoyFont()
         {
-            ResidentEvilFont = LoadCustomFont(Properties.Resources.Pixeboy, 38, FontStyle.Regular, GraphicsUnit.Pixel);
-        }
-
-        private void LoadCustomFontOrbitron()
-        {
-            PixelBoy = LoadCustomFont(Properties.Resources.Pixeboy, 53, FontStyle.Bold, GraphicsUnit.Pixel);
+            _pixelBoyDefault = LoadCustomFont(Properties.Resources.Pixeboy, 53, FontStyle.Bold, GraphicsUnit.Pixel);
         }
 
         private void LoadCustomFontPixelBoyHealth()
         {
-            PixelBoyHealth = LoadCustomFont(Properties.Resources.Pixeboy, 60, FontStyle.Regular, GraphicsUnit.Pixel);
+            _pixelBoyHealthFont = LoadCustomFont(Properties.Resources.Pixeboy, 60, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         private void LoadCustomFontPixelBoySegments()
         {
-            PixelBoySegments = LoadCustomFont(Properties.Resources.Pixeboy, 36, FontStyle.Regular, GraphicsUnit.Pixel);
+            _pixelBoySegments = LoadCustomFont(Properties.Resources.Pixeboy, 36, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         private void Race_Load(object sender, EventArgs e)
@@ -138,14 +146,14 @@ namespace REviewer.Modules.Forms
             InitInventory();
             InitCharacterHealthState();
             SubscribeToEvents();
-            CheckInventoryCapacity(_re1.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+            CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
         }
 
         private void InitKeyRooms()
         {
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
-            var processName = _db_items.GetProcessName();
+            var processName = _itemDatabase.GetProcessName();
             var bios = JsonConvert.DeserializeObject<Dictionary<string, KRoom>>(json);
 
             if (!bios.TryGetValue(processName, out var bio))
@@ -155,12 +163,12 @@ namespace REviewer.Modules.Forms
 
             List<string> keyRooms = bio.KeyRooms;
 
-            // add them into _race_db.KeyRooms
-            _race_db.KeyRooms = new Dictionary<string, List<string>>();
+            // add them into _raceDatabase.KeyRooms
+            _raceDatabase.KeyRooms = [];
 
             foreach (var room in keyRooms)
             {
-                _race_db.KeyRooms.Add(room, new List<string>());
+                _raceDatabase.KeyRooms.Add(room, []);
             }
         }
 
@@ -170,7 +178,7 @@ namespace REviewer.Modules.Forms
             {
                 int slotNumber = i; // To capture the variable in the closure
                 UpdateSlotPicture(slotNumber);
-                UpdateSlotCapacity(slotLabels[slotNumber], slotNumber);
+                UpdateSlotCapacity(_slotLabels[slotNumber], slotNumber);
             }
 
             UpdateInventorySlotSelectedPicture();
@@ -179,58 +187,60 @@ namespace REviewer.Modules.Forms
 
         private void InitSaveMonitoring()
         {
-            if (_race_db.SavePath != null)
+            if (_raceDatabase.SavePath == null)
             {
-                _race_db.Watcher.Path = _race_db.SavePath;  // replace with your directory
-                _race_db.Watcher.Filter = "*.dat";  // watch for .dat files
-
-                // Add event handlers.
-                _race_db.Watcher.Created += new FileSystemEventHandler(OnCreated);
-
-                // Subscribe to the Changed event
-                _race_db.Watcher.Changed += (sender, e) =>
-                {
-                    System.Diagnostics.Debug.WriteLine($"File changed: {e.FullPath}");
-                };
-
-                // Subscribe to the Created event
-                _race_db.Watcher.Created += (sender, e) =>
-                {
-                    System.Diagnostics.Debug.WriteLine($"File created: {e.FullPath}");
-                };
-
-                // Subscribe to the Deleted event
-                _race_db.Watcher.Deleted += (sender, e) =>
-                {
-                    System.Diagnostics.Debug.WriteLine($"File deleted: {e.FullPath}");
-                };
-
-                // Subscribe to the Renamed event
-                _race_db.Watcher.Renamed += (sender, e) =>
-                {
-                    System.Diagnostics.Debug.WriteLine($"File renamed from {e.OldFullPath} to {e.FullPath}");
-                };
-
-                // Begin watching.
-                _race_db.Watcher.EnableRaisingEvents = true;
+                return;
             }
+
+
+            _raceDatabase.Watcher.Path = _raceDatabase.SavePath;  // replace with your directory
+            _raceDatabase.Watcher.Filter = "*.dat";  // watch for .dat files
+
+            // Add event handlers.
+            _raceDatabase.Watcher.Created += new FileSystemEventHandler(OnCreated);
+
+            // Subscribe to the Changed event
+            _raceDatabase.Watcher.Changed += (sender, e) =>
+            {
+                Logger.Logging.Debug($"File changed: {e.FullPath}");
+            };
+
+            // Subscribe to the Created event
+            _raceDatabase.Watcher.Created += (sender, e) =>
+            {
+                Logger.Logging.Debug($"File created: {e.FullPath}");
+            };
+
+            // Subscribe to the Deleted event
+            _raceDatabase.Watcher.Deleted += (sender, e) =>
+            {
+                Logger.Logging.Debug($"File deleted: {e.FullPath}");
+            };
+
+            // Subscribe to the Renamed event
+            _raceDatabase.Watcher.Renamed += (sender, e) =>
+            {
+                Logger.Logging.Debug($"File renamed from {e.OldFullPath} to {e.FullPath}");
+            };
+
+            // Begin watching.
+            _raceDatabase.Watcher.EnableRaisingEvents = true;
+
         }
 
         private void OnCreated(object source, FileSystemEventArgs e) => InvokeUI(() =>
         {
-            UniqueIdGenerator uuid = new UniqueIdGenerator();
-            var uid = uuid.GenerateUniqueId();
-            _race_db.Saves += 1;
-            _race_db.UUID = uid;
-            _race_db._real_itembox = GetItemBoxData();
+            var uid = UniqueIdGenerator.GenerateUniqueId();
+            _raceDatabase.Saves += 1;
+            _raceDatabase.UUID = uid;
+            _raceDatabase.RealItembox = GetItemBoxData();
 
             SaveState();
-            labelSaves.Text = _race_db.Saves.ToString();
+            labelSaves.Text = _raceDatabase.Saves.ToString();
 
             // Open the file
             using (var stream = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite))
             {
-
                 // Go to position 0x2C4 and read the first 0x10 bytes
                 stream.Position = 0x2C4;
                 byte[] bytes = new byte[0x10];
@@ -253,14 +263,14 @@ namespace REviewer.Modules.Forms
 
         private void SaveState()
         {
-            _race_db._tickTimer = _re1.Game.Timer.Value;
-            _race_db._fulltimer = chronometer.Elapsed;
-            _race_db._segtimer1 = _segment_chronometers[0].Elapsed;
-            _race_db._segtimer2 = _segment_chronometers[1].Elapsed;
-            _race_db._segtimer3 = _segment_chronometers[2].Elapsed;
-            _race_db._segtimer4 = _segment_chronometers[3].Elapsed;
+            _raceDatabase.TickTimer = _game.Game.Timer.Value;
+            _raceDatabase.Fulltimer = _raceWatch.Elapsed;
+            _raceDatabase.Segtimer1 = _segmentWatch[0].Elapsed;
+            _raceDatabase.Segtimer2 = _segmentWatch[1].Elapsed;
+            _raceDatabase.Segtimer3 = _segmentWatch[2].Elapsed;
+            _raceDatabase.Segtimer4 = _segmentWatch[3].Elapsed;
 
-            SerializeObject(_race_db);
+            SerializeObject(_raceDatabase);
         }
 
         public void SerializeObject<T>(T obj) where T : PlayerRaceProgress
@@ -273,18 +283,15 @@ namespace REviewer.Modules.Forms
 
             byte[] objectData = MessagePackSerializer.Serialize(copy_obj);
 
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] hashBytes = sha256.ComputeHash(objectData);
-                string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            byte[] hashBytes = SHA256.HashData(objectData);
+            string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
 
-                // Append a unique identifier to the filename
-                string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".dat");
-                File.WriteAllBytes(filePath, objectData);
-            }
+            // Append a unique identifier to the filename
+            string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".dat");
+            File.WriteAllBytes(filePath, objectData);
         }
-        
-        public T DeserializeObject<T>(string filePath)
+
+        public static T DeserializeObject<T>(string filePath)
         {
             byte[] objectData = File.ReadAllBytes(filePath);
             T obj = MessagePackSerializer.Deserialize<T>(objectData);
@@ -293,66 +300,70 @@ namespace REviewer.Modules.Forms
 
         private void InitLabels()
         {
-            labelTimer.Font = PixelBoy;
-            labelTimer.ForeColor = Color.FromArgb(250, 240, 216);
+            labelTimer.Font = _pixelBoyDefault;
+            labelTimer.ForeColor = CustomColors.White;
 
-            CheckHealthLabel(_re1.Player.Health.Value);
-            labelCharacter.Text = ((Dictionary<byte, string>)_re1.Player.Character.Database)[(byte)_re1.Player.Character.Value];
+            CheckHealthLabel(_game.Player.Health.Value);
+            labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)_game.Player.Character.Value];
 
-            _race_db.stage = ((_re1.Player.Stage.Value % 5) + 1).ToString();
+            _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x05) + 1).ToString();
 
-            labelSegTimer1.Font = PixelBoySegments;
-            labelSegTimer2.Font = PixelBoySegments;
-            labelSegTimer3.Font = PixelBoySegments;
-            labelSegTimer4.Font = PixelBoySegments;
+            labelSegTimer1.Font = _pixelBoySegments;
+            labelSegTimer2.Font = _pixelBoySegments;
+            labelSegTimer3.Font = _pixelBoySegments;
+            labelSegTimer4.Font = _pixelBoySegments;
 
-            labelSegTimer1.ForeColor = Color.FromArgb(250, 240, 216);
-            labelSegTimer2.ForeColor = Color.FromArgb(250, 240, 216);
-            labelSegTimer3.ForeColor = Color.FromArgb(250, 240, 216);
-            labelSegTimer4.ForeColor = Color.FromArgb(250, 240, 216);
+            labelSegTimer1.ForeColor = CustomColors.White;
+            labelSegTimer2.ForeColor = CustomColors.White;
+            labelSegTimer3.ForeColor = CustomColors.White;
+            labelSegTimer4.ForeColor = CustomColors.White;
 
-            labelDeaths.Font = PixelBoy;
-            labelDeaths.ForeColor = Color.FromArgb(250, 240, 216);
+            labelDeaths.Font = _pixelBoyDefault;
+            labelDeaths.ForeColor = CustomColors.White;
 
-            labelDebug.Font = PixelBoy;
-            labelDebug.ForeColor = Color.FromArgb(250, 240, 216);
+            labelDebug.Font = _pixelBoyDefault;
+            labelDebug.ForeColor = CustomColors.White;
 
-            labelResets.Font = PixelBoy;
-            labelResets.ForeColor = Color.FromArgb(250, 240, 216);
+            labelResets.Font = _pixelBoyDefault;
+            labelResets.ForeColor = CustomColors.White;
 
-            labelSaves.Font = PixelBoy;
-            labelSaves.ForeColor = Color.FromArgb(250, 240, 216);
+            labelSaves.Font = _pixelBoyDefault;
+            labelSaves.ForeColor = CustomColors.White;
 
-            labelCharacter.Font = PixelBoy;
-            labelCharacter.ForeColor = Color.FromArgb(250, 240, 216);
+            labelCharacter.Font = _pixelBoyDefault;
+            labelCharacter.ForeColor = CustomColors.White;
 
-            chronometer.Reset();
-            labelTimer.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelGameCompleted.Font = _pixelBoySegments;
+            labelGameCompleted.ForeColor = CustomColors.White;
+            labelGameCompleted.Visible = false;
 
-            labelDeaths.Text = _race_db.Deaths.ToString();
-            labelDebug.Text = _race_db.Debugs.ToString();
-            labelResets.Text = _race_db.Resets.ToString();
-            labelSaves.Text = _race_db.Saves.ToString();
+            _raceWatch.Reset();
+            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+
+            labelDeaths.Text = _raceDatabase.Deaths.ToString();
+            labelDebug.Text = _raceDatabase.Debugs.ToString();
+            labelResets.Text = _raceDatabase.Resets.ToString();
+            labelSaves.Text = _raceDatabase.Saves.ToString();
         }
 
         private void InitCharacterHealthState()
         {
-            labelHealth.Font = PixelBoyHealth;
-            CheckCharacterHealthState(_re1.Player.CharacterHealthState.Value);
+            labelHealth.Font = _pixelBoyHealthFont;
+            CheckCharacterHealthState(_game.Player.CharacterHealthState.Value);
         }
 
         private void InitChronometers()
         {
-            if (_segment_chronometers.Count > 0)
+            if (_segmentWatch.Count > 0)
             {
-                foreach (var stopwatch in _segment_chronometers)
+                foreach (var stopwatch in _segmentWatch)
                 {
                     stopwatch.Reset();
                 }
             }
             else
             {
-                _segment_chronometers =
+                _segmentWatch =
                 [
                     new Stopwatch(),
                     new Stopwatch(),
@@ -360,16 +371,16 @@ namespace REviewer.Modules.Forms
                     new Stopwatch()
                 ];
             }
-            labelTimer.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer1.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer2.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer3.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer4.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer1.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
         }
         private void InitInventorySlots()
         {
-            slotLabels = new Dictionary<int, Label>();
-            pictures = new Dictionary<int, PictureBox>();
+            _slotLabels = [];
+            _pictures = [];
 
             for (int i = 0; i < 8; i++)
             {
@@ -380,28 +391,28 @@ namespace REviewer.Modules.Forms
                 PictureBox pictureBox = Controls.Find(pictureName, true).FirstOrDefault() as PictureBox;
 
                 if (label != null)
-                    slotLabels.Add(i, label);
+                    _slotLabels.Add(i, label);
 
                 if (pictureBox != null)
-                    pictures.Add(i, pictureBox);
+                    _pictures.Add(i, pictureBox);
             }
         }
 
         private void InitKeyItems()
         {
-            _race_db.KeyItems = _db_items.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? new List<KeyItem>();
+            _raceDatabase.KeyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? [];
 
-            pictureKeyItems = new Dictionary<int, PictureBox>();
+            _pictureKeyItems = [];
 
-            for (int i = 0; i < _race_db.KeyItems.Count; i++)
+            for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
                 string pictureName = $"pictureBoxKeyItem{i + 1}";
                 PictureBox pictureBox = Controls.Find(pictureName, true).FirstOrDefault() as PictureBox;
 
                 if (pictureBox != null)
                 {
-                    pictureKeyItems.Add(i, pictureBox);
-                    UpdateKeyItemPicture(pictureBox, _race_db.KeyItems[i]);
+                    _pictureKeyItems.Add(i, pictureBox);
+                    UpdateKeyItemPicture(pictureBox, _raceDatabase.KeyItems[i]);
                 }
             }
         }
@@ -414,13 +425,13 @@ namespace REviewer.Modules.Forms
             pictureBox.BackColor = state switch
             {
                 0 => Color.Transparent,
-                1 => Color.FromArgb(198, 155, 101),
-                2 => Color.FromArgb(159, 185, 118),
+                1 => CustomColors.Orange,
+                2 => CustomColors.Default,
                 _ => pictureBox.BackColor // Default case
             };
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -432,34 +443,29 @@ namespace REviewer.Modules.Forms
             // Wait 100 ms to avoid flickering
 
             await Task.Delay(50);
-            var islot = _re1.Player.InventorySlotSelected.Value;
-            
-            var selected = _re1.Player.InventorySlotSelected.Value - 1;
-            byte id = _re1.Player.InventorySlotSelected.Value == 0 ? (byte) 0 : (byte)_re1.Inventory.Slots[selected].Item.Value;
+            var islot = _game.Player.InventorySlotSelected.Value;
 
-            var image = _db_items.GetPropertyById(id).Img;
+            var selected = _game.Player.InventorySlotSelected.Value - 1;
+            byte id = _game.Player.InventorySlotSelected.Value == 0 ? (byte)0 : (byte)_game.Inventory.Slots[selected].Item.Value;
+
+            var image = _itemDatabase.GetPropertyById(id).Img;
             pictureBoxItemSelected.Image = image;
-            _old_selected_slot = islot;
+            _previousSelectedSlot = islot;
         }
 
         private void UpdateLastItemFoundPicture()
         {
-            byte value = (byte)_re1.Player.LastItemFound.Value;
-            // if value is key item, update the key item
-            if (_db_items.GetPropertyById(value).Type == "Key Item")
+            byte value = (byte)_game.Player.LastItemFound.Value;
+            if (_itemDatabase.GetPropertyById(value).Type == "Key Item" && _raceDatabase.FullRoomName == null)
             {
-                if (_race_db.FullRoomName == null)
-                {
-                    _race_db.stage = ((_re1.Player.Stage.Value % 5) + 1).ToString();
-                    _race_db.room = _re1.Player.Room.Value.ToString("X2");
-                    _race_db.FullRoomName = _race_db.stage + _race_db.room;
-                }
-                UpdateRaceKeyItem(value, _race_db.FullRoomName, 1);
+                _raceDatabase.Stage = ((_game.Player.Stage.Value % 5) + 1).ToString();
+                _raceDatabase.Room = _game.Player.Room.Value.ToString("X2");
+                _raceDatabase.FullRoomName = _raceDatabase.Stage + _raceDatabase.Room;
+                UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
             }
 
-            byte item_id = (byte)_re1.Player.LastItemFound.Value;
-            var image = _db_items.GetPropertyById(item_id).Img;
-            pictureBoxLastItem.Image = image;
+            byte item_id = (byte)_game.Player.LastItemFound.Value;
+            pictureBoxLastItem.Image = _itemDatabase.GetPropertyById(item_id).Img;
         }
 
         private static int GetPositionInDatabase(Dictionary<byte, string> database, byte key)
@@ -470,43 +476,49 @@ namespace REviewer.Modules.Forms
 
         private void SubscribeToEvents()
         {
-            _re1.Player.Room.Updated += Updated_Room;
-            _re1.Player.Stage.Updated += Updated_Stage;
-            _re1.Player.Character.Updated += Updated_Character;
-            _re1.Player.Health.Updated += Updated_Health;
-            _re1.Player.CharacterHealthState.Updated += Update_Character_State;
+            _game.Player.Room.Updated += Updated_Room;
+            _game.Player.Stage.Updated += Updated_Stage;
+            _game.Player.Character.Updated += Updated_Character;
+            _game.Player.Health.Updated += Updated_Health;
+            _game.Player.CharacterHealthState.Updated += Update_Character_State;
 
-            _re1.Inventory.Capacity.Updated += Updated_Inventory_Capacity;
+            _game.Inventory.Capacity.Updated += Updated_Inventory_Capacity;
 
-            _re1.Game.State.Updated += Updated_GameState;
-            _re1.Game.Timer.Updated += Updated_Timer;
-            _re1.Game.MainMenu.Updated += Updated_Reset;
+            _game.Game.State.Updated += Updated_GameState;
+            _game.Game.Timer.Updated += Updated_Timer;
+            _game.Game.MainMenu.Updated += Updated_Reset;
 
             AssignEventHandlers();
 
-            _re1.Rebirth.Debug.Updated += Updated_Debug;
-            //_re1.Rebirth.Screen.Updated += Updated_Screen;
-            _re1.Player.LastItemFound.Updated += Updated_LastItemFound;
-            _re1.Player.InventorySlotSelected.Updated += Updated_InventorySlotSelected;
+            _game.Rebirth.Debug.Updated += Updated_Debug;
+            //_game.Rebirth.Screen.Updated += Updated_Screen;
+            _game.Player.LastItemFound.Updated += Updated_LastItemFound;
+            _game.Player.InventorySlotSelected.Updated += Updated_InventorySlotSelected;
         }
 
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
-            if (_re1.Game.MainMenu.Value == 1 && (Int32.Parse(labelHealth.Text) <= _health_table[(byte)_re1.Player.Character.Value][0]))
+
+            int health = Int32.Parse(labelHealth.Text);
+
+            
+            if (_game.Game.MainMenu.Value == 1 && !labelGameCompleted.Visible && (health <= _healthTable[(byte)_game.Player.Character.Value][0]))
             {
-                _race_db.Resets += 1;
-                labelResets.Text = _race_db.Resets.ToString();
+                _raceDatabase.Resets += 1;
+                labelResets.Text = _raceDatabase.Resets.ToString();
             }
+
+            buttonReset.Enabled = _game.Game.MainMenu.Value == 1 ? true : false;
         });
 
         private void Update_Character_State(object sender, EventArgs e) => InvokeUI(() =>
         {
-            CheckCharacterHealthState(_re1.Player.CharacterHealthState.Value);
+            CheckCharacterHealthState(_game.Player.CharacterHealthState.Value);
         });
 
         private void Updated_Inventory_Capacity(object sender, EventArgs e) => InvokeUI(() =>
         {
-            CheckInventoryCapacity(_re1.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+            CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
         });
 
         private void Updated_InventorySlotSelected(object sender, EventArgs e) => InvokeUI(() =>
@@ -521,8 +533,8 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Debug(object sender, EventArgs e) => InvokeUI(() =>
         {
-            _race_db.Debugs = CheckDebugWindow(_re1.Rebirth.Debug.Value) == "Active" ? _race_db.Debugs + 1 : _race_db.Debugs;
-            labelDebug.Text = _race_db.Debugs.ToString();
+            _raceDatabase.Debugs = CheckDebugWindow(_game.Rebirth.Debug.Value) == "Active" ? _raceDatabase.Debugs + 1 : _raceDatabase.Debugs;
+            labelDebug.Text = _raceDatabase.Debugs.ToString();
         });
 
         private void AssignEventHandlers()
@@ -530,14 +542,14 @@ namespace REviewer.Modules.Forms
             for (int i = 0; i < 8; i++)
             {
                 int slotNumber = i; // To capture the variable in the closure
-                _re1.Inventory.Slots[i].Item.Updated += (sender, e) => InvokeUI(() =>
+                _game.Inventory.Slots[i].Item.Updated += (sender, e) => InvokeUI(() =>
                 {
                     UpdateSlotPicture(slotNumber);
                 });
 
-                _re1.Inventory.Slots[i].Quantity.Updated += (sender, e) => InvokeUI(() =>
+                _game.Inventory.Slots[i].Quantity.Updated += (sender, e) => InvokeUI(() =>
                 {
-                    UpdateSlotCapacity(slotLabels[slotNumber], slotNumber);
+                    UpdateSlotCapacity(_slotLabels[slotNumber], slotNumber);
                 });
             }
 
@@ -548,127 +560,122 @@ namespace REviewer.Modules.Forms
             value = GetKeyItemPosition(value, room, state);
 
             // If 'force' is true or the current state is less than the new state, update the state and picture
-            if (force || _race_db.KeyItems[value].State < state)
+            if (force || _raceDatabase.KeyItems[value].State < state)
             {
-                _race_db.KeyItems[value].State = state;
+                _raceDatabase.KeyItems[value].State = state;
                 UpdatePictureKeyItemState(value);
             }
 
-            _race_db.KeyItems[value].Room = room;
+            _raceDatabase.KeyItems[value].Room = room;
         }
 
         private int GetKeyItemPosition(int value, string room, int state)
         {
-            var Name = _db_items.GetPropertyNameById((byte)value);
-            var item_box = (_re1.Game.State.Value & 0x0000FF00) == 0x90;
-            var found = 0;
+            var name = _itemDatabase.GetPropertyNameById((byte)value);
+            var item_box = (_game.Game.State.Value & 0x0000FF00) == 0x90;
 
-            for (int i = 0; i < _race_db.KeyItems.Count; i++)
+            for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
-                if (_race_db.KeyItems[i].Data.Name == Name)
+                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box)
                 {
-                    found = i;
-                    if ((_race_db.KeyItems[i].Room != room || _race_db.KeyItems[i].State != state) && !item_box)
-                    {
-                        return i;
-                    }
+                    return i;
                 }
             }
 
-            return found != 0 ? found : 0;
+            return 0;
         }
 
         private void UpdatePictureKeyItemState(int value)
         {
-            var state = _race_db.KeyItems[value].State;
+            var state = _raceDatabase.KeyItems[value].State;
 
             // change background color of the picture box
-            pictureKeyItems[value].BackColor = state switch
+            _pictureKeyItems[value].BackColor = state switch
             {
-               -1 => Color.Transparent,
+                -1 => Color.Transparent,
                 0 => Color.Transparent,
-                1 => Color.FromArgb(198, 155, 101),
-                2 => Color.FromArgb(159, 185, 118),
+                1 => CustomColors.Orange,
+                2 => CustomColors.Default,
                 _ => Color.Transparent // Default case
             };
         }
 
         private void UpdateSlotPicture(int value)
         {
-            if (value > _inventory_size)
+            if (value > _inventoryCapacitySize)
             {
                 return;
             }
 
-            var item_id = _re1.Inventory.Slots[value].Item.Value;
+            var item_id = _game.Inventory.Slots[value].Item.Value;
             // if value is key item, update the key item
-            if (_db_items.GetPropertyById((byte)_re1.Inventory.Slots[value].Item.Value).Type == "Key Item")
+            if (_itemDatabase.GetPropertyById((byte)_game.Inventory.Slots[value].Item.Value).Type == "Key Item")
             {
-                if ((_re1.Game.State.Value & 0x0000FF00) == 0x8800)
-                { 
-                    UpdateRaceKeyItem(item_id, _race_db.FullRoomName, 2);
+                if ((_game.Game.State.Value & 0x0000FF00) == 0x8800)
+                {
+                    UpdateRaceKeyItem(item_id, _raceDatabase.FullRoomName, 2);
                 }
             }
 
-            var id = (byte)GetItemByPosition(_re1.Inventory.Slots[value].Item.Value);
-            var image = _db_items.GetPropertyById(id).Img;
-            pictures[value].Image = image;
+            var id = (byte)GetItemByPosition(_game.Inventory.Slots[value].Item.Value);
+            var image = _itemDatabase.GetPropertyById(id).Img;
+            _pictures[value].Image = image;
 
-            UpdateSlotCapacity(slotLabels[value], value);
+            UpdateSlotCapacity(_slotLabels[value], value);
         }
         private void UpdateSlotCapacity(Label label, int value)
         {
-            if (value > _inventory_size)
+            if (value > _inventoryCapacitySize)
             {
                 return;
             }
 
-            Property item = _db_items.GetPropertyById((byte)_re1.Inventory.Slots[value].Item.Value);
-            label.Text = _re1.Inventory.Slots[value].Quantity.Value.ToString();
-            label.Font = PixelBoySegments;
-            label.Visible = !(new[] { "Key Item", "Optionnal Key Item", "Nothing" }).Contains(item.Type);
+            Property item = _itemDatabase.GetPropertyById((byte)_game.Inventory.Slots[value].Item.Value);
+            label.Text = _game.Inventory.Slots[value].Quantity.Value.ToString();
+            label.Font = _pixelBoySegments;
+            label.Visible = !(_itemTypes).Contains(item.Type);
             label.ForeColor = item.Color switch
             {
-                "Yellow" => Color.FromArgb(215, 191, 128),
-                "Orange" => Color.FromArgb(198, 155, 101),
-                "Red" => Color.FromArgb(205, 116, 118),
-                _ => Color.FromArgb(159, 185, 118),
+                "Yellow" => CustomColors.Yellow,
+                "Orange" => CustomColors.Orange,
+                "Red" => CustomColors.Red,
+                _ => CustomColors.Default,
             };
         }
 
 
         private void Updated_Health(object sender, EventArgs e) => InvokeUI(() =>
         {
-            CheckHealthLabel(_re1.Player.Health.Value);
+            CheckHealthLabel(_game.Player.Health.Value);
         });
 
         private void Updated_Character(object sender, EventArgs e) => InvokeUI(() =>
         {
-            byte value = (byte)_re1.Player.Character.Value;
-            labelCharacter.Text = ((Dictionary<byte, string>)_re1.Player.Character.Database)[value].ToString();
+            byte value = (byte)_game.Player.Character.Value;
+            labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[value].ToString();
         });
 
-        private void Updated_Stage(object sender, EventArgs e) => InvokeUI(() => _race_db.stage = ((_re1.Player.Stage.Value % 5) + 1).ToString());
+        private void Updated_Stage(object sender, EventArgs e) => InvokeUI(() => _raceDatabase.Stage = ((_game.Player.Stage.Value % 5) + 1).ToString());
 
         private void Updated_Room(object sender, EventArgs e) => InvokeUI(() =>
         {
-            _race_db.room = _re1.Player.Room.Value.ToString("X2");
-            _race_db.LastRoomName = _race_db.FullRoomName;
-            _race_db.FullRoomName = _race_db.stage + _race_db.room;
+            _raceDatabase.Room = _game.Player.Room.Value.ToString("X2");
+            _raceDatabase.LastRoomName = _raceDatabase.FullRoomName;
+            _raceDatabase.FullRoomName = _raceDatabase.Stage + _raceDatabase.Room;
 
             UpdateKeyRooms();
         });
 
         private void UpdateKeyRooms()
         {
-            string fullRoomName = _race_db.FullRoomName;
-            string lastRoomName = _race_db.LastRoomName ?? fullRoomName;
+            string fullRoomName = _raceDatabase.FullRoomName;
+            string lastRoomName = _raceDatabase.LastRoomName ?? fullRoomName;
 
             foreach (var roomName in new[] { lastRoomName, fullRoomName })
             {
-                if (_race_db.KeyRooms.ContainsKey(roomName))
+                if (_raceDatabase.KeyRooms.TryGetValue(roomName, out List<string>? value))
                 {
-                    List<string> keyRooms = _race_db.KeyRooms[roomName];
+                    List<string> keyRooms = value;
                     string otherRoomName = roomName == lastRoomName ? fullRoomName : lastRoomName;
 
                     if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName)
@@ -678,95 +685,85 @@ namespace REviewer.Modules.Forms
                         if (keyRooms.Count == 2)
                         {
                             UpdateChronometers();
-                            _race_db.KeyRooms.Remove(roomName);
+                            _raceDatabase.KeyRooms.Remove(roomName);
                         }
-
-                        // Update the list in the dictionary
-                        _race_db.KeyRooms[roomName] = keyRooms;
                     }
+
+                    // Update the list in the dictionary
+                    _raceDatabase.KeyRooms[roomName] = keyRooms;
                 }
             }
         }
 
         private void UpdateChronometers()
         {
-            _segment_chronometers[_race_db.Segments].Stop();
-            _race_db.Segments += 1;
-            _segment_chronometers[_race_db.Segments].Start();
+            _segmentWatch[_raceDatabase.Segments].Stop();
+            _raceDatabase.Segments += 1;
+            _segmentWatch[_raceDatabase.Segments].Start();
         }
 
         private void Updated_GameState(object sender, EventArgs e) => InvokeUI(() =>
         {
-            int state = _re1.Game.State.Value;
+            int state = _game.Game.State.Value;
 
-            if((state & 0xFF000000) == 0x54000000)
+            if ((state & 0xFF000000) == 0x54000000)
             {
                 LoadState();
             }
 
-            if ((state & 0x0F000000) == 0x1000000 && _race_db.old_state != 0x1000000)
+            if ((state & 0x0FFF0000) == 0x1000000 && _raceDatabase.PreviousState != 0x1000000)
             {
-                _race_db.Deaths += 1;
+                _raceDatabase.Deaths += 1;
                 labelHealth.Text = "255";
-                labelDeaths.Text = _race_db.Deaths.ToString();
+                labelDeaths.Text = _raceDatabase.Deaths.ToString();
+            } 
+            else if ((state & 0x0FFF0000) == 0x1100000 && _raceDatabase.PreviousState != 0x2000000)
+            {
+                labelHealth.Text = "WP!";
+                labelGameCompleted.Visible = true;
+                _raceWatch.Stop();
+                _segmentWatch[_raceDatabase.Segments].Stop();   
             }
 
-            _race_db.old_state = state & 0x0F000000;
+            _raceDatabase.PreviousState = state & 0x0F000000;
         });
-
         private void LoadState()
         {
             byte[] inventory_data = GetItemBoxData();
-            byte[] modded = new byte[inventory_data.Length - 2];
-            Array.Copy(inventory_data, 2, modded, 0, modded.Length);
+            byte[] modded = inventory_data.Skip(2).ToArray();
 
-            foreach (var save in _saves)
+            var save = _saves.FirstOrDefault(s => s.UUID.SequenceEqual(modded));
+
+            if (save == null)
             {
-                if (save.UUID.SequenceEqual(modded))
-                {
+                return;
+            }
 
-                    System.Diagnostics.Debug.WriteLine("--> Found Save");
+            if (_raceDatabase.Segments < save.Segments)
+            {
+                _segmentWatch[_raceDatabase.Segments].Stop();
+                _raceDatabase.Segments = save.Segments;
+                _segmentWatch[_raceDatabase.Segments].Start();
+            }
 
-                    if(_race_db.Segments < save.Segments)
-                    {
-                        _segment_chronometers[_race_db.Segments].Stop();
-                        _race_db.Segments = save.Segments;
-                        _segment_chronometers[_race_db.Segments].Start();
-                    }
-                    
-                    
-                    if (_race_db.Debugs < save.Debugs)
-                    {
-                        _race_db.Debugs = save.Debugs;
-                    }
+            _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save.Debugs);
+            _raceDatabase.Deaths = Math.Max(_raceDatabase.Deaths, save.Deaths);
+            _raceDatabase.Resets = Math.Max(_raceDatabase.Resets, save.Resets);
+            _raceDatabase.Saves = Math.Max(_raceDatabase.Saves, save.Saves);
 
-                    if (_race_db.Deaths < save.Deaths)
-                    {
-                        _race_db.Deaths = save.Deaths;
-                    }
+            labelDebug.Text = _raceDatabase.Debugs.ToString();
+            labelDeaths.Text = _raceDatabase.Deaths.ToString();
+            labelResets.Text = _raceDatabase.Resets.ToString();
+            labelSaves.Text = _raceDatabase.Saves.ToString();
 
-                    if (_race_db.Resets < save.Resets)
-                    {
-                        _race_db.Resets = save.Resets;
-                    }
+            _raceDatabase.KeyRooms = save.KeyRooms;
 
-                    if(_race_db.Saves < save.Saves)
-                    {
-                        _race_db.Saves = save.Saves;
-                    }
-                    
-                    _race_db.KeyRooms = save.KeyRooms;
-                    LoadKeyItems(save.KeyItems);
+            LoadKeyItems(save.KeyItems);
 
-
-                    for (int i = 0; i < 8; i++)
-                    {
-                        Write(_re1.ItemBox.Slots[i].Item, (int) save._real_itembox[2*i]);
-                        Write(_re1.ItemBox.Slots[i].Quantity, (int) save._real_itembox[2*i + 1]);
-                    }
-                }
-
-                System.Diagnostics.Debug.WriteLine("Load State");
+            for (int i = 0; i < 8; i++)
+            {
+                Write(_game.ItemBox.Slots[i].Item, (int)save.RealItembox[2 * i]);
+                Write(_game.ItemBox.Slots[i].Quantity, (int)save.RealItembox[2 * i + 1]);
             }
         }
 
@@ -775,8 +772,8 @@ namespace REviewer.Modules.Forms
             byte[] inventory = new byte[16];
             for (int i = 0; i < 8; i++)
             {
-                inventory[2*i] = (byte) _re1.ItemBox.Slots[i].Item.Value;
-                inventory[2*i + 1] = (byte) _re1.ItemBox.Slots[i].Quantity.Value;
+                inventory[2 * i] = (byte)_game.ItemBox.Slots[i].Item.Value;
+                inventory[2 * i + 1] = (byte)_game.ItemBox.Slots[i].Quantity.Value;
             }
 
             return inventory;
@@ -788,51 +785,54 @@ namespace REviewer.Modules.Forms
 
             foreach (var keyItem in keyItems)
             {
-                // Find the corresponding key item in _race_db.KeyItems
-                KeyItem existingKeyItem = _race_db.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
+                // Find the corresponding key item in _raceDatabase.KeyItems
+                KeyItem existingKeyItem = _raceDatabase.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
 
-                // If the key item exists in _race_db.KeyItems, use the existing Property.Img value
-                if (existingKeyItem != null)
+                if (existingKeyItem == null)
                 {
-                    // If the state or room is different, call UpdateRaceKeyItem
-                    
-                    if (existingKeyItem.State != keyItem.State || existingKeyItem.Room != keyItem.Room)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Updating Key Item");
-                        // Assuming the value parameter for UpdateRaceKeyItem is the index of the key item in the list
-                        int value = _db_items.GetPropertyIdByName(keyItem.Data.Name);
-                        UpdateRaceKeyItem(value, keyItem.Room, keyItem.State, true);
-                    }
-                    i++;
+                    return;
                 }
+
+                // If the key item exists in _raceDatabase.KeyItems, use the existing Property.Img value
+
+                if (existingKeyItem.State != keyItem.State || existingKeyItem.Room != keyItem.Room)
+                {
+                    Logger.Logging.Debug($"Updating Key Item: Name={keyItem.Data.Name}, Room={keyItem.Room}, State={keyItem.State}, ExistingKeyItem: Name={existingKeyItem.Data.Name}, Room={existingKeyItem.Room}, State={existingKeyItem.State}");
+                    // Assuming the value parameter for UpdateRaceKeyItem is the index of the key item in the list
+                    int value = _itemDatabase.GetPropertyIdByName(keyItem.Data.Name);
+                    UpdateRaceKeyItem(value, keyItem.Room, keyItem.State, true);
+                }
+                i++;
+
             }
         }
 
         private void Updated_Timer(object sender, EventArgs e) => InvokeUI(() =>
         {
-            labelTimer.Text = chronometer.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
             Label[] labelSegTimers = [labelSegTimer1, labelSegTimer2, labelSegTimer3];
 
-            if (_race_db.Segments >= 0 && _race_db.Segments < labelSegTimers.Length)
+            if (_raceDatabase.Segments >= 0 && _raceDatabase.Segments < labelSegTimers.Length)
             {
-                labelSegTimers[_race_db.Segments].Text = _segment_chronometers[_race_db.Segments].Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                labelSegTimers[_raceDatabase.Segments].Text = _segmentWatch[_raceDatabase.Segments].Elapsed.ToString(@"hh\:mm\:ss\.ff");
             }
 
-            int currentTimerValue = _re1.Game.Timer.Value;
+            int currentTimerValue = _game.Game.Timer.Value;
 
-            if (previousTimerValue != currentTimerValue)
+            if (_previousTimerValue == currentTimerValue)
             {
-                if (!chronometer.IsRunning)
-                {
-                    chronometer.Start();
-                    _segment_chronometers[_race_db.Segments].Start();
-                }
+                return;
             }
-            else if (chronometer.IsRunning)
+            if (_raceWatch.IsRunning)
             {
-                chronometer.Stop();
-                _segment_chronometers[_race_db.Segments].Stop();
+                _raceWatch.Stop();
+                _segmentWatch[_raceDatabase.Segments].Stop();
+            }
+            else
+            {
+                _raceWatch.Start();
+                _segmentWatch[_raceDatabase.Segments].Start();
             }
         });
 
@@ -843,8 +843,7 @@ namespace REviewer.Modules.Forms
 
         private void CheckInventoryCapacity(int value, PictureBox slot7, PictureBox slot8, Label capacity7, Label capacity8)
         {
-            _inventory_size = (value & 0xFF000000) == 0x08000000 ? 6 : 8;
-            bool isVisible = _inventory_size != 6;
+            bool isVisible = (value & 0xFF000000) != 0x08000000;
 
             slot7.Visible = isVisible;
             slot8.Visible = isVisible;
@@ -856,10 +855,10 @@ namespace REviewer.Modules.Forms
             }
             else
             {
-                capacity7.Visible = isVisible;
-                capacity8.Visible = isVisible;
-                slot7.Visible = isVisible;
-                slot8.Visible = isVisible;
+                capacity7.Visible = false;
+                capacity8.Visible = false;
+                slot7.Visible = false;
+                slot8.Visible = false;
             }
         }
 
@@ -896,9 +895,9 @@ namespace REviewer.Modules.Forms
 
         private void CheckHealthLabel(int value)
         {
-            var health_table = _health_table[(byte)(_re1.Player.Character.Value % 4)];
-            var status = _re1.Player.CharacterHealthState.Value;
-            Color[] colors = [Color.DarkGreen, Color.FromArgb(159, 185, 118), Color.FromArgb(215, 191, 128), Color.FromArgb(198, 155, 101), Color.FromArgb(205, 116, 118), Color.FromArgb(250, 240, 216)];
+            var health_table = _healthTable[(byte)(_game.Player.Character.Value % 4)];
+            var status = _game.Player.CharacterHealthState.Value;
+            Color[] colors = [Color.DarkGreen, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
             labelHealth.Text = value.ToString();
 
 
@@ -929,7 +928,7 @@ namespace REviewer.Modules.Forms
         {
             if ((value & 0x40) == 0 && (value & 0x04) == 0 && (value & 0x02) == 0)
             {
-                CheckHealthLabel(_re1.Player.Health.Value);
+                CheckHealthLabel(_game.Player.Health.Value);
             }
             else
             {
@@ -937,43 +936,27 @@ namespace REviewer.Modules.Forms
             }
         }
 
-        public string CheckDebugWindow(int value)
-        {
-            if ((value & 0xFFFF) == 0x1)
-            {
-                return "Active";
-            }
+        public static string CheckDebugWindow(int value) => (value & 0xFFFF) == 0x1 ? "Active" : "Inactive";
 
-            return "Inactive";
-        }
-
-        public string CheckRebirthState(int value)
-        {
-            if ((_re1.Rebirth.Debug.Value & 0xFFFF) == 0x1)
-            {
-                return "Active";
-            }
-
-            return "Inactive";
-        }
-
-        private void label2_Click(object sender, EventArgs e)
+        private void Label2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ButtonReset_Click(object sender, EventArgs e)
         {
             // clear everything completely
-            _race_db = null;
-            pictureKeyItems = null;
+            _raceDatabase = null;
+            _pictureKeyItems = null;
 
             // UnsubscribeAllEvents();
             ErasePlayerData();
 
             // re-init everything
-            _race_db = new GameData.PlayerRaceProgress(_gameName);
-            _race_db.Segments = 0;
+            _raceDatabase = new GameData.PlayerRaceProgress(_gameName)
+            {
+                Segments = 0
+            };
 
             InitKeyItems();
             InitKeyRooms();
@@ -981,10 +964,11 @@ namespace REviewer.Modules.Forms
             InitLabels();
             InitChronometers();
 
-            CheckInventoryCapacity(_re1.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+            CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
 
             InitInventory();
             InitCharacterHealthState();
+
             // SubscribeToEvents();
         }
 
@@ -992,21 +976,21 @@ namespace REviewer.Modules.Forms
         {
             for (int i = 0; i < 8; i++)
             {
-                Write(_re1.Inventory.Slots[i].Item, 0);
-                Write(_re1.Inventory.Slots[i].Quantity, 0);
+                Write(_game.Inventory.Slots[i].Item, 0);
+                Write(_game.Inventory.Slots[i].Quantity, 0);
             }
 
             for (int i = 0; i < 47; i++)
             {
-                Write(_re1.ItemBox.Slots[i].Item, 0);
-                Write(_re1.ItemBox.Slots[i].Quantity, 0);
+                Write(_game.ItemBox.Slots[i].Item, 0);
+                Write(_game.ItemBox.Slots[i].Quantity, 0);
             }
 
-            Write(_re1.Player.InventorySlotSelected, 0);
-            Write(_re1.Player.LastItemFound, 0);
+            Write(_game.Player.InventorySlotSelected, 0);
+            Write(_game.Player.LastItemFound, 0);
         }
 
-        private void Write(VariableData v, int value)
+        private static void Write(VariableData v, int value)
         {
             lock (v.LockObject)
             {
@@ -1017,52 +1001,52 @@ namespace REviewer.Modules.Forms
 
         private void UnsubscribeAllEvents()
         {
-            _re1.Player.Room.Updated -= Updated_Room;
-            _re1.Player.Stage.Updated -= Updated_Stage;
-            _re1.Player.Character.Updated -= Updated_Character;
-            _re1.Player.Health.Updated -= Updated_Health;
-            _re1.Player.CharacterHealthState.Updated -= Update_Character_State;
+            _game.Player.Room.Updated -= Updated_Room;
+            _game.Player.Stage.Updated -= Updated_Stage;
+            _game.Player.Character.Updated -= Updated_Character;
+            _game.Player.Health.Updated -= Updated_Health;
+            _game.Player.CharacterHealthState.Updated -= Update_Character_State;
 
-            _re1.Inventory.Capacity.Updated -= Updated_Inventory_Capacity;
+            _game.Inventory.Capacity.Updated -= Updated_Inventory_Capacity;
 
-            _re1.Game.State.Updated -= Updated_GameState;
-            _re1.Game.Timer.Updated -= Updated_Timer;
-            _re1.Game.MainMenu.Updated -= Updated_Reset;
+            _game.Game.State.Updated -= Updated_GameState;
+            _game.Game.Timer.Updated -= Updated_Timer;
+            _game.Game.MainMenu.Updated -= Updated_Reset;
 
-            _re1.Rebirth.Debug.Updated -= Updated_Debug;
+            _game.Rebirth.Debug.Updated -= Updated_Debug;
 
-            _re1.Player.LastItemFound.Updated -= Updated_LastItemFound;
-            _re1.Player.InventorySlotSelected.Updated -= Updated_InventorySlotSelected;
-            //_re1.Rebirth.Screen.Updated -= Updated_Screen;
+            _game.Player.LastItemFound.Updated -= Updated_LastItemFound;
+            _game.Player.InventorySlotSelected.Updated -= Updated_InventorySlotSelected;
+            //_game.Rebirth.Screen.Updated -= Updated_Screen;
 
             for (int i = 0; i < 8; i++)
             {
-                _re1.Inventory.Slots[i].Item.Updated -= (sender, e) => { };
-                _re1.Inventory.Slots[i].Quantity.Updated -= (sender, e) => { };
+                _game.Inventory.Slots[i].Item.Updated -= (sender, e) => { };
+                _game.Inventory.Slots[i].Quantity.Updated -= (sender, e) => { };
             }
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
             string seed = "";
 
             for (int i = 0; i < 8; i++)
             {
-                var slot = _re1.Inventory.Slots[i];
+                var slot = _game.Inventory.Slots[i];
                 seed += slot.Item.Value.ToString();
                 seed += slot.Quantity.Value.ToString();
             }
 
-            SeedChecker seedChecker = new SeedChecker(seed);
+            SeedChecker seedChecker = new(seed);
             seedChecker.Show();
 
             Console.WriteLine(seed);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
-            
+
         }
     }
 

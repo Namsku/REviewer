@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using REviewer.Modules.Common;
 using REviewer.Modules.RE;
 
 namespace REviewer.Modules.Forms
@@ -264,7 +265,7 @@ namespace REviewer.Modules.Forms
                 }
 
                 string processName = gameNames[index];
-                Process = Common.GetProcessByName(processName);
+                Process = Common.Library.GetProcessByName(processName);
 
                 if (Process == null)
                 {
@@ -275,13 +276,13 @@ namespace REviewer.Modules.Forms
                 Process.EnableRaisingEvents = true;
                 Process.Exited += ProcessExited;
 
-                if (!Common.IsDdrawLoaded(Process))
+                if (!Common.Library.IsDdrawLoaded(Process))
                 {
                     ShowError("Rebirth DLL was not found", labelRebirthDll);
                     return;
                 }
 
-                if (!Common.IsSavePathPresent(index))
+                if (!Common.Library.IsSavePathPresent(index))
                 {
                     ShowError("Save path was not found", labelSavePath);
                     return;

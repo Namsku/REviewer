@@ -13,9 +13,16 @@ namespace REviewer.Modules.RE
             {
                 var json = File.ReadAllText(jsonFilePath);
                 var dictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
-                _ids = dictionary.ContainsKey(processName) && dictionary[processName].ContainsKey("RoomIDs") 
-                    ? dictionary[processName]["RoomIDs"] 
-                    : new Dictionary<string, string>();
+
+                if (dictionary.TryGetValue(processName, out var processDictionary) &&
+                    processDictionary.TryGetValue("RoomIDs", out var roomIDs))
+                {
+                    _ids = roomIDs;
+                }
+                else
+                {
+                    _ids = new Dictionary<string, string>();
+                }
             }
             else
             {

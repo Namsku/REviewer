@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Configuration;
 using Newtonsoft.Json;
-using System.IO;
+using REviewer.Modules.Common.REviewer.Modules.Common;
+
 
 namespace REviewer.Modules.Forms
 {
@@ -20,29 +12,32 @@ namespace REviewer.Modules.Forms
         public Settings()
         {
             InitializeComponent();
+
+            _re1_json = [];
             InitSavePaths();
         }
 
         private void InitSavePaths()
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
-            if (configPath != null && File.Exists(configPath))
-            {
-                var json = File.ReadAllText(configPath);
-                _re1_json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
-                if (_re1_json.ContainsKey("RE1"))
-                {
-                    textBox1.Text = _re1_json["RE1"];
-                }
-            }
-            else
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
             {
                 throw new ArgumentNullException(nameof(configPath));
             }
+
+            var json = File.ReadAllText(configPath);
+            _re1_json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+            if (_re1_json.TryGetValue("RE1", out string? value))
+            {
+                if (value != null)
+                {
+                    textBox1.Text = value;
+                }
+            }
         }
 
-        private void buttonSelectRE1Folder_Click(object sender, EventArgs e)
+        private void ButtonSelectRE1Folder_Click(object sender, EventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
@@ -54,25 +49,20 @@ namespace REviewer.Modules.Forms
                     textBox1.Text = path;
 
                     var configPath = ConfigurationManager.AppSettings["Config"];
-                    if (configPath != null && File.Exists(configPath))
+                    if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
                     {
-                        var json = File.ReadAllText(configPath);
-                        _re1_json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
-                        _re1_json["RE1"] = path;
-
-                        json = JsonConvert.SerializeObject(_re1_json, Formatting.Indented);
-                        File.WriteAllText(configPath, json);
+                        Logger.Logging.Error("Config path is null or file does not exist");
                     }
-                    else
-                    {
-                        throw new ArgumentNullException(nameof(configPath));
-                    }
+
+                    _re1_json["RE1"] = path;
+
+                    var json = JsonConvert.SerializeObject(_re1_json, Formatting.Indented);
+                    File.WriteAllText(configPath, json);
                 }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             Dispose();
         }

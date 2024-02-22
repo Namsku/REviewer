@@ -43,7 +43,7 @@
             buttonSelectRE1Folder.TabIndex = 0;
             buttonSelectRE1Folder.Text = "...";
             buttonSelectRE1Folder.UseVisualStyleBackColor = true;
-            buttonSelectRE1Folder.Click += buttonSelectRE1Folder_Click;
+            buttonSelectRE1Folder.Click += ButtonSelectRE1Folder_Click;
             // 
             // textBox1
             // 
@@ -71,7 +71,7 @@
             button2.TabIndex = 4;
             button2.Text = "Quit";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            button2.Click += Button2_Click;
             // 
             // Settings
             // 

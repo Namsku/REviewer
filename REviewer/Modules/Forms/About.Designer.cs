@@ -49,7 +49,7 @@
             buttonAboutQuit.TabIndex = 0;
             buttonAboutQuit.Text = "Quit";
             buttonAboutQuit.UseVisualStyleBackColor = true;
-            buttonAboutQuit.Click += buttonAboutQuit_Click;
+            buttonAboutQuit.Click += ButtonAboutQuit_Click;
             // 
             // linkLabelDiscord
             // 
@@ -60,7 +60,7 @@
             linkLabelDiscord.TabIndex = 3;
             linkLabelDiscord.TabStop = true;
             linkLabelDiscord.Text = "Discord";
-            linkLabelDiscord.LinkClicked += linkLabelDiscord_LinkClicked;
+            linkLabelDiscord.LinkClicked += LinkLabelDiscord_LinkClicked;
             // 
             // linkLabelGithub
             // 
@@ -71,7 +71,7 @@
             linkLabelGithub.TabIndex = 4;
             linkLabelGithub.TabStop = true;
             linkLabelGithub.Text = "Github";
-            linkLabelGithub.LinkClicked += linkLabel1_LinkClicked;
+            linkLabelGithub.LinkClicked += LinkLabel1_LinkClicked;
             // 
             // labelAuthor
             // 

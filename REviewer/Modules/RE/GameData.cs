@@ -1,5 +1,5 @@
-﻿using System.Configuration;
-using MessagePack;
+﻿using MessagePack;
+using REviewer.Modules.Common;
 
 namespace REviewer.Modules.RE
 {
@@ -135,13 +135,13 @@ namespace REviewer.Modules.RE
 
             // Room Infos
             [Key(7)]
-            public int old_state { get; set; }
+            public int PreviousState { get; set; }
 
             [Key(8)]
-            public string stage { get; set; }
+            public string Stage { get; set; }
 
             [Key(9)]
-            public string room { get; set; }
+            public string Room { get; set; }
 
             [Key(10)]
             public string LastRoomName { get; set; }
@@ -153,30 +153,29 @@ namespace REviewer.Modules.RE
             public string? SavePath;
 
             [Key(13)]
-            public TimeSpan? _fulltimer { get; set; }
+            public TimeSpan? Fulltimer { get; set; }
             [Key(14)]
-            public TimeSpan? _segtimer1 { get; set; }
+            public TimeSpan? Segtimer1 { get; set; }
             [Key(15)]
-            public TimeSpan? _segtimer2 { get; set; }
+            public TimeSpan? Segtimer2 { get; set; }
             [Key(16)]
-            public TimeSpan? _segtimer3 { get; set; }
+            public TimeSpan? Segtimer3 { get; set; }
             [Key(17)]
-            public TimeSpan? _segtimer4 { get; set; }
+            public TimeSpan? Segtimer4 { get; set; }
 
             [Key(18)]
-            public int _tickTimer { get; set; }
+            public int TickTimer { get; set; }
             [Key(19)]
             public byte[] UUID { get; set; }
             [Key(20)]
-            public byte[] _real_itembox { get; set; }
+            public byte[] RealItembox { get; set; }
 
             [IgnoreMember]
             public FileSystemWatcher Watcher = new();
 
             public PlayerRaceProgress(string savePath)
             {
-                var common = new Common();
-                SavePath = common.GetSavePath(savePath);
+                SavePath = Library.GetSavePath(savePath);
             }
 
             public object Clone()
@@ -191,22 +190,22 @@ namespace REviewer.Modules.RE
                     Resets = this.Resets,
                     Debugs = this.Debugs,
                     Segments = this.Segments,
-                    old_state = this.old_state,
-                    stage = this.stage,
-                    room = this.room,
+                    PreviousState = this.PreviousState,
+                    Stage = this.Stage,
+                    Room = this.Room,
                     LastRoomName = this.LastRoomName,
                     FullRoomName = this.FullRoomName,
                     SavePath = this.SavePath,
-                    _fulltimer = this._fulltimer,
-                    _segtimer1 = this._segtimer1,
-                    _segtimer2 = this._segtimer2,
-                    _segtimer3 = this._segtimer3,
-                    _segtimer4 = this._segtimer4,
-                    _tickTimer = this._tickTimer,
+                    Fulltimer = this.Fulltimer,
+                    Segtimer1 = this.Segtimer1,
+                    Segtimer2 = this.Segtimer2,
+                    Segtimer3 = this.Segtimer3,
+                    Segtimer4 = this.Segtimer4,
+                    TickTimer = this.TickTimer,
                     UUID = (byte[])this.UUID?.Clone(),
-                    _real_itembox = (byte[])this._real_itembox?.Clone(),
+                    RealItembox = (byte[])this.RealItembox?.Clone(),
                     // FileSystemWatcher is not cloneable, so we create a new one
-                    Watcher = new FileSystemWatcher()
+                    // Watcher = new FileSystemWatcher()
                 };
             }
         }
@@ -323,8 +322,7 @@ namespace REviewer.Modules.RE
                             { 0, "Chris"},
                             { 1, "Jill"},
                             { 2, "Barry" },
-                            { 3, "'becca" },
-                            { 4, "WTF"},
+                            { 3, "'Becca" },
                         },
                     },
                     InventorySlotSelected = new VariableData { Offset = (IntPtr)InventorySlotSelectedOffset, Size = 1, Database = null },

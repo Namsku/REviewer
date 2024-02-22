@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
+using NLog.Config;
+using REviewer.Modules.Common.REviewer.Modules.Common;
 using static REviewer.Modules.RE.GameData;
 
-namespace REviewer.Modules
+namespace REviewer.Modules.Common
 {
     public class MonitorVariables
     {
@@ -18,7 +18,7 @@ namespace REviewer.Modules
 
         private System.Threading.Timer? _monitoringTimer;
         private nint _processHandle;
-        private string _processName;
+        private readonly string _processName;
         private bool _running = true;
 
         private RootObject? _currentRootObject;
@@ -28,20 +28,22 @@ namespace REviewer.Modules
             _processHandle = processHandle;
             _processName = processName;
         }
-        
-    public void Start(RootObject? rootObject)
-    {
-        if (rootObject == null)
-        {
-            throw new ArgumentNullException(nameof(rootObject));
-        }
 
-        _currentRootObject = rootObject;
-        _monitoringTimer = new System.Threading.Timer(state => Monitor((RootObject)state!), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(55));
-    }
+        public void Start(RootObject? rootObject)
+        {
+            if (rootObject == null)
+            {
+                Logger.Logging.Error("RootObject is null");
+            }
+
+            _currentRootObject = rootObject;
+            _monitoringTimer = new System.Threading.Timer(state => Monitor(), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(55));
+            Logger.Logging.Info("Started monitoring");
+        }
 
         public void Stop()
         {
+            Logger.Logging.Info("Stopping monitoring");
             _monitoringTimer?.Dispose();
             _monitoringTimer = null;
         }
@@ -57,12 +59,12 @@ namespace REviewer.Modules
             return false;
         }
 
-        public void Monitor(RootObject rootObject)
+        public void Monitor()
         {
             if (!IsProcessActive())
             {
                 _running = false;
-                _processHandle = IntPtr.Zero;
+                _processHandle = nint.Zero;
             }
 
             if (!IsProcessActive() && _running == false)
@@ -75,7 +77,7 @@ namespace REviewer.Modules
                 }
             }
 
-            if (_processHandle != IntPtr.Zero)
+            if (_processHandle != nint.Zero)
             {
                 MonitorObject(_currentRootObject);
             }
@@ -103,7 +105,7 @@ namespace REviewer.Modules
 
         private bool CanMonitorObject(object obj)
         {
-            if (_processHandle == IntPtr.Zero || obj == null)
+            if (_processHandle == nint.Zero || obj == null)
             {
                 Stop();
                 return false;
@@ -159,9 +161,9 @@ namespace REviewer.Modules
         public int ReadVariableData(VariableData variableData)
         {
             byte[] buffer = new byte[variableData.Size];
-            if (!ReadProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out int bytesRead))
+            if (!ReadProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out _))
             {
-                //throw new Exception("Failed to read process memory");
+                Logger.Logging.Error("Failed to read process memory");
                 return 0;
             }
 
@@ -189,8 +191,7 @@ namespace REviewer.Modules
 
             if (!WriteProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out int bytesWritten))
             {
-                // throw new Exception("Failed to write process memory");
-
+                Logger.Logging.Error("Failed to write process memory");
                 return false;
             }
 

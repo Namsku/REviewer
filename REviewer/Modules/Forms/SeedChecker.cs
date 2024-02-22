@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace REviewer.Modules.Forms
@@ -20,7 +14,7 @@ namespace REviewer.Modules.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -30,9 +24,9 @@ namespace REviewer.Modules.Forms
 
         private void CheckSeed(object sender, EventArgs e)
         {
-            labelCheck.Text = textBoxSeed.Text == textBoxYourSeed.Text ? "valid" : "invalid";
-            labelCheck.ForeColor = textBoxSeed.Text == textBoxYourSeed.Text ? Color.Green : Color.Red;
+            bool isValid = textBoxSeed.Text == textBoxYourSeed.Text;
+            labelCheck.Text = isValid ? "valid" : "invalid";
+            labelCheck.ForeColor = isValid ? Color.Green : Color.Red;
         }
-
     }
 }

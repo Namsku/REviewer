@@ -5,25 +5,19 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Forms\**" />
-    <Compile Remove="Resources\NewFolder\**" />
     <EmbeddedResource Remove="Forms\**" />
-    <EmbeddedResource Remove="Resources\NewFolder\**" />
     <None Remove="Forms\**" />
-    <None Remove="Resources\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MessagePack" Version="2.5.140" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.2.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,8 +35,14 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xA;copy &quot;$(ProjectDir)Resources\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\config.json&quot; &quot;$(TargetDir)data&quot; /Y" />
+    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
   </Target>
 
 </Project>
