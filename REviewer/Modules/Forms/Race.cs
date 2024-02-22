@@ -37,6 +37,8 @@ namespace REviewer.Modules.Forms
         private GameData.PlayerRaceProgress? _raceDatabase;
         private List<GameData.PlayerRaceProgress> _saves;
 
+        private FontFamily _fontPixelBoy;
+
         private readonly Dictionary<byte, List<int>> _healthTable = new()
         {
             { 0 , new List<int> { 140, 106,  71,  36, 0 } },
@@ -49,6 +51,7 @@ namespace REviewer.Modules.Forms
 
         public Race(GameData.RootObject GameData, string gameName)
         {
+            InitPixelBoyFont();
             LoadDefaultPixelBoyFont();
             LoadCustomFontPixelBoyHealth();
             LoadCustomFontPixelBoySegments();
@@ -61,6 +64,22 @@ namespace REviewer.Modules.Forms
             _gameName = gameName;
             _itemDatabase = new ItemIDs(gameName);
             _raceDatabase = new PlayerRaceProgress(gameName);
+        }
+
+        private void InitPixelBoyFont()
+        {
+            PrivateFontCollection privateFontCollection = new();
+            byte[] fontData = Properties.Resources.Pixeboy;
+
+            // Load the font into the private font collection
+            int dataLength = fontData.Length;
+            IntPtr fontPtr = Marshal.AllocCoTaskMem(dataLength);
+            Marshal.Copy(fontData, 0, fontPtr, dataLength);
+            privateFontCollection.AddMemoryFont(fontPtr, dataLength);
+            Marshal.FreeCoTaskMem(fontPtr);
+
+            // Create a new font from the private font collection
+            _fontPixelBoy = privateFontCollection.Families[0];
         }
 
         private void InitLoadState()
@@ -102,36 +121,19 @@ namespace REviewer.Modules.Forms
             }
         }
 
-        private static Font LoadCustomFont(byte[] fontData, float size, FontStyle style, GraphicsUnit unit)
-        {
-            // Create a private font collection
-            PrivateFontCollection privateFontCollection = new();
-
-            // Load the font into the private font collection
-            int dataLength = fontData.Length;
-            IntPtr fontPtr = Marshal.AllocCoTaskMem(dataLength);
-            Marshal.Copy(fontData, 0, fontPtr, dataLength);
-            privateFontCollection.AddMemoryFont(fontPtr, dataLength);
-            Marshal.FreeCoTaskMem(fontPtr);
-
-            // Create a new font from the private font collection
-            FontFamily fontFamily = privateFontCollection.Families[0];
-            return new Font(fontFamily, size, style, unit);
-        }
-
         private void LoadDefaultPixelBoyFont()
         {
-            _pixelBoyDefault = LoadCustomFont(Properties.Resources.Pixeboy, 53, FontStyle.Bold, GraphicsUnit.Pixel);
+            _pixelBoyDefault = new Font(_fontPixelBoy, 53, FontStyle.Bold, GraphicsUnit.Pixel);
         }
 
         private void LoadCustomFontPixelBoyHealth()
         {
-            _pixelBoyHealthFont = LoadCustomFont(Properties.Resources.Pixeboy, 60, FontStyle.Regular, GraphicsUnit.Pixel);
+            _pixelBoyHealthFont = new Font(_fontPixelBoy, 60, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         private void LoadCustomFontPixelBoySegments()
         {
-            _pixelBoySegments = LoadCustomFont(Properties.Resources.Pixeboy, 36, FontStyle.Regular, GraphicsUnit.Pixel);
+            _pixelBoySegments = new Font(_fontPixelBoy, 36, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         private void Race_Load(object sender, EventArgs e)

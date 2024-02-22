@@ -39,10 +39,13 @@
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\Fonts\Pixeboy.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
+    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)resources&quot; 2&gt; nul&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Fonts\Pixeboy.ttf&quot; &quot;$(TargetDir)resources&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
   </Target>
 
 </Project>

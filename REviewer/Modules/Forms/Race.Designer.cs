@@ -194,52 +194,61 @@
             // 
             labelTimer.AutoSize = true;
             labelTimer.ForeColor = Color.White;
-            labelTimer.Location = new Point(0, 46);
+            labelTimer.Location = new Point(0, 59);
+            labelTimer.Margin = new Padding(4, 0, 4, 0);
             labelTimer.Name = "labelTimer";
-            labelTimer.Size = new Size(104, 25);
+            labelTimer.Size = new Size(131, 38);
             labelTimer.TabIndex = 4;
             labelTimer.Text = "00:00:00.00";
+            labelTimer.UseCompatibleTextRendering = true;
             // 
             // labelCharacter
             // 
             labelCharacter.AutoSize = true;
             labelCharacter.Font = new Font("Impact", 14F);
-            labelCharacter.Location = new Point(247, 46);
+            labelCharacter.Location = new Point(321, 59);
+            labelCharacter.Margin = new Padding(4, 0, 4, 0);
             labelCharacter.Name = "labelCharacter";
-            labelCharacter.Size = new Size(85, 35);
+            labelCharacter.Size = new Size(106, 54);
             labelCharacter.TabIndex = 2;
             labelCharacter.Text = "XXXXX";
+            labelCharacter.UseCompatibleTextRendering = true;
             // 
             // labelSegTimer1
             // 
             labelSegTimer1.AutoSize = true;
             labelSegTimer1.ForeColor = Color.Transparent;
-            labelSegTimer1.Location = new Point(3, 931);
+            labelSegTimer1.Location = new Point(4, 1192);
+            labelSegTimer1.Margin = new Padding(4, 0, 4, 0);
             labelSegTimer1.Name = "labelSegTimer1";
-            labelSegTimer1.Size = new Size(104, 25);
+            labelSegTimer1.Size = new Size(131, 38);
             labelSegTimer1.TabIndex = 3;
             labelSegTimer1.Text = "00:00:00.00";
+            labelSegTimer1.UseCompatibleTextRendering = true;
             // 
             // labelSlot2Quantity
             // 
             labelSlot2Quantity.AutoSize = true;
             labelSlot2Quantity.BackColor = Color.Transparent;
             labelSlot2Quantity.Font = new Font("Impact", 12F);
-            labelSlot2Quantity.Location = new Point(138, 670);
+            labelSlot2Quantity.Location = new Point(179, 858);
+            labelSlot2Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot2Quantity.Name = "labelSlot2Quantity";
             labelSlot2Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot2Quantity.Size = new Size(48, 29);
+            labelSlot2Quantity.Size = new Size(59, 47);
             labelSlot2Quantity.TabIndex = 47;
             labelSlot2Quantity.Text = "100";
+            labelSlot2Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot2
             // 
             pictureBoxItemSlot2.BackColor = Color.Transparent;
             pictureBoxItemSlot2.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot2.InitialImage = null;
-            pictureBoxItemSlot2.Location = new Point(90, 610);
+            pictureBoxItemSlot2.Location = new Point(117, 781);
+            pictureBoxItemSlot2.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot2.Name = "pictureBoxItemSlot2";
-            pictureBoxItemSlot2.Size = new Size(85, 60);
+            pictureBoxItemSlot2.Size = new Size(110, 77);
             pictureBoxItemSlot2.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot2.TabIndex = 60;
             pictureBoxItemSlot2.TabStop = false;
@@ -249,21 +258,24 @@
             labelSlot8Quantity.AutoSize = true;
             labelSlot8Quantity.BackColor = Color.Transparent;
             labelSlot8Quantity.Font = new Font("Impact", 12F);
-            labelSlot8Quantity.Location = new Point(318, 758);
+            labelSlot8Quantity.Location = new Point(413, 970);
+            labelSlot8Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot8Quantity.Name = "labelSlot8Quantity";
             labelSlot8Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot8Quantity.Size = new Size(48, 29);
+            labelSlot8Quantity.Size = new Size(59, 47);
             labelSlot8Quantity.TabIndex = 59;
             labelSlot8Quantity.Text = "100";
+            labelSlot8Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot8
             // 
             pictureBoxItemSlot8.BackColor = Color.Transparent;
             pictureBoxItemSlot8.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot8.InitialImage = null;
-            pictureBoxItemSlot8.Location = new Point(264, 699);
+            pictureBoxItemSlot8.Location = new Point(343, 895);
+            pictureBoxItemSlot8.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot8.Name = "pictureBoxItemSlot8";
-            pictureBoxItemSlot8.Size = new Size(85, 60);
+            pictureBoxItemSlot8.Size = new Size(110, 77);
             pictureBoxItemSlot8.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot8.TabIndex = 58;
             pictureBoxItemSlot8.TabStop = false;
@@ -273,21 +285,24 @@
             labelSlot7Quantity.AutoSize = true;
             labelSlot7Quantity.BackColor = Color.Transparent;
             labelSlot7Quantity.Font = new Font("Impact", 12F);
-            labelSlot7Quantity.Location = new Point(229, 759);
+            labelSlot7Quantity.Location = new Point(298, 972);
+            labelSlot7Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot7Quantity.Name = "labelSlot7Quantity";
             labelSlot7Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot7Quantity.Size = new Size(48, 29);
+            labelSlot7Quantity.Size = new Size(59, 47);
             labelSlot7Quantity.TabIndex = 57;
             labelSlot7Quantity.Text = "100";
+            labelSlot7Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot7
             // 
             pictureBoxItemSlot7.BackColor = Color.Transparent;
             pictureBoxItemSlot7.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot7.InitialImage = null;
-            pictureBoxItemSlot7.Location = new Point(177, 698);
+            pictureBoxItemSlot7.Location = new Point(230, 893);
+            pictureBoxItemSlot7.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot7.Name = "pictureBoxItemSlot7";
-            pictureBoxItemSlot7.Size = new Size(85, 60);
+            pictureBoxItemSlot7.Size = new Size(110, 77);
             pictureBoxItemSlot7.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot7.TabIndex = 56;
             pictureBoxItemSlot7.TabStop = false;
@@ -297,21 +312,24 @@
             labelSlot6Quantity.AutoSize = true;
             labelSlot6Quantity.BackColor = Color.Transparent;
             labelSlot6Quantity.Font = new Font("Impact", 12F);
-            labelSlot6Quantity.Location = new Point(135, 758);
+            labelSlot6Quantity.Location = new Point(176, 970);
+            labelSlot6Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot6Quantity.Name = "labelSlot6Quantity";
             labelSlot6Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot6Quantity.Size = new Size(48, 29);
+            labelSlot6Quantity.Size = new Size(59, 47);
             labelSlot6Quantity.TabIndex = 55;
             labelSlot6Quantity.Text = "100";
+            labelSlot6Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot6
             // 
             pictureBoxItemSlot6.BackColor = Color.Transparent;
             pictureBoxItemSlot6.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot6.InitialImage = null;
-            pictureBoxItemSlot6.Location = new Point(90, 698);
+            pictureBoxItemSlot6.Location = new Point(117, 893);
+            pictureBoxItemSlot6.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot6.Name = "pictureBoxItemSlot6";
-            pictureBoxItemSlot6.Size = new Size(85, 60);
+            pictureBoxItemSlot6.Size = new Size(110, 77);
             pictureBoxItemSlot6.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot6.TabIndex = 54;
             pictureBoxItemSlot6.TabStop = false;
@@ -321,21 +339,24 @@
             labelSlot5Quantity.AutoSize = true;
             labelSlot5Quantity.BackColor = Color.Transparent;
             labelSlot5Quantity.Font = new Font("Impact", 12F);
-            labelSlot5Quantity.Location = new Point(48, 758);
+            labelSlot5Quantity.Location = new Point(62, 970);
+            labelSlot5Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot5Quantity.Name = "labelSlot5Quantity";
             labelSlot5Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot5Quantity.Size = new Size(48, 29);
+            labelSlot5Quantity.Size = new Size(59, 47);
             labelSlot5Quantity.TabIndex = 53;
             labelSlot5Quantity.Text = "100";
+            labelSlot5Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot5
             // 
             pictureBoxItemSlot5.BackColor = Color.Transparent;
             pictureBoxItemSlot5.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot5.InitialImage = null;
-            pictureBoxItemSlot5.Location = new Point(3, 698);
+            pictureBoxItemSlot5.Location = new Point(4, 893);
+            pictureBoxItemSlot5.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot5.Name = "pictureBoxItemSlot5";
-            pictureBoxItemSlot5.Size = new Size(85, 60);
+            pictureBoxItemSlot5.Size = new Size(110, 77);
             pictureBoxItemSlot5.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot5.TabIndex = 52;
             pictureBoxItemSlot5.TabStop = false;
@@ -345,21 +366,24 @@
             labelSlot4Quantity.AutoSize = true;
             labelSlot4Quantity.BackColor = Color.Transparent;
             labelSlot4Quantity.Font = new Font("Impact", 12F);
-            labelSlot4Quantity.Location = new Point(315, 670);
+            labelSlot4Quantity.Location = new Point(410, 858);
+            labelSlot4Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot4Quantity.Name = "labelSlot4Quantity";
             labelSlot4Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot4Quantity.Size = new Size(48, 29);
+            labelSlot4Quantity.Size = new Size(59, 47);
             labelSlot4Quantity.TabIndex = 51;
             labelSlot4Quantity.Text = "100";
+            labelSlot4Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot4
             // 
             pictureBoxItemSlot4.BackColor = Color.Transparent;
             pictureBoxItemSlot4.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot4.InitialImage = null;
-            pictureBoxItemSlot4.Location = new Point(265, 610);
+            pictureBoxItemSlot4.Location = new Point(344, 781);
+            pictureBoxItemSlot4.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot4.Name = "pictureBoxItemSlot4";
-            pictureBoxItemSlot4.Size = new Size(85, 60);
+            pictureBoxItemSlot4.Size = new Size(110, 77);
             pictureBoxItemSlot4.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot4.TabIndex = 50;
             pictureBoxItemSlot4.TabStop = false;
@@ -369,22 +393,25 @@
             labelSlot3Quantity.AutoSize = true;
             labelSlot3Quantity.BackColor = Color.Transparent;
             labelSlot3Quantity.Font = new Font("Impact", 12F);
-            labelSlot3Quantity.Location = new Point(230, 670);
+            labelSlot3Quantity.Location = new Point(299, 858);
+            labelSlot3Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot3Quantity.Name = "labelSlot3Quantity";
             labelSlot3Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot3Quantity.Size = new Size(48, 29);
+            labelSlot3Quantity.Size = new Size(59, 47);
             labelSlot3Quantity.TabIndex = 49;
             labelSlot3Quantity.Text = "100";
             labelSlot3Quantity.TextAlign = ContentAlignment.MiddleRight;
+            labelSlot3Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot3
             // 
             pictureBoxItemSlot3.BackColor = Color.Transparent;
             pictureBoxItemSlot3.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot3.InitialImage = null;
-            pictureBoxItemSlot3.Location = new Point(177, 610);
+            pictureBoxItemSlot3.Location = new Point(230, 781);
+            pictureBoxItemSlot3.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot3.Name = "pictureBoxItemSlot3";
-            pictureBoxItemSlot3.Size = new Size(85, 60);
+            pictureBoxItemSlot3.Size = new Size(110, 77);
             pictureBoxItemSlot3.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot3.TabIndex = 48;
             pictureBoxItemSlot3.TabStop = false;
@@ -394,22 +421,25 @@
             labelSlot1Quantity.AutoSize = true;
             labelSlot1Quantity.BackColor = Color.Transparent;
             labelSlot1Quantity.Font = new Font("Impact", 12F);
-            labelSlot1Quantity.Location = new Point(48, 670);
+            labelSlot1Quantity.Location = new Point(62, 858);
+            labelSlot1Quantity.Margin = new Padding(4, 0, 4, 0);
             labelSlot1Quantity.Name = "labelSlot1Quantity";
             labelSlot1Quantity.RightToLeft = RightToLeft.Yes;
-            labelSlot1Quantity.Size = new Size(48, 29);
+            labelSlot1Quantity.Size = new Size(59, 47);
             labelSlot1Quantity.TabIndex = 45;
             labelSlot1Quantity.Text = "100";
             labelSlot1Quantity.TextAlign = ContentAlignment.MiddleRight;
+            labelSlot1Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot1
             // 
             pictureBoxItemSlot1.BackColor = Color.Transparent;
             pictureBoxItemSlot1.Image = Properties.Resources.wind_crest;
             pictureBoxItemSlot1.InitialImage = null;
-            pictureBoxItemSlot1.Location = new Point(3, 609);
+            pictureBoxItemSlot1.Location = new Point(4, 780);
+            pictureBoxItemSlot1.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSlot1.Name = "pictureBoxItemSlot1";
-            pictureBoxItemSlot1.Size = new Size(85, 60);
+            pictureBoxItemSlot1.Size = new Size(110, 77);
             pictureBoxItemSlot1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSlot1.TabIndex = 44;
             pictureBoxItemSlot1.TabStop = false;
@@ -418,47 +448,56 @@
             // 
             labelDebug.AutoSize = true;
             labelDebug.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDebug.Location = new Point(430, 839);
+            labelDebug.Location = new Point(559, 1074);
+            labelDebug.Margin = new Padding(4, 0, 4, 0);
             labelDebug.Name = "labelDebug";
-            labelDebug.Size = new Size(30, 35);
+            labelDebug.Size = new Size(34, 54);
             labelDebug.TabIndex = 7;
             labelDebug.Text = "0";
+            labelDebug.UseCompatibleTextRendering = true;
             // 
             // labelResets
             // 
             labelResets.AutoSize = true;
             labelResets.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelResets.Location = new Point(300, 840);
+            labelResets.Location = new Point(390, 1075);
+            labelResets.Margin = new Padding(4, 0, 4, 0);
             labelResets.Name = "labelResets";
-            labelResets.Size = new Size(30, 35);
+            labelResets.Size = new Size(34, 54);
             labelResets.TabIndex = 6;
             labelResets.Text = "0";
+            labelResets.UseCompatibleTextRendering = true;
             // 
             // labelSaves
             // 
             labelSaves.AutoSize = true;
             labelSaves.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelSaves.Location = new Point(172, 840);
+            labelSaves.Location = new Point(224, 1075);
+            labelSaves.Margin = new Padding(4, 0, 4, 0);
             labelSaves.Name = "labelSaves";
-            labelSaves.Size = new Size(30, 35);
+            labelSaves.Size = new Size(34, 54);
             labelSaves.TabIndex = 5;
             labelSaves.Text = "0";
+            labelSaves.UseCompatibleTextRendering = true;
             // 
             // labelDeaths
             // 
             labelDeaths.AutoSize = true;
             labelDeaths.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDeaths.Location = new Point(48, 841);
+            labelDeaths.Location = new Point(62, 1076);
+            labelDeaths.Margin = new Padding(4, 0, 4, 0);
             labelDeaths.Name = "labelDeaths";
-            labelDeaths.Size = new Size(30, 35);
+            labelDeaths.Size = new Size(34, 54);
             labelDeaths.TabIndex = 4;
             labelDeaths.Text = "0";
+            labelDeaths.UseCompatibleTextRendering = true;
             // 
             // buttonReset
             // 
-            buttonReset.Location = new Point(12, 1120);
+            buttonReset.Location = new Point(16, 1434);
+            buttonReset.Margin = new Padding(4, 4, 4, 4);
             buttonReset.Name = "buttonReset";
-            buttonReset.Size = new Size(66, 34);
+            buttonReset.Size = new Size(86, 44);
             buttonReset.TabIndex = 7;
             buttonReset.Text = "Reset";
             buttonReset.UseVisualStyleBackColor = true;
@@ -469,9 +508,10 @@
             pictureBoxItemSelected.BackColor = Color.Transparent;
             pictureBoxItemSelected.Image = Properties.Resources.wind_crest;
             pictureBoxItemSelected.InitialImage = null;
-            pictureBoxItemSelected.Location = new Point(385, 616);
+            pictureBoxItemSelected.Location = new Point(500, 788);
+            pictureBoxItemSelected.Margin = new Padding(4, 4, 4, 4);
             pictureBoxItemSelected.Name = "pictureBoxItemSelected";
-            pictureBoxItemSelected.Size = new Size(85, 60);
+            pictureBoxItemSelected.Size = new Size(110, 77);
             pictureBoxItemSelected.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxItemSelected.TabIndex = 60;
             pictureBoxItemSelected.TabStop = false;
@@ -481,9 +521,10 @@
             pictureBoxLastItem.BackColor = Color.Transparent;
             pictureBoxLastItem.Image = Properties.Resources.wind_crest;
             pictureBoxLastItem.InitialImage = null;
-            pictureBoxLastItem.Location = new Point(385, 724);
+            pictureBoxLastItem.Location = new Point(500, 927);
+            pictureBoxLastItem.Margin = new Padding(4, 4, 4, 4);
             pictureBoxLastItem.Name = "pictureBoxLastItem";
-            pictureBoxLastItem.Size = new Size(85, 60);
+            pictureBoxLastItem.Size = new Size(110, 77);
             pictureBoxLastItem.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxLastItem.TabIndex = 61;
             pictureBoxLastItem.TabStop = false;
@@ -492,37 +533,44 @@
             // 
             labelSegTimer2.AutoSize = true;
             labelSegTimer2.ForeColor = Color.Transparent;
-            labelSegTimer2.Location = new Point(170, 931);
+            labelSegTimer2.Location = new Point(221, 1192);
+            labelSegTimer2.Margin = new Padding(4, 0, 4, 0);
             labelSegTimer2.Name = "labelSegTimer2";
-            labelSegTimer2.Size = new Size(104, 25);
+            labelSegTimer2.Size = new Size(131, 38);
             labelSegTimer2.TabIndex = 3;
             labelSegTimer2.Text = "00:00:00.00";
+            labelSegTimer2.UseCompatibleTextRendering = true;
             // 
             // labelSegTimer3
             // 
             labelSegTimer3.AutoSize = true;
             labelSegTimer3.ForeColor = Color.Transparent;
-            labelSegTimer3.Location = new Point(339, 931);
+            labelSegTimer3.Location = new Point(441, 1192);
+            labelSegTimer3.Margin = new Padding(4, 0, 4, 0);
             labelSegTimer3.Name = "labelSegTimer3";
-            labelSegTimer3.Size = new Size(104, 25);
+            labelSegTimer3.Size = new Size(131, 38);
             labelSegTimer3.TabIndex = 3;
             labelSegTimer3.Text = "00:00:00.00";
+            labelSegTimer3.UseCompatibleTextRendering = true;
             // 
             // labelHealth
             // 
             labelHealth.AutoSize = true;
             labelHealth.Font = new Font("Impact", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelHealth.Location = new Point(394, 43);
+            labelHealth.Location = new Point(512, 55);
+            labelHealth.Margin = new Padding(4, 0, 4, 0);
             labelHealth.Name = "labelHealth";
-            labelHealth.Size = new Size(93, 60);
+            labelHealth.Size = new Size(115, 90);
             labelHealth.TabIndex = 46;
             labelHealth.Text = "140";
+            labelHealth.UseCompatibleTextRendering = true;
             // 
             // buttonCheckSeed
             // 
-            buttonCheckSeed.Location = new Point(339, 1120);
+            buttonCheckSeed.Location = new Point(441, 1434);
+            buttonCheckSeed.Margin = new Padding(4, 4, 4, 4);
             buttonCheckSeed.Name = "buttonCheckSeed";
-            buttonCheckSeed.Size = new Size(159, 34);
+            buttonCheckSeed.Size = new Size(207, 44);
             buttonCheckSeed.TabIndex = 14;
             buttonCheckSeed.Text = "Check Seed";
             buttonCheckSeed.UseVisualStyleBackColor = true;
@@ -534,9 +582,10 @@
             pictureBoxKeyItem19.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem19.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem19.InitialImage = null;
-            pictureBoxKeyItem19.Location = new Point(255, 252);
+            pictureBoxKeyItem19.Location = new Point(332, 323);
+            pictureBoxKeyItem19.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem19.Name = "pictureBoxKeyItem19";
-            pictureBoxKeyItem19.Size = new Size(85, 60);
+            pictureBoxKeyItem19.Size = new Size(110, 76);
             pictureBoxKeyItem19.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem19.TabIndex = 79;
             pictureBoxKeyItem19.TabStop = false;
@@ -547,9 +596,10 @@
             pictureBoxKeyItem18.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem18.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem18.InitialImage = null;
-            pictureBoxKeyItem18.Location = new Point(423, 252);
+            pictureBoxKeyItem18.Location = new Point(550, 323);
+            pictureBoxKeyItem18.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem18.Name = "pictureBoxKeyItem18";
-            pictureBoxKeyItem18.Size = new Size(85, 60);
+            pictureBoxKeyItem18.Size = new Size(110, 76);
             pictureBoxKeyItem18.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem18.TabIndex = 78;
             pictureBoxKeyItem18.TabStop = false;
@@ -560,9 +610,10 @@
             pictureBoxKeyItem16.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem16.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem16.InitialImage = null;
-            pictureBoxKeyItem16.Location = new Point(3, 314);
+            pictureBoxKeyItem16.Location = new Point(4, 402);
+            pictureBoxKeyItem16.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem16.Name = "pictureBoxKeyItem16";
-            pictureBoxKeyItem16.Size = new Size(85, 60);
+            pictureBoxKeyItem16.Size = new Size(110, 76);
             pictureBoxKeyItem16.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem16.TabIndex = 76;
             pictureBoxKeyItem16.TabStop = false;
@@ -573,9 +624,10 @@
             pictureBoxKeyItem17.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem17.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem17.InitialImage = null;
-            pictureBoxKeyItem17.Location = new Point(339, 252);
+            pictureBoxKeyItem17.Location = new Point(441, 323);
+            pictureBoxKeyItem17.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem17.Name = "pictureBoxKeyItem17";
-            pictureBoxKeyItem17.Size = new Size(85, 60);
+            pictureBoxKeyItem17.Size = new Size(110, 76);
             pictureBoxKeyItem17.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem17.TabIndex = 77;
             pictureBoxKeyItem17.TabStop = false;
@@ -586,9 +638,10 @@
             pictureBoxKeyItem20.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem20.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem20.InitialImage = null;
-            pictureBoxKeyItem20.Location = new Point(87, 314);
+            pictureBoxKeyItem20.Location = new Point(113, 402);
+            pictureBoxKeyItem20.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem20.Name = "pictureBoxKeyItem20";
-            pictureBoxKeyItem20.Size = new Size(85, 60);
+            pictureBoxKeyItem20.Size = new Size(110, 76);
             pictureBoxKeyItem20.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem20.TabIndex = 80;
             pictureBoxKeyItem20.TabStop = false;
@@ -599,9 +652,10 @@
             pictureBoxKeyItem15.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem15.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem15.InitialImage = null;
-            pictureBoxKeyItem15.Location = new Point(171, 252);
+            pictureBoxKeyItem15.Location = new Point(222, 323);
+            pictureBoxKeyItem15.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem15.Name = "pictureBoxKeyItem15";
-            pictureBoxKeyItem15.Size = new Size(85, 60);
+            pictureBoxKeyItem15.Size = new Size(110, 76);
             pictureBoxKeyItem15.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem15.TabIndex = 75;
             pictureBoxKeyItem15.TabStop = false;
@@ -612,9 +666,10 @@
             pictureBoxKeyItem21.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem21.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem21.InitialImage = null;
-            pictureBoxKeyItem21.Location = new Point(171, 314);
+            pictureBoxKeyItem21.Location = new Point(222, 402);
+            pictureBoxKeyItem21.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem21.Name = "pictureBoxKeyItem21";
-            pictureBoxKeyItem21.Size = new Size(85, 60);
+            pictureBoxKeyItem21.Size = new Size(110, 76);
             pictureBoxKeyItem21.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem21.TabIndex = 81;
             pictureBoxKeyItem21.TabStop = false;
@@ -625,9 +680,10 @@
             pictureBoxKeyItem14.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem14.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem14.InitialImage = null;
-            pictureBoxKeyItem14.Location = new Point(87, 252);
+            pictureBoxKeyItem14.Location = new Point(113, 323);
+            pictureBoxKeyItem14.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem14.Name = "pictureBoxKeyItem14";
-            pictureBoxKeyItem14.Size = new Size(85, 60);
+            pictureBoxKeyItem14.Size = new Size(110, 76);
             pictureBoxKeyItem14.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem14.TabIndex = 74;
             pictureBoxKeyItem14.TabStop = false;
@@ -638,9 +694,10 @@
             pictureBoxKeyItem22.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem22.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem22.InitialImage = null;
-            pictureBoxKeyItem22.Location = new Point(255, 314);
+            pictureBoxKeyItem22.Location = new Point(332, 402);
+            pictureBoxKeyItem22.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem22.Name = "pictureBoxKeyItem22";
-            pictureBoxKeyItem22.Size = new Size(85, 60);
+            pictureBoxKeyItem22.Size = new Size(110, 76);
             pictureBoxKeyItem22.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem22.TabIndex = 82;
             pictureBoxKeyItem22.TabStop = false;
@@ -651,9 +708,10 @@
             pictureBoxKeyItem13.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem13.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem13.InitialImage = null;
-            pictureBoxKeyItem13.Location = new Point(3, 252);
+            pictureBoxKeyItem13.Location = new Point(4, 323);
+            pictureBoxKeyItem13.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem13.Name = "pictureBoxKeyItem13";
-            pictureBoxKeyItem13.Size = new Size(85, 60);
+            pictureBoxKeyItem13.Size = new Size(110, 76);
             pictureBoxKeyItem13.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem13.TabIndex = 73;
             pictureBoxKeyItem13.TabStop = false;
@@ -664,9 +722,10 @@
             pictureBoxKeyItem23.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem23.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem23.InitialImage = null;
-            pictureBoxKeyItem23.Location = new Point(339, 314);
+            pictureBoxKeyItem23.Location = new Point(441, 402);
+            pictureBoxKeyItem23.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem23.Name = "pictureBoxKeyItem23";
-            pictureBoxKeyItem23.Size = new Size(85, 60);
+            pictureBoxKeyItem23.Size = new Size(110, 76);
             pictureBoxKeyItem23.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem23.TabIndex = 83;
             pictureBoxKeyItem23.TabStop = false;
@@ -677,9 +736,10 @@
             pictureBoxKeyItem12.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem12.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem12.InitialImage = null;
-            pictureBoxKeyItem12.Location = new Point(423, 190);
+            pictureBoxKeyItem12.Location = new Point(550, 243);
+            pictureBoxKeyItem12.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem12.Name = "pictureBoxKeyItem12";
-            pictureBoxKeyItem12.Size = new Size(85, 60);
+            pictureBoxKeyItem12.Size = new Size(110, 76);
             pictureBoxKeyItem12.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem12.TabIndex = 72;
             pictureBoxKeyItem12.TabStop = false;
@@ -690,9 +750,10 @@
             pictureBoxKeyItem24.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem24.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem24.InitialImage = null;
-            pictureBoxKeyItem24.Location = new Point(423, 314);
+            pictureBoxKeyItem24.Location = new Point(550, 402);
+            pictureBoxKeyItem24.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem24.Name = "pictureBoxKeyItem24";
-            pictureBoxKeyItem24.Size = new Size(85, 60);
+            pictureBoxKeyItem24.Size = new Size(110, 76);
             pictureBoxKeyItem24.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem24.TabIndex = 84;
             pictureBoxKeyItem24.TabStop = false;
@@ -703,9 +764,10 @@
             pictureBoxKeyItem11.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem11.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem11.InitialImage = null;
-            pictureBoxKeyItem11.Location = new Point(339, 190);
+            pictureBoxKeyItem11.Location = new Point(441, 243);
+            pictureBoxKeyItem11.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem11.Name = "pictureBoxKeyItem11";
-            pictureBoxKeyItem11.Size = new Size(85, 60);
+            pictureBoxKeyItem11.Size = new Size(110, 76);
             pictureBoxKeyItem11.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem11.TabIndex = 71;
             pictureBoxKeyItem11.TabStop = false;
@@ -716,9 +778,10 @@
             pictureBoxKeyItem25.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem25.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem25.InitialImage = null;
-            pictureBoxKeyItem25.Location = new Point(3, 376);
+            pictureBoxKeyItem25.Location = new Point(4, 481);
+            pictureBoxKeyItem25.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem25.Name = "pictureBoxKeyItem25";
-            pictureBoxKeyItem25.Size = new Size(85, 60);
+            pictureBoxKeyItem25.Size = new Size(110, 76);
             pictureBoxKeyItem25.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem25.TabIndex = 85;
             pictureBoxKeyItem25.TabStop = false;
@@ -729,9 +792,10 @@
             pictureBoxKeyItem10.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem10.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem10.InitialImage = null;
-            pictureBoxKeyItem10.Location = new Point(255, 190);
+            pictureBoxKeyItem10.Location = new Point(332, 243);
+            pictureBoxKeyItem10.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem10.Name = "pictureBoxKeyItem10";
-            pictureBoxKeyItem10.Size = new Size(85, 60);
+            pictureBoxKeyItem10.Size = new Size(110, 76);
             pictureBoxKeyItem10.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem10.TabIndex = 70;
             pictureBoxKeyItem10.TabStop = false;
@@ -742,9 +806,10 @@
             pictureBoxKeyItem26.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem26.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem26.InitialImage = null;
-            pictureBoxKeyItem26.Location = new Point(87, 376);
+            pictureBoxKeyItem26.Location = new Point(113, 481);
+            pictureBoxKeyItem26.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem26.Name = "pictureBoxKeyItem26";
-            pictureBoxKeyItem26.Size = new Size(85, 60);
+            pictureBoxKeyItem26.Size = new Size(110, 76);
             pictureBoxKeyItem26.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem26.TabIndex = 86;
             pictureBoxKeyItem26.TabStop = false;
@@ -755,9 +820,10 @@
             pictureBoxKeyItem9.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem9.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem9.InitialImage = null;
-            pictureBoxKeyItem9.Location = new Point(171, 190);
+            pictureBoxKeyItem9.Location = new Point(222, 243);
+            pictureBoxKeyItem9.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem9.Name = "pictureBoxKeyItem9";
-            pictureBoxKeyItem9.Size = new Size(85, 60);
+            pictureBoxKeyItem9.Size = new Size(110, 76);
             pictureBoxKeyItem9.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem9.TabIndex = 69;
             pictureBoxKeyItem9.TabStop = false;
@@ -768,9 +834,10 @@
             pictureBoxKeyItem27.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem27.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem27.InitialImage = null;
-            pictureBoxKeyItem27.Location = new Point(171, 376);
+            pictureBoxKeyItem27.Location = new Point(222, 481);
+            pictureBoxKeyItem27.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem27.Name = "pictureBoxKeyItem27";
-            pictureBoxKeyItem27.Size = new Size(85, 60);
+            pictureBoxKeyItem27.Size = new Size(110, 76);
             pictureBoxKeyItem27.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem27.TabIndex = 87;
             pictureBoxKeyItem27.TabStop = false;
@@ -781,9 +848,10 @@
             pictureBoxKeyItem8.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem8.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem8.InitialImage = null;
-            pictureBoxKeyItem8.Location = new Point(87, 190);
+            pictureBoxKeyItem8.Location = new Point(113, 243);
+            pictureBoxKeyItem8.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem8.Name = "pictureBoxKeyItem8";
-            pictureBoxKeyItem8.Size = new Size(85, 60);
+            pictureBoxKeyItem8.Size = new Size(110, 76);
             pictureBoxKeyItem8.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem8.TabIndex = 68;
             pictureBoxKeyItem8.TabStop = false;
@@ -794,9 +862,10 @@
             pictureBoxKeyItem28.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem28.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem28.InitialImage = null;
-            pictureBoxKeyItem28.Location = new Point(255, 376);
+            pictureBoxKeyItem28.Location = new Point(332, 481);
+            pictureBoxKeyItem28.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem28.Name = "pictureBoxKeyItem28";
-            pictureBoxKeyItem28.Size = new Size(85, 60);
+            pictureBoxKeyItem28.Size = new Size(110, 76);
             pictureBoxKeyItem28.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem28.TabIndex = 88;
             pictureBoxKeyItem28.TabStop = false;
@@ -807,9 +876,10 @@
             pictureBoxKeyItem7.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem7.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem7.InitialImage = null;
-            pictureBoxKeyItem7.Location = new Point(3, 190);
+            pictureBoxKeyItem7.Location = new Point(4, 243);
+            pictureBoxKeyItem7.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem7.Name = "pictureBoxKeyItem7";
-            pictureBoxKeyItem7.Size = new Size(85, 60);
+            pictureBoxKeyItem7.Size = new Size(110, 76);
             pictureBoxKeyItem7.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem7.TabIndex = 67;
             pictureBoxKeyItem7.TabStop = false;
@@ -820,9 +890,10 @@
             pictureBoxKeyItem29.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem29.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem29.InitialImage = null;
-            pictureBoxKeyItem29.Location = new Point(339, 376);
+            pictureBoxKeyItem29.Location = new Point(441, 481);
+            pictureBoxKeyItem29.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem29.Name = "pictureBoxKeyItem29";
-            pictureBoxKeyItem29.Size = new Size(85, 60);
+            pictureBoxKeyItem29.Size = new Size(110, 76);
             pictureBoxKeyItem29.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem29.TabIndex = 89;
             pictureBoxKeyItem29.TabStop = false;
@@ -833,9 +904,10 @@
             pictureBoxKeyItem6.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem6.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem6.InitialImage = null;
-            pictureBoxKeyItem6.Location = new Point(423, 129);
+            pictureBoxKeyItem6.Location = new Point(550, 165);
+            pictureBoxKeyItem6.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem6.Name = "pictureBoxKeyItem6";
-            pictureBoxKeyItem6.Size = new Size(85, 60);
+            pictureBoxKeyItem6.Size = new Size(110, 76);
             pictureBoxKeyItem6.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem6.TabIndex = 66;
             pictureBoxKeyItem6.TabStop = false;
@@ -846,9 +918,10 @@
             pictureBoxKeyItem30.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem30.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem30.InitialImage = null;
-            pictureBoxKeyItem30.Location = new Point(423, 376);
+            pictureBoxKeyItem30.Location = new Point(550, 481);
+            pictureBoxKeyItem30.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem30.Name = "pictureBoxKeyItem30";
-            pictureBoxKeyItem30.Size = new Size(85, 60);
+            pictureBoxKeyItem30.Size = new Size(110, 76);
             pictureBoxKeyItem30.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem30.TabIndex = 90;
             pictureBoxKeyItem30.TabStop = false;
@@ -859,9 +932,10 @@
             pictureBoxKeyItem5.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem5.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem5.InitialImage = null;
-            pictureBoxKeyItem5.Location = new Point(339, 129);
+            pictureBoxKeyItem5.Location = new Point(441, 165);
+            pictureBoxKeyItem5.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem5.Name = "pictureBoxKeyItem5";
-            pictureBoxKeyItem5.Size = new Size(85, 60);
+            pictureBoxKeyItem5.Size = new Size(110, 76);
             pictureBoxKeyItem5.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem5.TabIndex = 65;
             pictureBoxKeyItem5.TabStop = false;
@@ -872,9 +946,10 @@
             pictureBoxKeyItem31.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem31.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem31.InitialImage = null;
-            pictureBoxKeyItem31.Location = new Point(3, 438);
+            pictureBoxKeyItem31.Location = new Point(4, 561);
+            pictureBoxKeyItem31.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem31.Name = "pictureBoxKeyItem31";
-            pictureBoxKeyItem31.Size = new Size(85, 60);
+            pictureBoxKeyItem31.Size = new Size(110, 76);
             pictureBoxKeyItem31.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem31.TabIndex = 91;
             pictureBoxKeyItem31.TabStop = false;
@@ -885,9 +960,10 @@
             pictureBoxKeyItem4.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem4.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem4.InitialImage = null;
-            pictureBoxKeyItem4.Location = new Point(255, 129);
+            pictureBoxKeyItem4.Location = new Point(332, 165);
+            pictureBoxKeyItem4.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem4.Name = "pictureBoxKeyItem4";
-            pictureBoxKeyItem4.Size = new Size(85, 60);
+            pictureBoxKeyItem4.Size = new Size(110, 76);
             pictureBoxKeyItem4.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem4.TabIndex = 64;
             pictureBoxKeyItem4.TabStop = false;
@@ -898,9 +974,10 @@
             pictureBoxKeyItem32.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem32.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem32.InitialImage = null;
-            pictureBoxKeyItem32.Location = new Point(87, 438);
+            pictureBoxKeyItem32.Location = new Point(113, 561);
+            pictureBoxKeyItem32.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem32.Name = "pictureBoxKeyItem32";
-            pictureBoxKeyItem32.Size = new Size(85, 60);
+            pictureBoxKeyItem32.Size = new Size(110, 76);
             pictureBoxKeyItem32.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem32.TabIndex = 92;
             pictureBoxKeyItem32.TabStop = false;
@@ -911,9 +988,10 @@
             pictureBoxKeyItem3.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem3.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem3.InitialImage = null;
-            pictureBoxKeyItem3.Location = new Point(171, 129);
+            pictureBoxKeyItem3.Location = new Point(222, 165);
+            pictureBoxKeyItem3.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem3.Name = "pictureBoxKeyItem3";
-            pictureBoxKeyItem3.Size = new Size(85, 60);
+            pictureBoxKeyItem3.Size = new Size(110, 76);
             pictureBoxKeyItem3.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem3.TabIndex = 63;
             pictureBoxKeyItem3.TabStop = false;
@@ -924,9 +1002,10 @@
             pictureBoxKeyItem33.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem33.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem33.InitialImage = null;
-            pictureBoxKeyItem33.Location = new Point(171, 438);
+            pictureBoxKeyItem33.Location = new Point(222, 561);
+            pictureBoxKeyItem33.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem33.Name = "pictureBoxKeyItem33";
-            pictureBoxKeyItem33.Size = new Size(85, 60);
+            pictureBoxKeyItem33.Size = new Size(110, 76);
             pictureBoxKeyItem33.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem33.TabIndex = 93;
             pictureBoxKeyItem33.TabStop = false;
@@ -937,9 +1016,10 @@
             pictureBoxKeyItem2.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem2.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem2.InitialImage = null;
-            pictureBoxKeyItem2.Location = new Point(87, 129);
+            pictureBoxKeyItem2.Location = new Point(113, 165);
+            pictureBoxKeyItem2.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem2.Name = "pictureBoxKeyItem2";
-            pictureBoxKeyItem2.Size = new Size(85, 60);
+            pictureBoxKeyItem2.Size = new Size(110, 76);
             pictureBoxKeyItem2.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem2.TabIndex = 62;
             pictureBoxKeyItem2.TabStop = false;
@@ -950,9 +1030,10 @@
             pictureBoxKeyItem34.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem34.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem34.InitialImage = null;
-            pictureBoxKeyItem34.Location = new Point(255, 438);
+            pictureBoxKeyItem34.Location = new Point(332, 561);
+            pictureBoxKeyItem34.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem34.Name = "pictureBoxKeyItem34";
-            pictureBoxKeyItem34.Size = new Size(85, 60);
+            pictureBoxKeyItem34.Size = new Size(110, 76);
             pictureBoxKeyItem34.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem34.TabIndex = 94;
             pictureBoxKeyItem34.TabStop = false;
@@ -963,9 +1044,10 @@
             pictureBoxKeyItem1.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem1.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem1.InitialImage = null;
-            pictureBoxKeyItem1.Location = new Point(3, 129);
+            pictureBoxKeyItem1.Location = new Point(4, 165);
+            pictureBoxKeyItem1.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem1.Name = "pictureBoxKeyItem1";
-            pictureBoxKeyItem1.Size = new Size(85, 60);
+            pictureBoxKeyItem1.Size = new Size(110, 76);
             pictureBoxKeyItem1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem1.TabIndex = 61;
             pictureBoxKeyItem1.TabStop = false;
@@ -976,9 +1058,10 @@
             pictureBoxKeyItem35.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem35.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem35.InitialImage = null;
-            pictureBoxKeyItem35.Location = new Point(339, 438);
+            pictureBoxKeyItem35.Location = new Point(441, 561);
+            pictureBoxKeyItem35.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem35.Name = "pictureBoxKeyItem35";
-            pictureBoxKeyItem35.Size = new Size(85, 60);
+            pictureBoxKeyItem35.Size = new Size(110, 76);
             pictureBoxKeyItem35.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem35.TabIndex = 95;
             pictureBoxKeyItem35.TabStop = false;
@@ -989,9 +1072,10 @@
             pictureBoxKeyItem36.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem36.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem36.InitialImage = null;
-            pictureBoxKeyItem36.Location = new Point(423, 438);
+            pictureBoxKeyItem36.Location = new Point(550, 561);
+            pictureBoxKeyItem36.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem36.Name = "pictureBoxKeyItem36";
-            pictureBoxKeyItem36.Size = new Size(85, 60);
+            pictureBoxKeyItem36.Size = new Size(110, 76);
             pictureBoxKeyItem36.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem36.TabIndex = 96;
             pictureBoxKeyItem36.TabStop = false;
@@ -1089,17 +1173,19 @@
             panel1.Controls.Add(pictureBoxKeyItem18);
             panel1.Controls.Add(pictureBoxKeyItem19);
             panel1.Location = new Point(-1, 0);
+            panel1.Margin = new Padding(4, 4, 4, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(517, 1168);
+            panel1.Size = new Size(672, 1494);
             panel1.TabIndex = 15;
             // 
             // labelGameCompleted
             // 
             labelGameCompleted.AutoSize = true;
             labelGameCompleted.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelGameCompleted.Location = new Point(6, 1077);
+            labelGameCompleted.Location = new Point(8, 1379);
+            labelGameCompleted.Margin = new Padding(4, 0, 4, 0);
             labelGameCompleted.Name = "labelGameCompleted";
-            labelGameCompleted.Size = new Size(399, 35);
+            labelGameCompleted.Size = new Size(538, 46);
             labelGameCompleted.TabIndex = 121;
             labelGameCompleted.Text = "Game Completed!   Reset the tool!";
             // 
@@ -1107,18 +1193,21 @@
             // 
             labelSegTimer4.AutoSize = true;
             labelSegTimer4.ForeColor = Color.Transparent;
-            labelSegTimer4.Location = new Point(5, 1015);
+            labelSegTimer4.Location = new Point(6, 1299);
+            labelSegTimer4.Margin = new Padding(4, 0, 4, 0);
             labelSegTimer4.Name = "labelSegTimer4";
-            labelSegTimer4.Size = new Size(104, 25);
+            labelSegTimer4.Size = new Size(131, 38);
             labelSegTimer4.TabIndex = 119;
             labelSegTimer4.Text = "00:00:00.00";
+            labelSegTimer4.UseCompatibleTextRendering = true;
             // 
             // pictureBox15
             // 
             pictureBox15.Image = Properties.Resources.seg4;
-            pictureBox15.Location = new Point(0, 967);
+            pictureBox15.Location = new Point(0, 1238);
+            pictureBox15.Margin = new Padding(4, 4, 4, 4);
             pictureBox15.Name = "pictureBox15";
-            pictureBox15.Size = new Size(170, 35);
+            pictureBox15.Size = new Size(221, 45);
             pictureBox15.TabIndex = 120;
             pictureBox15.TabStop = false;
             // 
@@ -1128,9 +1217,10 @@
             pictureBoxKeyItem41.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem41.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem41.InitialImage = null;
-            pictureBoxKeyItem41.Location = new Point(339, 500);
+            pictureBoxKeyItem41.Location = new Point(441, 640);
+            pictureBoxKeyItem41.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem41.Name = "pictureBoxKeyItem41";
-            pictureBoxKeyItem41.Size = new Size(85, 60);
+            pictureBoxKeyItem41.Size = new Size(110, 76);
             pictureBoxKeyItem41.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem41.TabIndex = 118;
             pictureBoxKeyItem41.TabStop = false;
@@ -1141,9 +1231,10 @@
             pictureBoxKeyItem40.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem40.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem40.InitialImage = null;
-            pictureBoxKeyItem40.Location = new Point(255, 500);
+            pictureBoxKeyItem40.Location = new Point(332, 640);
+            pictureBoxKeyItem40.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem40.Name = "pictureBoxKeyItem40";
-            pictureBoxKeyItem40.Size = new Size(85, 60);
+            pictureBoxKeyItem40.Size = new Size(110, 76);
             pictureBoxKeyItem40.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem40.TabIndex = 117;
             pictureBoxKeyItem40.TabStop = false;
@@ -1154,9 +1245,10 @@
             pictureBoxKeyItem39.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem39.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem39.InitialImage = null;
-            pictureBoxKeyItem39.Location = new Point(171, 500);
+            pictureBoxKeyItem39.Location = new Point(222, 640);
+            pictureBoxKeyItem39.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem39.Name = "pictureBoxKeyItem39";
-            pictureBoxKeyItem39.Size = new Size(85, 60);
+            pictureBoxKeyItem39.Size = new Size(110, 76);
             pictureBoxKeyItem39.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem39.TabIndex = 116;
             pictureBoxKeyItem39.TabStop = false;
@@ -1167,9 +1259,10 @@
             pictureBoxKeyItem38.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem38.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem38.InitialImage = null;
-            pictureBoxKeyItem38.Location = new Point(87, 500);
+            pictureBoxKeyItem38.Location = new Point(113, 640);
+            pictureBoxKeyItem38.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem38.Name = "pictureBoxKeyItem38";
-            pictureBoxKeyItem38.Size = new Size(85, 60);
+            pictureBoxKeyItem38.Size = new Size(110, 76);
             pictureBoxKeyItem38.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem38.TabIndex = 115;
             pictureBoxKeyItem38.TabStop = false;
@@ -1180,9 +1273,10 @@
             pictureBoxKeyItem37.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxKeyItem37.Image = Properties.Resources.wind_crest;
             pictureBoxKeyItem37.InitialImage = null;
-            pictureBoxKeyItem37.Location = new Point(3, 500);
+            pictureBoxKeyItem37.Location = new Point(4, 640);
+            pictureBoxKeyItem37.Margin = new Padding(4, 4, 4, 4);
             pictureBoxKeyItem37.Name = "pictureBoxKeyItem37";
-            pictureBoxKeyItem37.Size = new Size(85, 60);
+            pictureBoxKeyItem37.Size = new Size(110, 76);
             pictureBoxKeyItem37.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxKeyItem37.TabIndex = 114;
             pictureBoxKeyItem37.TabStop = false;
@@ -1190,9 +1284,10 @@
             // pictureBox14
             // 
             pictureBox14.Image = Properties.Resources._char;
-            pictureBox14.Location = new Point(246, 1);
+            pictureBox14.Location = new Point(320, 1);
+            pictureBox14.Margin = new Padding(4, 4, 4, 4);
             pictureBox14.Name = "pictureBox14";
-            pictureBox14.Size = new Size(125, 35);
+            pictureBox14.Size = new Size(162, 45);
             pictureBox14.TabIndex = 113;
             pictureBox14.TabStop = false;
             // 
@@ -1200,127 +1295,141 @@
             // 
             pictureBox13.Image = Properties.Resources.timer;
             pictureBox13.Location = new Point(-1, -1);
+            pictureBox13.Margin = new Padding(4, 4, 4, 4);
             pictureBox13.Name = "pictureBox13";
-            pictureBox13.Size = new Size(235, 35);
+            pictureBox13.Size = new Size(306, 45);
             pictureBox13.TabIndex = 112;
             pictureBox13.TabStop = false;
             // 
             // pictureBox12
             // 
             pictureBox12.Image = Properties.Resources.seg3;
-            pictureBox12.Location = new Point(334, 883);
+            pictureBox12.Location = new Point(434, 1130);
+            pictureBox12.Margin = new Padding(4, 4, 4, 4);
             pictureBox12.Name = "pictureBox12";
-            pictureBox12.Size = new Size(170, 35);
+            pictureBox12.Size = new Size(221, 45);
             pictureBox12.TabIndex = 111;
             pictureBox12.TabStop = false;
             // 
             // pictureBox11
             // 
             pictureBox11.Image = Properties.Resources.seg2;
-            pictureBox11.Location = new Point(166, 883);
+            pictureBox11.Location = new Point(216, 1130);
+            pictureBox11.Margin = new Padding(4, 4, 4, 4);
             pictureBox11.Name = "pictureBox11";
-            pictureBox11.Size = new Size(170, 35);
+            pictureBox11.Size = new Size(221, 45);
             pictureBox11.TabIndex = 110;
             pictureBox11.TabStop = false;
             // 
             // pictureBox10
             // 
             pictureBox10.Image = Properties.Resources.seg1;
-            pictureBox10.Location = new Point(-2, 883);
+            pictureBox10.Location = new Point(-3, 1130);
+            pictureBox10.Margin = new Padding(4, 4, 4, 4);
             pictureBox10.Name = "pictureBox10";
-            pictureBox10.Size = new Size(170, 35);
+            pictureBox10.Size = new Size(221, 45);
             pictureBox10.TabIndex = 109;
             pictureBox10.TabStop = false;
             // 
             // pictureBox9
             // 
             pictureBox9.Image = Properties.Resources.Inventory;
-            pictureBox9.Location = new Point(-1, 574);
+            pictureBox9.Location = new Point(-1, 735);
+            pictureBox9.Margin = new Padding(4, 4, 4, 4);
             pictureBox9.Name = "pictureBox9";
-            pictureBox9.Size = new Size(350, 35);
+            pictureBox9.Size = new Size(455, 45);
             pictureBox9.TabIndex = 108;
             pictureBox9.TabStop = false;
             // 
             // pictureBox8
             // 
             pictureBox8.Image = Properties.Resources.HP;
-            pictureBox8.Location = new Point(368, 0);
+            pictureBox8.Location = new Point(478, 0);
+            pictureBox8.Margin = new Padding(4, 4, 4, 4);
             pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new Size(140, 35);
+            pictureBox8.Size = new Size(182, 45);
             pictureBox8.TabIndex = 107;
             pictureBox8.TabStop = false;
             // 
             // pictureBox7
             // 
             pictureBox7.Image = Properties.Resources.debug;
-            pictureBox7.Location = new Point(386, 801);
+            pictureBox7.Location = new Point(502, 1025);
+            pictureBox7.Margin = new Padding(4, 4, 4, 4);
             pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(115, 35);
+            pictureBox7.Size = new Size(150, 45);
             pictureBox7.TabIndex = 106;
             pictureBox7.TabStop = false;
             // 
             // pictureBox6
             // 
             pictureBox6.Image = Properties.Resources.reset;
-            pictureBox6.Location = new Point(258, 801);
+            pictureBox6.Location = new Point(335, 1025);
+            pictureBox6.Margin = new Padding(4, 4, 4, 4);
             pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(115, 35);
+            pictureBox6.Size = new Size(150, 45);
             pictureBox6.TabIndex = 105;
             pictureBox6.TabStop = false;
             // 
             // pictureBox5
             // 
             pictureBox5.Image = Properties.Resources.saves;
-            pictureBox5.Location = new Point(130, 801);
+            pictureBox5.Location = new Point(169, 1025);
+            pictureBox5.Margin = new Padding(4, 4, 4, 4);
             pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(115, 35);
+            pictureBox5.Size = new Size(150, 45);
             pictureBox5.TabIndex = 104;
             pictureBox5.TabStop = false;
             // 
             // pictureBox4
             // 
             pictureBox4.Image = Properties.Resources.death;
-            pictureBox4.Location = new Point(8, 801);
+            pictureBox4.Location = new Point(10, 1025);
+            pictureBox4.Margin = new Padding(4, 4, 4, 4);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(115, 35);
+            pictureBox4.Size = new Size(150, 45);
             pictureBox4.TabIndex = 103;
             pictureBox4.TabStop = false;
             // 
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.select;
-            pictureBox3.Location = new Point(358, 574);
+            pictureBox3.Location = new Point(465, 735);
+            pictureBox3.Margin = new Padding(4, 4, 4, 4);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(140, 35);
+            pictureBox3.Size = new Size(182, 45);
             pictureBox3.TabIndex = 102;
             pictureBox3.TabStop = false;
             // 
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.lseen;
-            pictureBox2.Location = new Point(358, 682);
+            pictureBox2.Location = new Point(465, 873);
+            pictureBox2.Margin = new Padding(4, 4, 4, 4);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(140, 35);
+            pictureBox2.Size = new Size(182, 45);
             pictureBox2.TabIndex = 101;
             pictureBox2.TabStop = false;
             // 
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.Items;
-            pictureBox1.Location = new Point(2, 84);
+            pictureBox1.Location = new Point(3, 108);
+            pictureBox1.Margin = new Padding(4, 4, 4, 4);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(510, 35);
+            pictureBox1.Size = new Size(663, 45);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
             // Race
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(509, 1167);
+            ClientSize = new Size(662, 1494);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(4, 4, 4, 4);
             Name = "Race";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Race Mode";
