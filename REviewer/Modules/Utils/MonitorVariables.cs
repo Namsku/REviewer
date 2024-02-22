@@ -2,11 +2,10 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using NLog.Config;
-using REviewer.Modules.Common.REviewer.Modules.Common;
+using REviewer.Modules.Utils;
 using static REviewer.Modules.RE.GameData;
 
-namespace REviewer.Modules.Common
+namespace REviewer.Modules.Utils
 {
     public class MonitorVariables
     {

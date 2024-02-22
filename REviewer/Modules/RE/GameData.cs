@@ -1,5 +1,5 @@
 ﻿using MessagePack;
-using REviewer.Modules.Common;
+using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE
 {

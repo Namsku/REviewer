@@ -8,8 +8,7 @@ using Label = System.Windows.Forms.Label;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using MessagePack;
-using REviewer.Modules.Common;
-using REviewer.Modules.Common.REviewer.Modules.Common;
+using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.Forms
 {

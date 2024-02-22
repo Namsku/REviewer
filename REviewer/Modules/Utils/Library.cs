@@ -3,12 +3,22 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
+using REviewer.Modules.Utils;
 
-namespace REviewer.Modules
+
+namespace REviewer.Modules.Utils
 {
-    public class UniqueIdGenerator
+    public static class CustomColors
     {
-        public byte[] GenerateUniqueId()
+        public static readonly Color Yellow = Color.FromArgb(215, 191, 128);
+        public static readonly Color Orange = Color.FromArgb(198, 155, 101);
+        public static readonly Color Red = Color.FromArgb(205, 116, 118);
+        public static readonly Color White = Color.FromArgb(250, 240, 216);
+        public static readonly Color Default = Color.FromArgb(159, 185, 118);
+    }
+    public static class UniqueIdGenerator
+    {
+        public static byte[] GenerateUniqueId()
         {
             // Get the current timestamp as a byte array
             long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -26,9 +36,16 @@ namespace REviewer.Modules
             return id;
         }
     }
-    public class Common
+    public class Library
     {
-        // Get the whole process list, and find the process with the given name
+
+        private static readonly string _configPath = ConfigurationManager.AppSettings["Config"];
+        private static readonly Dictionary<string, string> _gamePaths = LoadGamePaths();
+        private static readonly Dictionary<string, string> _keyValuePairs = new()
+        {
+            {"Bio", "RE1"},
+        };
+
         public static Process? GetProcessByName(string processName)
         {
             return Process.GetProcessesByName(processName).FirstOrDefault();
@@ -54,36 +71,37 @@ namespace REviewer.Modules
                 return gamePaths.ContainsKey(gameNames[index]);
             }
 
-            throw new ArgumentNullException(nameof(configPath));
+            Logger.Logging.Error("Config path is null or file does not exist");
+            return false;
         }
 
-        public string GetSavePath(string gameName)
+        private static Dictionary<string, string> LoadGamePaths()
         {
-            Dictionary<string, string> keyValuePairs = new()
+            if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
             {
-                {"Bio", "RE1"},
-            };
-
-            if (!keyValuePairs.TryGetValue(gameName, out string? value))
-            {
-                throw new ArgumentException($"Game name {gameName} not found in keyValuePairs dictionary", nameof(gameName));
+                Logger.Logging.Error("Config path is null or file does not exist");
+                return [];
             }
 
-            // Load the json file that contains the save paths
-            var configPath = ConfigurationManager.AppSettings["Config"];
-            if (configPath != null && File.Exists(configPath))
-            {
-                var json = File.ReadAllText(configPath);
-                var gamePaths = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            var json = File.ReadAllText(_configPath);
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+        }
 
-                var gameKey = value;
-                if (gamePaths.TryGetValue(gameKey, out string? value))
-                {
-                    return value;
-                }
+        public static string GetSavePath(string gameName)
+        {
+            if (!_keyValuePairs.TryGetValue(gameName, out var gameKey))
+            {
+                Logger.Logging.Error($"Game name {gameName} not found in keyValuePairs dictionary");
+                return "";
             }
 
-            throw new ArgumentNullException(nameof(configPath), "Config path is null or file does not exist");
+            if (!_gamePaths.TryGetValue(gameKey, out var gamePath))
+            {
+                Logger.Logging.Error($"Game key {gameKey} not found in gamePaths dictionary");
+                return "";
+            }
+
+            return gamePath;
         }
 
         // Get the base address of a module in the process

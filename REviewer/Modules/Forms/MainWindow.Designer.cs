@@ -1,7 +1,8 @@
 ﻿
 using System.Diagnostics;
-using REviewer.Modules.Common;
+using REviewer.Modules.Utils;
 using REviewer.Modules.RE;
+using System.Configuration;
 
 namespace REviewer.Modules.Forms
 {
@@ -239,7 +240,7 @@ namespace REviewer.Modules.Forms
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MainMenuStrip = menuStrip1;
             Name = "MainWindow";
-            Text = "REviewer";
+            Text = $"REviewer - {ConfigurationManager.AppSettings["Version"]}";
             FormClosed += MainWindow_FormClosed;
             groupBoxSelectGame.ResumeLayout(false);
             groupBoxDebug.ResumeLayout(false);
@@ -265,7 +266,7 @@ namespace REviewer.Modules.Forms
                 }
 
                 string processName = gameNames[index];
-                Process = Common.Library.GetProcessByName(processName);
+                Process = Library.GetProcessByName(processName);
 
                 if (Process == null)
                 {
@@ -276,13 +277,13 @@ namespace REviewer.Modules.Forms
                 Process.EnableRaisingEvents = true;
                 Process.Exited += ProcessExited;
 
-                if (!Common.Library.IsDdrawLoaded(Process))
+                if (!Library.IsDdrawLoaded(Process))
                 {
                     ShowError("Rebirth DLL was not found", labelRebirthDll);
                     return;
                 }
 
-                if (!Common.Library.IsSavePathPresent(index))
+                if (!Library.IsSavePathPresent(index))
                 {
                     ShowError("Save path was not found", labelSavePath);
                     return;

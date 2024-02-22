@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Configuration;
+using System.Diagnostics;
 
 namespace REviewer.Modules.Forms
 {
@@ -6,12 +7,13 @@ namespace REviewer.Modules.Forms
     {
         private static readonly string DiscordLink = "https://discord.gg/xxqtuubayy";
         private static readonly string GithubLink = "https://github.com/namsku";
+        private static readonly string version = ConfigurationManager.AppSettings["Version"].ToString();    
         public About()
         {
             InitializeComponent();
 
             // Set the version label to the current version
-            labelProgramVersion.Text = "0.0.1";
+            labelProgramVersion.Text = version;
 
             // Adjust the controls to the center of the position they are in
             CenterControl(labelProgramVersion);

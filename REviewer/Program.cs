@@ -1,7 +1,5 @@
 
 
-using REviewer.Modules.Common.REviewer.Modules.Common;
-
 namespace REviewer
 {
     internal static class Program
