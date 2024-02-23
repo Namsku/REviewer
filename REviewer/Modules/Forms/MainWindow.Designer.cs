@@ -3,6 +3,7 @@ using System.Diagnostics;
 using REviewer.Modules.Utils;
 using REviewer.Modules.RE;
 using System.Configuration;
+using System;
 
 namespace REviewer.Modules.Forms
 {
@@ -19,9 +20,9 @@ namespace REviewer.Modules.Forms
             // Other games will be incremented here based on the position in the combobox
         };
 
-        public GameData.RootObject REtable;
-        public Process Process;
-        public MonitorVariables MVariables;
+        private GameData.RootObject _residentEvilGame;
+        private Process _process;
+        private MonitorVariables _MVariables;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -266,18 +267,18 @@ namespace REviewer.Modules.Forms
                 }
 
                 string processName = gameNames[index];
-                Process = Library.GetProcessByName(processName);
+                _process = Library.GetProcessByName(processName);
 
-                if (Process == null)
+                if (_process == null)
                 {
                     ShowError("The process was not found", labelGameStatus);
                     return;
                 }
 
-                Process.EnableRaisingEvents = true;
-                Process.Exited += ProcessExited;
+                _process.EnableRaisingEvents = true;
+                _process.Exited += ProcessExited;
 
-                if (!Library.IsDdrawLoaded(Process))
+                if (!Library.IsDdrawLoaded(_process))
                 {
                     ShowError("Rebirth DLL was not found", labelRebirthDll);
                     return;
@@ -293,13 +294,13 @@ namespace REviewer.Modules.Forms
                 UpdateLabel(labelRebirthDll, "Found", Color.Green);
                 UpdateLabel(labelSavePath, "Found", Color.Green);
 
-                REtable = GameData.GenerateGameData();
-                MVariables = new MonitorVariables(Process.Handle, Process.ProcessName);
-                MVariables.Start(REtable);
+                _residentEvilGame = GameData.GenerateGameData();
+                _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
+                _MVariables.Start(_residentEvilGame);
 
                 if (Application.OpenForms["Race"] == null)
                 {
-                    Race raceForm = new(REtable, gameNames[comboBoxSelectGame.SelectedIndex]);
+                    Race raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
                     raceForm.FormClosed += (s, args) => raceForm.Dispose();
                     raceForm.Show();
                 }
@@ -313,17 +314,18 @@ namespace REviewer.Modules.Forms
 
         private void CleanupObjects()
         {
-            if (Process != null)
+            Logger.Logging.Info("Cleaning up objects (_process and _MVariables)");
+            if (_process != null)
             {
-                Process.Exited -= ProcessExited;
-                Process.Dispose();
-                Process = null;
+                _process.Exited -= ProcessExited;
+                _process.Dispose();
+                _process = null;
             }
 
-            if (MVariables != null)
+            if (_MVariables != null)
             {
-                MVariables.Stop();
-                MVariables = null;
+                _MVariables.Stop();
+                _MVariables = null;
             }
         }
 
@@ -355,13 +357,81 @@ namespace REviewer.Modules.Forms
             }
         }
 
+        private System.Threading.Timer _searchProcessTimer;
+        private bool _isProcessFound;
+
         private void ProcessExited(object sender, EventArgs e)
         {
             UpdateLabel(labelGameStatus, "Offline", Color.Red);
             UpdateLabel(labelRebirthDll, "Offline", Color.Red);
             UpdateButton(buttonRace, false);
+
+            _MVariables.Stop();
+            
+            _process.Exited -= ProcessExited;
+            _process.Dispose();
+            _process = null;
+
+            Logger.Logging.Info("Process exited - Trying to find a new process");
+
+            // Start the timer to search for the process
+            _searchProcessTimer = new System.Threading.Timer(CheckProcessStatus, null, 0, 100);
         }
 
+        private void InvokeUI(Action action)
+        {
+            if (!IsDisposed)
+            {
+                if (InvokeRequired)
+                {
+                        try
+                        {
+                            Invoke(action);
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // Handle the ObjectDisposedException gracefully
+                            Logger.Logging.Error("ObjectDisposedException in InvokeUI");
+                        }
+                }
+                else
+                {
+                    action();
+                }
+            }
+        }
+
+        private void CheckProcessStatus(object state) => InvokeUI(() =>
+        {
+            if (_isProcessFound)
+            {
+                // Process is already found, stop the timer
+                _searchProcessTimer.Dispose();
+                return;
+            }
+
+            int index = comboBoxSelectGame.SelectedIndex;
+            string processName = gameNames[index];
+            _process = Library.GetProcessByName(processName);
+
+            if (_process != null)
+            {
+                _process.Exited += ProcessExited;
+                Logger.Logging.Info("Process found!");
+                
+                // Process is found, stop the timer
+                _searchProcessTimer.Dispose();
+                _isProcessFound = true;
+
+                // Perform any necessary actions when the process is found
+                _MVariables.UpdateProcessHandle(_process.Handle);
+
+                // Update labels and buttons
+                UpdateLabel(labelGameStatus, "Online", Color.Green);
+                UpdateLabel(labelRebirthDll, "Online", Color.Green);
+                UpdateButton(buttonRace, true);
+            }
+        });
 
         private void UpdateButton(Button button, bool enabled)
         {

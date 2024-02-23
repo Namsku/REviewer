@@ -107,7 +107,7 @@ namespace REviewer.Modules.RE
             // This is the old version
             // keyItems.Insert(keyItems.FindIndex(property => property.Name == "Battery") + 1, Items[39]);
             // keyItems.InsertRange(keyItems.FindIndex(property => property.Name == "MO Disk") + 1, new List<Property> { Items[40], Items[40] });
-            
+
             foreach (var item in _duplicateItems)
             {
                 var value = GetPropertyIdByName(item.Key);

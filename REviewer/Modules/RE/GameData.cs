@@ -66,7 +66,7 @@ namespace REviewer.Modules.RE
             {
                 Updated?.Invoke(this, EventArgs.Empty);
             }
-}
+        }
 
         [MessagePackObject]
         public class KeyItem : ICloneable
@@ -153,21 +153,16 @@ namespace REviewer.Modules.RE
             public string? SavePath;
 
             [Key(13)]
-            public TimeSpan? Fulltimer { get; set; }
-            [Key(14)]
-            public TimeSpan? Segtimer1 { get; set; }
-            [Key(15)]
-            public TimeSpan? Segtimer2 { get; set; }
-            [Key(16)]
-            public TimeSpan? Segtimer3 { get; set; }
-            [Key(17)]
-            public TimeSpan? Segtimer4 { get; set; }
+            public RaceWatch? Fulltimer { get; set; }
 
-            [Key(18)]
+            [Key(14)]
+            public List<RaceWatch?> SegTimers = new();
+
+            [Key(15)]
             public int TickTimer { get; set; }
-            [Key(19)]
+            [Key(16)]
             public byte[] UUID { get; set; }
-            [Key(20)]
+            [Key(27)]
             public byte[] RealItembox { get; set; }
 
             [IgnoreMember]
@@ -197,10 +192,7 @@ namespace REviewer.Modules.RE
                     FullRoomName = this.FullRoomName,
                     SavePath = this.SavePath,
                     Fulltimer = this.Fulltimer,
-                    Segtimer1 = this.Segtimer1,
-                    Segtimer2 = this.Segtimer2,
-                    Segtimer3 = this.Segtimer3,
-                    Segtimer4 = this.Segtimer4,
+                    SegTimers = this.SegTimers,
                     TickTimer = this.TickTimer,
                     UUID = (byte[])this.UUID?.Clone(),
                     RealItembox = (byte[])this.RealItembox?.Clone(),

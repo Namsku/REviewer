@@ -7,7 +7,7 @@ namespace REviewer.Modules.Forms
     {
         private static readonly string DiscordLink = "https://discord.gg/xxqtuubayy";
         private static readonly string GithubLink = "https://github.com/namsku";
-        private static readonly string version = ConfigurationManager.AppSettings["Version"].ToString();    
+        private static readonly string version = ConfigurationManager.AppSettings["Version"].ToString();
         public About()
         {
             InitializeComponent();

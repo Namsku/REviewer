@@ -11,7 +11,7 @@ namespace REviewer
         /// </summary>
 
         static readonly Mutex Mutex = new(true, "{F67946B5-6320-46FF-A9CA-62C818B500EA}");
-        
+
         [STAThread]
         static void Main()
         {

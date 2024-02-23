@@ -17,8 +17,8 @@ namespace REviewer.Modules.Forms
         private readonly GameData.RootObject _game;
         private readonly ItemIDs _itemDatabase;
 
-        private readonly Stopwatch _raceWatch = new();
-        private List<Stopwatch> _segmentWatch = [];
+        private readonly RaceWatch _raceWatch = new();
+        private List<RaceWatch> _segmentWatch = [];
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;
@@ -266,11 +266,12 @@ namespace REviewer.Modules.Forms
         private void SaveState()
         {
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
-            _raceDatabase.Fulltimer = _raceWatch.Elapsed;
-            _raceDatabase.Segtimer1 = _segmentWatch[0].Elapsed;
-            _raceDatabase.Segtimer2 = _segmentWatch[1].Elapsed;
-            _raceDatabase.Segtimer3 = _segmentWatch[2].Elapsed;
-            _raceDatabase.Segtimer4 = _segmentWatch[3].Elapsed;
+
+            _raceDatabase.Fulltimer = new RaceWatch(_raceWatch.Elapsed);
+            foreach (var _seg in _segmentWatch)
+            {
+                _raceDatabase.SegTimers.Add(new RaceWatch(_seg.Elapsed));
+            }
 
             SerializeObject(_raceDatabase);
         }
@@ -302,7 +303,8 @@ namespace REviewer.Modules.Forms
 
         private void InitLabels()
         {
-            try{
+            try
+            {
                 labelTimer.Font = _pixelBoyDefault;
                 labelTimer.ForeColor = CustomColors.White;
 
@@ -373,10 +375,10 @@ namespace REviewer.Modules.Forms
             {
                 _segmentWatch =
                 [
-                    new Stopwatch(),
-                    new Stopwatch(),
-                    new Stopwatch(),
-                    new Stopwatch()
+                    new RaceWatch(),
+                    new RaceWatch(),
+                    new RaceWatch(),
+                    new RaceWatch()
                 ];
             }
 
@@ -508,17 +510,17 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
-
             int health = Int32.Parse(labelHealth.Text);
 
-            
-            if (_game.Game.MainMenu.Value == 1 && !labelGameCompleted.Visible && (health <= _healthTable[(byte)_game.Player.Character.Value][0]))
+
+            if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= _healthTable[(byte)_game.Player.Character.Value][0]))
             {
                 _raceDatabase.Resets += 1;
                 labelResets.Text = _raceDatabase.Resets.ToString();
             }
 
             buttonReset.Enabled = _game.Game.MainMenu.Value == 1 ? true : false;
+            Logger.Logging.Info($"Main Menu -> {_game.Game.MainMenu.Value}");
         });
 
         private void Update_Character_State(object sender, EventArgs e) => InvokeUI(() =>
@@ -528,6 +530,7 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Inventory_Capacity(object sender, EventArgs e) => InvokeUI(() =>
         {
+            Logger.Logging.Debug($"Inventory capacity: {_game.Inventory.Capacity.Value} -> {_game.Inventory.Capacity.Value & 3}");
             CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
         });
 
@@ -572,6 +575,7 @@ namespace REviewer.Modules.Forms
             // If 'force' is true or the current state is less than the new state, update the state and picture
             if (force || _raceDatabase.KeyItems[value].State < state)
             {
+                Logger.Logging.Info($"Updating key item {value} to state {state} in room {room}");
                 _raceDatabase.KeyItems[value].State = state;
                 UpdatePictureKeyItemState(value);
             }
@@ -583,17 +587,18 @@ namespace REviewer.Modules.Forms
         {
             var name = _itemDatabase.GetPropertyNameById((byte)value);
             var item_box = (_game.Game.State.Value & 0x0000FF00) == 0x90;
+            var position = 0;
 
             for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box)
-                {
-                    return i;
-                }
+                if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room || _raceDatabase.KeyItems[i].State == state) && !item_box) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
             }
 
-            return 0;
+            return position;
         }
+
 
         private void UpdatePictureKeyItemState(int value)
         {
@@ -643,7 +648,7 @@ namespace REviewer.Modules.Forms
             Property item = _itemDatabase.GetPropertyById((byte)_game.Inventory.Slots[value].Item.Value);
             label.Text = _game.Inventory.Slots[value].Quantity.Value.ToString();
             label.Font = _pixelBoySegments;
-            label.Visible = !(_itemTypes).Contains(item.Type);
+            label.Visible = !_itemTypes.Contains(item.Type);
             label.ForeColor = item.Color switch
             {
                 "Yellow" => CustomColors.Yellow,
@@ -726,13 +731,13 @@ namespace REviewer.Modules.Forms
                 _raceDatabase.Deaths += 1;
                 labelHealth.Text = "255";
                 labelDeaths.Text = _raceDatabase.Deaths.ToString();
-            } 
+            }
             else if ((state & 0x0FFF0000) == 0x1100000 && _raceDatabase.PreviousState != 0x2000000)
             {
                 labelHealth.Text = "WP!";
                 labelGameCompleted.Visible = true;
                 _raceWatch.Stop();
-                _segmentWatch[_raceDatabase.Segments].Stop();   
+                _segmentWatch[_raceDatabase.Segments].Stop();
             }
 
             _raceDatabase.PreviousState = state & 0x0F000000;
@@ -749,14 +754,32 @@ namespace REviewer.Modules.Forms
                 return;
             }
 
-            if (_raceDatabase.Segments < save.Segments)
+            // Reload RaceWatch and Segments 
+            _raceWatch.Reset();
+            _segmentWatch[_raceDatabase.Segments].Reset();
+
+            // Load the save RaceWatch and Segments
+            if (save?.Fulltimer?.GetOffset() > _raceWatch.Elapsed)
+            {
+                _raceWatch.StartFrom(save.Fulltimer.GetOffset());
+            }
+
+            for (int i = 0; i < save?.SegTimers?.Count; i++)
+            {
+                if (save.SegTimers[i]?.GetOffset() > _segmentWatch[i].Elapsed)
+                {
+                    _segmentWatch[i].StartFrom(save.SegTimers[i].GetOffset());
+                }
+            }
+
+            if (_raceDatabase.Segments < save?.Segments)
             {
                 _segmentWatch[_raceDatabase.Segments].Stop();
-                _raceDatabase.Segments = save.Segments;
+                _raceDatabase.Segments = save?.Segments ?? 0;
                 _segmentWatch[_raceDatabase.Segments].Start();
             }
 
-            _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save.Debugs);
+            _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save?.Debugs ?? 0);
             _raceDatabase.Deaths = Math.Max(_raceDatabase.Deaths, save.Deaths);
             _raceDatabase.Resets = Math.Max(_raceDatabase.Resets, save.Resets);
             _raceDatabase.Saves = Math.Max(_raceDatabase.Saves, save.Saves);
@@ -775,6 +798,8 @@ namespace REviewer.Modules.Forms
                 Write(_game.ItemBox.Slots[i].Item, (int)save.RealItembox[2 * i]);
                 Write(_game.ItemBox.Slots[i].Quantity, (int)save.RealItembox[2 * i + 1]);
             }
+
+            UpdateLastItemFoundPicture();
         }
 
         private byte[] GetItemBoxData()
@@ -853,24 +878,34 @@ namespace REviewer.Modules.Forms
 
         private void CheckInventoryCapacity(int value, PictureBox slot7, PictureBox slot8, Label capacity7, Label capacity8)
         {
-            bool isVisible = (value & 0xFF000000) != 0x08000000;
-            _inventoryCapacitySize = isVisible ? 8 : 6;
-            
+            int[] _inventoryCapacityArray = [6, 8, 8, 6];
+            _inventoryCapacitySize = _inventoryCapacityArray[value & 3];
+            bool isVisible = _inventoryCapacitySize > 6;
+
             slot7.Visible = isVisible;
             slot8.Visible = isVisible;
+            capacity7.Visible = isVisible;
+            capacity8.Visible = isVisible;
 
             if (isVisible)
             {
+                UpdateSlotPicture(6);
                 UpdateSlotCapacity(capacity7, 6);
+
+                UpdateSlotPicture(7);
                 UpdateSlotCapacity(capacity8, 7);
             }
-            else
+
+            /*
+            if (!isVisible)
             {
                 capacity7.Visible = false;
                 capacity8.Visible = false;
                 slot7.Visible = false;
                 slot8.Visible = false;
             }
+            */
+
         }
 
         private static int GetItemPosition(int value) => value switch
@@ -963,6 +998,11 @@ namespace REviewer.Modules.Forms
 
             // UnsubscribeAllEvents();
             ErasePlayerData();
+
+            labelDeaths.Text = "0";
+            labelDebug.Text = "0";
+            labelResets.Text = "0";
+            labelSaves.Text = "0";
 
             // re-init everything
             _raceDatabase = new GameData.PlayerRaceProgress(_gameName)

@@ -21,7 +21,7 @@ namespace REviewer.Modules.Forms
         {
             if (Application.OpenForms["Race"] == null)
             {
-                Race raceForm = new(REtable, gameNames[comboBoxSelectGame.SelectedIndex]);
+                Race raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
                 raceForm.FormClosed += (s, args) => raceForm.Dispose();
                 raceForm.Show();
             }

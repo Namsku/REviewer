@@ -28,6 +28,18 @@ namespace REviewer.Modules.Utils
             _processName = processName;
         }
 
+        public void UpdateProcessHandle(nint newProcessHandle)
+        {
+            // Stop the current monitoring process
+            Stop();
+
+            // Update the process handle
+            _processHandle = newProcessHandle;
+
+            // Restart the monitoring process with the new process handle
+            Start(_currentRootObject);
+        }
+
         public void Start(RootObject? rootObject)
         {
             if (rootObject == null)
