@@ -175,7 +175,7 @@ namespace REviewer.Modules.Forms
         }
 
         private void InitInventory()
-        {5
+        {
             for (int i = 0; i < _inventoryCapacitySize; i++)
             {
                 int slotNumber = i; // To capture the variable in the closure
