@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Security.Cryptography;
 using MessagePack;
 using REviewer.Modules.Utils;
+using NLog.Config;
 
 namespace REviewer.Modules.Forms
 {
@@ -28,16 +29,23 @@ namespace REviewer.Modules.Forms
         private Font _pixelBoySegments;
         private Font _pixelBoyDefault;
 
+        private FontFamily _fontPixelBoy;
+
         private Dictionary<int, Label> _slotLabels;
         private Dictionary<int, PictureBox> _pictures;
         private Dictionary<int, PictureBox>? _pictureKeyItems;
 
         private readonly string _gameName;
 
-        private GameData.PlayerRaceProgress? _raceDatabase;
-        private List<GameData.PlayerRaceProgress> _saves;
+        private PlayerRaceProgress? _raceDatabase;
+        private List<PlayerRaceProgress> _saves;
 
-        private FontFamily _fontPixelBoy;
+        private MonitorVariables? _monitorVariables;
+
+        public void SetMonitorVariables(MonitorVariables monitorVariables)
+        {
+            _monitorVariables = monitorVariables;
+        }
 
         private readonly Dictionary<byte, List<int>> _healthTable = new()
         {
@@ -232,35 +240,21 @@ namespace REviewer.Modules.Forms
 
         private void OnCreated(object source, FileSystemEventArgs e) => InvokeUI(() =>
         {
-            var uid = UniqueIdGenerator.GenerateUniqueId();
             _raceDatabase.Saves += 1;
-            _raceDatabase.UUID = uid;
             _raceDatabase.RealItembox = GetItemBoxData();
+            byte[] dumpSaveFromMemory = _monitorVariables.ReadProcessMemory(GameData.SaveContentOffset, 0x4B0);
+            // 0x80 at 0x205 should be set to 0x00 for some reason i really don't want to understand now
+            dumpSaveFromMemory[0x205] = 0x80;
 
+            // Get Sha256 hash string of the save
+            _raceDatabase.sha256Hash = BitConverter.ToString(SHA256.HashData(dumpSaveFromMemory)).Replace("-", "").ToLower();
+
+            // Saving the SRT state on a binary file (Serialized object)
             SaveState();
+
+            // better to increment at this end of the function
             labelSaves.Text = _raceDatabase.Saves.ToString();
-
-            // Open the file
-            using (var stream = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite))
-            {
-                // Go to position 0x2C4 and read the first 0x10 bytes
-                stream.Position = 0x2C4;
-                byte[] bytes = new byte[0x10];
-                stream.Read(bytes, 0, bytes.Length);
-
-                // Replace the last 0x10 bytes with the bytes read from position 0x2C4
-                stream.Position = stream.Length - 0x10;
-                stream.Write(bytes, 0, bytes.Length);
-
-                // Generate the new bytes to write at position 0x2C4
-                byte[] newBytes = new byte[16];
-                BitConverter.GetBytes((ushort)0xDEAD).CopyTo(newBytes, 0);
-                Array.Copy(uid, 0, newBytes, 2, Math.Min(14, uid.Length));
-
-                // Write the new bytes at position 0x2C4
-                stream.Position = 0x2C4;
-                stream.Write(newBytes, 0, newBytes.Length);
-            }
+            Logger.Logging.Info($"File -> {e.Name} has been created -> {_raceDatabase.sha256Hash}");
         });
 
         private void SaveState()
@@ -292,6 +286,7 @@ namespace REviewer.Modules.Forms
             // Append a unique identifier to the filename
             string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".dat");
             File.WriteAllBytes(filePath, objectData);
+            Logger.Logging.Info($"Saved SRT state");
         }
 
         public static T DeserializeObject<T>(string filePath)
@@ -455,10 +450,10 @@ namespace REviewer.Modules.Forms
             // Wait 100 ms to avoid flickering
 
             await Task.Delay(50);
-            var islot = _game.Player.InventorySlotSelected.Value;
+            var islot = (int)_game.Player.InventorySlotSelected.Value;
 
-            var selected = _game.Player.InventorySlotSelected.Value - 1;
-            byte id = _game.Player.InventorySlotSelected.Value == 0 ? (byte)0 : (byte)_game.Inventory.Slots[selected].Item.Value;
+            var selected = (int)_game.Player.InventorySlotSelected.Value - 1;
+            byte id = (int)_game.Player.InventorySlotSelected.Value == 0 ? (byte)0 : (byte)_game.Inventory.Slots[selected].Item.Value;
 
             var image = _itemDatabase.GetPropertyById(id).Img;
             pictureBoxItemSelected.Image = image;
@@ -470,8 +465,8 @@ namespace REviewer.Modules.Forms
             byte value = (byte)_game.Player.LastItemFound.Value;
             if (_itemDatabase.GetPropertyById(value).Type == "Key Item") // && _raceDatabase.FullRoomName == null)
             {
-                _raceDatabase.Stage = ((_game.Player.Stage.Value % 5) + 1).ToString();
-                _raceDatabase.Room = _game.Player.Room.Value.ToString("X2");
+                _raceDatabase.Stage = (((int)_game.Player.Stage.Value % 5) + 1).ToString();
+                _raceDatabase.Room = ((int)_game.Player.Room.Value).ToString("X2");
                 _raceDatabase.FullRoomName = _raceDatabase.Stage + _raceDatabase.Room;
                 UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
             }
@@ -744,15 +739,28 @@ namespace REviewer.Modules.Forms
         });
         private void LoadState()
         {
-            byte[] inventory_data = GetItemBoxData();
-            byte[] modded = inventory_data.Skip(2).ToArray();
+            // byte[] inventory_data = GetItemBoxData();
+            // byte[] modded = inventory_data.Skip(2).ToArray();
+            byte[] dumpSaveFromMemory = _monitorVariables.ReadProcessMemory(GameData.SaveContentOffset, 0x4B0);
+            // 0x80 at 0x205 should be set to 0x00 for some reason i really don't want to understand now
 
-            var save = _saves.FirstOrDefault(s => s.UUID.SequenceEqual(modded));
+            if (dumpSaveFromMemory == null)
+            {
+                return;
+            }
+
+            dumpSaveFromMemory[0x205] = 0x80;
+            string sha256_dump = BitConverter.ToString(SHA256.HashData(dumpSaveFromMemory)).Replace("-", "").ToLower();
+            Logger.Logging.Debug($"Save dump from memroy -> {sha256_dump}");
+            var save = _saves.FirstOrDefault(s => s.sha256Hash.Equals(sha256_dump));
 
             if (save == null)
             {
                 return;
             }
+
+            Logger.Logging.Info($"Loading save from memory - Found with SHA256 Hash -> {sha256_dump}");
+
 
             // Reload RaceWatch and Segments 
             _raceWatch.Reset();

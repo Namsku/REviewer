@@ -1,10 +1,14 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
 using REviewer.Modules.RE;
+using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.Forms
 {
     public partial class MainWindow : Form
     {
+        private Race _raceForm;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -21,9 +25,9 @@ namespace REviewer.Modules.Forms
         {
             if (Application.OpenForms["Race"] == null)
             {
-                Race raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
-                raceForm.FormClosed += (s, args) => raceForm.Dispose();
-                raceForm.Show();
+                _raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
+                _raceForm.FormClosed += (s, args) => _raceForm.Dispose();
+                _raceForm.Show();
             }
 
             // Close the main window

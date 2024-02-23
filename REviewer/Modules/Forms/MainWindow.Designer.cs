@@ -300,9 +300,10 @@ namespace REviewer.Modules.Forms
 
                 if (Application.OpenForms["Race"] == null)
                 {
-                    Race raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
-                    raceForm.FormClosed += (s, args) => raceForm.Dispose();
-                    raceForm.Show();
+                    _raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
+                    _raceForm.SetMonitorVariables(_MVariables);
+                    _raceForm.FormClosed += (s, args) => _raceForm.Dispose();
+                    _raceForm.Show();
                 }
             }
             catch (Exception ex)

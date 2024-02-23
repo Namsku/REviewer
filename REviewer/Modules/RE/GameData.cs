@@ -34,6 +34,8 @@ namespace REviewer.Modules.RE
         private const int MainMenuOffset = 0xAA8E57;
         private const int RebirthOffset = 0xC3002C;
 
+        public const int SaveContentOffset = 0xC384F0;
+
         public class VariableData
         {
             // Private fields
@@ -161,7 +163,7 @@ namespace REviewer.Modules.RE
             [Key(15)]
             public int TickTimer { get; set; }
             [Key(16)]
-            public byte[] UUID { get; set; }
+            public string sha256Hash { get; set; }
             [Key(27)]
             public byte[] RealItembox { get; set; }
 
@@ -194,7 +196,7 @@ namespace REviewer.Modules.RE
                     Fulltimer = this.Fulltimer,
                     SegTimers = this.SegTimers,
                     TickTimer = this.TickTimer,
-                    UUID = (byte[])this.UUID?.Clone(),
+                    sha256Hash = this.sha256Hash,
                     RealItembox = (byte[])this.RealItembox?.Clone(),
                     // FileSystemWatcher is not cloneable, so we create a new one
                     // Watcher = new FileSystemWatcher()
@@ -243,6 +245,7 @@ namespace REviewer.Modules.RE
             public VariableData? Unk001 { get; set; }
             public VariableData? Timer { get; set; }
             public VariableData? MainMenu { get; set; }
+            public VariableData? SaveContent { get; set; }
         }
 
         public class Slot
@@ -370,6 +373,7 @@ namespace REviewer.Modules.RE
                     Unk001 = new VariableData { Offset = (IntPtr)Unk002Offset, Size = 4, Database = null },
                     Timer = new VariableData { Offset = (IntPtr)TimerOffset, Size = 4, Database = null, Value = 0 },
                     MainMenu = new VariableData { Offset = (IntPtr)MainMenuOffset, Size = 1, Database = null },
+                    // SaveContent = new VariableData { Offset = (IntPtr)SaveContentOffset, Size = 0xA82, Database = null },
                 },
                 Position = new Position
                 {

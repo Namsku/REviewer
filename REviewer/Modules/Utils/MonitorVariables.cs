@@ -182,8 +182,20 @@ namespace REviewer.Modules.Utils
             {
                 4 => BitConverter.ToInt32(buffer, 0),
                 1 => buffer[0],
-                _ => 0
+                _ => 0,
             };
+        }
+
+        public byte[] ReadProcessMemory(nint baseAddress, uint size)
+        {
+            byte[] buffer = new byte[size];
+            if (!ReadProcessMemory(_processHandle, baseAddress, buffer, size, out _))
+            {
+                Logger.Logging.Error($"Failed to read process memory for base address {baseAddress.ToString("X")} and size {size.ToString("X")}");
+                return [];
+            }
+
+            return buffer;
         }
 
         public bool WriteVariableData(VariableData variableData, int newValue)
