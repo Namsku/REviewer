@@ -50,7 +50,7 @@ namespace REviewer.Modules.Forms
                     var configPath = ConfigurationManager.AppSettings["Config"];
                     if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
                     {
-                        Logger.Logging.Error("Config path is null or file does not exist");
+                        Logger.Instance.Error("Config path is null or file does not exist");
                     }
 
                     _re1_json["RE1"] = path;

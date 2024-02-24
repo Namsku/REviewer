@@ -48,8 +48,10 @@ namespace REviewer.Modules.Forms
         {
             if (Application.OpenForms["About"] == null)
             {
-                About about = new();
-                about.StartPosition = FormStartPosition.CenterScreen; // Set the StartPosition to CenterScreen
+                About about = new()
+                {
+                    StartPosition = FormStartPosition.CenterScreen // Set the StartPosition to CenterScreen
+                };
                 about.FormClosed += (s, args) => about.Dispose();
                 about.Show();
             }
@@ -59,8 +61,10 @@ namespace REviewer.Modules.Forms
         {
             if (Application.OpenForms["Settings"] == null)
             {
-                Settings settings = new();
-                settings.StartPosition = FormStartPosition.CenterScreen; // Set the StartPosition to CenterScreen
+                Settings settings = new()
+                {
+                    StartPosition = FormStartPosition.CenterScreen // Set the StartPosition to CenterScreen
+                };
                 settings.FormClosed += (s, args) => settings.Dispose();
                 settings.Show();
             }

@@ -1,9 +1,8 @@
-﻿using System;
+﻿
 using System.Configuration;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
-using REviewer.Modules.Utils;
 
 
 namespace REviewer.Modules.Utils
@@ -46,12 +45,18 @@ namespace REviewer.Modules.Utils
             {"Bio", "RE1"},
         };
 
+        public static nint GetModuleBaseAddress(nint processHandle, string moduleName)
+        {
+            // Get the base address of a module in the process
+            var process = Process.GetProcessById((int)processHandle);
+            var module = process.Modules.Cast<ProcessModule>().FirstOrDefault(module => module.ModuleName == moduleName);
+            return module?.BaseAddress ?? 0;
+        }
+
         public static Process? GetProcessByName(string processName)
         {
             return Process.GetProcessesByName(processName).FirstOrDefault();
         }
-
-        // Check if ddraw.dll is loaded in the process
         public static bool IsDdrawLoaded(Process process)
         {
             return process.Modules.Cast<ProcessModule>().Any(module => module.ModuleName == "ddraw.dll");
@@ -71,15 +76,15 @@ namespace REviewer.Modules.Utils
                 return gamePaths.ContainsKey(gameNames[index]);
             }
 
-            Logger.Logging.Error("Config path is null or file does not exist");
+            Logger.Instance.Error("Config path is null or file does not exist");
             return false;
         }
 
-        private static Dictionary<string, string> LoadGamePaths()
+        private static Dictionary<string, string>? LoadGamePaths()
         {
             if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
             {
-                Logger.Logging.Error("Config path is null or file does not exist");
+                Logger.Instance.Error("Config path is null or file does not exist");
                 return [];
             }
 
@@ -91,25 +96,21 @@ namespace REviewer.Modules.Utils
         {
             if (!_keyValuePairs.TryGetValue(gameName, out var gameKey))
             {
-                Logger.Logging.Error($"Game name {gameName} not found in keyValuePairs dictionary");
+                Logger.Instance.Error($"Game name {gameName} not found in keyValuePairs dictionary");
                 return "";
             }
 
             if (!_gamePaths.TryGetValue(gameKey, out var gamePath))
             {
-                Logger.Logging.Error($"Game key {gameKey} not found in gamePaths dictionary");
+                Logger.Instance.Error($"Game key {gameKey} not found in gamePaths dictionary");
                 return "";
             }
 
             return gamePath;
         }
 
-        // Get the base address of a module in the process
-        public static nint GetModuleBaseAddress(nint processHandle, string moduleName)
-        {
-            var process = Process.GetProcessById((int)processHandle);
-            var module = process.Modules.Cast<ProcessModule>().FirstOrDefault(module => module.ModuleName == moduleName);
-            return module?.BaseAddress ?? 0;
-        }
+
+        public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
+
     }
 }

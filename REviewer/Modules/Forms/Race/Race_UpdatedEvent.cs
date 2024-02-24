@@ -1,3 +1,9 @@
+using System.Security.Cryptography;
+using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json.Linq;
+using REviewer.Modules.RE;
+using REviewer.Modules.Utils;
+
 namespace REviewer.Modules.Forms
 {
     public partial class Race
@@ -31,7 +37,7 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Inventory_Capacity(object sender, EventArgs e) => InvokeUI(() =>
         {
-            Logger.Logging.Debug($"Inventory capacity: {_game.Inventory.Capacity.Value} -> {_game.Inventory.Capacity.Value & 3}");
+            Logger.Instance.Debug($"Inventory capacity: {_game.Inventory.Capacity.Value} -> {_game.Inventory.Capacity.Value & 3}");
             CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
         });
 
@@ -84,7 +90,7 @@ namespace REviewer.Modules.Forms
             // If 'force' is true or the current state is less than the new state, update the state and picture
             if (force || _raceDatabase.KeyItems[value].State < state)
             {
-                Logger.Logging.Info($"Updating key item {value} to state {state} in room {room}");
+                Logger.Instance.Info($"Updating key item {value} to state {state} in room {room}");
                 _raceDatabase.KeyItems[value].State = state;
                 UpdatePictureKeyItemState(value);
             }
@@ -103,8 +109,8 @@ namespace REviewer.Modules.Forms
                 labelResets.Text = _raceDatabase.Resets.ToString();
             }
 
-            buttonReset.Enabled = _game.Game.MainMenu.Value == 1 ? true : false;
-            Logger.Logging.Info($"Main Menu -> {_game.Game.MainMenu.Value}");
+            buttonReset.Enabled = _game.Game.MainMenu.Value == 1;
+            Logger.Instance.Info($"Main Menu -> {_game.Game.MainMenu.Value}");
         });
 
         
@@ -224,6 +230,23 @@ namespace REviewer.Modules.Forms
             _raceDatabase.Segments += 1;
             _segmentWatch[_raceDatabase.Segments].Start();
         }
+
+        private void Updated_SaveState(object sender, EventArgs e) => InvokeUI(() =>
+        {            
+            int number = _game.Game.SaveContent.Value;
+            int high = number >> 16;
+            int low = number & 0xFFFF;
+
+            if ((low & 0xFFFF) == 0xADDE)
+            {
+                LoadState(high);
+
+            }
+            else if ((high & 0xFFFF00000) == 0xDEAD)
+            {
+                LoadState(low);
+            }
+        });
 
         private void Updated_GameState(object sender, EventArgs e) => InvokeUI(() =>
         {

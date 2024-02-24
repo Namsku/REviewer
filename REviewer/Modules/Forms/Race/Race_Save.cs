@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using MessagePack;
+using Newtonsoft.Json.Linq;
+using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using static REviewer.Modules.RE.GameData;
 
@@ -11,19 +13,27 @@ namespace REviewer.Modules.Forms
         {
             _raceDatabase.Saves += 1;
             _raceDatabase.RealItembox = GetItemBoxData();
-            byte[] dumpSaveFromMemory = _monitorVariables.ReadProcessMemory(GameData.SaveContentOffset, 0x4B0);
-            // 0x80 at 0x205 should be set to 0x00 for some reason i really don't want to understand now
-            dumpSaveFromMemory[0x205] = 0x80;
 
-            // Get Sha256 hash string of the save
-            _raceDatabase.sha256Hash = BitConverter.ToString(SHA256.HashData(dumpSaveFromMemory)).Replace("-", "").ToLower();
+            _currentID += 1;
+            _raceDatabase.SaveID = _currentID;
+            byte[] bytes = BitConverter.GetBytes(_currentID);
+
+            // Open the created file and modify the first 4 bytes
+            using (var fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite))
+            {
+                fs.Seek(0x10, SeekOrigin.Begin);
+                fs.WriteByte(0xDE);
+                fs.WriteByte(0xAD);
+                fs.WriteByte(bytes[1]);
+                fs.WriteByte(bytes[0]);
+            }
 
             // Saving the SRT state on a binary file (Serialized object)
             SaveState();
 
             // better to increment at this end of the function
             labelSaves.Text = _raceDatabase.Saves.ToString();
-            Logger.Logging.Info($"File -> {e.Name} has been created -> {_raceDatabase.sha256Hash}");
+            Logger.Instance.Info($"File -> {e.Name} has been created -> ID {_raceDatabase.SaveID:X}");
         });
 
         public void SerializeObject<T>(T obj) where T : PlayerRaceProgress
@@ -42,7 +52,7 @@ namespace REviewer.Modules.Forms
             // Append a unique identifier to the filename
             string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".dat");
             File.WriteAllBytes(filePath, objectData);
-            Logger.Logging.Info($"Saved SRT state");
+            Logger.Instance.Info($"Saved SRT state");
         }
 
         public static T DeserializeObject<T>(string filePath)
@@ -55,8 +65,8 @@ namespace REviewer.Modules.Forms
         private void SaveState()
         {
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
-
             _raceDatabase.Fulltimer = new RaceWatch(_raceWatch.Elapsed);
+
             foreach (var _seg in _segmentWatch)
             {
                 _raceDatabase.SegTimers.Add(new RaceWatch(_seg.Elapsed));
@@ -65,29 +75,19 @@ namespace REviewer.Modules.Forms
             SerializeObject(_raceDatabase);
         }
 
-        private void LoadState()
+        private void LoadState(int value)
         {
-            // byte[] inventory_data = GetItemBoxData();
-            // byte[] modded = inventory_data.Skip(2).ToArray();
-            byte[] dumpSaveFromMemory = _monitorVariables.ReadProcessMemory(GameData.SaveContentOffset, 0x4B0);
-            // 0x80 at 0x205 should be set to 0x00 for some reason i really don't want to understand now
+            Logger.Instance.Info($"Searching the correct save state with value -> {value:X}");
 
-            if (dumpSaveFromMemory == null)
-            {
-                return;
-            }
-
-            dumpSaveFromMemory[0x205] = 0x80;
-            string sha256_dump = BitConverter.ToString(SHA256.HashData(dumpSaveFromMemory)).Replace("-", "").ToLower();
-            Logger.Logging.Debug($"Save dump from memroy -> {sha256_dump}");
-            var save = _saves.FirstOrDefault(s => s.sha256Hash.Equals(sha256_dump));
+            
+            var save = _saves.FirstOrDefault(s => s.SaveID == value);
 
             if (save == null)
             {
                 return;
             }
 
-            Logger.Logging.Info($"Loading save from memory - Found with SHA256 Hash -> {sha256_dump}");
+            Logger.Instance.Info($"Loading save from memory - Found with Magic Byte 0xDEAD and ID {value:X}");
 
 
             // Reload RaceWatch and Segments 

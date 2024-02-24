@@ -315,7 +315,7 @@ namespace REviewer.Modules.Forms
 
         private void CleanupObjects()
         {
-            Logger.Logging.Info("Cleaning up objects (_process and _MVariables)");
+            Logger.Instance.Info("Cleaning up objects (_process and _MVariables)");
             if (_process != null)
             {
                 _process.Exited -= ProcessExited;
@@ -373,7 +373,7 @@ namespace REviewer.Modules.Forms
             _process.Dispose();
             _process = null;
 
-            Logger.Logging.Info("Process exited - Trying to find a new process");
+            Logger.Instance.Info("Process exited - Trying to find a new process");
 
             // Start the timer to search for the process
             _searchProcessTimer = new System.Threading.Timer(CheckProcessStatus, null, 0, 100);
@@ -392,7 +392,7 @@ namespace REviewer.Modules.Forms
                         catch (ObjectDisposedException)
                         {
                             // Handle the ObjectDisposedException gracefully
-                            Logger.Logging.Error("ObjectDisposedException in InvokeUI");
+                            Logger.Instance.Error("ObjectDisposedException in InvokeUI");
                         }
                 }
                 else
@@ -418,7 +418,7 @@ namespace REviewer.Modules.Forms
             if (_process != null)
             {
                 _process.Exited += ProcessExited;
-                Logger.Logging.Info("Process found!");
+                Logger.Instance.Info("Process found!");
                 
                 // Process is found, stop the timer
                 _searchProcessTimer.Dispose();

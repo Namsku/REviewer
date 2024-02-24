@@ -3,6 +3,7 @@ using System.Drawing.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using REviewer.Modules.RE;
+using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using static REviewer.Modules.RE.GameData;
 
@@ -29,17 +30,19 @@ namespace REviewer.Modules.Forms
         private void InitLoadState()
         {
             _saves = [];
+            _currentID = 0;
 
             var directoryPath = "saves/";
             var files = System.IO.Directory.GetFiles(directoryPath, "*.dat");
 
             foreach (var file in files)
             {
-                _saves.Add(DeserializeObject<GameData.PlayerRaceProgress>(file));
+                _saves.Add(DeserializeObject<PlayerRaceProgress>(file));
+                _currentID = Math.Max(_currentID, _saves.Last().SaveID);
             }
         }
 
-                private void InitKeyRooms()
+        private void InitKeyRooms()
         {
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
@@ -88,29 +91,39 @@ namespace REviewer.Modules.Forms
 
             // Add event handlers.
             _raceDatabase.Watcher.Created += new FileSystemEventHandler(OnCreated);
+            
+            _raceDatabase.Watcher.Disposed += (sender, e) =>
+            {
+                Logger.Instance.Debug("File watcher disposed");
+            };
+
+            _raceDatabase.Watcher.Error += (sender, e) =>
+            {
+                Logger.Instance.Error($"File watcher error: {e.GetException()}");
+            };
 
             // Subscribe to the Changed event
             _raceDatabase.Watcher.Changed += (sender, e) =>
             {
-                Logger.Logging.Debug($"File changed: {e.FullPath}");
+                Logger.Instance.Debug($"File changed: {e.FullPath}");
             };
 
             // Subscribe to the Created event
             _raceDatabase.Watcher.Created += (sender, e) =>
             {
-                Logger.Logging.Debug($"File created: {e.FullPath}");
+                Logger.Instance.Debug($"File created: {e.FullPath}");
             };
 
             // Subscribe to the Deleted event
             _raceDatabase.Watcher.Deleted += (sender, e) =>
             {
-                Logger.Logging.Debug($"File deleted: {e.FullPath}");
+                Logger.Instance.Debug($"File deleted: {e.FullPath}");
             };
 
             // Subscribe to the Renamed event
             _raceDatabase.Watcher.Renamed += (sender, e) =>
             {
-                Logger.Logging.Debug($"File renamed from {e.OldFullPath} to {e.FullPath}");
+                Logger.Instance.Debug($"File renamed from {e.OldFullPath} to {e.FullPath}");
             };
 
             // Begin watching.
@@ -169,7 +182,7 @@ namespace REviewer.Modules.Forms
             }
             catch (Exception e)
             {
-                Logger.Logging.Error($"Exception: {e.Message}\nStack Trace: {e.StackTrace}");
+                Logger.Instance.Error($"Exception: {e.Message}\nStack Trace: {e.StackTrace}");
             }
         }
 

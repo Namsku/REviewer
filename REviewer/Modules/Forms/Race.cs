@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using MessagePack;
 using REviewer.Modules.Utils;
 using NLog.Config;
+using REviewer.Modules.SRT;
 
 namespace REviewer.Modules.Forms
 {
@@ -42,6 +43,7 @@ namespace REviewer.Modules.Forms
 
         private MonitorVariables? _monitorVariables;
 
+        private int _currentID;
         public void SetMonitorVariables(MonitorVariables monitorVariables)
         {
             _monitorVariables = monitorVariables;
@@ -59,15 +61,22 @@ namespace REviewer.Modules.Forms
 
         public Race(GameData.RootObject GameData, string gameName)
         {
+            // Font Loading
             InitPixelBoyFont();
             LoadDefaultPixelBoyFont();
             LoadCustomFontPixelBoyHealth();
             LoadCustomFontPixelBoySegments();
 
+            // Initialize the form
             InitializeComponent();
+
+            // Init the Inventory
             InitInventorySlots();
+
+            // Init the Key Items and Key Rooms from the loaded game data
             InitLoadState();
 
+            // Init the main classes
             _game = GameData;
             _gameName = gameName;
             _itemDatabase = new ItemIDs(gameName);
@@ -91,7 +100,7 @@ namespace REviewer.Modules.Forms
                         catch (ObjectDisposedException)
                         {
                             // Handle the ObjectDisposedException gracefully
-                            Logger.Logging.Error("ObjectDisposedException in InvokeUI");
+                            Logger.Instance.Error("ObjectDisposedException in InvokeUI");
                         }
                     }
                 }
@@ -119,8 +128,6 @@ namespace REviewer.Modules.Forms
 
         private void Race_Load(object sender, EventArgs e)
         {
-            InitKeyItems();
-            InitKeyRooms();
             InitSaveMonitoring();
 
             InitLabels();
@@ -130,6 +137,9 @@ namespace REviewer.Modules.Forms
             InitCharacterHealthState();
             SubscribeToEvents();
             CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+
+            InitKeyItems();
+            InitKeyRooms();
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -158,6 +168,7 @@ namespace REviewer.Modules.Forms
             _game.Game.State.Updated += Updated_GameState;
             _game.Game.Timer.Updated += Updated_Timer;
             _game.Game.MainMenu.Updated += Updated_Reset;
+            _game.Game.SaveContent.Updated += Updated_SaveState;
 
             AssignEventHandlers();
 
@@ -213,7 +224,7 @@ namespace REviewer.Modules.Forms
             return inventory;
         }
 
-        private void LoadKeyItems(List<GameData.KeyItem> keyItems)
+        private void LoadKeyItems(List<KeyItem> keyItems)
         {
             int i = 0;
 
@@ -231,7 +242,7 @@ namespace REviewer.Modules.Forms
 
                 if (existingKeyItem.State != keyItem.State || existingKeyItem.Room != keyItem.Room)
                 {
-                    Logger.Logging.Debug($"Updating Key Item: Name={keyItem.Data.Name}, Room={keyItem.Room}, State={keyItem.State}, ExistingKeyItem: Name={existingKeyItem.Data.Name}, Room={existingKeyItem.Room}, State={existingKeyItem.State}");
+                    Logger.Instance.Debug($"Updating Key Item: Name={keyItem.Data.Name}, Room={keyItem.Room}, State={keyItem.State}, ExistingKeyItem: Name={existingKeyItem.Data.Name}, Room={existingKeyItem.Room}, State={existingKeyItem.State}");
                     // Assuming the value parameter for UpdateRaceKeyItem is the index of the key item in the list
                     int value = _itemDatabase.GetPropertyIdByName(keyItem.Data.Name);
                     UpdateRaceKeyItem(value, keyItem.Room, keyItem.State, true);
@@ -241,8 +252,6 @@ namespace REviewer.Modules.Forms
             }
         }
 
-
-        public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
 
 
 
@@ -370,7 +379,7 @@ namespace REviewer.Modules.Forms
             labelSaves.Text = "0";
 
             // re-init everything
-            _raceDatabase = new GameData.PlayerRaceProgress(_gameName)
+            _raceDatabase = new PlayerRaceProgress(_gameName)
             {
                 Segments = 0
             };
@@ -431,6 +440,7 @@ namespace REviewer.Modules.Forms
             _game.Game.State.Updated -= Updated_GameState;
             _game.Game.Timer.Updated -= Updated_Timer;
             _game.Game.MainMenu.Updated -= Updated_Reset;
+            _game.Game.SaveContent.Updated -= Updated_SaveState;
 
             _game.Rebirth.Debug.Updated -= Updated_Debug;
 

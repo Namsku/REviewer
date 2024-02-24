@@ -34,7 +34,7 @@ namespace REviewer.Modules.RE
         private const int MainMenuOffset = 0xAA8E57;
         private const int RebirthOffset = 0xC3002C;
 
-        public const int SaveContentOffset = 0xC384F0;
+        public const int SaveContentOffset = 0xc38500;
 
         public class VariableData
         {
@@ -67,140 +67,6 @@ namespace REviewer.Modules.RE
             protected virtual void OnUpdated()
             {
                 Updated?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        [MessagePackObject]
-        public class KeyItem : ICloneable
-        {
-            // Constructor
-            public KeyItem(Property data, int state, string room)
-            {
-                Data = data;
-                State = state;
-                Room = room;
-            }
-            public KeyItem()
-            {
-            }
-
-            // Public properties
-            [Key(0)]
-            public Property Data { get; set; }
-            [Key(1)]
-            public string Room { get; set; }
-            [Key(2)]
-            public int State { get; set; }
-
-            public object Clone()
-            {
-                return new KeyItem
-                {
-                    // Copy all properties
-                    Data = (Property)this.Data.Clone(), // Assuming Property implements ICloneable
-                    Room = this.Room,
-                    State = this.State
-                };
-            }
-        }
-
-
-        [MessagePackObject]
-        public class PlayerRaceProgress : ICloneable
-        {
-            public PlayerRaceProgress()
-            {
-            }
-
-            // Key Elements
-            [Key(0)]
-            public List<KeyItem> KeyItems { get; set; }
-
-            [Key(1)]
-            public Dictionary<string, List<string>> KeyRooms { get; set; }
-
-            // Stats
-            [Key(2)]
-            public int Saves { get; set; }
-
-            [Key(3)]
-            public int Deaths { get; set; }
-
-            [Key(4)]
-            public int Resets { get; set; }
-
-            [Key(5)]
-            public int Debugs { get; set; }
-
-            [Key(6)]
-            public int Segments { get; set; }
-
-            // Room Infos
-            [Key(7)]
-            public int PreviousState { get; set; }
-
-            [Key(8)]
-            public string Stage { get; set; }
-
-            [Key(9)]
-            public string Room { get; set; }
-
-            [Key(10)]
-            public string LastRoomName { get; set; }
-
-            [Key(11)]
-            public string FullRoomName { get; set; }
-
-            [Key(12)]
-            public string? SavePath;
-
-            [Key(13)]
-            public RaceWatch? Fulltimer { get; set; }
-
-            [Key(14)]
-            public List<RaceWatch?> SegTimers = new();
-
-            [Key(15)]
-            public int TickTimer { get; set; }
-            [Key(16)]
-            public string sha256Hash { get; set; }
-            [Key(27)]
-            public byte[] RealItembox { get; set; }
-
-            [IgnoreMember]
-            public FileSystemWatcher Watcher = new();
-
-            public PlayerRaceProgress(string savePath)
-            {
-                SavePath = Library.GetSavePath(savePath);
-            }
-
-            public object Clone()
-            {
-                return new PlayerRaceProgress
-                {
-                    // Copy all properties
-                    KeyItems = this.KeyItems.Select(item => (KeyItem)item.Clone()).ToList(),
-                    KeyRooms = new Dictionary<string, List<string>>(this.KeyRooms),
-                    Saves = this.Saves,
-                    Deaths = this.Deaths,
-                    Resets = this.Resets,
-                    Debugs = this.Debugs,
-                    Segments = this.Segments,
-                    PreviousState = this.PreviousState,
-                    Stage = this.Stage,
-                    Room = this.Room,
-                    LastRoomName = this.LastRoomName,
-                    FullRoomName = this.FullRoomName,
-                    SavePath = this.SavePath,
-                    Fulltimer = this.Fulltimer,
-                    SegTimers = this.SegTimers,
-                    TickTimer = this.TickTimer,
-                    sha256Hash = this.sha256Hash,
-                    RealItembox = (byte[])this.RealItembox?.Clone(),
-                    // FileSystemWatcher is not cloneable, so we create a new one
-                    // Watcher = new FileSystemWatcher()
-                };
             }
         }
 
