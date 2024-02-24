@@ -373,7 +373,7 @@ namespace REviewer.Modules.RE
                     Unk001 = new VariableData { Offset = (IntPtr)Unk002Offset, Size = 4, Database = null },
                     Timer = new VariableData { Offset = (IntPtr)TimerOffset, Size = 4, Database = null, Value = 0 },
                     MainMenu = new VariableData { Offset = (IntPtr)MainMenuOffset, Size = 1, Database = null },
-                    // SaveContent = new VariableData { Offset = (IntPtr)SaveContentOffset, Size = 0xA82, Database = null },
+                    SaveContent = new VariableData { Offset = (IntPtr)SaveContentOffset, Size = 4, Database = null },
                 },
                 Position = new Position
                 {
