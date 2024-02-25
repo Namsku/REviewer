@@ -8,7 +8,7 @@ namespace REviewer.Modules.Utils
     {
         [IgnoreMember]
     
-        private Stopwatch _stopwatch = new Stopwatch();
+        private Stopwatch _stopwatch = new();
         
         [Key(0)]
         private TimeSpan _offset = TimeSpan.Zero;

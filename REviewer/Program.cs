@@ -17,7 +17,7 @@ namespace REviewer
         {
             if (Mutex.WaitOne(TimeSpan.Zero, true))
             {
-                Logger.Logging.Info("Starting application");
+                Logger.Instance.Info("Starting application");
                 ApplicationConfiguration.Initialize();
                 Application.Run(new Modules.Forms.MainWindow());
                 Mutex.ReleaseMutex();

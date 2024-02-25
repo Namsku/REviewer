@@ -146,7 +146,7 @@ namespace REviewer.Modules.RE
             return Items.TryGetValue(id, out var property) ? property.Img : Items[255].Img;
         }
 
-        public string GetProcessName()
+        public string? GetProcessName()
         {
             return _processName;
         }

@@ -98,6 +98,7 @@
             pictureBoxKeyItem35 = new PictureBox();
             pictureBoxKeyItem36 = new PictureBox();
             panel1 = new Panel();
+            pictureBoxItemSlot6 = new PictureBox();
             labelGameCompleted = new Label();
             labelSegTimer4 = new Label();
             pictureBox15 = new PictureBox();
@@ -120,7 +121,6 @@
             pictureBox3 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
-            pictureBoxItemSlot6 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot7).BeginInit();
@@ -167,6 +167,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem35).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem36).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox15).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem41).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem40).BeginInit();
@@ -187,7 +188,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).BeginInit();
             SuspendLayout();
             // 
             // labelTimer
@@ -228,12 +228,13 @@
             labelSlot2Quantity.AutoSize = true;
             labelSlot2Quantity.BackColor = Color.Transparent;
             labelSlot2Quantity.Font = new Font("Impact", 12F);
-            labelSlot2Quantity.Location = new Point(133, 669);
+            labelSlot2Quantity.Location = new Point(135, 670);
             labelSlot2Quantity.Name = "labelSlot2Quantity";
             labelSlot2Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot2Quantity.Size = new Size(44, 36);
             labelSlot2Quantity.TabIndex = 47;
             labelSlot2Quantity.Text = "100";
+            labelSlot2Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot2Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot2
@@ -253,12 +254,13 @@
             labelSlot8Quantity.AutoSize = true;
             labelSlot8Quantity.BackColor = Color.Transparent;
             labelSlot8Quantity.Font = new Font("Impact", 12F);
-            labelSlot8Quantity.Location = new Point(318, 758);
+            labelSlot8Quantity.Location = new Point(305, 760);
             labelSlot8Quantity.Name = "labelSlot8Quantity";
             labelSlot8Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot8Quantity.Size = new Size(44, 36);
             labelSlot8Quantity.TabIndex = 59;
             labelSlot8Quantity.Text = "100";
+            labelSlot8Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot8Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot8
@@ -278,12 +280,13 @@
             labelSlot7Quantity.AutoSize = true;
             labelSlot7Quantity.BackColor = Color.Transparent;
             labelSlot7Quantity.Font = new Font("Impact", 12F);
-            labelSlot7Quantity.Location = new Point(229, 759);
+            labelSlot7Quantity.Location = new Point(219, 760);
             labelSlot7Quantity.Name = "labelSlot7Quantity";
             labelSlot7Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot7Quantity.Size = new Size(44, 36);
             labelSlot7Quantity.TabIndex = 57;
             labelSlot7Quantity.Text = "100";
+            labelSlot7Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot7Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot7
@@ -303,12 +306,13 @@
             labelSlot6Quantity.AutoSize = true;
             labelSlot6Quantity.BackColor = Color.Transparent;
             labelSlot6Quantity.Font = new Font("Impact", 12F);
-            labelSlot6Quantity.Location = new Point(135, 758);
+            labelSlot6Quantity.Location = new Point(135, 760);
             labelSlot6Quantity.Name = "labelSlot6Quantity";
             labelSlot6Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot6Quantity.Size = new Size(44, 36);
             labelSlot6Quantity.TabIndex = 55;
             labelSlot6Quantity.Text = "100";
+            labelSlot6Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot6Quantity.UseCompatibleTextRendering = true;
             // 
             // labelSlot5Quantity
@@ -316,12 +320,13 @@
             labelSlot5Quantity.AutoSize = true;
             labelSlot5Quantity.BackColor = Color.Transparent;
             labelSlot5Quantity.Font = new Font("Impact", 12F);
-            labelSlot5Quantity.Location = new Point(48, 758);
+            labelSlot5Quantity.Location = new Point(48, 760);
             labelSlot5Quantity.Name = "labelSlot5Quantity";
             labelSlot5Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot5Quantity.Size = new Size(44, 36);
             labelSlot5Quantity.TabIndex = 53;
             labelSlot5Quantity.Text = "100";
+            labelSlot5Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot5Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot5
@@ -347,6 +352,7 @@
             labelSlot4Quantity.Size = new Size(44, 36);
             labelSlot4Quantity.TabIndex = 51;
             labelSlot4Quantity.Text = "100";
+            labelSlot4Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot4Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot4
@@ -366,7 +372,7 @@
             labelSlot3Quantity.AutoSize = true;
             labelSlot3Quantity.BackColor = Color.Transparent;
             labelSlot3Quantity.Font = new Font("Impact", 12F);
-            labelSlot3Quantity.Location = new Point(219, 667);
+            labelSlot3Quantity.Location = new Point(219, 670);
             labelSlot3Quantity.Name = "labelSlot3Quantity";
             labelSlot3Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot3Quantity.Size = new Size(44, 36);
@@ -392,7 +398,7 @@
             labelSlot1Quantity.AutoSize = true;
             labelSlot1Quantity.BackColor = Color.Transparent;
             labelSlot1Quantity.Font = new Font("Impact", 12F);
-            labelSlot1Quantity.Location = new Point(48, 665);
+            labelSlot1Quantity.Location = new Point(48, 670);
             labelSlot1Quantity.Name = "labelSlot1Quantity";
             labelSlot1Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot1Quantity.Size = new Size(44, 36);
@@ -417,44 +423,48 @@
             // 
             labelDebug.AutoSize = true;
             labelDebug.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDebug.Location = new Point(430, 839);
+            labelDebug.Location = new Point(417, 839);
             labelDebug.Name = "labelDebug";
             labelDebug.Size = new Size(25, 41);
             labelDebug.TabIndex = 7;
             labelDebug.Text = "0";
+            labelDebug.TextAlign = ContentAlignment.MiddleCenter;
             labelDebug.UseCompatibleTextRendering = true;
             // 
             // labelResets
             // 
             labelResets.AutoSize = true;
             labelResets.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelResets.Location = new Point(300, 840);
+            labelResets.Location = new Point(290, 839);
             labelResets.Name = "labelResets";
             labelResets.Size = new Size(25, 41);
             labelResets.TabIndex = 6;
             labelResets.Text = "0";
+            labelResets.TextAlign = ContentAlignment.MiddleCenter;
             labelResets.UseCompatibleTextRendering = true;
             // 
             // labelSaves
             // 
             labelSaves.AutoSize = true;
             labelSaves.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelSaves.Location = new Point(172, 840);
+            labelSaves.Location = new Point(165, 839);
             labelSaves.Name = "labelSaves";
             labelSaves.Size = new Size(25, 41);
             labelSaves.TabIndex = 5;
             labelSaves.Text = "0";
+            labelSaves.TextAlign = ContentAlignment.MiddleCenter;
             labelSaves.UseCompatibleTextRendering = true;
             // 
             // labelDeaths
             // 
             labelDeaths.AutoSize = true;
             labelDeaths.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDeaths.Location = new Point(48, 841);
+            labelDeaths.Location = new Point(48, 839);
             labelDeaths.Name = "labelDeaths";
             labelDeaths.Size = new Size(25, 41);
             labelDeaths.TabIndex = 4;
             labelDeaths.Text = "0";
+            labelDeaths.TextAlign = ContentAlignment.MiddleCenter;
             labelDeaths.UseCompatibleTextRendering = true;
             // 
             // buttonReset
@@ -522,6 +532,7 @@
             labelHealth.Size = new Size(87, 68);
             labelHealth.TabIndex = 46;
             labelHealth.Text = "140";
+            labelHealth.TextAlign = ContentAlignment.MiddleCenter;
             labelHealth.UseCompatibleTextRendering = true;
             // 
             // buttonCheckSeed
@@ -1099,15 +1110,26 @@
             panel1.Size = new Size(517, 1168);
             panel1.TabIndex = 15;
             // 
+            // pictureBoxItemSlot6
+            // 
+            pictureBoxItemSlot6.BackColor = Color.Transparent;
+            pictureBoxItemSlot6.Image = Properties.Resources.wind_crest;
+            pictureBoxItemSlot6.InitialImage = null;
+            pictureBoxItemSlot6.Location = new Point(90, 698);
+            pictureBoxItemSlot6.Name = "pictureBoxItemSlot6";
+            pictureBoxItemSlot6.Size = new Size(85, 60);
+            pictureBoxItemSlot6.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxItemSlot6.TabIndex = 122;
+            pictureBoxItemSlot6.TabStop = false;
+            // 
             // labelGameCompleted
             // 
             labelGameCompleted.AutoSize = true;
-            labelGameCompleted.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelGameCompleted.Location = new Point(6, 1077);
+            labelGameCompleted.Location = new Point(6, 1057);
             labelGameCompleted.Name = "labelGameCompleted";
-            labelGameCompleted.Size = new Size(399, 35);
+            labelGameCompleted.Size = new Size(126, 25);
             labelGameCompleted.TabIndex = 121;
-            labelGameCompleted.Text = "Game Completed!   Reset the tool!";
+            labelGameCompleted.Text = "Reset the tool!";
             // 
             // labelSegTimer4
             // 
@@ -1320,18 +1342,6 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // pictureBoxItemSlot6
-            // 
-            pictureBoxItemSlot6.BackColor = Color.Transparent;
-            pictureBoxItemSlot6.Image = Properties.Resources.wind_crest;
-            pictureBoxItemSlot6.InitialImage = null;
-            pictureBoxItemSlot6.Location = new Point(90, 698);
-            pictureBoxItemSlot6.Name = "pictureBoxItemSlot6";
-            pictureBoxItemSlot6.Size = new Size(85, 60);
-            pictureBoxItemSlot6.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBoxItemSlot6.TabIndex = 122;
-            pictureBoxItemSlot6.TabStop = false;
-            // 
             // Race
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1391,6 +1401,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem36).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox15).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem41).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem40).EndInit();
@@ -1411,7 +1422,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).EndInit();
             ResumeLayout(false);
         }
 

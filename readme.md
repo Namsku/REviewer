@@ -37,6 +37,15 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 REviewer provides real-time monitoring of the player's health status. It displays the current health level and any changes that occur during gameplay.
 
+#### What is the health status color system?
+
+- Blue: Full Health
+- Green: Fine
+- Yellow: Light Caution
+- Orange: Caution
+- Red: Danger
+
+
 ### Character Information
 
 The tool allows users to track important information about the character they are controlling. This includes attributes such as health, stamina, and other relevant stats.
