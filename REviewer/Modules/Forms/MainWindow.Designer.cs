@@ -424,6 +424,11 @@ namespace REviewer.Modules.Forms
                 _searchProcessTimer.Dispose();
                 _isProcessFound = true;
 
+                if (_MVariables == null)
+                {
+                    _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
+                }
+
                 // Perform any necessary actions when the process is found
                 _MVariables.UpdateProcessHandle(_process.Handle);
 
