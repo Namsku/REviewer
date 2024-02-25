@@ -231,20 +231,22 @@ namespace REviewer.Modules.Forms
             _segmentWatch[_raceDatabase.Segments].Start();
         }
 
+        private uint ReverseBytes(uint number)
+        {
+            return ((number & 0x000000FF) << 24) |
+                   ((number & 0x0000FF00) << 8) |
+                   ((number & 0x00FF0000) >> 8) |
+                   ((number & 0xFF000000) >> 24);
+        }
+
         private void Updated_SaveState(object sender, EventArgs e) => InvokeUI(() =>
-        {            
-            int number = _game.Game.SaveContent.Value;
-            int high = number >> 16;
-            int low = number & 0xFFFF;
+        {
+            uint number = (uint)_game.Game.SaveContent.Value;
 
-            if ((low & 0xFFFF) == 0xADDE)
+            if ((number & 0x0000FFFF) == 0xADDE)
             {
-                LoadState(high);
-
-            }
-            else if ((high & 0xFFFF00000) == 0xDEAD)
-            {
-                LoadState(low);
+                uint modified = ReverseBytes(number);
+                LoadState((int)modified & 0x0000FFFF);
             }
         });
 
