@@ -228,12 +228,13 @@
             labelSlot2Quantity.AutoSize = true;
             labelSlot2Quantity.BackColor = Color.Transparent;
             labelSlot2Quantity.Font = new Font("Impact", 12F);
-            labelSlot2Quantity.Location = new Point(135, 665);
+            labelSlot2Quantity.Location = new Point(135, 670);
             labelSlot2Quantity.Name = "labelSlot2Quantity";
             labelSlot2Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot2Quantity.Size = new Size(44, 36);
             labelSlot2Quantity.TabIndex = 47;
             labelSlot2Quantity.Text = "100";
+            labelSlot2Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot2Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot2
@@ -253,12 +254,13 @@
             labelSlot8Quantity.AutoSize = true;
             labelSlot8Quantity.BackColor = Color.Transparent;
             labelSlot8Quantity.Font = new Font("Impact", 12F);
-            labelSlot8Quantity.Location = new Point(305, 755);
+            labelSlot8Quantity.Location = new Point(305, 760);
             labelSlot8Quantity.Name = "labelSlot8Quantity";
             labelSlot8Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot8Quantity.Size = new Size(44, 36);
             labelSlot8Quantity.TabIndex = 59;
             labelSlot8Quantity.Text = "100";
+            labelSlot8Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot8Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot8
@@ -278,12 +280,13 @@
             labelSlot7Quantity.AutoSize = true;
             labelSlot7Quantity.BackColor = Color.Transparent;
             labelSlot7Quantity.Font = new Font("Impact", 12F);
-            labelSlot7Quantity.Location = new Point(219, 755);
+            labelSlot7Quantity.Location = new Point(219, 760);
             labelSlot7Quantity.Name = "labelSlot7Quantity";
             labelSlot7Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot7Quantity.Size = new Size(44, 36);
             labelSlot7Quantity.TabIndex = 57;
             labelSlot7Quantity.Text = "100";
+            labelSlot7Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot7Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot7
@@ -303,12 +306,13 @@
             labelSlot6Quantity.AutoSize = true;
             labelSlot6Quantity.BackColor = Color.Transparent;
             labelSlot6Quantity.Font = new Font("Impact", 12F);
-            labelSlot6Quantity.Location = new Point(135, 755);
+            labelSlot6Quantity.Location = new Point(135, 760);
             labelSlot6Quantity.Name = "labelSlot6Quantity";
             labelSlot6Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot6Quantity.Size = new Size(44, 36);
             labelSlot6Quantity.TabIndex = 55;
             labelSlot6Quantity.Text = "100";
+            labelSlot6Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot6Quantity.UseCompatibleTextRendering = true;
             // 
             // labelSlot5Quantity
@@ -316,12 +320,13 @@
             labelSlot5Quantity.AutoSize = true;
             labelSlot5Quantity.BackColor = Color.Transparent;
             labelSlot5Quantity.Font = new Font("Impact", 12F);
-            labelSlot5Quantity.Location = new Point(48, 755);
+            labelSlot5Quantity.Location = new Point(48, 760);
             labelSlot5Quantity.Name = "labelSlot5Quantity";
             labelSlot5Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot5Quantity.Size = new Size(44, 36);
             labelSlot5Quantity.TabIndex = 53;
             labelSlot5Quantity.Text = "100";
+            labelSlot5Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot5Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot5
@@ -341,12 +346,13 @@
             labelSlot4Quantity.AutoSize = true;
             labelSlot4Quantity.BackColor = Color.Transparent;
             labelSlot4Quantity.Font = new Font("Impact", 12F);
-            labelSlot4Quantity.Location = new Point(305, 665);
+            labelSlot4Quantity.Location = new Point(305, 670);
             labelSlot4Quantity.Name = "labelSlot4Quantity";
             labelSlot4Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot4Quantity.Size = new Size(44, 36);
             labelSlot4Quantity.TabIndex = 51;
             labelSlot4Quantity.Text = "100";
+            labelSlot4Quantity.TextAlign = ContentAlignment.MiddleRight;
             labelSlot4Quantity.UseCompatibleTextRendering = true;
             // 
             // pictureBoxItemSlot4
@@ -366,7 +372,7 @@
             labelSlot3Quantity.AutoSize = true;
             labelSlot3Quantity.BackColor = Color.Transparent;
             labelSlot3Quantity.Font = new Font("Impact", 12F);
-            labelSlot3Quantity.Location = new Point(219, 665);
+            labelSlot3Quantity.Location = new Point(219, 670);
             labelSlot3Quantity.Name = "labelSlot3Quantity";
             labelSlot3Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot3Quantity.Size = new Size(44, 36);
@@ -392,7 +398,7 @@
             labelSlot1Quantity.AutoSize = true;
             labelSlot1Quantity.BackColor = Color.Transparent;
             labelSlot1Quantity.Font = new Font("Impact", 12F);
-            labelSlot1Quantity.Location = new Point(48, 665);
+            labelSlot1Quantity.Location = new Point(48, 670);
             labelSlot1Quantity.Name = "labelSlot1Quantity";
             labelSlot1Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot1Quantity.Size = new Size(44, 36);
@@ -422,39 +428,43 @@
             labelDebug.Size = new Size(25, 41);
             labelDebug.TabIndex = 7;
             labelDebug.Text = "0";
+            labelDebug.TextAlign = ContentAlignment.MiddleCenter;
             labelDebug.UseCompatibleTextRendering = true;
             // 
             // labelResets
             // 
             labelResets.AutoSize = true;
             labelResets.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelResets.Location = new Point(291, 840);
+            labelResets.Location = new Point(290, 839);
             labelResets.Name = "labelResets";
             labelResets.Size = new Size(25, 41);
             labelResets.TabIndex = 6;
             labelResets.Text = "0";
+            labelResets.TextAlign = ContentAlignment.MiddleCenter;
             labelResets.UseCompatibleTextRendering = true;
             // 
             // labelSaves
             // 
             labelSaves.AutoSize = true;
             labelSaves.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelSaves.Location = new Point(165, 840);
+            labelSaves.Location = new Point(165, 839);
             labelSaves.Name = "labelSaves";
             labelSaves.Size = new Size(25, 41);
             labelSaves.TabIndex = 5;
             labelSaves.Text = "0";
+            labelSaves.TextAlign = ContentAlignment.MiddleCenter;
             labelSaves.UseCompatibleTextRendering = true;
             // 
             // labelDeaths
             // 
             labelDeaths.AutoSize = true;
             labelDeaths.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDeaths.Location = new Point(48, 841);
+            labelDeaths.Location = new Point(48, 839);
             labelDeaths.Name = "labelDeaths";
             labelDeaths.Size = new Size(25, 41);
             labelDeaths.TabIndex = 4;
             labelDeaths.Text = "0";
+            labelDeaths.TextAlign = ContentAlignment.MiddleCenter;
             labelDeaths.UseCompatibleTextRendering = true;
             // 
             // buttonReset
@@ -522,6 +532,7 @@
             labelHealth.Size = new Size(87, 68);
             labelHealth.TabIndex = 46;
             labelHealth.Text = "140";
+            labelHealth.TextAlign = ContentAlignment.MiddleCenter;
             labelHealth.UseCompatibleTextRendering = true;
             // 
             // buttonCheckSeed
