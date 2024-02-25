@@ -98,6 +98,7 @@
             pictureBoxKeyItem35 = new PictureBox();
             pictureBoxKeyItem36 = new PictureBox();
             panel1 = new Panel();
+            pictureBoxItemSlot6 = new PictureBox();
             labelGameCompleted = new Label();
             labelSegTimer4 = new Label();
             pictureBox15 = new PictureBox();
@@ -120,7 +121,6 @@
             pictureBox3 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
-            pictureBoxItemSlot6 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot7).BeginInit();
@@ -167,6 +167,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem35).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem36).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox15).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem41).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem40).BeginInit();
@@ -187,7 +188,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).BeginInit();
             SuspendLayout();
             // 
             // labelTimer
@@ -228,7 +228,7 @@
             labelSlot2Quantity.AutoSize = true;
             labelSlot2Quantity.BackColor = Color.Transparent;
             labelSlot2Quantity.Font = new Font("Impact", 12F);
-            labelSlot2Quantity.Location = new Point(133, 669);
+            labelSlot2Quantity.Location = new Point(135, 665);
             labelSlot2Quantity.Name = "labelSlot2Quantity";
             labelSlot2Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot2Quantity.Size = new Size(44, 36);
@@ -253,7 +253,7 @@
             labelSlot8Quantity.AutoSize = true;
             labelSlot8Quantity.BackColor = Color.Transparent;
             labelSlot8Quantity.Font = new Font("Impact", 12F);
-            labelSlot8Quantity.Location = new Point(318, 758);
+            labelSlot8Quantity.Location = new Point(305, 755);
             labelSlot8Quantity.Name = "labelSlot8Quantity";
             labelSlot8Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot8Quantity.Size = new Size(44, 36);
@@ -278,7 +278,7 @@
             labelSlot7Quantity.AutoSize = true;
             labelSlot7Quantity.BackColor = Color.Transparent;
             labelSlot7Quantity.Font = new Font("Impact", 12F);
-            labelSlot7Quantity.Location = new Point(229, 759);
+            labelSlot7Quantity.Location = new Point(219, 755);
             labelSlot7Quantity.Name = "labelSlot7Quantity";
             labelSlot7Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot7Quantity.Size = new Size(44, 36);
@@ -303,7 +303,7 @@
             labelSlot6Quantity.AutoSize = true;
             labelSlot6Quantity.BackColor = Color.Transparent;
             labelSlot6Quantity.Font = new Font("Impact", 12F);
-            labelSlot6Quantity.Location = new Point(135, 758);
+            labelSlot6Quantity.Location = new Point(135, 755);
             labelSlot6Quantity.Name = "labelSlot6Quantity";
             labelSlot6Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot6Quantity.Size = new Size(44, 36);
@@ -316,7 +316,7 @@
             labelSlot5Quantity.AutoSize = true;
             labelSlot5Quantity.BackColor = Color.Transparent;
             labelSlot5Quantity.Font = new Font("Impact", 12F);
-            labelSlot5Quantity.Location = new Point(48, 758);
+            labelSlot5Quantity.Location = new Point(48, 755);
             labelSlot5Quantity.Name = "labelSlot5Quantity";
             labelSlot5Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot5Quantity.Size = new Size(44, 36);
@@ -341,7 +341,7 @@
             labelSlot4Quantity.AutoSize = true;
             labelSlot4Quantity.BackColor = Color.Transparent;
             labelSlot4Quantity.Font = new Font("Impact", 12F);
-            labelSlot4Quantity.Location = new Point(305, 670);
+            labelSlot4Quantity.Location = new Point(305, 665);
             labelSlot4Quantity.Name = "labelSlot4Quantity";
             labelSlot4Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot4Quantity.Size = new Size(44, 36);
@@ -366,7 +366,7 @@
             labelSlot3Quantity.AutoSize = true;
             labelSlot3Quantity.BackColor = Color.Transparent;
             labelSlot3Quantity.Font = new Font("Impact", 12F);
-            labelSlot3Quantity.Location = new Point(219, 667);
+            labelSlot3Quantity.Location = new Point(219, 665);
             labelSlot3Quantity.Name = "labelSlot3Quantity";
             labelSlot3Quantity.RightToLeft = RightToLeft.Yes;
             labelSlot3Quantity.Size = new Size(44, 36);
@@ -417,7 +417,7 @@
             // 
             labelDebug.AutoSize = true;
             labelDebug.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelDebug.Location = new Point(430, 839);
+            labelDebug.Location = new Point(417, 839);
             labelDebug.Name = "labelDebug";
             labelDebug.Size = new Size(25, 41);
             labelDebug.TabIndex = 7;
@@ -428,7 +428,7 @@
             // 
             labelResets.AutoSize = true;
             labelResets.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelResets.Location = new Point(300, 840);
+            labelResets.Location = new Point(291, 840);
             labelResets.Name = "labelResets";
             labelResets.Size = new Size(25, 41);
             labelResets.TabIndex = 6;
@@ -439,7 +439,7 @@
             // 
             labelSaves.AutoSize = true;
             labelSaves.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelSaves.Location = new Point(172, 840);
+            labelSaves.Location = new Point(165, 840);
             labelSaves.Name = "labelSaves";
             labelSaves.Size = new Size(25, 41);
             labelSaves.TabIndex = 5;
@@ -1099,15 +1099,26 @@
             panel1.Size = new Size(517, 1168);
             panel1.TabIndex = 15;
             // 
+            // pictureBoxItemSlot6
+            // 
+            pictureBoxItemSlot6.BackColor = Color.Transparent;
+            pictureBoxItemSlot6.Image = Properties.Resources.wind_crest;
+            pictureBoxItemSlot6.InitialImage = null;
+            pictureBoxItemSlot6.Location = new Point(90, 698);
+            pictureBoxItemSlot6.Name = "pictureBoxItemSlot6";
+            pictureBoxItemSlot6.Size = new Size(85, 60);
+            pictureBoxItemSlot6.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxItemSlot6.TabIndex = 122;
+            pictureBoxItemSlot6.TabStop = false;
+            // 
             // labelGameCompleted
             // 
             labelGameCompleted.AutoSize = true;
-            labelGameCompleted.Font = new Font("Impact", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelGameCompleted.Location = new Point(6, 1077);
+            labelGameCompleted.Location = new Point(6, 1057);
             labelGameCompleted.Name = "labelGameCompleted";
-            labelGameCompleted.Size = new Size(399, 35);
+            labelGameCompleted.Size = new Size(126, 25);
             labelGameCompleted.TabIndex = 121;
-            labelGameCompleted.Text = "Game Completed!   Reset the tool!";
+            labelGameCompleted.Text = "Reset the tool!";
             // 
             // labelSegTimer4
             // 
@@ -1320,18 +1331,6 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // pictureBoxItemSlot6
-            // 
-            pictureBoxItemSlot6.BackColor = Color.Transparent;
-            pictureBoxItemSlot6.Image = Properties.Resources.wind_crest;
-            pictureBoxItemSlot6.InitialImage = null;
-            pictureBoxItemSlot6.Location = new Point(90, 698);
-            pictureBoxItemSlot6.Name = "pictureBoxItemSlot6";
-            pictureBoxItemSlot6.Size = new Size(85, 60);
-            pictureBoxItemSlot6.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBoxItemSlot6.TabIndex = 122;
-            pictureBoxItemSlot6.TabStop = false;
-            // 
             // Race
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1391,6 +1390,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem36).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox15).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem41).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxKeyItem40).EndInit();
@@ -1411,7 +1411,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot6).EndInit();
             ResumeLayout(false);
         }
 

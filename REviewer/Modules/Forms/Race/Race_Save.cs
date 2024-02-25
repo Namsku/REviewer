@@ -19,21 +19,43 @@ namespace REviewer.Modules.Forms
             byte[] bytes = BitConverter.GetBytes(_currentID);
 
             // Open the created file and modify the first 4 bytes
-            using (var fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite))
+            FileStream fs = null;
+            int attempts = 0;
+            while (fs == null && attempts < 10)
             {
-                fs.Seek(0x10, SeekOrigin.Begin);
-                fs.WriteByte(0xDE);
-                fs.WriteByte(0xAD);
-                fs.WriteByte(bytes[1]);
-                fs.WriteByte(bytes[0]);
+                try
+                {
+                    fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.ReadWrite);
+                }
+                catch (IOException)
+                {
+                    attempts++;
+                    Thread.Sleep(1000); // Wait for the file to be available
+                }
             }
 
-            // Saving the SRT state on a binary file (Serialized object)
-            SaveState();
+            if (fs != null)
+            {
+                using (fs)
+                {
+                    fs.Seek(0x10, SeekOrigin.Begin);
+                    fs.WriteByte(0xDE);
+                    fs.WriteByte(0xAD);
+                    fs.WriteByte(bytes[1]);
+                    fs.WriteByte(bytes[0]);
+                }
 
-            // better to increment at this end of the function
-            labelSaves.Text = _raceDatabase.Saves.ToString();
-            Logger.Instance.Info($"File -> {e.Name} has been created -> ID {_raceDatabase.SaveID:X}");
+                // Saving the SRT state on a binary file (Serialized object)
+                SaveState();
+
+                // better to increment at this end of the function
+                labelSaves.Text = _raceDatabase.Saves.ToString();
+                Logger.Instance.Info($"File -> {e.Name} has been created -> ID {_raceDatabase.SaveID:X}");
+            }
+            else
+            {
+                Logger.Instance.Error($"Failed to open file -> {e.Name} after 10 attempts");
+            }
         });
 
         public void SerializeObject<T>(T obj) where T : PlayerRaceProgress
@@ -67,9 +89,9 @@ namespace REviewer.Modules.Forms
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
             _raceDatabase.Fulltimer = new RaceWatch(_raceWatch.Elapsed);
 
-            foreach (var _seg in _segmentWatch)
+            foreach (var seg in _segmentWatch)
             {
-                _raceDatabase.SegTimers.Add(new RaceWatch(_seg.Elapsed));
+                _raceDatabase.SegTimers.Add(new RaceWatch(seg.Elapsed));
             }
 
             SerializeObject(_raceDatabase);
@@ -91,8 +113,8 @@ namespace REviewer.Modules.Forms
 
 
             // Reload RaceWatch and Segments 
-            _raceWatch.Reset();
-            _segmentWatch[_raceDatabase.Segments].Reset();
+            //_raceWatch.Reset();
+            //_segmentWatch[_raceDatabase.Segments].Reset();
 
             // Load the save RaceWatch and Segments
             if (save?.Fulltimer?.GetOffset() > _raceWatch.Elapsed)
@@ -102,9 +124,19 @@ namespace REviewer.Modules.Forms
 
             for (int i = 0; i < save?.SegTimers?.Count; i++)
             {
-                if (save.SegTimers[i]?.GetOffset() > _segmentWatch[i].Elapsed)
+                try
                 {
-                    _segmentWatch[i].StartFrom(save.SegTimers[i].GetOffset());
+                    if (save.SegTimers[i]?.GetOffset() > _segmentWatch[i].Elapsed)
+                    {
+                        _segmentWatch[i].StartFrom(save.SegTimers[i].GetOffset());
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Instance.Error($"Exception: {e.Message}\nStack Trace: {e.StackTrace}");
+                    Logger.Instance.Error($"Index: {i}");
+                    Logger.Instance.Error($"Size of SegTimers: {save?.SegTimers?.Count}");
+                    Logger.Instance.Error($"Size of SegmentWatch: {_segmentWatch.Count}");
                 }
             }
 

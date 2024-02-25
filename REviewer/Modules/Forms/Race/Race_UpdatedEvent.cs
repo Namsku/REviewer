@@ -70,6 +70,12 @@ namespace REviewer.Modules.Forms
         private void UpdateLastItemFoundPicture()
         {
             byte value = (byte)_game.Player.LastItemFound.Value;
+
+            if (_game.Player.LastItemFound.Value == 0x31)
+            {
+                UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
+            }
+
             if (_itemDatabase.GetPropertyById(value).Type == "Key Item") // && _raceDatabase.FullRoomName == null)
             {
                 _raceDatabase.Stage = (((int)_game.Player.Stage.Value % 5) + 1).ToString();
@@ -82,7 +88,14 @@ namespace REviewer.Modules.Forms
             pictureBoxLastItem.Image = _itemDatabase.GetPropertyById(item_id).Img;
         }
 
-        
+        private void Updated_Lockpick(object sender, EventArgs e) => InvokeUI(() =>
+        {
+            if (_game.Player.LockPick.Value == 0x08)
+            {
+                UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
+            }
+        });
+
         private void UpdateRaceKeyItem(int value, string room, int state, bool force = false)
         {
             value = GetKeyItemPosition(value, room, state);
@@ -101,15 +114,15 @@ namespace REviewer.Modules.Forms
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
             int health = Int32.Parse(labelHealth.Text);
-
-
-            if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= _healthTable[(byte)_game.Player.Character.Value][0]))
+            int player = _healthTable[(byte)(_game.Player.Character.Value & 0x03)][0];
+            if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= player))
             {
                 _raceDatabase.Resets += 1;
                 labelResets.Text = _raceDatabase.Resets.ToString();
             }
 
             buttonReset.Enabled = _game.Game.MainMenu.Value == 1;
+            buttonReset.Visible = _game.Game.MainMenu.Value == 1;
             Logger.Instance.Info($"Main Menu -> {_game.Game.MainMenu.Value}");
         });
 
@@ -136,11 +149,16 @@ namespace REviewer.Modules.Forms
                 return;
             }
 
+
             var item_id = _game.Inventory.Slots[value].Item.Value;
+
+            Logger.Instance.Debug($"Updating slot {value} picture -> Item ID {item_id} -> {_itemDatabase.GetPropertyById((byte)_game.Inventory.Slots[value].Item.Value).Name}");
+
             // if value is key item, update the key item
             if (_itemDatabase.GetPropertyById((byte)_game.Inventory.Slots[value].Item.Value).Type == "Key Item")
             {
-                if ((_game.Game.State.Value & 0x0000FF00) == 0x8800)
+                int state = _game.Game.State.Value & 0x0000FF00;
+                if (state == 0x8800 || state == 0x8C00)
                 {
                     UpdateRaceKeyItem(item_id, _raceDatabase.FullRoomName, 2);
                 }
@@ -180,7 +198,7 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Character(object sender, EventArgs e) => InvokeUI(() =>
         {
-            byte value = (byte)_game.Player.Character.Value;
+            byte value = (byte)(_game.Player.Character.Value & 0x03);
             labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[value].ToString();
         });
 
@@ -265,9 +283,12 @@ namespace REviewer.Modules.Forms
                 labelHealth.Text = "255";
                 labelDeaths.Text = _raceDatabase.Deaths.ToString();
             }
-            else if ((state & 0x0FFF0000) == 0x1100000 && _raceDatabase.PreviousState != 0x2000000)
+            else if ((state & 0x0F000000) == 0x01000000 
+                    && _raceDatabase.PreviousState != 0x2000000 
+                    && _game.Player.Unk001.Value == 0x01)
             {
                 labelHealth.Text = "WP!";
+                labelHealth.ForeColor = CustomColors.Blue;
                 labelGameCompleted.Visible = true;
                 _raceWatch.Stop();
                 _segmentWatch[_raceDatabase.Segments].Stop();
@@ -286,7 +307,7 @@ namespace REviewer.Modules.Forms
         {
             labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
-            Label[] labelSegTimers = [labelSegTimer1, labelSegTimer2, labelSegTimer3];
+            Label[] labelSegTimers = [labelSegTimer1, labelSegTimer2, labelSegTimer3, labelSegTimer4];
 
             if (_raceDatabase.Segments >= 0 && _raceDatabase.Segments < labelSegTimers.Length)
             {

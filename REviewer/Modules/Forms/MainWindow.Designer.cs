@@ -187,7 +187,6 @@ namespace REviewer.Modules.Forms
             optionToolStripMenuItem.Name = "optionToolStripMenuItem";
             optionToolStripMenuItem.Size = new Size(58, 29);
             optionToolStripMenuItem.Text = "Edit";
-            optionToolStripMenuItem.Click += optionToolStripMenuItem_Click;
             // 
             // settingsToolStripMenuItem
             // 
@@ -302,7 +301,8 @@ namespace REviewer.Modules.Forms
                 {
                     _raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
                     _raceForm.SetMonitorVariables(_MVariables);
-                    _raceForm.FormClosed += (s, args) => _raceForm.Dispose();
+                    _raceForm.FormClosed += Updated_RaceForm;
+                    buttonCheck.Enabled = false;
                     _raceForm.Show();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using System;
+using MessagePack;
 using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE
@@ -33,6 +34,8 @@ namespace REviewer.Modules.RE
         private const int CharacterHealth = 0xC3523C;
         private const int MainMenuOffset = 0xAA8E57;
         private const int RebirthOffset = 0xC3002C;
+        private const int LockPickOffset = 0xC3879C;
+
 
         public const int SaveContentOffset = 0xc38500;
 
@@ -95,7 +98,8 @@ namespace REviewer.Modules.RE
             public VariableData? LastItemFound { get; set; }
             public VariableData? InventoryCapacityUsed { get; set; }
             public VariableData? CharacterHealthState { get; set; }
-            public VariableData? Health { get; internal set; }
+            public VariableData? Health { get; set; }
+            public VariableData? LockPick { get; set; }
         }
 
         public class Position
@@ -207,6 +211,7 @@ namespace REviewer.Modules.RE
                     LastItemFound = new VariableData { Offset = (IntPtr)LastItemFoundOffset, Size = 1, Database = new Dictionary<byte, string>() },
                     InventoryCapacityUsed = new VariableData { Offset = (IntPtr)InventoryCapacityUsedOffset, Size = 1, Database = null },
                     Health = new VariableData { Offset = (IntPtr)CharacterHealth, Size = 1, Database = null },
+                    LockPick = new VariableData { Offset = (IntPtr)LockPickOffset, Size = 1, Database = null },
                     CharacterHealthState = new VariableData
                     {
                         Offset = (IntPtr)CharacterHealthStateOffset,

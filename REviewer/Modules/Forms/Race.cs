@@ -70,11 +70,11 @@ namespace REviewer.Modules.Forms
             // Initialize the form
             InitializeComponent();
 
-            // Init the Inventory
-            InitInventorySlots();
-
             // Init the Key Items and Key Rooms from the loaded game data
             InitLoadState();
+
+            // Init the Inventory
+            InitInventorySlots();
 
             // Init the main classes
             _game = GameData;
@@ -133,13 +133,13 @@ namespace REviewer.Modules.Forms
             InitLabels();
             InitChronometers();
 
+            InitKeyItems();
+            InitKeyRooms();
+
             InitInventory();
             InitCharacterHealthState();
             SubscribeToEvents();
             CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
-
-            InitKeyItems();
-            InitKeyRooms();
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -162,6 +162,7 @@ namespace REviewer.Modules.Forms
             _game.Player.Character.Updated += Updated_Character;
             _game.Player.Health.Updated += Updated_Health;
             _game.Player.CharacterHealthState.Updated += Update_Character_State;
+            _game.Player.LockPick.Updated += Updated_Lockpick;
 
             _game.Inventory.Capacity.Updated += Updated_Inventory_Capacity;
 
@@ -170,7 +171,7 @@ namespace REviewer.Modules.Forms
             _game.Game.MainMenu.Updated += Updated_Reset;
             _game.Game.SaveContent.Updated += Updated_SaveState;
 
-            AssignEventHandlers();
+            CreateSlotsUpdatedEvents();
 
             _game.Rebirth.Debug.Updated += Updated_Debug;
             //_game.Rebirth.Screen.Updated += Updated_Screen;
@@ -178,7 +179,7 @@ namespace REviewer.Modules.Forms
             _game.Player.InventorySlotSelected.Updated += Updated_InventorySlotSelected;
         }
 
-        private void AssignEventHandlers()
+        private void CreateSlotsUpdatedEvents()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -205,8 +206,9 @@ namespace REviewer.Modules.Forms
             for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
                 if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room || _raceDatabase.KeyItems[i].State == state) && !item_box) return i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State <= state) && !item_box && state != 2) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State < state) return i;
+                // if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
             }
 
             return position;
@@ -258,6 +260,13 @@ namespace REviewer.Modules.Forms
         private void CheckInventoryCapacity(int value, PictureBox slot7, PictureBox slot8, Label capacity7, Label capacity8)
         {
             int[] _inventoryCapacityArray = [6, 8, 8, 6];
+
+            if (_inventoryCapacitySize == _inventoryCapacityArray[value & 3])
+            {
+                // avoiding extra checking for nothing here, it's only necessary when the player is switching between jill and chris.
+                return;
+            }
+
             _inventoryCapacitySize = _inventoryCapacityArray[value & 3];
             bool isVisible = _inventoryCapacitySize > 6;
 
@@ -322,7 +331,7 @@ namespace REviewer.Modules.Forms
         {
             var health_table = _healthTable[(byte)(_game.Player.Character.Value & 0x03)];
             var status = _game.Player.CharacterHealthState.Value;
-            Color[] colors = [Color.DarkGreen, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
+            Color[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
             labelHealth.Text = value.ToString();
 
 
@@ -357,7 +366,7 @@ namespace REviewer.Modules.Forms
             }
             else
             {
-                labelHealth.ForeColor = Color.DarkViolet;
+                labelHealth.ForeColor = CustomColors.Lavender;
             }
         }
 
@@ -384,19 +393,17 @@ namespace REviewer.Modules.Forms
                 Segments = 0
             };
 
+            InitSaveMonitoring();
             InitChronometers();
-
-            // Dirty hotfix
-            for (int i = 0; i < 2; i++)
-            {
-                InitInventory();
-                InitKeyItems();
-                InitKeyRooms();
-            }
+            InitInventory();
+            InitKeyItems();
+            InitKeyRooms();
 
             InitCharacterHealthState();
 
             CheckInventoryCapacity(_game.Inventory.Capacity.Value, pictureBoxItemSlot7, pictureBoxItemSlot8, labelSlot7Quantity, labelSlot8Quantity);
+
+            labelGameCompleted.Visible = false;
             // SubscribeToEvents();
         });
 
@@ -469,8 +476,6 @@ namespace REviewer.Modules.Forms
 
             SeedChecker seedChecker = new(seed);
             seedChecker.Show();
-
-            Console.WriteLine(seed);
         }
     }
 

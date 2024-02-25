@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Data.Common;
 using System.Diagnostics;
 using REviewer.Modules.RE;
 using REviewer.Modules.Utils;
@@ -21,27 +22,34 @@ namespace REviewer.Modules.Forms
             Dispose();
         }
 
-        private void buttonRace_Click(object sender, EventArgs e)
+        private void buttonRace_Click(object sender, EventArgs e) => InvokeUI(() =>
         {
             if (Application.OpenForms["Race"] == null)
             {
                 _raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
-                _raceForm.FormClosed += (s, args) => _raceForm.Dispose();
+                _raceForm.FormClosed += Updated_RaceForm;
+                buttonCheck.Enabled = false;
                 _raceForm.Show();
             }
 
             // Close the main window
             Dispose();
+        });
+
+        private void Updated_RaceForm(object sender, FormClosedEventArgs e) => InvokeUI(() =>
+        {
+            buttonCheck.Enabled = true;
+            _raceForm.Dispose();
+        });
+
+        private void Race_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Show();
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             Dispose();
-        }
-
-        private void optionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

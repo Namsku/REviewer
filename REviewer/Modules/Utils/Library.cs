@@ -9,6 +9,8 @@ namespace REviewer.Modules.Utils
 {
     public static class CustomColors
     {
+        public static readonly Color Blue = Color.FromArgb(86, 156, 214);
+        public static readonly Color Lavender = Color.FromArgb(206, 108, 255);
         public static readonly Color Yellow = Color.FromArgb(215, 191, 128);
         public static readonly Color Orange = Color.FromArgb(198, 155, 101);
         public static readonly Color Red = Color.FromArgb(205, 116, 118);

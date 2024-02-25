@@ -131,7 +131,7 @@ namespace REviewer.Modules.Forms
 
         }
 
-                private void InitLabels()
+        private void InitLabels()
         {
             try
             {
@@ -139,7 +139,7 @@ namespace REviewer.Modules.Forms
                 labelTimer.ForeColor = CustomColors.White;
 
                 CheckHealthLabel(_game.Player.Health.Value);
-                labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)_game.Player.Character.Value];
+                labelCharacter.Text = ((Dictionary<byte, string>)_game.Player.Character.Database)[(byte)(_game.Player.Character.Value & 0x03)];
 
                 _raceDatabase.Stage = ((_game.Player.Stage.Value & 0x04) + 1).ToString();
 
@@ -168,7 +168,7 @@ namespace REviewer.Modules.Forms
                 labelCharacter.Font = _pixelBoyDefault;
                 labelCharacter.ForeColor = CustomColors.White;
 
-                labelGameCompleted.Font = _pixelBoySegments;
+                labelGameCompleted.Font = _pixelBoyDefault;
                 labelGameCompleted.ForeColor = CustomColors.Red;
                 labelGameCompleted.Visible = false;
 
