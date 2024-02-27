@@ -56,7 +56,7 @@ namespace REviewer.Modules.Forms
             {
                 0 => Color.Transparent,
                 1 => CustomColors.Orange,
-                2 => CustomColors.Default,
+                2 => CustomColors.Green,
                 _ => pictureBox.BackColor // Default case
             };
         }
@@ -137,7 +137,7 @@ namespace REviewer.Modules.Forms
                 -1 => Color.Transparent,
                 0 => Color.Transparent,
                 1 => CustomColors.Orange,
-                2 => CustomColors.Default,
+                2 => CustomColors.Green,
                 _ => Color.Transparent // Default case
             };
         }
@@ -225,7 +225,7 @@ namespace REviewer.Modules.Forms
                     List<string> keyRooms = value;
                     string otherRoomName = roomName == lastRoomName ? fullRoomName : lastRoomName;
 
-                    if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName)
+                    if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName && _raceDatabase.Rooms.Contains(fullRoomName))
                     {
                         keyRooms.Add(otherRoomName);
 
@@ -240,6 +240,11 @@ namespace REviewer.Modules.Forms
                     _raceDatabase.KeyRooms[roomName] = keyRooms;
                 }
             }
+
+            // add value to Rooms if it doesn't exist
+            if (!_raceDatabase.Rooms.Contains(lastRoomName))
+                _raceDatabase.Rooms.Add(lastRoomName);
+
         }
 
         private void UpdateChronometers()

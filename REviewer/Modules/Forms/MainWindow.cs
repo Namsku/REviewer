@@ -24,28 +24,15 @@ namespace REviewer.Modules.Forms
 
         private void buttonRace_Click(object sender, EventArgs e) => InvokeUI(() =>
         {
-            if (Application.OpenForms["Race"] == null)
-            {
-                _raceForm = new(_residentEvilGame, gameNames[comboBoxSelectGame.SelectedIndex]);
-                _raceForm.FormClosed += Updated_RaceForm;
-                buttonCheck.Enabled = false;
-                _raceForm.Show();
-            }
-
-            // Close the main window
-            Dispose();
+            this.Show();
         });
 
         private void Updated_RaceForm(object sender, FormClosedEventArgs e) => InvokeUI(() =>
         {
             buttonCheck.Enabled = true;
             _raceForm.Dispose();
-        });
-
-        private void Race_FormClosed(object sender, FormClosedEventArgs e)
-        {
             this.Show();
-        }
+        });
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {

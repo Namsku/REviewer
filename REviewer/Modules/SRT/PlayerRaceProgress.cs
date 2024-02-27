@@ -66,6 +66,9 @@ namespace REviewer.Modules.SRT
         [Key(27)]
         public byte[] RealItembox { get; set; }
 
+        [Key(28)]
+        public List<string> Rooms = [];
+
         [IgnoreMember]
         public FileSystemWatcher Watcher = new();
 

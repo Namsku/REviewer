@@ -304,6 +304,7 @@ namespace REviewer.Modules.Forms
                     _raceForm.FormClosed += Updated_RaceForm;
                     buttonCheck.Enabled = false;
                     _raceForm.Show();
+                    this.Hide();
                 }
             }
             catch (Exception ex)

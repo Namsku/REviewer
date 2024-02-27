@@ -1,43 +1,60 @@
 ﻿using System;
+using System.Configuration;
 using MessagePack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using REviewer.Modules.Utils;
+using static REviewer.Modules.RE.ItemIDs;
 
 namespace REviewer.Modules.RE
 {
 
     public class GameData
     {
-        private const int InventoryStartOffset = 0xC38814;
-        private const int InventoryEndOffset = 0xC38824;
-        private const int ItemBoxStartOffset = 0xC387B4;
-        private const int ItemBoxEndOffset = 0xC38814;
-        private const int CapacityOffset = 0xC351B5;
-        private const int CharacterOffset = 0xC386F9;
-        private const int InventorySlotSelectedOffset = 0xC38719;
-        private const int StageOffset = 0xC386F0;
-        private const int RoomOffset = 0xC386F1;
-        private const int CutsceneOffset = 0xC386F2;
-        private const int LastRoomOffset = 0xC386F3;
-        private const int Unk001Offset = 0xC386F4;
-        private const int Unk002Offset = 0xC33097;
-        private const int EventOffset = 0xC386F5;
-        private const int LastItemFoundOffset = 0xC386F6;
-        private const int InventoryCapacityUsedOffset = 0xC386F7;
-        private const int CharacterHealthStateOffset = 0xC35290;
-        private const int GameStateOffset = 0xC33090;
-        private const int TimerOffset = 0xAA8E10;
-        private const int PositionXOffset = 0xC2EAB0;
-        private const int PositionYOffset = 0xC2EAB4;
-        private const int PositionZOffset = 0xC2EAB8;
-        private const int RebirthDebugOffset = 0x1217ACA6;
-        private const int RebirthStateOffset = 0xC30020;
-        private const int CharacterHealth = 0xC3523C;
-        private const int MainMenuOffset = 0xAA8E57;
-        private const int RebirthOffset = 0xC3002C;
-        private const int LockPickOffset = 0xC3879C;
+        public int InventoryStartOffset { get; set; }
+        public int InventoryEndOffset { get; set; }
+        public int ItemBoxStartOffset { get; set; }
+        public int ItemBoxEndOffset { get; set; }
+        public int CapacityOffset { get; set; }
+        public int CharacterOffset { get; set; }
+        public int InventorySlotSelectedOffset { get; set; }
+        public int StageOffset { get; set; }
+        public int RoomOffset { get; set; }
+        public int CutsceneOffset { get; set; }
+        public int LastRoomOffset { get; set; }
+        public int Unk001Offset { get; set; }
+        public int Unk002Offset { get; set; }
+        public int EventOffset { get; set; }
+        public int LastItemFoundOffset { get; set; }
+        public int InventoryCapacityUsedOffset { get; set; }
+        public int CharacterHealthStateOffset { get; set; }
+        public int GameStateOffset { get; set; }
+        public int TimerOffset { get; set; }
+        public int PositionXOffset { get; set; }
+        public int PositionYOffset { get; set; }
+        public int PositionZOffset { get; set; }
+        public int RebirthDebugOffset { get; set; }
+        public int RebirthStateOffset { get; set; }
+        public int CharacterHealth { get; set; }
+        public int MainMenuOffset { get; set; }
+        public int RebirthOffset { get; set; }
+        public int LockPickOffset { get; set; }
+        public int SaveContentOffset { get; set; }
+        private JObject? _data { get; set; }
+        private string? _gameName { get; set; }
 
+        public GameData LoadFromJson(string gameName)
+        {
+            var reDataPath = ConfigurationManager.AppSettings["REdata"];
+            var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
+            var data = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(json);
+            var offsets = data[gameName]["Offsets"].ToObject<GameData>();
+            
+            offsets._gameName = gameName;
+            offsets._data = data;
 
-        public const int SaveContentOffset = 0xc38500;
+            return offsets;
+        }
 
         public class VariableData
         {
@@ -142,7 +159,7 @@ namespace REviewer.Modules.RE
             public VariableData? State { get; set; }
         }
 
-        private static List<Slot> GenerateSlots(int startOffset, int endOffset)
+        private List<Slot> GenerateSlots(int startOffset, int endOffset)
         {
             List<Slot> slots = [];
 
@@ -158,7 +175,7 @@ namespace REviewer.Modules.RE
             return slots;
         }
 
-        public static Inventory GenerateInventory()
+        public Inventory GenerateInventory()
         {
             return new Inventory
             {
@@ -167,12 +184,16 @@ namespace REviewer.Modules.RE
             };
         }
 
-        public static ItemBox GenerateItemBox()
+        public ItemBox GenerateItemBox()
         {
             return new ItemBox { Slots = GenerateSlots(ItemBoxStartOffset, ItemBoxEndOffset) };
         }
+        public Player CreatePlayer()
+        {
+            _data[_gameName]["Player"].ToObject<Player>();
+        }
 
-        public static RootObject GenerateGameData()
+        public RootObject GenerateGameData()
         {
             return new RootObject
             {
@@ -216,26 +237,7 @@ namespace REviewer.Modules.RE
                     {
                         Offset = (IntPtr)CharacterHealthStateOffset,
                         Size = 1,
-                        Database = new Dictionary<byte, string>
-                        {
-                            // BINARY 00000000 representation of the values below
-                            // 0x10 = 00010000 16
-                            // 0x12 = 00010010 18
-                            // 0x1E = 00011110 30
-                            // 0x50 = 01010000 80
-                            // 0x52 = 01010010 82
-                            // 0x59 = 01011110 94
-
-                            { 16, "Normal"},
-                            { 18, "Poison"},
-                            { 26, "???" },
-                            { 30, "Yawn Poison"},
-                            { 50, "Poison + Yawn Poison" },
-                            { 80, "Gaz"},
-                            { 82, "Gaz + Poison"},
-                            { 94, "Gaz + Yawn Poison"},
-                            { 114, "G+P+YP (WTF)"},
-                        },
+                        Database = null,
                     },
                 },
                 Game = new Game
