@@ -595,7 +595,7 @@
                 }
             },
             "CharacterHealthState": {
-                "Size": 1,
+                "Size": 1
             },
             "LastItemFound": {
                 "Size": 1
@@ -630,49 +630,48 @@
                     "0": "Nothing",
                     "1": "Refused Event",
                     "128": "Event #1 - Yes",
-                    "128": "Event #2 - No",
+                    "129": "Event #2 - No"
                 }
             }
         },
         "Game": {
             "State": {
-                "Size": "4",
+                "Size": "4"
             },
             "Timer": {
-                "Size": "4",
+                "Size": "4"
             },
             "Unk001": {
-                "Size": "4",
+                "Size": "4"
             },
             "MainMenu": {
-                "Size": 1
+                "Size": "1"
             },
             "SaveContent": {
-                "Size": 4
+                "Size": "4"
             }
         },
         "Position": {
             "X": {
-                "Size": 4
+                "Size": "4"
             },
             "Y": {
-                "Size": 4
+                "Size": "4"
             },
             "Z": {
-                "Size": 4
+                "Size": "4"
             }
         },
         "Rebirth": {
             "Debug": {
-                "Size": 1
+                "Size": "1"
             },
             "Screen": {
-                "Size": 1
+                "Size": "1"
             },
             "State": {
-                "Size": 4
+                "Size": "4"
             }
-        },
-
+        }
     }
 }

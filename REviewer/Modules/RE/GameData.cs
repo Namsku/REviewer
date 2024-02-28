@@ -188,10 +188,6 @@ namespace REviewer.Modules.RE
         {
             return new ItemBox { Slots = GenerateSlots(ItemBoxStartOffset, ItemBoxEndOffset) };
         }
-        public Player CreatePlayer()
-        {
-            _data[_gameName]["Player"].ToObject<Player>();
-        }
 
         public RootObject GenerateGameData()
         {
