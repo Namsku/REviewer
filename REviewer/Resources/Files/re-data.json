@@ -577,7 +577,7 @@
         },
         "Player": {
             "Character": {
-                "Size": 1,
+                "Size": "1",
                 "Database": {
                     "0": "Chris",
                     "1": "Jill",
@@ -586,7 +586,7 @@
                 }
             },
             "Health": {
-                "Size": 1,
+                "Size": "1",
                 "Database": {
                     "0": [ "140", "106", "71", "36", "0" ],
                     "1": [ "96", "73", "49", "25", "0" ],
@@ -595,37 +595,37 @@
                 }
             },
             "CharacterHealthState": {
-                "Size": 1
+                "Size": "1"
             },
             "LastItemFound": {
-                "Size": 1
+                "Size": "1"
             },
             "LockPick": {
-                "Size": 1
+                "Size": "1"
             },
             "InventoryCapacityUsed": {
-                "Size": 1
+                "Size": "1"
             },
             "InventorySelected": {
-                "Size": 1
+                "Size": "1"
             },
             "Stage": {
-                "Size": 1
+                "Size": "1"
             },
             "Room": {
-                "Size": 1
+                "Size": "1"
             },
             "LastRoom": {
-                "Size": 1
+                "Size": "1"
             },
             "Cutscene": {
-                "Size": 1
+                "Size": "1"
             },
             "Unk001": {
-                "Size": 1
+                "Size": "1"
             },
             "Event": {
-                "Size": 1,
+                "Size": "1",
                 "Database": {
                     "0": "Nothing",
                     "1": "Refused Event",

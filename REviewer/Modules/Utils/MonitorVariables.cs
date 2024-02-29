@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using REviewer.Modules.RE.Common;
 using REviewer.Modules.Utils;
 using static REviewer.Modules.RE.GameData;
 

@@ -1,17 +1,19 @@
+using Newtonsoft.Json;
+
 namespace REviewer.Modules.RE.Json
 {
-    public class GameJson
+    public class JGameJson
     {
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, Newtonsoft.Json.Linq.JToken> AdditionalData { get; set; }
 
-        public GameJson()
+        public JGameJson()
         {
-            AdditionalData = new Dictionary<string, JToken>();
+            AdditionalData = new Dictionary<string, Newtonsoft.Json.Linq.JToken>();
         }
     }
 
-    public class Item
+    public class JItem
     {
         public required string Name { get; set; }
         public required string Type { get; set; }
@@ -19,30 +21,36 @@ namespace REviewer.Modules.RE.Json
         public required string Img { get; set; }
     }
 
-    public class Property
+    public class StandardProperty
     {
         public required int Size { get; set; }
-        public dictionary<string, string>? Database { get; set; }
+        public Dictionary<string, string>? Database { get; set; }
     }
 
-    public class Player
+    public class AdvancedProperty
     {
-        public required Property Character { get; set; }
-        public required Property Health { get; set; }
-        public required Property CharacterHealthState { get; set; }
-        public required Property LastItemFound { get; set; }
-        public required Property LockPick { get; set; }
-        public required Property InventoryCapacityUsed { get; set; }
-        public required Property InventorySelected { get; set; }
-        public required Property Stage { get; set; }
-        public required Property Room { get; set; }
-        public required Property LastRoom { get; set; }
-        public required Property Cutscene { get; set; }
-        public required Property Unk001 { get; set; }
-        public required Property Event { get; set; }
+        public required int Size { get; set; }
+        public Dictionary<string, List<string>>? Database { get; set; }
     }
 
-    public class Game
+    public class JPlayer
+    {
+        public required StandardProperty Character { get; set; }
+        public required AdvancedProperty Health { get; set; }
+        public required StandardProperty CharacterHealthState { get; set; }
+        public required StandardProperty LastJItemFound { get; set; }
+        public required StandardProperty LockPick { get; set; }
+        public required StandardProperty InventoryCapacityUsed { get; set; }
+        public required StandardProperty InventorySelected { get; set; }
+        public required StandardProperty Stage { get; set; }
+        public required StandardProperty Room { get; set; }
+        public required StandardProperty LastRoom { get; set; }
+        public required StandardProperty Cutscene { get; set; }
+        public required StandardProperty Unk001 { get; set; }
+        public required StandardProperty Event { get; set; }
+    }
+
+    public class JGame
     {
         public required Property State { get; set; }
         public required Property Timer { get; set; }
@@ -51,14 +59,14 @@ namespace REviewer.Modules.RE.Json
         public required Property SaveContent { get; set; }
     }
 
-    public class Position
+    public class JPosition
     {
         public required Property X { get; set; }
         public required Property Y { get; set; }
         public required Property Z { get; set; }
     }
 
-    public class Rebirth
+    public class JRebirth
     {
         public required Property Debug { get; set; }
         public required Property Screen { get; set; }
@@ -67,15 +75,14 @@ namespace REviewer.Modules.RE.Json
 
     public class Bio
     {
-        public required Dictionary<string, Item> ItemIDs { get; set; }
+        public required Dictionary<string, JItem> ItemIDs { get; set; }
         public required Dictionary<string, int> DupItems { get; set; }
-        public required Dictionary<string, list> KeyRooms { get; set; }
-        public required Dictionary<string, list> RoomIDs { get; set; }
-        public required Dictionary<string, list> Offsets { get; set; }
-        public required Player Player { get; set; }
-        public required Game Game { get; set; }
-        public required Position Position { get; set; }
-        public required Rebirth Rebirth { get; set; }
+        public required List<string> KeyRooms { get; set; }
+        public required Dictionary<string, string> RoomIDs { get; set; }
+        public required Dictionary<string, string> Offsets { get; set; }
+        public required JPlayer Player { get; set; }
+        public required JGame Game { get; set; }
+        public required JPosition Position { get; set; }
+        public required JRebirth Rebirth { get; set; }
     }
 }
-```

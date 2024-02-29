@@ -1,22 +1,14 @@
-﻿using System.Configuration;
-using System.Diagnostics;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
-using REviewer.Modules.RE;
-using static REviewer.Modules.RE.GameData;
+﻿using REviewer.Modules.RE;
 using Label = System.Windows.Forms.Label;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
-using MessagePack;
 using REviewer.Modules.Utils;
-using NLog.Config;
 using REviewer.Modules.SRT;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.Forms
 {
     public partial class Race : Form
     {
-        private readonly GameData.RootObject _game;
+        private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
 
         private readonly RaceWatch _raceWatch = new();
@@ -59,7 +51,7 @@ namespace REviewer.Modules.Forms
 
         private static readonly string[] _itemTypes = ["Key Item", "Optionnal Key Item", "Nothing"];
 
-        public Race(GameData.RootObject GameData, string gameName)
+        public Race(RootObject GameData, string gameName)
         {
             // Font Loading
             InitPixelBoyFont();

@@ -4,6 +4,7 @@ using REviewer.Modules.Utils;
 using REviewer.Modules.RE;
 using System.Configuration;
 using System;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.Forms
 {
@@ -20,7 +21,7 @@ namespace REviewer.Modules.Forms
             // Other games will be incremented here based on the position in the combobox
         };
 
-        private GameData.RootObject _residentEvilGame;
+        private RootObject _residentEvilGame;
         private Process _process;
         private MonitorVariables _MVariables;
 
