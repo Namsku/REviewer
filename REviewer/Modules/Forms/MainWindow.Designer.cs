@@ -293,7 +293,8 @@ namespace REviewer.Modules.Forms
                 UpdateLabel(labelRebirthDll, "Found", Color.Green);
                 UpdateLabel(labelSavePath, "Found", Color.Green);
 
-                _residentEvilGame = GameData.GenerateGameData();
+                GameData gameData = new GameData(_process.ProcessName);
+                _residentEvilGame = gameData.GenerateGameData();
                 _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
                 _MVariables.Start(_residentEvilGame);
 
@@ -310,7 +311,7 @@ namespace REviewer.Modules.Forms
             catch (Exception ex)
             {
                 // Handle the exception here
-                ShowError("An error occurred: " + ex.Message);
+                ShowError("An error occurred: " + ex.Message + "\n" + "Details: " + ex.StackTrace);
             }
         }
 
@@ -431,6 +432,7 @@ namespace REviewer.Modules.Forms
                 }
 
                 // Perform any necessary actions when the process is found
+                // TODO
                 _MVariables.UpdateProcessHandle(_process.Handle);
 
                 // Update labels and buttons

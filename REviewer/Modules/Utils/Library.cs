@@ -55,19 +55,8 @@ namespace REviewer.Modules.Utils
                 return null;
             }
 
-            var gamePaths = new Dictionary<string, string>();
-
-            using (var reader = new StreamReader(_configPath))
-            {
-                string? line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var keyValue = JsonConvert.DeserializeObject<KeyValuePair<string, string>>(line);
-                    gamePaths.Add(keyValue.Key, keyValue.Value);
-                }
-            }
-
-            return gamePaths;
+            var json = File.ReadAllText(_configPath);
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }
         public static string GetSavePath(string gameName)
         {

@@ -205,5 +205,10 @@ namespace REviewer.Modules.Utils
                 return true;
             }
         }
+
+        internal void UpdateProcessHandle(nint handle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
