@@ -47,8 +47,8 @@ namespace REviewer.Modules.RE
         {
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
-            var data = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(json);
-            var offsets = data[gameName]["Offsets"].ToObject<GameData>();
+            var bioData = games["Bio"];
+            var offsets = bioData.Offsets.ToObject<GameData>();
             
             offsets._gameName = gameName;
             offsets._data = data;
