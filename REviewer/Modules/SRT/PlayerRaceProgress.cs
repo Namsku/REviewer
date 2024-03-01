@@ -57,7 +57,7 @@ namespace REviewer.Modules.SRT
         public int? Fulltimer { get; set; }
 
         [Key(14)]
-        public List<int?> SegTimers = [];
+        public List<int?> SegTimers = [0,0,0,0];
 
         [Key(15)]
         public int TickTimer { get; set; }

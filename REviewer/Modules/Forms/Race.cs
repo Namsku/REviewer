@@ -11,7 +11,7 @@ namespace REviewer.Modules.Forms
         private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
         private int _raceWatch = new();
-        private List<int> _segmentWatch = [];
+        private List<int> _segmentWatch = [0,0,0,0];
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;

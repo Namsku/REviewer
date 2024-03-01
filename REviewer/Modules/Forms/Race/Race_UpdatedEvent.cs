@@ -214,7 +214,7 @@ namespace REviewer.Modules.Forms
         });
 
         private void UpdateKeyRooms()
-        {
+        {      
             string fullRoomName = _raceDatabase.FullRoomName;
             string lastRoomName = _raceDatabase.LastRoomName ?? fullRoomName;
 
@@ -224,13 +224,16 @@ namespace REviewer.Modules.Forms
                 {
                     List<string> keyRooms = value;
                     string otherRoomName = roomName == lastRoomName ? fullRoomName : lastRoomName;
+                    Logger.Instance.Info($"Updating key rooms for {roomName} -> {otherRoomName}");
 
-                    if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName && _raceDatabase.Rooms.Contains(fullRoomName))
+                    if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName)
                     {
+                        Logger.Instance.Info($"Adding {otherRoomName} to {roomName}");
                         keyRooms.Add(otherRoomName);
 
                         if (keyRooms.Count == 2)
                         {
+                            Logger.Instance.Info($"End of section detected");
                             UpdateChronometers();
                             _raceDatabase.KeyRooms.Remove(roomName);
                         }
@@ -240,17 +243,13 @@ namespace REviewer.Modules.Forms
                     _raceDatabase.KeyRooms[roomName] = keyRooms;
                 }
             }
-
-            // add value to Rooms if it doesn't exist
-            if (!_raceDatabase.Rooms.Contains(lastRoomName))
-                _raceDatabase.Rooms.Add(lastRoomName);
-
         }
 
         private void UpdateChronometers()
         {
-            _raceDatabase.Segments += 1;
-            _raceDatabase.SegTimers[_raceDatabase.Segments] = _game.Game.Timer.Value;
+            _raceDatabase.Segments += 1 % 4;
+            _raceDatabase.SegTimers[_raceDatabase.Segments - 1] = _game.Game.Timer.Value;
+            _segmentWatch[_raceDatabase.Segments - 1] = _game.Game.Timer.Value;
         }
 
         private static uint ReverseBytes(uint number)
