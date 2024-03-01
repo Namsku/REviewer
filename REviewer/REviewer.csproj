@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
+    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xD;&#xA;&#xD;&#xA;del /Q &quot;$(TargetDir)data\*&quot;&#xD;&#xA;del /Q &quot;$(TargetDir)saves\*&quot;&#xD;&#xA;del /Q &quot;$(TargetDir)logs\*&quot;&#xA;&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
   </Target>
 
 </Project>
