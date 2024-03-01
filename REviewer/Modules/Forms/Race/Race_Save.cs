@@ -126,10 +126,7 @@ namespace REviewer.Modules.Forms
             {
                 try
                 {
-                    if (save.SegTimers[i] > _segmentWatch[i])
-                    {
-                        _segmentWatch[i] = (int)save.SegTimers[i];
-                    }
+                    _segmentWatch[i] = Math.Max((int) _segmentWatch[i], (int) save.SegTimers[i]);
                 }
                 catch (Exception e)
                 {
@@ -144,6 +141,12 @@ namespace REviewer.Modules.Forms
             {
                 _raceDatabase.Segments = save?.Segments ?? 0;
             }
+
+            labelSegTimer1.Text = TimeSpan.FromSeconds(_segmentWatch[0] / 30.0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds((_segmentWatch[1] - _segmentWatch[0])/30.0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds((_segmentWatch[2] - _segmentWatch[1]) /30.0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds((_segmentWatch[3] - _segmentWatch[2]) /30.0).ToString(@"hh\:mm\:ss\.ff");
+
 
             _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save?.Debugs ?? 0);
             _raceDatabase.Deaths = Math.Max(_raceDatabase.Deaths, save.Deaths);

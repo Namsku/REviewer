@@ -9,7 +9,7 @@ using static REviewer.Modules.RE.GameData;
 
 namespace REviewer.Modules.Utils
 {
-    public class MonitorVariables
+    public class MonitorVariables(nint processHandle, string processName)
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(nint processHandle, nint baseAddress, byte[] buffer, uint size, out int bytesWritten);
@@ -22,21 +22,14 @@ namespace REviewer.Modules.Utils
         private const int MONITORING_INTERVAL = 55;
 
         private System.Threading.Timer? _monitoringTimer;
-        private nint _processHandle;
-        private readonly string _processName;
-        private object _lockObject = new object();
-        private readonly object _processHandleLock = new object();
+        private nint _processHandle = processHandle;
+        private readonly string _processName = processName;
+        private readonly object _lockObject = new();
+        private readonly object _processHandleLock = new();
         private volatile int _running = 1;
 
         private RootObject? _currentRootObject;
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new ConcurrentDictionary<Type, PropertyInfo[]>();
-
-
-        public MonitorVariables(nint processHandle, string processName)
-        {
-            _processHandle = processHandle;
-            _processName = processName;
-        }
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
         private bool CanMonitorObject(object obj)
         {
@@ -187,15 +180,14 @@ namespace REviewer.Modules.Utils
             byte[] buffer = variableData.Size switch
             {
                 INT_SIZE => BitConverter.GetBytes(newValue),
-                BYTE_SIZE => new byte[] { (byte)newValue },
+                BYTE_SIZE => [(byte)newValue],
                 _ => throw new InvalidOperationException("Invalid variable size"),
             };
 
             bool success;
             lock (_processHandleLock)
             {
-                int bytesWritten;
-                success = WriteProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out bytesWritten);
+                success = WriteProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out int bytesWritten);
 
                 if (!success)
                 {
@@ -209,7 +201,8 @@ namespace REviewer.Modules.Utils
 
         internal void UpdateProcessHandle(nint handle)
         {
-            throw new NotImplementedException();
+            _processHandle = handle;
+            Start(_currentRootObject);
         }
     }
 }

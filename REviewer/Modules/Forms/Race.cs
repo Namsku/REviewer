@@ -190,7 +190,7 @@ namespace REviewer.Modules.Forms
             {
                 if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
                 if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State <= state) && !item_box && state != 2) return i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State < state) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State == -1) return i;
                 // if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
             }
 
@@ -216,7 +216,7 @@ namespace REviewer.Modules.Forms
             foreach (var keyItem in keyItems)
             {
                 // Find the corresponding key item in _raceDatabase.KeyItems
-                KeyItem existingKeyItem = _raceDatabase.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
+                KeyItem? existingKeyItem = _raceDatabase.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
 
                 if (existingKeyItem == null)
                 {
@@ -266,17 +266,6 @@ namespace REviewer.Modules.Forms
                 UpdateSlotPicture(7);
                 UpdateSlotCapacity(capacity8, 7);
             }
-
-            /*
-            if (!isVisible)
-            {
-                capacity7.Visible = false;
-                capacity8.Visible = false;
-                slot7.Visible = false;
-                slot8.Visible = false;
-            }
-            */
-
         }
 
         private static int GetItemPosition(int value) => value switch

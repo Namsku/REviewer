@@ -29,7 +29,7 @@ namespace REviewer.Modules.RE
         public object Clone()
         {
             // Create a new Bitmap object from the existing one
-            Bitmap clonedImg = null;
+            Bitmap? clonedImg = null;
             if (Img != null)
             {
                 clonedImg = new Bitmap(Img);

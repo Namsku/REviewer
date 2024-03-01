@@ -4,15 +4,10 @@ using MessagePack;
 namespace REviewer.Modules.Utils
 {
     [MessagePackObject]
-    public class RaceWatch
+    public class RaceWatch(nint startTime)
     {
         [Key(0)]
-        private nint _offset = 0;
-
-        public RaceWatch(nint startTime)
-        {
-            _offset = startTime;
-        }
+        private nint _offset = startTime;
 
         public void StartFrom(nint startTime)
         {
