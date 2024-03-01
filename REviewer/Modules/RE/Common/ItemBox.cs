@@ -1,8 +1,11 @@
-﻿namespace REviewer.Modules.RE.Common
+﻿using REviewer.Modules.RE.Json;
+using REviewer.Modules.Utils;
+
+namespace REviewer.Modules.RE.Common
 {
-    public class ItemBox
+    public class ItemBox(Bio bio)
     {
-        public List<Slot>? Slots { get; set; }
+        public List<Slot> Slots { get; set; } = Slot.GenerateSlots(Library.HexToNint(bio.Offsets["ItemBoxStart"]), Library.HexToNint(bio.Offsets["ItemBoxEnd"]));
     }
 
 }

@@ -8,38 +8,20 @@ using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
 {
-    public class Player
+    public class Player(Bio bio)
     {
-
-        public Player(Bio bio)
-        {
-            Character = new VariableData(Library.HexToNint(bio.Offsets["Character"]), bio.Player.Character);
-            InventorySlotSelected = new VariableData(Library.HexToNint(bio.Offsets["InventorySlotSelected"]), bio.Player.InventorySlotSelected);
-            Stage = new VariableData(Library.HexToNint(bio.Offsets["Stage"]), bio.Player.Stage);
-            Room = new VariableData(Library.HexToNint(bio.Offsets["Room"]), bio.Player.Room);
-            Cutscene = new VariableData(Library.HexToNint(bio.Offsets["Cutscene"]), bio.Player.Cutscene);
-            LastRoom = new VariableData(Library.HexToNint(bio.Offsets["LastRoom"]), bio.Player.LastRoom);
-            Unk001 = new VariableData(Library.HexToNint(bio.Offsets["Unk001"]), bio.Player.Unk001);
-            Event = new VariableData(Library.HexToNint(bio.Offsets["Event"]), bio.Player.Event);
-            LastItemFound = new VariableData(Library.HexToNint(bio.Offsets["LastItemFound"]), bio.Player.LastItemFound);
-            InventoryCapacityUsed = new VariableData(Library.HexToNint(bio.Offsets["InventoryCapacityUsed"]), bio.Player.InventoryCapacityUsed);
-            CharacterHealthState = new VariableData(Library.HexToNint(bio.Offsets["CharacterHealthState"]), bio.Player.CharacterHealthState);
-            Health = new VariableData(Library.HexToNint(bio.Offsets["Health"]), bio.Player.Health);
-            LockPick = new VariableData(Library.HexToNint(bio.Offsets["LockPick"]), bio.Player.LockPick);
-        }
-
-        public VariableData? Character { get; set; }
-        public VariableData? InventorySlotSelected { get; set; }
-        public VariableData? Stage { get; set; }
-        public VariableData? Room { get; set; }
-        public VariableData? Cutscene { get; set; }
-        public VariableData? LastRoom { get; set; }
-        public VariableData? Unk001 { get; set; }
-        public VariableData? Event { get; set; }
-        public VariableData? LastItemFound { get; set; }
-        public VariableData? InventoryCapacityUsed { get; set; }
-        public VariableData? CharacterHealthState { get; set; }
-        public VariableData? Health { get; set; }
-        public VariableData? LockPick { get; set; }
+        public VariableData? Character { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["Character"]), bio.Player.Character);
+        public VariableData? InventorySlotSelected { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["InventorySlotSelected"]), bio.Player.InventorySlotSelected);
+        public VariableData? Stage { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["Stage"]), bio.Player.Stage);
+        public VariableData? Room { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["Room"]), bio.Player.Room);
+        public VariableData? Cutscene { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["Cutscene"]), bio.Player.Cutscene);
+        public VariableData? LastRoom { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["LastRoom"]), bio.Player.LastRoom);
+        public VariableData? Unk001 { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["GameUnk001"]), bio.Player.Unk001);
+        public VariableData? Event { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["Event"]), bio.Player.Event);
+        public VariableData? LastItemFound { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["LastItemFound"]), bio.Player.LastItemFound);
+        public VariableData? InventoryCapacityUsed { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["InventoryCapacityUsed"]), bio.Player.InventoryCapacityUsed);
+        public VariableData? CharacterHealthState { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["CharacterHealthState"]), bio.Player.CharacterHealthState);
+        public VariableData? Health { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["CharacterHealth"]), bio.Player.Health);
+        public VariableData? LockPick { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["LockPick"]), bio.Player.LockPick);
     }
 }

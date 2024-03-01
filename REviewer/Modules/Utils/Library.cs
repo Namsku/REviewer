@@ -66,8 +66,7 @@ namespace REviewer.Modules.Utils
                 return "";
             }
 
-            string? gamePath = null;
-            if (_gamePaths != null && _gamePaths.TryGetValue(gameKey, out gamePath))
+            if (_gamePaths != null && _gamePaths.TryGetValue(gameKey, out string? gamePath))
             {
                 return gamePath;
             }
@@ -76,19 +75,19 @@ namespace REviewer.Modules.Utils
             return "";
         }
 
-        public static Dictionary<string, List<int>>? ConvertDictionary(Dictionary<string, List<string>>? originalDict)
+        public static Dictionary<byte, List<int>>? ConvertDictionnary(Dictionary<string, List<string>>? originalDict)
         {
             if (originalDict == null)
             {
                 return null;
             }
 
-            var newDict = new Dictionary<string, List<int>>();
+            var newDict = new Dictionary<byte, List<int>>();
 
             foreach (var pair in originalDict)
             {
                 var intList = pair.Value.Select(int.Parse).ToList();
-                newDict.Add(pair.Key, intList);
+                newDict.Add(byte.Parse(pair.Key), intList);
             }
 
             return newDict;
@@ -98,7 +97,7 @@ namespace REviewer.Modules.Utils
         {
             if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
-                hex = hex.Substring(2);
+                hex = hex[2..];
             }
 
             long value = Convert.ToInt64(hex, 16);

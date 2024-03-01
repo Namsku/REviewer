@@ -87,11 +87,11 @@ namespace REviewer.Modules.Forms
         private void SaveState()
         {
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
-            _raceDatabase.Fulltimer = new RaceWatch(_raceWatch.Elapsed);
+            _raceDatabase.Fulltimer = _raceDatabase.TickTimer;
 
             foreach (var seg in _segmentWatch)
             {
-                _raceDatabase.SegTimers.Add(new RaceWatch(seg.Elapsed));
+                _raceDatabase.SegTimers.Add(seg);
             }
 
             SerializeObject(_raceDatabase);
@@ -117,18 +117,18 @@ namespace REviewer.Modules.Forms
             //_segmentWatch[_raceDatabase.Segments].Reset();
 
             // Load the save RaceWatch and Segments
-            if (save?.Fulltimer?.GetOffset() > _raceWatch.Elapsed)
+            if (save.Fulltimer > _raceWatch)
             {
-                _raceWatch.StartFrom(save.Fulltimer.GetOffset());
+                _raceWatch = (int)save.Fulltimer;
             }
 
             for (int i = 0; i < save?.SegTimers?.Count; i++)
             {
                 try
                 {
-                    if (save.SegTimers[i]?.GetOffset() > _segmentWatch[i].Elapsed)
+                    if (save.SegTimers[i] > _segmentWatch[i])
                     {
-                        _segmentWatch[i].StartFrom(save.SegTimers[i].GetOffset());
+                        _segmentWatch[i] = (int)save.SegTimers[i];
                     }
                 }
                 catch (Exception e)
@@ -142,9 +142,7 @@ namespace REviewer.Modules.Forms
 
             if (_raceDatabase.Segments < save?.Segments)
             {
-                _segmentWatch[_raceDatabase.Segments].Stop();
                 _raceDatabase.Segments = save?.Segments ?? 0;
-                _segmentWatch[_raceDatabase.Segments].Start();
             }
 
             _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save?.Debugs ?? 0);

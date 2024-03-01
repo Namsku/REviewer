@@ -3,20 +3,13 @@ using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
 {
-    public class Game
+    public class Game(Bio bio)
     {
-        public Game(Bio bio)
-        {
-            Timer = new VariableData(Library.HexToNint(bio.Offsets["Timer"]), bio.Game.Timer);
-            MainMenu = new VariableData(Library.HexToNint(bio.Offsets["MainMenu"]), bio.Game.MainMenu);
-            SaveContent = new VariableData(Library.HexToNint(bio.Offsets["SaveContent"]), bio.Game.SaveContent);
-        }
-        
-        public VariableData? State { get; set; }
-        public VariableData? Unk001 { get; set; }
-        public VariableData? Timer { get; set; }
-        public VariableData? MainMenu { get; set; }
-        public VariableData? SaveContent { get; set; }
+        public VariableData State { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["GameState"]), bio.Game.State);
+        public VariableData Unk001 { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["GameUnk001"]), bio.Game.Unk001);
+        public VariableData Timer { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["GameTimer"]), bio.Game.Timer);
+        public VariableData MainMenu { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["MainMenu"]), bio.Game.MainMenu);
+        public VariableData SaveContent { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["SaveContent"]), bio.Game.SaveContent);
     }
 
 }

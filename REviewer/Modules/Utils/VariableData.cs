@@ -35,18 +35,25 @@ namespace REviewer.Modules.Utils
             Updated?.Invoke(this, EventArgs.Empty);
         }
 
+        public VariableData(IntPtr offset, uint size)
+        {
+            Offset = offset;
+            Size = size;
+            Database = null;
+        }
+
         public VariableData(IntPtr offset, StandardProperty property)
         {
             Offset = offset;
             Size = (uint)property.Size;
-            Database = (Dictionary<string, string>?) property.Database;
+            Database = (Dictionary<byte, string>?) property.Database;
         }
 
         public VariableData(IntPtr offset, AdvancedProperty property)
         {
             Offset = offset;
             Size = (uint)property.Size;
-            Database = Library.ConvertDictionary(property.Database);
+            Database = (Dictionary<byte, List<int>>?) Library.ConvertDictionnary(property.Database);
         }
     }
 }

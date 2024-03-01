@@ -3,18 +3,11 @@ using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
 {
-    public class Rebirth
+    public class Rebirth(Bio bio)
     {
-        public Rebirth(Bio bio)
-        {
-            Debug = new VariableData(Library.HexToNint(bio.Offsets["Debug"]), bio.Rebirth.Debug);
-            Screen = new VariableData(Library.HexToNint(bio.Offsets["Screen"]), bio.Rebirth.Screen);
-            State = new VariableData(Library.HexToNint(bio.Offsets["State"]), bio.Rebirth.State);
-        }
-
-        public VariableData? Debug { get; set; }
-        public VariableData? Screen { get; set; }
-        public VariableData? State { get; set; }
+        public VariableData? Debug { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["RebirthDebug"]), bio.Rebirth.Debug);
+        public VariableData? Screen { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["RebirthScreen"]), bio.Rebirth.Screen);
+        public VariableData? State { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["RebirthState"]), bio.Rebirth.State);
     }
 
 }

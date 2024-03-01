@@ -295,7 +295,7 @@ namespace REviewer.Modules.Forms
                 UpdateLabel(labelSavePath, "Found", Color.Green);
 
                 GameData gameData = new GameData(_process.ProcessName);
-                _residentEvilGame = gameData.GenerateGameData();
+                _residentEvilGame = gameData.GetGameData();
                 _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
                 _MVariables.Start(_residentEvilGame);
 

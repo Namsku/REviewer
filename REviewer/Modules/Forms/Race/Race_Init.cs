@@ -172,8 +172,7 @@ namespace REviewer.Modules.Forms
                 labelGameCompleted.ForeColor = CustomColors.Red;
                 labelGameCompleted.Visible = false;
 
-                _raceWatch.Reset();
-                labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                labelTimer.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
 
                 labelDeaths.Text = _raceDatabase.Deaths.ToString();
                 labelDebug.Text = _raceDatabase.Debugs.ToString();
@@ -194,30 +193,14 @@ namespace REviewer.Modules.Forms
 
         private void InitChronometers()
         {
-            if (_segmentWatch.Count > 0)
-            {
-                foreach (var stopwatch in _segmentWatch)
-                {
-                    stopwatch.Reset();
-                }
-            }
-            else
-            {
-                _segmentWatch =
-                [
-                    new RaceWatch(),
-                    new RaceWatch(),
-                    new RaceWatch(),
-                    new RaceWatch()
-                ];
-            }
+            _raceWatch = 0;
+            _segmentWatch = [0, 0, 0, 0];
 
-            _raceWatch.Reset();
-            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer1.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer2.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer3.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer4.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelTimer.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer1.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
         }
         private void InitInventorySlots()
         {

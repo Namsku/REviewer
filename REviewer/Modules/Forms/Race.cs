@@ -10,9 +10,8 @@ namespace REviewer.Modules.Forms
     {
         private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
-
-        private readonly RaceWatch _raceWatch = new();
-        private List<RaceWatch> _segmentWatch = [];
+        private int _raceWatch = new();
+        private List<int> _segmentWatch = [];
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;
@@ -40,14 +39,6 @@ namespace REviewer.Modules.Forms
         {
             _monitorVariables = monitorVariables;
         }
-
-        private readonly Dictionary<byte, List<int>> _healthTable = new()
-        {
-            { 0 , new List<int> { 140, 106,  71,  36, 0 } },
-            { 1 , new List<int> { 96,   73,  49,  25, 0 } },
-            { 2 , new List<int> { 96,   73,  49,  25, 0 } },
-            { 3 , new List<int> { 96,   73,  49,  25, 0 } },
-        };
 
         private static readonly string[] _itemTypes = ["Key Item", "Optionnal Key Item", "Nothing"];
 
@@ -321,7 +312,7 @@ namespace REviewer.Modules.Forms
 
         private void CheckHealthLabel(int value)
         {
-            var health_table = _healthTable[(byte)(_game.Player.Character.Value & 0x03)];
+            var health_table = ((Dictionary<byte, List<int>>)_game.Player.Health.Database)[(byte)(_game.Player.Character.Value & 0x03)];
             var status = _game.Player.CharacterHealthState.Value;
             Color[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
             labelHealth.Text = value.ToString();

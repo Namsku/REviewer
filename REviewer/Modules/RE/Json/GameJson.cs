@@ -24,7 +24,7 @@ namespace REviewer.Modules.RE.Json
     public class StandardProperty
     {
         public required int Size { get; set; }
-        public Dictionary<string, string>? Database { get; set; }
+        public Dictionary<byte, string>? Database { get; set; }
     }
 
     public class AdvancedProperty
@@ -75,6 +75,7 @@ namespace REviewer.Modules.RE.Json
 
     public class Bio
     {
+        public required Dictionary<string, string> Info { get; set; }
         public required Dictionary<string, JItem> ItemIDs { get; set; }
         public required Dictionary<string, int> DupItems { get; set; }
         public required List<string> KeyRooms { get; set; }

@@ -54,10 +54,10 @@ namespace REviewer.Modules.SRT
         public string? SavePath;
 
         [Key(13)]
-        public RaceWatch? Fulltimer { get; set; }
+        public int? Fulltimer { get; set; }
 
         [Key(14)]
-        public List<RaceWatch?> SegTimers = [];
+        public List<int?> SegTimers = [];
 
         [Key(15)]
         public int TickTimer { get; set; }

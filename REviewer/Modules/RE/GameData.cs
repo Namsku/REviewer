@@ -21,34 +21,9 @@ namespace REviewer.Modules.RE
             _gameName = gameName;
         }
 
-        private List<Slot> GenerateSlots(int startOffset, int endOffset)
+        public RootObject GetGameData()
         {
-            List<Slot> slots = [];
-
-            for (int i = startOffset; i < endOffset; i += 2)
-            {
-                slots.Add(new Slot
-                {
-                    Item = new VariableData { Offset = (IntPtr)i, Size = 1, Database = new Dictionary<byte, string>() },
-                    Quantity = new VariableData { Offset = (IntPtr)(i + 1), Size = 1, Database = null }
-                });
-            }
-
-            return slots;
-        }
-
-        public Inventory GenerateInventory()
-        {
-            return new Inventory
-            {
-                Capacity = new VariableData { Offset = (IntPtr)CapacityOffset, Size = 4, Database = null },
-                Slots = GenerateSlots(InventoryStartOffset, InventoryEndOffset)
-            };
-        }
-
-        public ItemBox GenerateItemBox()
-        {
-            return new ItemBox { Slots = GenerateSlots(ItemBoxStartOffset, ItemBoxEndOffset) };
+            return new RootObject(_data[_gameName]);
         }
     }
 }

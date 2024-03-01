@@ -114,7 +114,7 @@ namespace REviewer.Modules.Forms
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
             int health = Int32.Parse(labelHealth.Text);
-            int player = _healthTable[(byte)(_game.Player.Character.Value & 0x03)][0];
+            int player = ((Dictionary<byte ,List<int>>?)_game.Player.Health.Database)[(byte)(_game.Player.Character.Value & 0x03)][0];
             if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= player))
             {
                 _raceDatabase.Resets += 1;
@@ -249,12 +249,11 @@ namespace REviewer.Modules.Forms
 
         private void UpdateChronometers()
         {
-            _segmentWatch[_raceDatabase.Segments].Stop();
             _raceDatabase.Segments += 1;
-            _segmentWatch[_raceDatabase.Segments].Start();
+            _raceDatabase.SegTimers[_raceDatabase.Segments] = _game.Game.Timer.Value;
         }
 
-        private uint ReverseBytes(uint number)
+        private static uint ReverseBytes(uint number)
         {
             return ((number & 0x000000FF) << 24) |
                    ((number & 0x0000FF00) << 8) |
@@ -295,8 +294,6 @@ namespace REviewer.Modules.Forms
                 labelHealth.Text = "WP!";
                 labelHealth.ForeColor = CustomColors.Blue;
                 labelGameCompleted.Visible = true;
-                _raceWatch.Stop();
-                _segmentWatch[_raceDatabase.Segments].Stop();
             }
 
             _raceDatabase.PreviousState = state & 0x0F000000;
@@ -310,13 +307,15 @@ namespace REviewer.Modules.Forms
         
         private void Updated_Timer(object sender, EventArgs e) => InvokeUI(() =>
         {
-            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            //labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelTimer.Text = TimeSpan.FromSeconds(_game.Game.Timer.Value/30.0).ToString(@"hh\:mm\:ss\.ff");
 
             Label[] labelSegTimers = [labelSegTimer1, labelSegTimer2, labelSegTimer3, labelSegTimer4];
 
             if (_raceDatabase.Segments >= 0 && _raceDatabase.Segments < labelSegTimers.Length)
             {
-                labelSegTimers[_raceDatabase.Segments].Text = _segmentWatch[_raceDatabase.Segments].Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                var baseTime = _segmentWatch[Math.Max(0, _raceDatabase.Segments - 1)];
+                labelSegTimers[_raceDatabase.Segments].Text = TimeSpan.FromSeconds((_game.Game.Timer.Value - baseTime) / 30.0).ToString(@"hh\:mm\:ss\.ff");
             }
 
             int currentTimerValue = _game.Game.Timer.Value;
@@ -324,16 +323,6 @@ namespace REviewer.Modules.Forms
             if (_previousTimerValue == currentTimerValue)
             {
                 return;
-            }
-            if (_raceWatch.IsRunning)
-            {
-                _raceWatch.Stop();
-                _segmentWatch[_raceDatabase.Segments].Stop();
-            }
-            else
-            {
-                _raceWatch.Start();
-                _segmentWatch[_raceDatabase.Segments].Start();
             }
         });
 
