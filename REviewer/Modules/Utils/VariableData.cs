@@ -1,4 +1,6 @@
-﻿namespace REviewer.Modules.Utils
+﻿using REviewer.Modules.RE.Json;
+
+namespace REviewer.Modules.Utils
 {
     public class VariableData
     {
@@ -31,6 +33,20 @@
         protected virtual void OnUpdated()
         {
             Updated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public VariableData(IntPtr offset, StandardProperty property)
+        {
+            Offset = offset;
+            Size = (uint)property.Size;
+            Database = (Dictionary<string, string>?) property.Database;
+        }
+
+        public VariableData(IntPtr offset, AdvancedProperty property)
+        {
+            Offset = offset;
+            Size = (uint)property.Size;
+            Database = Library.ConvertDictionary(property.Database);
         }
     }
 }

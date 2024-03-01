@@ -76,6 +76,35 @@ namespace REviewer.Modules.Utils
             return "";
         }
 
+        public static Dictionary<string, List<int>>? ConvertDictionary(Dictionary<string, List<string>>? originalDict)
+        {
+            if (originalDict == null)
+            {
+                return null;
+            }
+
+            var newDict = new Dictionary<string, List<int>>();
+
+            foreach (var pair in originalDict)
+            {
+                var intList = pair.Value.Select(int.Parse).ToList();
+                newDict.Add(pair.Key, intList);
+            }
+
+            return newDict;
+        }
+
+        public static nint HexToNint(string hex)
+        {
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                hex = hex.Substring(2);
+            }
+
+            long value = Convert.ToInt64(hex, 16);
+            return (nint)value;
+        }
+        
         public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
     }
 }

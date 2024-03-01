@@ -2,6 +2,18 @@
 {
     public class RootObject
     {
+        public RootObject(Bio bio)
+        {
+            Name = bio.Name;
+            Process = bio.Process;
+            Player = new Player(bio);
+            Position = new Position(bio);
+            Game = new Game(bio);
+            Inventory = new Inventory(bio);
+            ItemBox = new ItemBox(bio);
+            Rebirth = new Rebirth(bio);
+        }
+        
         public string? Name { get; set; }
         public string? Process { get; set; }
         public Player? Player { get; set; }

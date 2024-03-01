@@ -10,35 +10,6 @@ namespace REviewer.Modules.RE
 
     public class GameData
     {
-        public int InventoryStartOffset { get; set; }
-        public int InventoryEndOffset { get; set; }
-        public int ItemBoxStartOffset { get; set; }
-        public int ItemBoxEndOffset { get; set; }
-        public int CapacityOffset { get; set; }
-        public int CharacterOffset { get; set; }
-        public int InventorySlotSelectedOffset { get; set; }
-        public int StageOffset { get; set; }
-        public int RoomOffset { get; set; }
-        public int CutsceneOffset { get; set; }
-        public int LastRoomOffset { get; set; }
-        public int Unk001Offset { get; set; }
-        public int Unk002Offset { get; set; }
-        public int EventOffset { get; set; }
-        public int LastItemFoundOffset { get; set; }
-        public int InventoryCapacityUsedOffset { get; set; }
-        public int CharacterHealthStateOffset { get; set; }
-        public int GameStateOffset { get; set; }
-        public int TimerOffset { get; set; }
-        public int PositionXOffset { get; set; }
-        public int PositionYOffset { get; set; }
-        public int PositionZOffset { get; set; }
-        public int RebirthDebugOffset { get; set; }
-        public int RebirthStateOffset { get; set; }
-        public int CharacterHealth { get; set; }
-        public int MainMenuOffset { get; set; }
-        public int RebirthOffset { get; set; }
-        public int LockPickOffset { get; set; }
-        public int SaveContentOffset { get; set; }
         private Dictionary<string, Bio>? _data { get; set; }
         private string? _gameName { get; set; }
 
@@ -78,19 +49,6 @@ namespace REviewer.Modules.RE
         public ItemBox GenerateItemBox()
         {
             return new ItemBox { Slots = GenerateSlots(ItemBoxStartOffset, ItemBoxEndOffset) };
-        }
-
-        public RootObject GenerateGameData()
-        {
-            return new RootObject
-            {
-                Player = new Player(_data[_gameName].Player),
-                Game = new Game(_data[_gameName].Game),
-                Position = new Position(_data[_gameName].Position),
-                Inventory = GenerateInventory(),
-                ItemBox = GenerateItemBox(),
-                Rebirth = new Rebirth(_data[_gameName].Rebirth)
-            };
         }
     }
 }

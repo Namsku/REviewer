@@ -38,10 +38,10 @@ namespace REviewer.Modules.RE.Json
         public required StandardProperty Character { get; set; }
         public required AdvancedProperty Health { get; set; }
         public required StandardProperty CharacterHealthState { get; set; }
-        public required StandardProperty LastJItemFound { get; set; }
+        public required StandardProperty LastItemFound { get; set; }
         public required StandardProperty LockPick { get; set; }
         public required StandardProperty InventoryCapacityUsed { get; set; }
-        public required StandardProperty InventorySelected { get; set; }
+        public required StandardProperty InventorySlotSelected { get; set; }
         public required StandardProperty Stage { get; set; }
         public required StandardProperty Room { get; set; }
         public required StandardProperty LastRoom { get; set; }
@@ -52,25 +52,25 @@ namespace REviewer.Modules.RE.Json
 
     public class JGame
     {
-        public required Property State { get; set; }
-        public required Property Timer { get; set; }
-        public required Property Unk001 { get; set; }
-        public required Property MainMenu { get; set; }
-        public required Property SaveContent { get; set; }
+        public required StandardProperty State { get; set; }
+        public required StandardProperty Timer { get; set; }
+        public required StandardProperty Unk001 { get; set; }
+        public required StandardProperty MainMenu { get; set; }
+        public required StandardProperty SaveContent { get; set; }
     }
 
     public class JPosition
     {
-        public required Property X { get; set; }
-        public required Property Y { get; set; }
-        public required Property Z { get; set; }
+        public required StandardProperty X { get; set; }
+        public required StandardProperty Y { get; set; }
+        public required StandardProperty Z { get; set; }
     }
 
     public class JRebirth
     {
-        public required Property Debug { get; set; }
-        public required Property Screen { get; set; }
-        public required Property State { get; set; }
+        public required StandardProperty Debug { get; set; }
+        public required StandardProperty Screen { get; set; }
+        public required StandardProperty State { get; set; }
     }
 
     public class Bio
