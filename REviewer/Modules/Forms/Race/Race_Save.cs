@@ -137,10 +137,14 @@ namespace REviewer.Modules.Forms
                 }
             }
 
+            /*
             if (_raceDatabase.Segments < save?.Segments)
             {
                 _raceDatabase.Segments = save?.Segments ?? 0;
             }
+            */
+
+            _raceDatabase.Segments = save?.Segments ?? 0;
 
             labelSegTimer1.Text = TimeSpan.FromSeconds(_segmentWatch[0] / 30.0).ToString(@"hh\:mm\:ss\.ff");
             labelSegTimer2.Text = TimeSpan.FromSeconds((_segmentWatch[1] - _segmentWatch[0])/30.0).ToString(@"hh\:mm\:ss\.ff");
