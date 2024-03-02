@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using Microsoft.VisualBasic.Logging;
-using Newtonsoft.Json.Linq;
 using REviewer.Modules.RE;
 using REviewer.Modules.Utils;
 
@@ -56,7 +53,7 @@ namespace REviewer.Modules.Forms
             {
                 0 => Color.Transparent,
                 1 => CustomColors.Orange,
-                2 => CustomColors.Default,
+                2 => CustomColors.Green,
                 _ => pictureBox.BackColor // Default case
             };
         }
@@ -70,6 +67,7 @@ namespace REviewer.Modules.Forms
         private void UpdateLastItemFoundPicture()
         {
             byte value = (byte)_game.Player.LastItemFound.Value;
+            var state = _game.Game.State.Value & 0xF0000000;
 
             if (_game.Player.LastItemFound.Value == 0x31)
             {
@@ -81,7 +79,11 @@ namespace REviewer.Modules.Forms
                 _raceDatabase.Stage = (((int)_game.Player.Stage.Value % 5) + 1).ToString();
                 _raceDatabase.Room = ((int)_game.Player.Room.Value).ToString("X2");
                 _raceDatabase.FullRoomName = _raceDatabase.Stage + _raceDatabase.Room;
-                UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
+
+                if ((state != 0x8000000 || state != 0x9000000) && value != 61)
+                {
+                    UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
+                }
             }
 
             byte item_id = (byte)_game.Player.LastItemFound.Value;
@@ -98,6 +100,11 @@ namespace REviewer.Modules.Forms
 
         private void UpdateRaceKeyItem(int value, string room, int state, bool force = false)
         {
+            if (_raceDatabase == null)
+            {
+                return;
+            }
+
             value = GetKeyItemPosition(value, room, state);
 
             // If 'force' is true or the current state is less than the new state, update the state and picture
@@ -113,8 +120,13 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
+            if (labelHealth.Text == "WP!")
+            {
+                labelHealth.Text = "255";
+            }
+
             int health = Int32.Parse(labelHealth.Text);
-            int player = _healthTable[(byte)(_game.Player.Character.Value & 0x03)][0];
+            int player = ((Dictionary<byte ,List<int>>?)_game.Player.Health.Database)[(byte)(_game.Player.Character.Value & 0x03)][0];
             if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= player))
             {
                 _raceDatabase.Resets += 1;
@@ -137,7 +149,7 @@ namespace REviewer.Modules.Forms
                 -1 => Color.Transparent,
                 0 => Color.Transparent,
                 1 => CustomColors.Orange,
-                2 => CustomColors.Default,
+                2 => CustomColors.Green,
                 _ => Color.Transparent // Default case
             };
         }
@@ -214,7 +226,7 @@ namespace REviewer.Modules.Forms
         });
 
         private void UpdateKeyRooms()
-        {
+        {      
             string fullRoomName = _raceDatabase.FullRoomName;
             string lastRoomName = _raceDatabase.LastRoomName ?? fullRoomName;
 
@@ -224,13 +236,16 @@ namespace REviewer.Modules.Forms
                 {
                     List<string> keyRooms = value;
                     string otherRoomName = roomName == lastRoomName ? fullRoomName : lastRoomName;
+                    Logger.Instance.Info($"Updating key rooms for {roomName} -> {otherRoomName}");
 
                     if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName)
                     {
+                        Logger.Instance.Info($"Adding {otherRoomName} to {roomName}");
                         keyRooms.Add(otherRoomName);
 
                         if (keyRooms.Count == 2)
                         {
+                            Logger.Instance.Info($"End of section detected");
                             UpdateChronometers();
                             _raceDatabase.KeyRooms.Remove(roomName);
                         }
@@ -244,12 +259,12 @@ namespace REviewer.Modules.Forms
 
         private void UpdateChronometers()
         {
-            _segmentWatch[_raceDatabase.Segments].Stop();
-            _raceDatabase.Segments += 1;
-            _segmentWatch[_raceDatabase.Segments].Start();
+            _raceDatabase.Segments += 1 % 4;
+            _raceDatabase.SegTimers[_raceDatabase.Segments - 1] = _game.Game.Timer.Value;
+            _segmentWatch[_raceDatabase.Segments - 1] = _game.Game.Timer.Value;
         }
 
-        private uint ReverseBytes(uint number)
+        private static uint ReverseBytes(uint number)
         {
             return ((number & 0x000000FF) << 24) |
                    ((number & 0x0000FF00) << 8) |
@@ -285,13 +300,11 @@ namespace REviewer.Modules.Forms
             }
             else if ((state & 0x0F000000) == 0x01000000 
                     && _raceDatabase.PreviousState != 0x2000000 
-                    && _game.Player.Unk001.Value == 0x01)
+                    && (_game.Player.Stage.Value & 0x05) == 2)
             {
                 labelHealth.Text = "WP!";
                 labelHealth.ForeColor = CustomColors.Blue;
                 labelGameCompleted.Visible = true;
-                _raceWatch.Stop();
-                _segmentWatch[_raceDatabase.Segments].Stop();
             }
 
             _raceDatabase.PreviousState = state & 0x0F000000;
@@ -305,13 +318,15 @@ namespace REviewer.Modules.Forms
         
         private void Updated_Timer(object sender, EventArgs e) => InvokeUI(() =>
         {
-            labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            //labelTimer.Text = _raceWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            labelTimer.Text = TimeSpan.FromSeconds(_game.Game.Timer.Value/30.0).ToString(@"hh\:mm\:ss\.ff");
 
             Label[] labelSegTimers = [labelSegTimer1, labelSegTimer2, labelSegTimer3, labelSegTimer4];
 
             if (_raceDatabase.Segments >= 0 && _raceDatabase.Segments < labelSegTimers.Length)
             {
-                labelSegTimers[_raceDatabase.Segments].Text = _segmentWatch[_raceDatabase.Segments].Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                var baseTime = _segmentWatch[Math.Max(0, _raceDatabase.Segments - 1)];
+                labelSegTimers[_raceDatabase.Segments].Text = TimeSpan.FromSeconds((_game.Game.Timer.Value - baseTime) / 30.0).ToString(@"hh\:mm\:ss\.ff");
             }
 
             int currentTimerValue = _game.Game.Timer.Value;
@@ -319,16 +334,6 @@ namespace REviewer.Modules.Forms
             if (_previousTimerValue == currentTimerValue)
             {
                 return;
-            }
-            if (_raceWatch.IsRunning)
-            {
-                _raceWatch.Stop();
-                _segmentWatch[_raceDatabase.Segments].Stop();
-            }
-            else
-            {
-                _raceWatch.Start();
-                _segmentWatch[_raceDatabase.Segments].Start();
             }
         });
 

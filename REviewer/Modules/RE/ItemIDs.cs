@@ -29,7 +29,7 @@ namespace REviewer.Modules.RE
         public object Clone()
         {
             // Create a new Bitmap object from the existing one
-            Bitmap clonedImg = null;
+            Bitmap? clonedImg = null;
             if (Img != null)
             {
                 clonedImg = new Bitmap(Img);
@@ -60,7 +60,7 @@ namespace REviewer.Modules.RE
             public required string Img { get; set; }
         }
 
-        public class Bio
+        public class BioHazardItems
         {
             public required Dictionary<string, Item> ItemIDs { get; set; }
             public required Dictionary<string, int> DupItems { get; set; }
@@ -72,15 +72,15 @@ namespace REviewer.Modules.RE
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
 
-            // _processName is the key to the Bio object in the JSON
-            var bios = JsonConvert.DeserializeObject<Dictionary<string, Bio>>(json);
+            // _processName is the key to the BioHazardItems object in the JSON
+            var bios = JsonConvert.DeserializeObject<Dictionary<string, BioHazardItems>>(json);
 
-            if (!bios.TryGetValue(_processName, out var bio))
+            if (!bios.TryGetValue(_processName, out var BioHazardItems))
             {
-                throw new KeyNotFoundException($"Bio with key {_processName} not found in JSON.");
+                throw new KeyNotFoundException($"BioHazardItems with key {_processName} not found in JSON.");
             }
 
-            Items = bio.ItemIDs.ToDictionary(
+            Items = BioHazardItems.ItemIDs.ToDictionary(
                 pair => byte.Parse(pair.Key),
                 pair => new Property
                 {
@@ -91,7 +91,7 @@ namespace REviewer.Modules.RE
                 }
             );
 
-            _duplicateItems = bio.DupItems;
+            _duplicateItems = BioHazardItems.DupItems;
         }
 
         public List<string> GetValues()
@@ -102,11 +102,6 @@ namespace REviewer.Modules.RE
         public List<Property> GetKeyItems()
         {
             var keyItems = Items.Values.Where(property => property.Type == "Key Item").ToList();
-
-            // Automatically add the duplicate items with _duplicateItems and put the correct amount of them in the list with correct ID
-            // This is the old version
-            // keyItems.Insert(keyItems.FindIndex(property => property.Name == "Battery") + 1, Items[39]);
-            // keyItems.InsertRange(keyItems.FindIndex(property => property.Name == "MO Disk") + 1, new List<Property> { Items[40], Items[40] });
 
             foreach (var item in _duplicateItems)
             {

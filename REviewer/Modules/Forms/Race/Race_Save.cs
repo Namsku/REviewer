@@ -87,11 +87,11 @@ namespace REviewer.Modules.Forms
         private void SaveState()
         {
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
-            _raceDatabase.Fulltimer = new RaceWatch(_raceWatch.Elapsed);
+            _raceDatabase.Fulltimer = _raceDatabase.TickTimer;
 
-            foreach (var seg in _segmentWatch)
+            for (int i = 0; i < _segmentWatch.Count; i++)
             {
-                _raceDatabase.SegTimers.Add(new RaceWatch(seg.Elapsed));
+                _raceDatabase.SegTimers[i] = _segmentWatch[i];
             }
 
             SerializeObject(_raceDatabase);
@@ -117,19 +117,21 @@ namespace REviewer.Modules.Forms
             //_segmentWatch[_raceDatabase.Segments].Reset();
 
             // Load the save RaceWatch and Segments
-            if (save?.Fulltimer?.GetOffset() > _raceWatch.Elapsed)
+            if (save.Fulltimer > _raceWatch)
             {
-                _raceWatch.StartFrom(save.Fulltimer.GetOffset());
+                _raceWatch = (int)save.Fulltimer;
             }
+
+            labelSegTimer1.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
 
             for (int i = 0; i < save?.SegTimers?.Count; i++)
             {
                 try
                 {
-                    if (save.SegTimers[i]?.GetOffset() > _segmentWatch[i].Elapsed)
-                    {
-                        _segmentWatch[i].StartFrom(save.SegTimers[i].GetOffset());
-                    }
+                    _segmentWatch[i] = Math.Max((int) _segmentWatch[i], (int) save.SegTimers[i]);
                 }
                 catch (Exception e)
                 {
@@ -140,12 +142,20 @@ namespace REviewer.Modules.Forms
                 }
             }
 
+            /*
             if (_raceDatabase.Segments < save?.Segments)
             {
-                _segmentWatch[_raceDatabase.Segments].Stop();
                 _raceDatabase.Segments = save?.Segments ?? 0;
-                _segmentWatch[_raceDatabase.Segments].Start();
             }
+            */
+
+            _raceDatabase.Segments = save?.Segments ?? 0;
+
+            labelSegTimer1.Text = TimeSpan.FromSeconds(_segmentWatch[0] / 30.0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds(Math.Max(0,(_segmentWatch[1] - _segmentWatch[0])/30.0)).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds(Math.Max(0, (_segmentWatch[2] - _segmentWatch[1]) /30.0)).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds(Math.Max(0, (_segmentWatch[3] - _segmentWatch[2]) /30.0)).ToString(@"hh\:mm\:ss\.ff");
+
 
             _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save?.Debugs ?? 0);
             _raceDatabase.Deaths = Math.Max(_raceDatabase.Deaths, save.Deaths);

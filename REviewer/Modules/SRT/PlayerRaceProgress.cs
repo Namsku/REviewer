@@ -54,10 +54,10 @@ namespace REviewer.Modules.SRT
         public string? SavePath;
 
         [Key(13)]
-        public RaceWatch? Fulltimer { get; set; }
+        public int? Fulltimer { get; set; }
 
         [Key(14)]
-        public List<RaceWatch?> SegTimers = [];
+        public List<int?> SegTimers = [0,0,0,0];
 
         [Key(15)]
         public int TickTimer { get; set; }
@@ -65,6 +65,9 @@ namespace REviewer.Modules.SRT
         public int SaveID { get; set; }
         [Key(27)]
         public byte[] RealItembox { get; set; }
+
+        [Key(28)]
+        public List<string> Rooms = [];
 
         [IgnoreMember]
         public FileSystemWatcher Watcher = new();

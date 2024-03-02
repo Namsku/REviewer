@@ -1,26 +1,17 @@
-﻿using System.Configuration;
-using System.Diagnostics;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
-using REviewer.Modules.RE;
-using static REviewer.Modules.RE.GameData;
+﻿using REviewer.Modules.RE;
 using Label = System.Windows.Forms.Label;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
-using MessagePack;
 using REviewer.Modules.Utils;
-using NLog.Config;
 using REviewer.Modules.SRT;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.Forms
 {
     public partial class Race : Form
     {
-        private readonly GameData.RootObject _game;
+        private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
-
-        private readonly RaceWatch _raceWatch = new();
-        private List<RaceWatch> _segmentWatch = [];
+        private int _raceWatch = new();
+        private List<int> _segmentWatch = [0,0,0,0];
 
         private readonly int? _previousTimerValue = null;
         private int _previousSelectedSlot = 0;
@@ -49,17 +40,9 @@ namespace REviewer.Modules.Forms
             _monitorVariables = monitorVariables;
         }
 
-        private readonly Dictionary<byte, List<int>> _healthTable = new()
-        {
-            { 0 , new List<int> { 140, 106,  71,  36, 0 } },
-            { 1 , new List<int> { 96,   73,  49,  25, 0 } },
-            { 2 , new List<int> { 96,   73,  49,  25, 0 } },
-            { 3 , new List<int> { 96,   73,  49,  25, 0 } },
-        };
-
         private static readonly string[] _itemTypes = ["Key Item", "Optionnal Key Item", "Nothing"];
 
-        public Race(GameData.RootObject GameData, string gameName)
+        public Race(RootObject GameData, string gameName)
         {
             // Font Loading
             InitPixelBoyFont();
@@ -201,14 +184,25 @@ namespace REviewer.Modules.Forms
         {
             var name = _itemDatabase.GetPropertyNameById((byte)value);
             var item_box = (_game.Game.State.Value & 0x0000FF00) == 0x90;
-            var position = 0;
+            var position = -1;
 
             for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
-                if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State <= state) && !item_box && state != 2) return i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State < state) return i;
-                // if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name)
+                {
+                    position = i;
+                    var _raceState = _raceDatabase.KeyItems[i].State;
+
+                    if (_raceDatabase.KeyItems[i].Room == room && _raceState <= state && !item_box && _raceState < 2)
+                    {
+                        return i;
+                    }
+
+                    if (_raceDatabase.KeyItems[i].State == -1)
+                    {
+                        return i;
+                    }
+                }
             }
 
             return position;
@@ -233,7 +227,7 @@ namespace REviewer.Modules.Forms
             foreach (var keyItem in keyItems)
             {
                 // Find the corresponding key item in _raceDatabase.KeyItems
-                KeyItem existingKeyItem = _raceDatabase.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
+                KeyItem? existingKeyItem = _raceDatabase.KeyItems.FirstOrDefault(ki => ki.Data.Name == keyItem.Data.Name);
 
                 if (existingKeyItem == null)
                 {
@@ -283,17 +277,6 @@ namespace REviewer.Modules.Forms
                 UpdateSlotPicture(7);
                 UpdateSlotCapacity(capacity8, 7);
             }
-
-            /*
-            if (!isVisible)
-            {
-                capacity7.Visible = false;
-                capacity8.Visible = false;
-                slot7.Visible = false;
-                slot8.Visible = false;
-            }
-            */
-
         }
 
         private static int GetItemPosition(int value) => value switch
@@ -329,7 +312,7 @@ namespace REviewer.Modules.Forms
 
         private void CheckHealthLabel(int value)
         {
-            var health_table = _healthTable[(byte)(_game.Player.Character.Value & 0x03)];
+            var health_table = ((Dictionary<byte, List<int>>)_game.Player.Health.Database)[(byte)(_game.Player.Character.Value & 0x03)];
             var status = _game.Player.CharacterHealthState.Value;
             Color[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
             labelHealth.Text = value.ToString();
@@ -395,9 +378,9 @@ namespace REviewer.Modules.Forms
 
             InitSaveMonitoring();
             InitChronometers();
-            InitInventory();
             InitKeyItems();
             InitKeyRooms();
+            InitInventory();
 
             InitCharacterHealthState();
 
@@ -423,6 +406,7 @@ namespace REviewer.Modules.Forms
 
             Write(_game.Player.InventorySlotSelected, 0);
             Write(_game.Player.LastItemFound, 0);
+            Write(_game.Player.LockPick, 0);
         }
 
         private static void Write(VariableData v, int value)
@@ -477,6 +461,7 @@ namespace REviewer.Modules.Forms
             SeedChecker seedChecker = new(seed);
             seedChecker.Show();
         }
+
     }
 
     public class KRoom

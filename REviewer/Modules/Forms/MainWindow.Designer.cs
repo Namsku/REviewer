@@ -4,6 +4,7 @@ using REviewer.Modules.Utils;
 using REviewer.Modules.RE;
 using System.Configuration;
 using System;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.Forms
 {
@@ -20,7 +21,7 @@ namespace REviewer.Modules.Forms
             // Other games will be incremented here based on the position in the combobox
         };
 
-        private GameData.RootObject _residentEvilGame;
+        private RootObject _residentEvilGame;
         private Process _process;
         private MonitorVariables _MVariables;
 
@@ -293,7 +294,8 @@ namespace REviewer.Modules.Forms
                 UpdateLabel(labelRebirthDll, "Found", Color.Green);
                 UpdateLabel(labelSavePath, "Found", Color.Green);
 
-                _residentEvilGame = GameData.GenerateGameData();
+                GameData gameData = new GameData(_process.ProcessName);
+                _residentEvilGame = gameData.GetGameData();
                 _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
                 _MVariables.Start(_residentEvilGame);
 
@@ -304,12 +306,13 @@ namespace REviewer.Modules.Forms
                     _raceForm.FormClosed += Updated_RaceForm;
                     buttonCheck.Enabled = false;
                     _raceForm.Show();
+                    this.Hide();
                 }
             }
             catch (Exception ex)
             {
                 // Handle the exception here
-                ShowError("An error occurred: " + ex.Message);
+                ShowError("An error occurred: " + ex.Message + "\n" + "Details: " + ex.StackTrace);
             }
         }
 
@@ -430,6 +433,7 @@ namespace REviewer.Modules.Forms
                 }
 
                 // Perform any necessary actions when the process is found
+                // TODO
                 _MVariables.UpdateProcessHandle(_process.Handle);
 
                 // Update labels and buttons

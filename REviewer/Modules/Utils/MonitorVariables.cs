@@ -1,13 +1,15 @@
 ﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using REviewer.Modules.RE.Common;
 using REviewer.Modules.Utils;
 using static REviewer.Modules.RE.GameData;
 
 namespace REviewer.Modules.Utils
 {
-    public class MonitorVariables
+    public class MonitorVariables(nint processHandle, string processName)
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(nint processHandle, nint baseAddress, byte[] buffer, uint size, out int bytesWritten);
@@ -15,22 +17,23 @@ namespace REviewer.Modules.Utils
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(nint processHandle, nint baseAddress, [Out] byte[] buffer, uint size, out int bytesRead);
 
+        private const int BYTE_SIZE = 1;
+        private const int INT_SIZE = 4;
+        private const int MONITORING_INTERVAL = 55;
+
         private System.Threading.Timer? _monitoringTimer;
-        private nint _processHandle;
-        private readonly string _processName;
-        private bool _running = true;
+        private nint _processHandle = processHandle;
+        private readonly string _processName = processName;
+        private readonly object _lockObject = new();
+        private readonly object _processHandleLock = new();
+        private volatile int _running = 1;
 
         private RootObject? _currentRootObject;
-
-        public MonitorVariables(nint processHandle, string processName)
-        {
-            _processHandle = processHandle;
-            _processName = processName;
-        }
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
         private bool CanMonitorObject(object obj)
         {
-            if (_processHandle == nint.Zero || obj == null)
+            if (_processHandle == 0 || obj == null)
             {
                 Stop();
                 return false;
@@ -44,44 +47,24 @@ namespace REviewer.Modules.Utils
             return Process.GetProcessesByName(_processName).Length > 0;
         }
 
-
-        private bool LocateProcess(string processName)
-        {
-            Process[] processes = Process.GetProcessesByName(processName);
-            if (processes.Length > 0)
-            {
-                _processHandle = processes[0].Handle;
-                return true;
-            }
-            return false;
-        }
-
-
         public void Monitor()
         {
-            if (!IsProcessActive())
+            bool isProcessActive;
+            lock (_processHandleLock)
             {
-                _running = false;
-                _processHandle = nint.Zero;
-            }
-
-            if (!IsProcessActive() && _running == false)
-            {
-                if (LocateProcess(_processName))
+                isProcessActive = IsProcessActive();
+                if (!isProcessActive)
                 {
-                    _running = true;
-                    _processHandle = Process.GetProcessesByName(_processName)[0].Handle;
-                    Start(_currentRootObject);
+                    _running = 0;
+                    _processHandle = 0;
                 }
             }
 
-            if (_processHandle != nint.Zero)
+            if (isProcessActive && _currentRootObject != null)
             {
                 MonitorObject(_currentRootObject);
             }
         }
-
-
 
         private void MonitorObject(object obj)
         {
@@ -90,7 +73,8 @@ namespace REviewer.Modules.Utils
                 return;
             }
 
-            var properties = obj.GetType().GetProperties();
+            var type = obj.GetType();
+            var properties = _propertyCache.GetOrAdd(type, t => t.GetProperties());
 
             foreach (var property in properties)
             {
@@ -100,7 +84,7 @@ namespace REviewer.Modules.Utils
 
         private void MonitorProperty(PropertyInfo property, object obj)
         {
-            lock (property)
+            lock (_lockObject)
             {
                 var value = property.GetValue(obj);
 
@@ -110,7 +94,10 @@ namespace REviewer.Modules.Utils
                 }
                 else if (value is IEnumerable enumerable && !(value is string))
                 {
-                    MonitorEnumerable(enumerable);
+                    foreach (var item in enumerable)
+                    {
+                        MonitorObject(item);
+                    }
                 }
                 else if (value != null)
                 {
@@ -118,66 +105,50 @@ namespace REviewer.Modules.Utils
                 }
             }
         }
-
         private void MonitorVariableData(VariableData variableData)
         {
-            int oldValue = variableData.Value;
-            variableData.Value = ReadVariableData(variableData);
-
-            lock (variableData.LockObject)
+            if (variableData.IsUpdated)
             {
-                if (variableData.IsUpdated)
-                {
-                    WriteVariableData(variableData, oldValue);
-                    variableData.IsUpdated = false;
-                }
+                WriteVariableData(variableData, variableData.Value);
+                variableData.IsUpdated = false;
+            }
+            else
+            {
+                variableData.Value = ReadVariableData(variableData);
             }
         }
 
-        private void MonitorEnumerable(IEnumerable enumerable)
-        {
-            foreach (var item in enumerable)
-            {
-                MonitorObject(item);
-            }
-        }
-
-        public void UpdateProcessHandle(nint newProcessHandle)
-        {
-            // Stop the current monitoring process
-            Stop();
-
-            // Update the process handle
-            _processHandle = newProcessHandle;
-
-            // Restart the monitoring process with the new process handle
-            Start(_currentRootObject);
-        }
 
         public int ReadVariableData(VariableData variableData)
         {
-            byte[] buffer = new byte[variableData.Size];
-            if (!ReadProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out _))
+            byte[] buffer = ReadProcessMemory(variableData.Offset, (uint)variableData.Size);
+            if (buffer == null)
             {
-                Logger.Instance.Error("Failed to read process memory");
-                return 0;
+                Logger.Instance.Error($"Failed to read process memory for process {_processName} with handle {_processHandle}");
+                throw new InvalidOperationException("Failed to read process memory");
             }
 
             return variableData.Size switch
             {
-                4 => BitConverter.ToInt32(buffer, 0),
-                1 => buffer[0],
-                _ => 0,
+                INT_SIZE => BitConverter.ToInt32(buffer, 0),
+                BYTE_SIZE => buffer[0],
+                _ => throw new InvalidOperationException("Invalid variable size"),
             };
         }
 
         public byte[] ReadProcessMemory(nint baseAddress, uint size)
         {
             byte[] buffer = new byte[size];
-            if (!ReadProcessMemory(_processHandle, baseAddress, buffer, size, out _))
+            bool success;
+            lock (_processHandleLock)
             {
-                Logger.Instance.Error($"Failed to read process memory for base address {baseAddress:X} and size {size:X}");
-                return [];
+                success = ReadProcessMemory(_processHandle, baseAddress, buffer, size, out _);
+            }
+
+            if (!success)
+            {
+                Logger.Instance.Error($"Failed to read process memory for base address {baseAddress:X} and size {size:X} for process {_processName} with handle {_processHandle}");
+                throw new InvalidOperationException("Failed to read process memory");
             }
 
             return buffer;
@@ -188,10 +159,11 @@ namespace REviewer.Modules.Utils
             if (rootObject == null)
             {
                 Logger.Instance.Error("RootObject is null");
+                return;
             }
 
             _currentRootObject = rootObject;
-            _monitoringTimer = new System.Threading.Timer(state => Monitor(), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(55));
+            _monitoringTimer = new System.Threading.Timer(state => Monitor(), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(MONITORING_INTERVAL));
             Logger.Instance.Info("Started monitoring");
         }
 
@@ -200,29 +172,37 @@ namespace REviewer.Modules.Utils
             Logger.Instance.Info("Stopping monitoring");
             _monitoringTimer?.Dispose();
             _monitoringTimer = null;
+            Interlocked.Exchange(ref _running, 0);
         }
 
         public bool WriteVariableData(VariableData variableData, int newValue)
         {
             byte[] buffer = variableData.Size switch
             {
-                4 => BitConverter.GetBytes(newValue),
-                1 => [(byte)newValue],
-                _ => null
+                INT_SIZE => BitConverter.GetBytes(newValue),
+                BYTE_SIZE => [(byte)newValue],
+                _ => throw new InvalidOperationException("Invalid variable size"),
             };
 
-            if (buffer == null)
+            bool success;
+            lock (_processHandleLock)
             {
-                return false;
-            }
+                success = WriteProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out int bytesWritten);
 
-            if (!WriteProcessMemory(_processHandle, variableData.Offset, buffer, (uint)buffer.Length, out int bytesWritten))
-            {
-                Logger.Instance.Error("Failed to write process memory");
-                return false;
-            }
+                if (!success)
+                {
+                    Logger.Instance.Error($"Failed to write process memory for process {_processName} with handle {_processHandle}. Value: {newValue}, Bytes Written: {bytesWritten}");
+                    return false;
+                }
 
-            return true;
+                return true;
+            }
+        }
+
+        internal void UpdateProcessHandle(nint handle)
+        {
+            _processHandle = handle;
+            Start(_currentRootObject);
         }
     }
 }

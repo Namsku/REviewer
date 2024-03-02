@@ -31,6 +31,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             folderBrowserDialog1 = new FolderBrowserDialog();
             labelTimer = new Label();
             labelCharacter = new Label();
@@ -121,6 +122,7 @@
             pictureBox3 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
+            timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxItemSlot7).BeginInit();
@@ -1341,6 +1343,7 @@
             pictureBox1.Size = new Size(510, 35);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+
             // 
             // Race
             // 
@@ -1517,5 +1520,6 @@
         private Label labelSegTimer4;
         private PictureBox pictureBox15;
         private Label labelGameCompleted;
+        private System.Windows.Forms.Timer timer1;
     }
 }

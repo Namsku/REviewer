@@ -7,41 +7,10 @@ using Newtonsoft.Json;
 
 namespace REviewer.Modules.Utils
 {
-    public static class CustomColors
-    {
-        public static readonly Color Blue = Color.FromArgb(86, 156, 214);
-        public static readonly Color Lavender = Color.FromArgb(206, 108, 255);
-        public static readonly Color Yellow = Color.FromArgb(215, 191, 128);
-        public static readonly Color Orange = Color.FromArgb(198, 155, 101);
-        public static readonly Color Red = Color.FromArgb(205, 116, 118);
-        public static readonly Color White = Color.FromArgb(250, 240, 216);
-        public static readonly Color Default = Color.FromArgb(159, 185, 118);
-    }
-    public static class UniqueIdGenerator
-    {
-        public static byte[] GenerateUniqueId()
-        {
-            // Get the current timestamp as a byte array
-            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            byte[] timestampBytes = BitConverter.GetBytes(timestamp);
-
-            // Generate a random 6-byte number
-            byte[] randomBytes = new byte[6];
-            RandomNumberGenerator.Fill(randomBytes);
-
-            // Combine the timestamp and random number to get a 14-byte unique ID
-            byte[] id = new byte[14];
-            Buffer.BlockCopy(timestampBytes, 0, id, 0, 8);
-            Buffer.BlockCopy(randomBytes, 0, id, 8, 6);
-
-            return id;
-        }
-    }
     public class Library
     {
 
-        private static readonly string _configPath = ConfigurationManager.AppSettings["Config"];
-        private static readonly Dictionary<string, string> _gamePaths = LoadGamePaths();
+        private static readonly string? _configPath = ConfigurationManager.AppSettings["Config"];
         private static readonly Dictionary<string, string> _keyValuePairs = new()
         {
             {"Bio", "RE1"},
@@ -67,15 +36,11 @@ namespace REviewer.Modules.Utils
         public static bool IsSavePathPresent(int index)
         {
             var gameNames = new[] { "RE1", "RE2", "RE3", "RECVX" };
+            var _gamePaths = LoadGamePaths();
 
-            // Load the json file that contains the save paths
-            var configPath = ConfigurationManager.AppSettings["Config"];
-            if (configPath != null && File.Exists(configPath))
+            if (_gamePaths != null && _gamePaths.ContainsKey(gameNames[index]))
             {
-                var json = File.ReadAllText(configPath);
-                var gamePaths = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
-                return gamePaths.ContainsKey(gameNames[index]);
+                return true;
             }
 
             Logger.Instance.Error("Config path is null or file does not exist");
@@ -87,32 +52,60 @@ namespace REviewer.Modules.Utils
             if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
             {
                 Logger.Instance.Error("Config path is null or file does not exist");
-                return [];
+                return null;
             }
 
             var json = File.ReadAllText(_configPath);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }
-
         public static string GetSavePath(string gameName)
         {
+            var _gamePaths = LoadGamePaths();
+
             if (!_keyValuePairs.TryGetValue(gameName, out var gameKey))
             {
                 Logger.Instance.Error($"Game name {gameName} not found in keyValuePairs dictionary");
                 return "";
             }
 
-            if (!_gamePaths.TryGetValue(gameKey, out var gamePath))
+            if (_gamePaths != null && _gamePaths.TryGetValue(gameKey, out string? gamePath))
             {
-                Logger.Instance.Error($"Game key {gameKey} not found in gamePaths dictionary");
-                return "";
+                return gamePath;
             }
 
-            return gamePath;
+            Logger.Instance.Error($"Game key {gameKey} not found in gamePaths dictionary");
+            return "";
         }
 
+        public static Dictionary<byte, List<int>>? ConvertDictionnary(Dictionary<string, List<string>>? originalDict)
+        {
+            if (originalDict == null)
+            {
+                return null;
+            }
 
+            var newDict = new Dictionary<byte, List<int>>();
+
+            foreach (var pair in originalDict)
+            {
+                var intList = pair.Value.Select(int.Parse).ToList();
+                newDict.Add(byte.Parse(pair.Key), intList);
+            }
+
+            return newDict;
+        }
+
+        public static nint HexToNint(string hex)
+        {
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                hex = hex[2..];
+            }
+
+            long value = Convert.ToInt64(hex, 16);
+            return (nint)value;
+        }
+        
         public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
-
     }
 }
