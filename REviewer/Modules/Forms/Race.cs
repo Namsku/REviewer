@@ -182,6 +182,7 @@ namespace REviewer.Modules.Forms
 
         private int GetKeyItemPosition(int value, string room, int state)
         {
+
             var name = _itemDatabase.GetPropertyNameById((byte)value);
             var item_box = (_game.Game.State.Value & 0x0000FF00) == 0x90;
             var position = 0;
@@ -189,7 +190,7 @@ namespace REviewer.Modules.Forms
             for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
                 if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State <= state) && !item_box && state != 2) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State < state) && !item_box) return i;
                 if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State == -1) return i;
             }
 
@@ -366,9 +367,9 @@ namespace REviewer.Modules.Forms
 
             InitSaveMonitoring();
             InitChronometers();
-            InitInventory();
             InitKeyItems();
             InitKeyRooms();
+            InitInventory();
 
             InitCharacterHealthState();
 
@@ -394,6 +395,7 @@ namespace REviewer.Modules.Forms
 
             Write(_game.Player.InventorySlotSelected, 0);
             Write(_game.Player.LastItemFound, 0);
+            Write(_game.Player.LockPick, 0);
         }
 
         private static void Write(VariableData v, int value)

@@ -67,6 +67,7 @@ namespace REviewer.Modules.Forms
         private void UpdateLastItemFoundPicture()
         {
             byte value = (byte)_game.Player.LastItemFound.Value;
+            var state = _game.Game.State.Value & 0xF0000000;
 
             if (_game.Player.LastItemFound.Value == 0x31)
             {
@@ -78,7 +79,11 @@ namespace REviewer.Modules.Forms
                 _raceDatabase.Stage = (((int)_game.Player.Stage.Value % 5) + 1).ToString();
                 _raceDatabase.Room = ((int)_game.Player.Room.Value).ToString("X2");
                 _raceDatabase.FullRoomName = _raceDatabase.Stage + _raceDatabase.Room;
-                UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
+
+                if ((state != 0x8000000 || state != 0x9000000) && value != 61)
+                {
+                    UpdateRaceKeyItem(value, _raceDatabase.FullRoomName, 1);
+                }
             }
 
             byte item_id = (byte)_game.Player.LastItemFound.Value;
@@ -95,6 +100,11 @@ namespace REviewer.Modules.Forms
 
         private void UpdateRaceKeyItem(int value, string room, int state, bool force = false)
         {
+            if (_raceDatabase == null)
+            {
+                return;
+            }
+
             value = GetKeyItemPosition(value, room, state);
 
             // If 'force' is true or the current state is less than the new state, update the state and picture

@@ -473,16 +473,6 @@ namespace REviewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lockpick {
-            get {
-                object obj = ResourceManager.GetObject("lockpick", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap lseen {
             get {
                 object obj = ResourceManager.GetObject("lseen", resourceCulture);
