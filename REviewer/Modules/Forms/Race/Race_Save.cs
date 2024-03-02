@@ -89,9 +89,9 @@ namespace REviewer.Modules.Forms
             _raceDatabase.TickTimer = _game.Game.Timer.Value;
             _raceDatabase.Fulltimer = _raceDatabase.TickTimer;
 
-            foreach (var seg in _segmentWatch)
+            for (int i = 0; i < _segmentWatch.Count; i++)
             {
-                _raceDatabase.SegTimers.Add(seg);
+                _raceDatabase.SegTimers[i] = _segmentWatch[i];
             }
 
             SerializeObject(_raceDatabase);
