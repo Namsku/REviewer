@@ -182,16 +182,27 @@ namespace REviewer.Modules.Forms
 
         private int GetKeyItemPosition(int value, string room, int state)
         {
-
             var name = _itemDatabase.GetPropertyNameById((byte)value);
             var item_box = (_game.Game.State.Value & 0x0000FF00) == 0x90;
-            var position = 0;
+            var position = -1;
 
             for (int i = 0; i < _raceDatabase.KeyItems.Count; i++)
             {
-                if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State < state) && !item_box) return i;
-                if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State == -1) return i;
+                if (_raceDatabase.KeyItems[i].Data.Name == name)
+                {
+                    position = i;
+                    var _raceState = _raceDatabase.KeyItems[i].State;
+
+                    if (_raceDatabase.KeyItems[i].Room == room && _raceState <= state && !item_box && _raceState < 2)
+                    {
+                        return i;
+                    }
+
+                    if (_raceDatabase.KeyItems[i].State == -1)
+                    {
+                        return i;
+                    }
+                }
             }
 
             return position;
