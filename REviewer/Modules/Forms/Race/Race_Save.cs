@@ -122,6 +122,11 @@ namespace REviewer.Modules.Forms
                 _raceWatch = (int)save.Fulltimer;
             }
 
+            labelSegTimer1.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds(0).ToString(@"hh\:mm\:ss\.ff");
+
             for (int i = 0; i < save?.SegTimers?.Count; i++)
             {
                 try
@@ -147,9 +152,9 @@ namespace REviewer.Modules.Forms
             _raceDatabase.Segments = save?.Segments ?? 0;
 
             labelSegTimer1.Text = TimeSpan.FromSeconds(_segmentWatch[0] / 30.0).ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer2.Text = TimeSpan.FromSeconds((_segmentWatch[1] - _segmentWatch[0])/30.0).ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer3.Text = TimeSpan.FromSeconds((_segmentWatch[2] - _segmentWatch[1]) /30.0).ToString(@"hh\:mm\:ss\.ff");
-            labelSegTimer4.Text = TimeSpan.FromSeconds((_segmentWatch[3] - _segmentWatch[2]) /30.0).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer2.Text = TimeSpan.FromSeconds(Math.Max(0,(_segmentWatch[1] - _segmentWatch[0])/30.0)).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer3.Text = TimeSpan.FromSeconds(Math.Max(0, (_segmentWatch[2] - _segmentWatch[1]) /30.0)).ToString(@"hh\:mm\:ss\.ff");
+            labelSegTimer4.Text = TimeSpan.FromSeconds(Math.Max(0, (_segmentWatch[3] - _segmentWatch[2]) /30.0)).ToString(@"hh\:mm\:ss\.ff");
 
 
             _raceDatabase.Debugs = Math.Max(_raceDatabase.Debugs, save?.Debugs ?? 0);

@@ -290,7 +290,7 @@ namespace REviewer.Modules.Forms
             }
             else if ((state & 0x0F000000) == 0x01000000 
                     && _raceDatabase.PreviousState != 0x2000000 
-                    && _game.Player.Unk001.Value == 0x01)
+                    && (_game.Player.Stage.Value & 0x05) == 2)
             {
                 labelHealth.Text = "WP!";
                 labelHealth.ForeColor = CustomColors.Blue;
