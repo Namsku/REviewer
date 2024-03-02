@@ -110,6 +110,11 @@ namespace REviewer.Modules.Forms
 
         private void Updated_Reset(object sender, EventArgs e) => InvokeUI(() =>
         {
+            if (labelHealth.Text == "WP!")
+            {
+                labelHealth.Text = "255";
+            }
+
             int health = Int32.Parse(labelHealth.Text);
             int player = ((Dictionary<byte ,List<int>>?)_game.Player.Health.Database)[(byte)(_game.Player.Character.Value & 0x03)][0];
             if (_game.Game.MainMenu.Value == 1 && health != 0 && !labelGameCompleted.Visible && (health <= player))

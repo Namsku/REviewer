@@ -191,7 +191,6 @@ namespace REviewer.Modules.Forms
                 if (_raceDatabase.KeyItems[i].Data.Name == name) position = i;
                 if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room == room && _raceDatabase.KeyItems[i].State <= state) && !item_box && state != 2) return i;
                 if (_raceDatabase.KeyItems[i].Data.Name == name && _raceDatabase.KeyItems[i].State == -1) return i;
-                // if (_raceDatabase.KeyItems[i].Data.Name == name && (_raceDatabase.KeyItems[i].Room != room || _raceDatabase.KeyItems[i].State != state) && !item_box) return i;
             }
 
             return position;

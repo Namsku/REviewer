@@ -11,7 +11,6 @@ namespace REviewer.Modules.Utils
     {
 
         private static readonly string? _configPath = ConfigurationManager.AppSettings["Config"];
-        private static readonly Dictionary<string, string>? _gamePaths = LoadGamePaths();
         private static readonly Dictionary<string, string> _keyValuePairs = new()
         {
             {"Bio", "RE1"},
@@ -37,6 +36,7 @@ namespace REviewer.Modules.Utils
         public static bool IsSavePathPresent(int index)
         {
             var gameNames = new[] { "RE1", "RE2", "RE3", "RECVX" };
+            var _gamePaths = LoadGamePaths();
 
             if (_gamePaths != null && _gamePaths.ContainsKey(gameNames[index]))
             {
@@ -60,6 +60,8 @@ namespace REviewer.Modules.Utils
         }
         public static string GetSavePath(string gameName)
         {
+            var _gamePaths = LoadGamePaths();
+
             if (!_keyValuePairs.TryGetValue(gameName, out var gameKey))
             {
                 Logger.Instance.Error($"Game name {gameName} not found in keyValuePairs dictionary");
