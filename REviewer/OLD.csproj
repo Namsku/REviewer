@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>WinExe</OutputType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Forms\**" />
+    <EmbeddedResource Remove="Forms\**" />
+    <None Remove="Forms\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.5.140" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.2.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Fonts\Pixeboy.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xD;&#xA;&#xD;&#xA;del /Q &quot;$(TargetDir)data\*&quot;&#xD;&#xA;del /Q &quot;$(TargetDir)logs\*&quot;&#xA;&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />
+  </Target>
+
+</Project>

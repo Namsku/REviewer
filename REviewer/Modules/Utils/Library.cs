@@ -1,7 +1,11 @@
 ﻿
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Cryptography;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows;
 using Newtonsoft.Json;
 
 
@@ -15,6 +19,68 @@ namespace REviewer.Modules.Utils
         {
             {"Bio", "RE1"},
         };
+
+        public static void UpdateTextBlock(TextBlock textBlock, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
+        {
+            textBlock.Dispatcher.Invoke(() =>
+            {
+                if (text != null)
+                {
+                    textBlock.Text = text;
+                }
+
+                if (color != null)
+                {
+                    textBlock.Foreground = color;
+                }
+
+                if (isBold != null)
+                {
+                    textBlock.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
+                }
+
+                if (font != null)
+                {
+                    textBlock.FontFamily = new FontFamily(font);
+                }
+
+                if (size != null)
+                {
+                    textBlock.FontSize = size.Value;
+                }
+            });
+        }
+
+        public static void UpdateTextBox(TextBox textBox, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
+        {
+            textBox.Dispatcher.Invoke(() =>
+            {
+                if (text != null)
+                {
+                    textBox.Text = text;
+                }
+
+                if (color != null)
+                {
+                    textBox.Foreground = color;
+                }
+
+                if (isBold != null)
+                {
+                    textBox.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
+                }
+
+                if (font != null)
+                {
+                    textBox.FontFamily = new FontFamily(font);
+                }
+
+                if (size != null)
+                {
+                    textBox.FontSize = size.Value;
+                }
+            });
+        }
 
         public static nint GetModuleBaseAddress(nint processHandle, string moduleName)
         {
@@ -95,7 +161,20 @@ namespace REviewer.Modules.Utils
             return newDict;
         }
 
-        public static nint HexToNint(string hex)
+        public static string GetProcessMD5Hash(Process process)
+        {
+            if (process.MainModule == null)
+            {
+                throw new ArgumentNullException("The process has no main module");
+            }
+
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(process.MainModule.FileName);
+            var hash = md5.ComputeHash(stream);
+            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+        }
+
+    public static nint HexToNint(string hex)
         {
             if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
@@ -107,5 +186,7 @@ namespace REviewer.Modules.Utils
         }
         
         public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
+
+
     }
 }

@@ -42,7 +42,7 @@ namespace REviewer.Modules.Forms
 
         private static readonly string[] _itemTypes = ["Key Item", "Optionnal Key Item", "Nothing"];
 
-        public Race(RootObject GameData, string gameName)
+        public Race(RootObject gameData, MonitorVariables monitoring, Dictionary<string,string> config, string gameName)
         {
             // Font Loading
             InitPixelBoyFont();
@@ -60,8 +60,9 @@ namespace REviewer.Modules.Forms
             InitInventorySlots();
 
             // Init the main classes
-            _game = GameData;
+            _game = gameData;
             _gameName = gameName;
+            _game
             _itemDatabase = new ItemIDs(gameName);
             _raceDatabase = new PlayerRaceProgress(gameName);
         }

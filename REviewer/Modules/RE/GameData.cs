@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.IO;
 using Newtonsoft.Json;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
@@ -21,9 +22,17 @@ namespace REviewer.Modules.RE
             _gameName = gameName;
         }
 
-        public RootObject GetGameData()
+        public RootObject GetGameData(ItemIDs ids)
         {
-            return new RootObject(_data[_gameName]);
+            if (_data == null || _gameName == null)
+            {
+                throw new ArgumentNullException("The game data or game name is null");
+            }
+
+            var obj = new RootObject(_data[_gameName], ids);
+
+            Logger.Instance.Info("RootObject has been created");
+            return obj; 
         }
     }
 }

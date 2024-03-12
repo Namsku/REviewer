@@ -1,108 +1,78 @@
-﻿using MessagePack;
-using REviewer.Modules.RE;
-using REviewer.Modules.Utils;
+﻿using REviewer.Modules.RE;
 
 namespace REviewer.Modules.SRT
 {
-    [MessagePackObject]
-    public class PlayerRaceProgress : ICloneable
+    public class PlayerRaceProgress
     {
-        public PlayerRaceProgress()
-        {
-        }
-
         // Key Elements
-        [Key(0)]
-        public List<KeyItem> KeyItems { get; set; }
-
-        [Key(1)]
-        public Dictionary<string, List<string>> KeyRooms { get; set; }
+        public List<KeyItem>? KeyItems { get; set; }
+        public Dictionary<string, List<string>>? KeyRooms { get; set; }
+        public List<string>? Rooms { get; set; } = new List<string>();
 
         // Stats
-        [Key(2)]
-        public int Saves { get; set; }
-
-        [Key(3)]
-        public int Deaths { get; set; }
-
-        [Key(4)]
-        public int Resets { get; set; }
-
-        [Key(5)]
-        public int Debugs { get; set; }
-
-        [Key(6)]
-        public int Segments { get; set; }
+        public Dictionary<string, int>? Stats { get; set; }
 
         // Room Infos
-        [Key(7)]
-        public int PreviousState { get; set; }
+        public Dictionary<string, string>? RoomInfos { get; set; }
 
-        [Key(8)]
-        public string Stage { get; set; }
-
-        [Key(9)]
-        public string Room { get; set; }
-
-        [Key(10)]
-        public string LastRoomName { get; set; }
-
-        [Key(11)]
-        public string FullRoomName { get; set; }
-
-        [Key(12)]
-        public string? SavePath;
-
-        [Key(13)]
+        // Timers
         public int? Fulltimer { get; set; }
+        public List<int?> SegTimers { get; set; } = new List<int?> { 0, 0, 0, 0 };
 
-        [Key(14)]
-        public List<int?> SegTimers = [0,0,0,0];
+        // Save
+        public string? SavePath { get; set; }
+        public int? SaveID { get; set; }
 
-        [Key(15)]
-        public int TickTimer { get; set; }
-        [Key(16)]
-        public int SaveID { get; set; }
-        [Key(27)]
-        public byte[] RealItembox { get; set; }
-
-        [Key(28)]
-        public List<string> Rooms = [];
-
-        [IgnoreMember]
-        public FileSystemWatcher Watcher = new();
+        // GameState
+        public int? PreviousState { get; set; }
 
         public PlayerRaceProgress(string savePath)
         {
-            SavePath = Library.GetSavePath(savePath);
+            SavePath = savePath;
         }
 
-        public object Clone()
+        public PlayerRaceProgress Clone()
         {
-            return new PlayerRaceProgress
+            if (KeyItems == null)
+            {
+                throw new ArgumentNullException("KeyItems is null");
+            }
+
+            if (KeyRooms == null)
+            {
+                throw new ArgumentNullException("KeyRooms is null");
+            }
+
+            if (SavePath == null)
+            {
+                throw new ArgumentNullException("SavePath is null");
+            }
+
+            if (Stats == null)
+            {
+                throw new ArgumentNullException("Stats is null");
+            }
+
+            if (RoomInfos == null)
+            {
+                throw new ArgumentNullException("RoomInfos is null");
+            }
+
+            var clone = new PlayerRaceProgress(SavePath)
             {
                 // Copy all properties
-                KeyItems = KeyItems.Select(item => (KeyItem)item.Clone()).ToList(),
+                KeyItems = new List<KeyItem>(KeyItems),
                 KeyRooms = new Dictionary<string, List<string>>(KeyRooms),
-                Saves = Saves,
-                Deaths = Deaths,
-                Resets = Resets,
-                Debugs = Debugs,
-                Segments = Segments,
+                Stats = new Dictionary<string, int>(Stats),
+                RoomInfos = new Dictionary<string, string>(RoomInfos),
                 PreviousState = PreviousState,
-                Stage = Stage,
-                Room = Room,
-                LastRoomName = LastRoomName,
-                FullRoomName = FullRoomName,
-                SavePath = SavePath,
+
                 Fulltimer = Fulltimer,
-                SegTimers = SegTimers,
-                TickTimer = TickTimer,
+                SegTimers = new List<int?>(SegTimers),
                 SaveID = SaveID,
-                RealItembox = (byte[])RealItembox?.Clone(),
-                // FileSystemWatcher is not cloneable, so we create a new one
-                // Watcher = new FileSystemWatcher()
             };
+
+            return clone;
         }
     }
 }

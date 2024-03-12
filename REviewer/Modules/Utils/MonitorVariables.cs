@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Media;
 using REviewer.Modules.RE.Common;
-using REviewer.Modules.Utils;
-using static REviewer.Modules.RE.GameData;
 
 namespace REviewer.Modules.Utils
 {
@@ -17,19 +18,25 @@ namespace REviewer.Modules.Utils
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(nint processHandle, nint baseAddress, [Out] byte[] buffer, uint size, out int bytesRead);
 
+        private nint _processHandle = processHandle;
+        private readonly string _processName = processName;
+        private readonly object _processHandleLock = new();
+
         private const int BYTE_SIZE = 1;
         private const int INT_SIZE = 4;
         private const int MONITORING_INTERVAL = 55;
 
         private System.Threading.Timer? _monitoringTimer;
-        private nint _processHandle = processHandle;
-        private readonly string _processName = processName;
-        private readonly object _lockObject = new();
-        private readonly object _processHandleLock = new();
+
         private volatile int _running = 1;
 
         private RootObject? _currentRootObject;
+        private ObservableCollection<EnnemyTracking>? _enemyTracking;
+        private readonly object _lockObject = new();
+
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
+
+        private List<string> _debug = new();
 
         private bool CanMonitorObject(object obj)
         {
@@ -60,9 +67,16 @@ namespace REviewer.Modules.Utils
                 }
             }
 
-            if (isProcessActive && _currentRootObject != null)
+            if (isProcessActive)
             {
-                MonitorObject(_currentRootObject);
+                if(_currentRootObject != null)
+                {
+                    MonitorObject(_currentRootObject);
+                }
+                else if (_enemyTracking != null)
+                {
+                    MonitorObject(_enemyTracking);
+                }
             }
         }
 
@@ -70,6 +84,7 @@ namespace REviewer.Modules.Utils
         {
             if (!CanMonitorObject(obj))
             {
+                Logger.Instance.Debug($"Monitoring {obj} impossible");
                 return;
             }
 
@@ -78,28 +93,54 @@ namespace REviewer.Modules.Utils
 
             foreach (var property in properties)
             {
-                MonitorProperty(property, obj);
+                if (property.PropertyType != typeof(System.String)
+                    && property.PropertyType != typeof(System.Int32)
+                        && property.Name != "KeyItemImages"
+                            && property.PropertyType != typeof(ImageSource)
+                             && property.PropertyType != typeof(Brush)
+                                && property.PropertyType != typeof(Brushes)
+                                    && property.PropertyType != typeof(List<string>)
+                                )
+                {
+                    MonitorProperty(property, obj);
+                }
             }
         }
 
         private void MonitorProperty(PropertyInfo property, object obj)
         {
-            lock (_lockObject)
+            
+            if (obj == null)
             {
-                var value = property.GetValue(obj);
+                return;
+            }
 
+            lock (_lockObject) 
+            {
+                if (obj is ObservableCollection<EnnemyTracking> ennemyTrackings)
+                {
+                    foreach (var item in ennemyTrackings)
+                    {
+                        MonitorObject(item);
+                    }
+
+                    return;
+                }
+
+                var value = property?.GetValue(obj);
+                
                 if (value is VariableData variableData)
                 {
                     MonitorVariableData(variableData);
                 }
-                else if (value is IEnumerable enumerable && !(value is string))
+                else if (value is IEnumerable enumerable && value is not string && value is not char)
                 {
                     foreach (var item in enumerable)
                     {
                         MonitorObject(item);
                     }
                 }
-                else if (value != null)
+                else if (value != null && value is not string && value is not char)
                 {
                     MonitorObject(value);
                 }
@@ -164,7 +205,20 @@ namespace REviewer.Modules.Utils
 
             _currentRootObject = rootObject;
             _monitoringTimer = new System.Threading.Timer(state => Monitor(), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(MONITORING_INTERVAL));
-            Logger.Instance.Info("Started monitoring");
+            Logger.Instance.Info("Started RootObject monitoring");
+        }
+
+        public void Start(ObservableCollection<EnnemyTracking> ennemyTrackings)
+        {
+            if (ennemyTrackings == null)
+            {
+                Logger.Instance.Error("EnnemyTrackings is null");
+                return;
+            }
+
+            _enemyTracking = ennemyTrackings;
+            _monitoringTimer = new System.Threading.Timer(state => Monitor(), ennemyTrackings, TimeSpan.Zero, TimeSpan.FromMilliseconds(MONITORING_INTERVAL));
+            Logger.Instance.Info("Started Enemy monitoring");
         }
 
         public void Stop()
@@ -202,7 +256,15 @@ namespace REviewer.Modules.Utils
         internal void UpdateProcessHandle(nint handle)
         {
             _processHandle = handle;
-            Start(_currentRootObject);
+
+            if (_currentRootObject != null)
+            {
+                Start(_currentRootObject);
+            }
+            else if (_enemyTracking != null)
+            {
+                Start(_enemyTracking);
+            }
         }
     }
 }
