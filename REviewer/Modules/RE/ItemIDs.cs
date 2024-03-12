@@ -1,26 +1,18 @@
 ﻿using System.Configuration;
 using System.IO;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using MessagePack;
 using Newtonsoft.Json;
 
 namespace REviewer.Modules.RE
 {
-    [MessagePackObject]
     public class Property
     {
         public Property()
         {
         }
 
-        [Key(0)]
         public required string Name { get; set; }
-        [Key(1)]
         public required string Type { get; set; }
-        [Key(2)]
         public required string Color { get; set; }
-        [Key(3)]
         public required string Img { get; set; }
     }
 

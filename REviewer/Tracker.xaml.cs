@@ -37,6 +37,7 @@ namespace REviewer
                 foreach (var enemy in Tracking)
                 {
                     enemy.Enemy.Visibility = Visibility.Collapsed;
+                    enemy.Enemy.MaxHealth = 0;
                 }
             }
         }

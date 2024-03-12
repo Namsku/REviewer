@@ -4,12 +4,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
-using System.Windows.Documents;
-using MessagePack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using REviewer.Modules.RE.Json;
-using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
@@ -177,13 +174,6 @@ namespace REviewer.Modules.RE.Common
             string filePath = Path.Combine(directoryPath, hashString + "_" + Guid.NewGuid().ToString() + ".json");
             File.WriteAllText(filePath, jsonString);
             Logger.Instance.Info($"Saved SRT state");
-        }
-
-        public static T DeserializeObject<T>(string filePath)
-        {
-            byte[] objectData = File.ReadAllBytes(filePath);
-            T obj = MessagePackSerializer.Deserialize<T>(objectData);
-            return obj;
         }
 
         private void SaveFileDetected(object source, FileSystemEventArgs e)

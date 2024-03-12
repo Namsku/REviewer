@@ -13,7 +13,6 @@ namespace REviewer
         private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
         private MonitorVariables _monitoring;
-        private PlayerRaceProgress _raceDatabase;
         private FontFamily? _pixelBoyFont;
 
         public SRT(RootObject gameData, MonitorVariables monitoring, Dictionary<string,bool?> config, string gameName)

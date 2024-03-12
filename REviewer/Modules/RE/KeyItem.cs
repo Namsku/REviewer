@@ -1,8 +1,5 @@
-﻿using MessagePack;
-
-namespace REviewer.Modules.RE
+﻿namespace REviewer.Modules.RE
 {
-    [MessagePackObject]
     public class KeyItem : ICloneable
     {
         // Constructor
@@ -17,11 +14,8 @@ namespace REviewer.Modules.RE
         }
 
         // Public properties
-        [Key(0)]
         public Property? Data { get; set; }
-        [Key(1)]
         public string? Room { get; set; }
-        [Key(2)]
         public int? State { get; set; }
 
         public object Clone()
