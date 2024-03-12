@@ -20,16 +20,14 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 ## Work In Progress
 
-- [x] RE1 (Mediakit version) [60%]
+- [x] RE1 (Mediakit version) [90%]
 - [ ] RE2 (SourceNext)
 - [ ] RE3 (SourceNext)
 - [ ] CVX (PS2)
 
 ## Known Bugs
 
-- No load/save state working yet
-- Duplicate items are not working properly
-- And maybe more...
+- Enemy Tracker is not super stable in some cases.
 
 ## Features
 
@@ -39,7 +37,6 @@ REviewer provides real-time monitoring of the player's health status. It display
 
 #### What is the health status color system?
 
-- Blue: Full Health
 - Green: Fine
 - Yellow: Light Caution
 - Orange: Caution
@@ -79,7 +76,6 @@ To start using REviewer, follow these steps:
 3. Open REviewer
 4. Edit -> Settings -> Save the save repository path of your game (usually /savedata)
 5. Select the appropriate game version.
-6. Click the "Check" button to ensure that the game is running properly.
 7. Enjoy your speedrunning experience!
 
 ## FAQ
@@ -90,19 +86,10 @@ they are 5 timers in this tool, the first 4 are the segment timers, and the last
 
 It's possible that you have only 1 segment timer, in this case, the segment timer will be the total time.
 
-### Wait I clicked on reset and all my inventory/item box are gone! What happened?
-
-The reset button is used to reset the game state, so it will reset the inventory and item box. If you want to reset the game state without losing your inventory, you can use the "Reset" button in the game menu.
-
-### My game save is crashing, what can I do?
-
-REviewer is patching the game save to for instaurate the communication between the game and the tool, so it's possible that the game save is crashing. To fix this, you need to load the save with the tool.
-If you want to play without the tool, you need to patch the save itself. I will implement a short tool to do this in the future.
-
 ### What means the color background behind the key items?
 
 - Green: The item is in the inventory/Item Box, or it has been used
-- Yellow: The item has been seen but is not in the inventory
+- Orange: The item has been seen but is not in the inventory
 
 ## Contributing
 
