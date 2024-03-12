@@ -1,18 +1,60 @@
-﻿using REviewer.Modules.RE.Json;
+﻿using System.ComponentModel;
+using System.Windows.Media;
+using REviewer.Modules.RE.Json;
 
 namespace REviewer.Modules.Utils
 {
-    public class VariableData
+    public class VariableData : INotifyPropertyChanged
     {
-        // Private fields
         private int _value;
+        private double _height;
+        private double _width;
+        private Brush? _background;
+        private FontFamily? _fontFamily;
 
-        // Public properties
         public object? Database { get; set; }
         public bool IsUpdated { get; set; } = false;
-        public object LockObject { get; } = new object();
+        public object LockObject { get; set; } = new();
         public IntPtr Offset { get; set; }
         public uint Size { get; set; }
+        public Brush? Background {
+            get { return _background; } 
+            set
+            {
+                if (_background != value)
+                {
+                    _background = value;
+                    OnPropertyChanged(nameof(Background));
+                }
+            }
+        }
+
+        public double Height
+        {
+            get { return _height; }
+            set
+            {
+                if (_height != value)
+                {
+                    _height = value;
+                    OnPropertyChanged(nameof(Height));
+                }
+            }
+        }
+
+        public double Width
+        {
+            get { return _width; }
+            set
+            {
+                if (_width != value)
+                {
+                    _width = value;
+                    OnPropertyChanged(nameof(Width));
+                }
+            }
+        }
+
         public int Value
         {
             get { return _value; }
@@ -21,18 +63,29 @@ namespace REviewer.Modules.Utils
                 if (_value != value)
                 {
                     _value = value;
-                    OnUpdated(); // Call method to raise event
+                    OnPropertyChanged(nameof(Value));
                 }
             }
         }
 
-        // Event declaration
-        public event EventHandler? Updated;
-
-        // Method to raise the Updated event
-        protected virtual void OnUpdated()
+        public FontFamily? FontFamily
         {
-            Updated?.Invoke(this, EventArgs.Empty);
+            get { return _fontFamily; }
+            set
+            {
+                if (_fontFamily != value)
+                {
+                    _fontFamily = value;
+                    OnPropertyChanged(nameof(FontFamily));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public VariableData(IntPtr offset, uint size)

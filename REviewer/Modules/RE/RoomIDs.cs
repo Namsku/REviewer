@@ -14,6 +14,11 @@ namespace REviewer.Modules.RE
                 var json = File.ReadAllText(jsonFilePath);
                 var dictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
 
+                if (dictionary == null)
+                {
+                    throw new ArgumentNullException("The game data is null");
+                }
+
                 if (dictionary.TryGetValue(processName, out var processDictionary) &&
                     processDictionary.TryGetValue("RoomIDs", out var roomIDs))
                 {

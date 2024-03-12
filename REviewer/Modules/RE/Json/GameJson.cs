@@ -73,6 +73,11 @@ namespace REviewer.Modules.RE.Json
         public required StandardProperty State { get; set; }
     }
 
+    public class JEnnemy
+    {
+        public required StandardProperty EnnemyInfos { get; set; }
+    }
+
     public class Bio
     {
         public required Dictionary<string, string> Info { get; set; }
@@ -85,5 +90,6 @@ namespace REviewer.Modules.RE.Json
         public required JGame Game { get; set; }
         public required JPosition Position { get; set; }
         public required JRebirth Rebirth { get; set; }
+        public required JEnnemy Ennemy { get; set; }
     }
 }

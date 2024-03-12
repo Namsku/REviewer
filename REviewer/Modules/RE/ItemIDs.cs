@@ -1,49 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Drawing;
+﻿using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using MessagePack;
 using Newtonsoft.Json;
 
 namespace REviewer.Modules.RE
 {
-    [MessagePackObject]
-    public class Property : ICloneable
+    public class Property
     {
         public Property()
         {
         }
 
-        [Key(0)]
         public required string Name { get; set; }
-        [Key(1)]
         public required string Type { get; set; }
-        [Key(2)]
         public required string Color { get; set; }
-        [IgnoreMember]
-        public required Bitmap Img { get; set; }
-
-        public object Clone()
-        {
-            // Create a new Bitmap object from the existing one
-            Bitmap? clonedImg = null;
-            if (Img != null)
-            {
-                clonedImg = new Bitmap(Img);
-            }
-
-            return new Property
-            {
-                // Copy all properties
-                Name = this.Name,
-                Type = this.Type,
-                Color = this.Color,
-                Img = clonedImg
-            };
-        }
+        public required string Img { get; set; }
     }
 
     public class ItemIDs
@@ -75,10 +45,17 @@ namespace REviewer.Modules.RE
             // _processName is the key to the BioHazardItems object in the JSON
             var bios = JsonConvert.DeserializeObject<Dictionary<string, BioHazardItems>>(json);
 
-            if (!bios.TryGetValue(_processName, out var BioHazardItems))
+            if (bios == null)
+            {
+                throw new ArgumentNullException("The game data is null");
+            }
+
+            if (!bios.TryGetValue(_processName, out BioHazardItems? BioHazardItems))
             {
                 throw new KeyNotFoundException($"BioHazardItems with key {_processName} not found in JSON.");
             }
+
+            var Game = _processName.ToString();
 
             Items = BioHazardItems.ItemIDs.ToDictionary(
                 pair => byte.Parse(pair.Key),
@@ -87,7 +64,7 @@ namespace REviewer.Modules.RE
                     Name = pair.Value.Name,
                     Type = pair.Value.Type,
                     Color = pair.Value.Color,
-                    Img = (Bitmap)Properties.Resources.ResourceManager.GetObject(pair.Value.Img)
+                    Img = pair.Value.Img
                 }
             );
 
@@ -120,7 +97,7 @@ namespace REviewer.Modules.RE
             return Items.TryGetValue(id, out var property) ? property : Items[255];
         }
 
-        public byte GetPropertyIdByName(string name)
+        public byte GetPropertyIdByName(string? name)
         {
             return Items.FirstOrDefault(property => property.Value.Name == name).Key;
         }
@@ -136,7 +113,7 @@ namespace REviewer.Modules.RE
             return Items.TryGetValue(id, out var property) ? property.Type : Items[255].Type;
         }
 
-        public Bitmap GetPropertyImgById(byte id)
+        public string GetPropertyImgById(byte id)
         {
             return Items.TryGetValue(id, out var property) ? property.Img : Items[255].Img;
         }

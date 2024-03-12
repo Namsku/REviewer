@@ -1,13 +1,41 @@
-﻿using REviewer.Modules.RE.Json;
+﻿using System.ComponentModel;
 using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
 {
-    public class Position(Bio bio)
+    public partial class RootObject : INotifyPropertyChanged
     {
-        public VariableData? X { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["PositionX"]), bio.Position.X);
-        public VariableData? Y { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["PositionY"]), bio.Position.Y);
-        public VariableData? Z { get; set; } = new VariableData(Library.HexToNint(bio.Offsets["PositionZ"]), bio.Position.Z);
+        private VariableData _positionX;
+        public VariableData PositionX
+        {
+            get { return _positionX; }
+            set
+            {
+                _positionX = value;
+                OnPropertyChanged(nameof(PositionX));
+            }
+        }
+
+        private VariableData _positionY;
+        public VariableData PositionY
+        {
+            get { return _positionY; }
+            set
+            {
+                _positionY = value;
+                OnPropertyChanged(nameof(PositionY));
+            }
+        }
+        private VariableData _positionZ;
+        public VariableData PositionZ
+        {
+            get { return _positionZ; }
+            set
+            {
+                _positionZ = value;
+                OnPropertyChanged(nameof(PositionZ));
+            }
+        }
     }
 
 }

@@ -1,14 +1,17 @@
+using System.Windows.Media;
+
 namespace REviewer.Modules.Utils
 {
     public static class CustomColors
     {
-        public static readonly Color Blue = Color.FromArgb(86, 156, 214);
-        public static readonly Color Lavender = Color.FromArgb(206, 108, 255);
-        public static readonly Color Yellow = Color.FromArgb(215, 191, 128);
-        public static readonly Color Orange = Color.FromArgb(219, 105, 27);
-        public static readonly Color Red = Color.FromArgb(205, 67, 69);
-        public static readonly Color White = Color.FromArgb(250, 240, 216);
-        public static readonly Color Green = Color.FromArgb(54, 150, 45);
-        public static readonly Color Default = Color.FromArgb(159, 185, 118);
+        public static readonly SolidColorBrush Blue = new (Color.FromArgb(0xFF, 86, 156, 214));
+        public static readonly SolidColorBrush Lavender = new (Color.FromArgb(0xFF, 206, 108, 255));
+        public static readonly SolidColorBrush Yellow = new (Color.FromArgb(0xFF, 215, 191, 128));
+        public static readonly SolidColorBrush Orange = new (Color.FromArgb(0xFF, 219, 105, 27));
+        public static readonly SolidColorBrush Red = new(Color.FromArgb(0xFF, 205, 67, 69));
+        public static readonly SolidColorBrush White = new (Color.FromArgb(0xFF, 250, 240, 216));
+        public static readonly SolidColorBrush Green = new (Color.FromArgb(0xFF, 54, 150, 45));
+        public static readonly SolidColorBrush Black = new (Color.FromArgb(0xFF, 0, 0, 0));
+        public static readonly SolidColorBrush Default = new (Color.FromArgb(0xFF, 159, 185, 118));
     }
 }
