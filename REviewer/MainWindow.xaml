@@ -56,6 +56,7 @@
                             <GroupBox Header="Game Selection">
                                 <ComboBox HorizontalAlignment="Left" Margin="10,5,0,5" Height="22">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
+                                    <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
                                 </ComboBox>
                             </GroupBox>
 
@@ -135,16 +136,17 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Resident Evil 2" Margin="0,0,0,0" IsEnabled="False">
+                            <GroupBox Header="Resident Evil 2" Margin="0,0,0,0">
                                 <StackPanel>
-                                    <Label Content="Save Path" HorizontalAlignment="Left" Margin="10,5,0,0"/>
-                                    <Grid>
+                                    <Grid Margin="0,5,0,5">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="" HorizontalAlignment="Left" Margin="10,5,0,0"/>
-                                        <Button Grid.Column="1" Content="..." HorizontalAlignment="Right" Margin="0,5,10,0" Width="25" Height="25"/>
+                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
+                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="25" Width="360" Name="RE2SavePath"/>
+                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE2SavePathButton_Click"/>
                                     </Grid>
                                 </StackPanel>
                             </GroupBox>

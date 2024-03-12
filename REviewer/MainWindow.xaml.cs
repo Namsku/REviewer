@@ -299,6 +299,21 @@ namespace REviewer
             }
         }
 
+        private void RE2SavePathButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFolderDialog();
+            var result = dialog.ShowDialog();
+
+            Logger.Instance.Debug(result);
+
+            if (result == true)
+            {
+                RE2SavePath.Text = dialog.FolderName;
+                UpdateConfigFile("RE2", dialog.FolderName);
+                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+            }
+        }
+
         private void UpdateConfigFile(string game, string path)
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
