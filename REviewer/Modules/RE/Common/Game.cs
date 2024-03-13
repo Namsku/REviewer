@@ -16,15 +16,13 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _state;
-        public VariableData GameState
+        private VariableData? _state;
+        public VariableData? GameState
         {
             get { return _state; }
             set
             {
                 if (_state != value) { 
-                    _state = value;
-
                     if (_state != null)
                     {
                         _state.PropertyChanged -= GameState_PropertyChanged;
@@ -46,6 +44,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                if (Health == null || GameState == null) return;
+
                 int state = GameState.Value;
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
@@ -64,8 +64,8 @@ namespace REviewer.Modules.RE.Common
         }
 
 
-        private VariableData _unk001;
-        public VariableData Unk001
+        private VariableData? _unk001;
+        public VariableData? Unk001
         {
             get { return _unk001; }
             set
@@ -75,8 +75,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _timer;
-        public VariableData GameTimer
+        private VariableData? _timer;
+        public VariableData? GameTimer
         {
             get { return _timer; }
             set
@@ -97,11 +97,13 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void Timer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Timer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
                 OnPropertyChanged(nameof(IGTHumanFormat));
+
+                if(IGTSegments == null || GameTimer == null) return;
 
                 if (SegmentCount >= 0 && SegmentCount < 4)
                 {
@@ -109,14 +111,6 @@ namespace REviewer.Modules.RE.Common
                     IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / 30.0).ToString(@"hh\:mm\:ss\.ff");
                     OnPropertyChanged(nameof(IGTSHumanFormat));
                 }
-
-                int currentTimerValue = GameTimer.Value;
-
-                if (PreviousTimerValue == currentTimerValue)
-                {
-                    return;
-                }
-
             }
         }
 
@@ -129,8 +123,8 @@ namespace REviewer.Modules.RE.Common
         }
 
 
-        private VariableData _mainMenu;
-        public VariableData MainMenu
+        private VariableData? _mainMenu;
+        public VariableData? MainMenu
         {
             get { return _mainMenu; }
             set
@@ -158,7 +152,9 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (_mainMenu.Value == 1 && Health.Value <= int.Parse(MaxHealth))
+                if (MaxHealth == null) return;
+
+                if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
                 {
                     Resets += 1;
                 }
@@ -171,8 +167,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _saveContent;
-        public VariableData SaveContent
+        private VariableData? _saveContent;
+        public VariableData? SaveContent
         {
             get { return _saveContent; }
             set

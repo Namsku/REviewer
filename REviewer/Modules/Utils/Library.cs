@@ -20,6 +20,18 @@ namespace REviewer.Modules.Utils
             {"Bio", "RE1"},
         };
 
+        public static string GetGameName(string processName)
+        {
+            if (_keyValuePairs.TryGetValue(processName, out var gameName))
+            {
+                return gameName;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"The process name {processName} does not exist in the dictionary.");
+            }
+        }
+
         public static void UpdateTextBlock(TextBlock textBlock, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
         {
             textBlock.Dispatcher.Invoke(() =>

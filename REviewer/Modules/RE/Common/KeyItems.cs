@@ -10,7 +10,7 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private ObservableCollection<ImageItem> _keyItemImages;
+        private ObservableCollection<ImageItem>? _keyItemImages;
         public ObservableCollection<ImageItem> KeyItemImages
         {
             get

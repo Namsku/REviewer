@@ -2,3 +2,15 @@
 
 # IDE0270: Use coalesce expression
 dotnet_diagnostic.IDE0270.severity = silent
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = silent
+
+# IDE0028: Simplify collection initialization
+dotnet_diagnostic.IDE0028.severity = silent
+
+# CA1507: Use nameof to express symbol names
+dotnet_diagnostic.CA1507.severity = silent
+
+# IDE0074: Use compound assignment
+dotnet_diagnostic.IDE0074.severity = silent

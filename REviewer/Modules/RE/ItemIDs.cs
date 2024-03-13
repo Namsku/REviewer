@@ -63,7 +63,7 @@ namespace REviewer.Modules.RE
                 {
                     Name = pair.Value.Name,
                     Type = pair.Value.Type,
-                    Color = pair.Value.Color,
+                    Color = pair.Value.Color ?? "White",
                     Img = pair.Value.Img
                 }
             );

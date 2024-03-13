@@ -31,7 +31,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Character_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -43,6 +43,8 @@ namespace REviewer.Modules.RE.Common
         public string? CharacterName
         {
             get {
+                if (_character?.Database == null) return "ERROR";
+
                 var length = ((Dictionary<byte, string>)_character.Database).Count - 1;
                 return ((Dictionary<byte, string>)_character.Database)[(byte)(_character.Value & length)].ToString();
             }
@@ -51,6 +53,9 @@ namespace REviewer.Modules.RE.Common
         public string? MaxHealth
         {
             get {
+                if (_character?.Database == null) return "ERR";
+                if (_health?.Database == null) return "0";
+
                 var length = ((Dictionary<byte, string>)_character.Database).Count - 1;
                 return ((Dictionary<byte, List<int>>)_health.Database)[(byte)(_character.Value & length)][0].ToString();
             }
@@ -81,7 +86,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private async void InventorySlotSelected_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void InventorySlotSelected_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -98,10 +103,10 @@ namespace REviewer.Modules.RE.Common
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
                     var selected = InventorySlotSelected.Value - 1;
-                    byte id = InventorySlotSelected.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
+                    byte id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
                     return IDatabase.Items[id].Img;
                 }
-                return null;
+                return "./resources/re1/unknown.png";
             }
         }
 
@@ -148,6 +153,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                if (Stage == null || Room == null) return;
+
                 var sss = (((int)Stage.Value % 5) + 1).ToString() ?? "1";
                 var rrr = ((int)Room.Value).ToString("X2");
                 LastRoomName = FullRoomName ?? "000";
@@ -188,6 +195,8 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateKeyRooms()
         {
+            if(FullRoomName == null || KeyRooms == null) return;
+
             string fullRoomName = FullRoomName;
             string lastRoomName = LastRoomName ?? fullRoomName;
 
@@ -270,7 +279,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void LastItemFound_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void LastItemFound_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -284,11 +293,11 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_lastItemFound != null && IDatabase != null)
                 {
-                    byte value = (byte)LastItemFound.Value;
-                    var state = GameState.Value & 0xF0000000;
+                    byte value = (byte) (LastItemFound?.Value ?? 255);
+                    var state = GameState?.Value & 0xF0000000;
 
                     
-                    if (LastItemFound.Value == 0x31)
+                    if (LastItemFound?.Value == 0x31)
                     {
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                     }
@@ -350,12 +359,13 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void CharacterHealthState_Updated(object sender, PropertyChangedEventArgs e)
+        private void CharacterHealthState_Updated(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                
-                if ((_characterHealthState.Value & 0x40) == 0 && (_characterHealthState.Value & 0x20) == 0 && (_characterHealthState.Value & 0x04) == 0 && (_characterHealthState.Value & 0x02) == 0)
+                if (Health == null || CharacterHealthState == null) return;
+
+                if ((_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0)
                 {
                     UpdateHealthColor();
                 }
@@ -393,7 +403,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void Health_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Health_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -403,8 +413,13 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateHealthColor()
         {
+            if (Character?.Database == null || Health?.Database == null)
+            {
+                return;
+            }
+
             var size = ((Dictionary<byte, string>)Character.Database).Count - 1;
-            var status = CharacterHealthState.Value;
+            var status = CharacterHealthState?.Value;
             var health_table = ((Dictionary<byte, List<int>>)Health.Database)[(byte)(Character.Value & size)];
 
             Brush[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
@@ -414,7 +429,7 @@ namespace REviewer.Modules.RE.Common
                 return;
             }
 
-            if (_health.Value == health_table[0])
+            if (_health?.Value == health_table[0])
             {
                 _health.Background = CustomColors.Default;
                 return;
@@ -422,7 +437,7 @@ namespace REviewer.Modules.RE.Common
 
             for (int i = 0; i < health_table.Count - 1; i++)
             {
-                if (health_table[i] > _health.Value && _health.Value >= health_table[i + 1])
+                if (health_table[i] > _health?.Value && _health.Value >= health_table[i + 1])
                 {
                     _health.Background = colors[i + 1];
                 }
@@ -454,11 +469,11 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        public void LockPick_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void LockPick_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (LockPick.Value == 0x08)
+                if (LockPick?.Value == 0x08)
                 {
                     UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                 }

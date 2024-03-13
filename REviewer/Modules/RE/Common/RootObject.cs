@@ -15,7 +15,7 @@ namespace REviewer.Modules.RE.Common
     {
         public class KRoom
         {
-            public List<string> KeyRooms { get; set; }
+            public List<string>? KeyRooms { get; set; }
         }
 
         private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
@@ -24,14 +24,14 @@ namespace REviewer.Modules.RE.Common
         public int SaveID;
         public int CurrentSaveID;
 
-        public List<KeyItem> KeyItems;
+        public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase; 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public string FullRoomName;
-        public string LastRoomName;
-        public FileSystemWatcher Watcher;
-        public List<JObject> SaveDatabase;
-        public Dictionary<string, List<string>> KeyRooms { get; set; }
+        public string? FullRoomName;
+        public string? LastRoomName;
+        public FileSystemWatcher? Watcher;
+        public List<JObject>? SaveDatabase;
+        public Dictionary<string, List<string>>? KeyRooms { get; set; }
 
         public Visibility HealthBarVisibility { get; set; }
         public Visibility BiorandVisibility { get; set; }
@@ -47,6 +47,12 @@ namespace REviewer.Modules.RE.Common
             HealthBarVisibility = (bool) config["HealthBar"] ? Visibility.Visible : Visibility.Collapsed;
             BiorandVisibility = (bool) !config["Standard"] ? Visibility.Visible : Visibility.Collapsed;
             ItemBoxVisibility = (bool) config["ItemBox"] ? Visibility.Visible : Visibility.Collapsed;
+            ChrisInventoryHotfix = (bool) config["ChrisInventory"] ? true : false;
+
+            if (ChrisInventoryHotfix)
+            {
+                UpdateInventoryCapacity();
+            }
         }
 
         public void InitMaxInventoryCapacity(string character)
@@ -67,6 +73,9 @@ namespace REviewer.Modules.RE.Common
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
             var processName = IDatabase.GetProcessName();
             var bios = JsonConvert.DeserializeObject<Dictionary<string, KRoom>>(json);
+
+            if (bios == null) throw new ArgumentNullException(nameof(bios));
+            if (processName == null) throw new ArgumentNullException(nameof(processName));
 
             if (!bios.TryGetValue(processName, out var bio))
             {
@@ -107,7 +116,7 @@ namespace REviewer.Modules.RE.Common
             }
 
             var processName = IDatabase.GetProcessName();
-            Watcher.Path = Library.GetSavePath(processName);  // replace with your directory
+            Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");  // replace with your directory
             Watcher.Filter = "*.dat";  // watch for .dat files
 
             // Add event handlers.
@@ -119,25 +128,27 @@ namespace REviewer.Modules.RE.Common
 
         private void SaveState()
         {
+            if(KeyItems == null) throw new ArgumentNullException(nameof(KeyItems)); 
+
             JObject jsonObject = new JObject();
 
             jsonObject["GameState"] = GameState.Value;
             jsonObject["GameTimer"] = GameTimer.Value;
             jsonObject["MainMenu"] = MainMenu.Value;
             jsonObject["SaveContent"] = SaveContent.Value;
-            jsonObject["Character"] = Character.Value;
-            jsonObject["InventorySlotSelected"] = InventorySlotSelected.Value;
-            jsonObject["Stage"] = Stage.Value;
-            jsonObject["Room"] = Room.Value;
-            jsonObject["Cutscene"] = Cutscene.Value;
-            jsonObject["LastRoom"] = LastRoom.Value;
-            jsonObject["Unk002"] = Unk002.Value;
-            jsonObject["Event"] = Event.Value;
-            jsonObject["LastItemFound"] = LastItemFound.Value;
-            jsonObject["InventoryCapacityUsed"] = InventoryCapacityUsed.Value;
-            jsonObject["CharacterHealthState"] = CharacterHealthState.Value;
-            jsonObject["Health"] = Health.Value;
-            jsonObject["LockPick"] = LockPick.Value;
+            jsonObject["Character"] = Character?.Value;
+            jsonObject["InventorySlotSelected"] = InventorySlotSelected?.Value;
+            jsonObject["Stage"] = Stage?.Value;
+            jsonObject["Room"] = Room?.Value;
+            jsonObject["Cutscene"] = Cutscene?.Value;
+            jsonObject["LastRoom"] = LastRoom?.Value;
+            jsonObject["Unk002"] = Unk002?.Value;
+            jsonObject["Event"] = Event?.Value;
+            jsonObject["LastItemFound"] = LastItemFound?.Value;
+            jsonObject["InventoryCapacityUsed"] = InventoryCapacityUsed?.Value;
+            jsonObject["CharacterHealthState"] = CharacterHealthState?.Value;
+            jsonObject["Health"] = Health?.Value;
+            jsonObject["LockPick"] = LockPick?.Value;
             jsonObject["PositionX"] = PositionX.Value;
             jsonObject["PositionY"] = PositionY.Value;
             jsonObject["PositionZ"] = PositionZ.Value;
@@ -153,14 +164,14 @@ namespace REviewer.Modules.RE.Common
 
             jsonObject["SegmentsCount"] = SegmentCount;
 
-            jsonObject["Segments"] = JArray.FromObject(IGTSegments);
+            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? [0,0,0,0]);
             jsonObject["KeyItems"] = JArray.FromObject(KeyItems.Select(item => item.State).ToList());
-            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms);
+            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? []);
 
             GenerateJsonSave(jsonObject);
         }
 
-        public void GenerateJsonSave(JObject objectData)
+        public static void GenerateJsonSave(JObject objectData)
         {
             var directoryPath = "saves/";
             // Make an exact copy of the object
@@ -224,33 +235,34 @@ namespace REviewer.Modules.RE.Common
 
         private void LoadState(int value)
         {
-            var save = SaveDatabase.FirstOrDefault(s => s["SaveID"].Value<int>() == value);
+            var save = SaveDatabase?.FirstOrDefault(s => s["SaveID"]?.Value<int>() == value);
 
-                if (save == null)
+            if (save == null)
             {
                 return;
             }
 
             for (int i = 0; i < 4; i++)
             {
-                IGTSegments[i] = Math.Max((int)IGTSegments[i], (int)save["Segments"][i]);
+                IGTSegments[i] = Math.Max((int)IGTSegments[i], save["Segments"][i]?.Value<int>() ?? 0);
             }
 
-            SegmentCount = save?["SegmentsCount"].Value<int>() ?? 0;
+            SegmentCount = save["SegmentsCount"]?.Value<int>() ?? 0;
 
-            Debug = Math.Max(Debug, save?["Debug"].Value<int>() ?? 0);
-            Deaths = Math.Max(Deaths, save["Deaths"].Value<int>());
-            Resets = Math.Max(Resets, save["Resets"].Value<int>());
-            Saves = Math.Max(Saves, save["Saves"].Value<int>());
+            Debug = Math.Max(Debug, save["Debug"]?.Value<int>() ?? 0);
+            Deaths = Math.Max(Deaths, save["Deaths"]?.Value<int>() ?? 0);
+            Resets = Math.Max(Resets, save["Resets"]?.Value<int>() ?? 0);
+            Saves = Math.Max(Saves, save["Saves"]?.Value<int>() ?? 0);
 
-            KeyRooms = save["KeyRooms"].ToObject<Dictionary<string, List<string>>>();
+            KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? [];
 
-            for (int i = 0; i < KeyItems.Count; i++)
+            for (int i = 0; i < KeyItems?.Count; i++)
             {
-                KeyItems[i].State = save["KeyItems"][i].Value<int>();
+                KeyItems[i].State = save["KeyItems"]?[i]?.Value<int>() ?? 0;
                 UpdatePictureKeyItemState(i);
             }
         }
+
         private void InitSaveDatabase()
         {
             SaveDatabase = new List<JObject>(); // Initialize SaveDatabase as a new List<JObject>
@@ -270,6 +282,8 @@ namespace REviewer.Modules.RE.Common
 
         public RootObject(Bio bio, ItemIDs ids)
         {
+            if (bio.Player.Character.Database == null) throw new ArgumentNullException(nameof(bio));
+
             IDatabase = ids;
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
 

@@ -28,7 +28,7 @@ namespace REviewer
             DataContext = this;
         }
 
-        private void GameState_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void GameState_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var state = _game.GameState.Value & 0xFF000000;
             bool loading = state == 0x46000000 || state == 0x56000000 || state == 0x66000000;

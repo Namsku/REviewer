@@ -11,9 +11,9 @@ namespace REviewer.Modules.RE.Common
     {
         public int SegmentCount;
         public int PreviousTimerValue;
-        public List<int> IGTSegments;
-        private List<string> _igtsHumanFormat;
-        public List<string> IGTSHumanFormat
+        public List<int>? IGTSegments;
+        private List<string>? _igtsHumanFormat;
+        public List<string>? IGTSHumanFormat
         {
             get { return _igtsHumanFormat; }
             set
@@ -38,7 +38,7 @@ namespace REviewer.Modules.RE.Common
         private void UpdateChronometers()
         {
             SegmentCount += 1 % 4;
-            IGTSegments[SegmentCount - 1] = GameTimer.Value;
+            IGTSegments[SegmentCount - 1] = GameTimer?.Value ?? 0;
 
             OnPropertyChanged(nameof(IGTSHumanFormat));
         }

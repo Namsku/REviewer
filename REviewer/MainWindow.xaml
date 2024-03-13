@@ -54,7 +54,7 @@
                             <TextBlock Text="Please select a game from the list below to get started and adjust it with your own needs." HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
                             <GroupBox Header="Game Selection">
-                                <ComboBox HorizontalAlignment="Left" Margin="10,5,0,5" Height="22">
+                                <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
                                 </ComboBox>
                             </GroupBox>
@@ -107,6 +107,7 @@
                                 <StackPanel>
                                     <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15"/>
                                     <CheckBox Name="ShowItemBox" Content="Show ItemBox (This takes a lot place)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15"/>
+                                    <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Setting Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}"/>
 
                                     <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
                                     <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
@@ -129,7 +130,7 @@
                                             <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="25" Width="360" Name="RE1SavePath"/>
+                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RE1SavePath"/>
                                         <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE1SavePathButton_Click"/>
                                     </Grid>
                                 </StackPanel>

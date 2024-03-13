@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
@@ -19,18 +21,67 @@ namespace REviewer
         public int MenuIndex { get; set; }
 
     }
+
+    public class UINotify : INotifyPropertyChanged
+    {
+        private string? _version;
+        public string? Version
+        {
+            get { return _version; }
+            set
+            {
+                if (Version != value)
+                {
+                    _version = value;
+                    OnPropertyChanged(nameof(Version));
+                }
+            }
+        }
+
+        private Visibility _visibility;
+        public Visibility ChrisInventory
+        {
+            get { return _visibility; }
+            set
+            {
+                if (_visibility != value)
+                {
+                    _visibility = value;
+                    OnPropertyChanged(nameof(ChrisInventory));
+                }
+            }
+        }
+
+        public UINotify(string version)
+        {
+            Version = version;
+            ChrisInventory = Visibility.Collapsed;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class MainWindow : Window
     {
         private Process? _process;
         private string? _processName;
-        private bool _isProcessRunning = false;
-        private Timer? _processWatcher;
 
-        private RootObject _residentEvilGame;
-        private MonitorVariables _MVariables;
-        private MonitorVariables _MVEnemies;
-        private ObservableCollection<EnnemyTracking> _tracking;
-        private ItemIDs _itemIDs;
+        private bool _isProcessRunning = false;
+        private bool _isDdrawLoaded = false;
+        private bool _isSaveFound = false;
+
+        private Timer? _processWatcher;
+        private Timer? _rootObjectWatcher;
+
+        private RootObject? _residentEvilGame;
+        private MonitorVariables? _MVariables;
+        private MonitorVariables? _MVEnemies;
+        private ObservableCollection<EnnemyTracking>? _tracking;
+        private ItemIDs? _itemIDs;
+        private UINotify _ui;
 
         private static readonly List<string> _gameList = ["Bio",];
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
@@ -39,10 +90,27 @@ namespace REviewer
         {
             InitializeComponent();
             InitializeText();
+            InitCheckBoxes();
+            InitializeSaveWatcher();
             InitializeProcessWatcher();
+            InitializeRootObjectWatcher();
 
             // Loading Data Context
-            DataContext = this;
+            DataContext = this._ui;
+        }
+
+        private void InitCheckBoxes()
+        {
+            _ui = new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
+
+            if (ComboBoxGameSelection.SelectedIndex == 0)
+            {
+                _ui.ChrisInventory = Visibility.Visible;
+            }
+            else
+            {
+                _ui.ChrisInventory = Visibility.Collapsed;
+            }
         }
 
         private void UpdateUI(string content, string savePath)
@@ -52,6 +120,7 @@ namespace REviewer
             UpdateUIElement(ProcessTextBlock, content);
             UpdateUIElement(Rebirth, content);
 
+            _isSaveFound = "Not Found" == savePath ? false : true;
             var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
             var saveColor = "Not Found" == savePath ? CustomColors.Red : CustomColors.Green;
             Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
@@ -60,7 +129,7 @@ namespace REviewer
             Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
         }
 
-        private void UpdateUIElement(TextBlock element, string content)
+        private static void UpdateUIElement(TextBlock element, string content)
         {
             Library.UpdateTextBlock(element, text: content, color: CustomColors.Red, isBold: true);
         }
@@ -90,11 +159,17 @@ namespace REviewer
             _process = null;
             _processName = _gameList[0];
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
+        }
 
+        private void InitializeRootObjectWatcher()
+        {
+            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
         }
 
         private void InitializeSaveWatcher()
         {
+            _processName = _gameList[0];
+            var selectedGame = Library.GetGameName(_processName ?? "UNKNOWN GAME ERROR");
             var configPath = ConfigurationManager.AppSettings["Config"];
 
             if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
@@ -105,15 +180,12 @@ namespace REviewer
             var json = File.ReadAllText(configPath);
             var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
 
-            reJson.TryGetValue("RE1", out var savePath);
+            reJson.TryGetValue(selectedGame, out var savePath);
             savePath ??= "Not Found";
 
             var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
             var saveColor = "Not Found" == savePath ? CustomColors.Red : CustomColors.Green;
             Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
-
-            // Updating the TextBox from the Settings panel
-            Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
         }
 
         // selecting different window frames
@@ -159,12 +231,9 @@ namespace REviewer
                 string md5Hash = Library.GetProcessMD5Hash(_process);
 
                 // Check if the process has the Gemini DLL
-                bool isGeminiLoaded = Library.IsDdrawLoaded(_process);
-                string geminiStatus = isGeminiLoaded ? "Found" : "Not Found";
-                var colorGemini = isGeminiLoaded ? CustomColors.Green : CustomColors.Red;
-
-                // Mapping game data
-                MappingGameVariables();
+                _isDdrawLoaded = Library.IsDdrawLoaded(_process);
+                string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
                 // Updating the TextBlock on the MainWindow
                 Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
@@ -177,6 +246,17 @@ namespace REviewer
 
                 // Log the event
                 Logger.Instance.Info($"Process {_processName} has been found");
+            }
+        }
+
+
+        private void RootObjectWatcherCallback(object? state)
+        {
+            // Check if the process is running
+            if (_isProcessRunning && _isDdrawLoaded && _isSaveFound)
+            {
+                MappingGameVariables();
+                _rootObjectWatcher?.Dispose();
             }
         }
 
@@ -197,7 +277,7 @@ namespace REviewer
 
             if(_tracking == null)
             {
-                InitEnemies(_processName);
+                InitEnemies(_processName ?? "UNKNOWN GAME");
             }
 
             if (_MVariables == null)
@@ -219,17 +299,19 @@ namespace REviewer
             }
 
             _MVariables.Start(_residentEvilGame);
-            _MVEnemies.Start(_tracking);
+            _MVEnemies.Start(_tracking ?? new());
         }
 
         private void Process_Exited(object? sender, EventArgs e)
         {
             // The process has exited
             _isProcessRunning = false;
+            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+
             var content = "Not Found";
 
             // Stoping the monitoring 
-            _MVariables.Stop();
+            _MVariables?.Stop();
 
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
@@ -243,6 +325,7 @@ namespace REviewer
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             _processWatcher?.Dispose();
+            _rootObjectWatcher?.Dispose();
         }
 
         // making some checking if the selected game
@@ -255,9 +338,11 @@ namespace REviewer
 
             // Kill the current process monitoring
             _processWatcher?.Dispose();
+            _rootObjectWatcher?.Dispose();
 
             // Check every second if the process is running
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
+            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
 
             Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
         }
@@ -296,10 +381,12 @@ namespace REviewer
                 RE1SavePath.Text = dialog.FolderName;
                 UpdateConfigFile("RE1", dialog.FolderName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+
+                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
             }
         }
 
-        private void UpdateConfigFile(string game, string path)
+        private static void UpdateConfigFile(string game, string path)
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
 
@@ -322,10 +409,16 @@ namespace REviewer
             {
                 try
                 {
+                    if( _residentEvilGame == null || _MVariables == null || _tracking == null || _processName == null)
+                    {
+                        MessageBox.Show("The game data is not initialized! Please be sure everything is detected!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         var srtConfig = GenerateSRTUIConfig();
-                        var SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName);
+                        var SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
                         SRT.Show();
 
                         var TRK = new Tracker(_tracking, _residentEvilGame);
@@ -381,7 +474,7 @@ namespace REviewer
                 throw new ArgumentNullException(nameof(configPath));
             }
 
-            if (!reJson.TryGetValue(game, out var savePath))
+            if (!reJson.TryGetValue(game, out _))
             {
                 MessageBox.Show("The game save path is not set/not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -397,6 +490,8 @@ namespace REviewer
                 ["HealthBar"] = HealthBar.IsChecked,
                 ["Standard"] = NormalMode.IsChecked,
                 ["ItemBox"] = ShowItemBox.IsChecked,
+                ["ChrisInventory"] = ChrisInventory.IsChecked,
+
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
             };
@@ -414,7 +509,12 @@ namespace REviewer
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
             var data = JsonConvert.DeserializeObject<Dictionary<string, Bio>>(json);
-            var bio = data[processName];
+            var bio = data?[processName];
+
+            if (bio == null)
+            {
+                throw new ArgumentNullException(nameof(bio));
+            }
 
             var offset = Library.HexToNint(bio.Offsets["EnnemyInfos"]);
             var property = bio.Ennemy.EnnemyInfos;
@@ -426,7 +526,6 @@ namespace REviewer
 
             for (var i = 0; i < 16; i++)
             {
-                int index = i;
                 _tracking.Add(new EnnemyTracking(offset + (i * 396), property));
             }
         }

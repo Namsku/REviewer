@@ -5,8 +5,8 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private VariableData _rebirthDebug;
-        public VariableData RebirthDebug
+        private VariableData? _rebirthDebug;
+        public VariableData? RebirthDebug
         {
             get { return _rebirthDebug; }
             set
@@ -31,11 +31,11 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void RebirthDebug_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void RebirthDebug_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (RebirthDebug.Value == 1)
+                if (RebirthDebug?.Value == 1)
                 {
                     Debug += 1;
                     OnPropertyChanged(nameof(Debug));
@@ -43,8 +43,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _rebirthScreen;
-        public VariableData RebirthScreen
+        private VariableData? _rebirthScreen;
+        public VariableData? RebirthScreen
         {
             get { return _rebirthScreen; }
             set
@@ -54,8 +54,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _rebirthState;
-        public VariableData RebirthState
+        private VariableData? _rebirthState;
+        public VariableData? RebirthState
         {
             get { return _rebirthState; }
             set

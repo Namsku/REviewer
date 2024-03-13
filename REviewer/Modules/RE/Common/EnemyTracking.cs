@@ -9,9 +9,8 @@ namespace REviewer.Modules.RE.Common
 {
     public class EnnemyTracking : INotifyPropertyChanged
     {
-        private int _room;
-        private Enemy _enemy;
-        public Enemy Enemy
+        private Enemy? _enemy;
+        public Enemy? Enemy
         {
             get { return _enemy; }
             set
@@ -23,7 +22,7 @@ namespace REviewer.Modules.RE.Common
                 }
             }
         }
-        private VariableData _enemyState;
+        private VariableData? _enemyState;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -37,7 +36,7 @@ namespace REviewer.Modules.RE.Common
             Enemy = new Enemy();
         }
 
-        public VariableData EnemyState
+        public VariableData? EnemyState
         {
             get { return _enemyState; }
             set {
@@ -62,6 +61,7 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateEnemy()
         {
+            if (Enemy == null || EnemyState == null) return;
             if (Enemy.Visibility == Visibility.Collapsed && Enemy.CurrentHealth != 255)
             {
                 Enemy.Visibility = Visibility.Visible;

@@ -9,8 +9,8 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private List<Slot> _itemBox;
-        public List<Slot> ItemBox
+        private List<Slot>? _itemBox;
+        public List<Slot>? ItemBox
         {
             get { return _itemBox; }
             set
@@ -24,8 +24,8 @@ namespace REviewer.Modules.RE.Common
         }
 
 
-        private ObservableCollection<ImageItem> _itemboxImages;
-        public ObservableCollection<ImageItem> ItemboxImages
+        private ObservableCollection<ImageItem>? _itemboxImages;
+        public ObservableCollection<ImageItem>? ItemboxImages
         {
             get
             {

@@ -9,6 +9,8 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
+        public bool ChrisInventoryHotfix = false;
+
         private VariableData? _inventoryCapacity;
         public VariableData? InventoryCapacity
         {
@@ -29,7 +31,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void _inventoryCapacity_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void _inventoryCapacity_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -43,7 +45,10 @@ namespace REviewer.Modules.RE.Common
             get { return _inventoryCapacitySize; }
             set
             {
+                if (_inventoryCapacity == null) return;
                 int[] _inventoryCapacityArray = [6, 8, 8, 6];
+
+                if (ChrisInventoryHotfix) _inventoryCapacityArray = [8, 8, 8, 8];
 
                 if (_inventoryCapacitySize == _inventoryCapacityArray[_inventoryCapacity.Value & 3])
                 {
@@ -78,8 +83,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private ObservableCollection<ImageItem> _inventoryImages;
-        public ObservableCollection<ImageItem> InventoryImages
+        private ObservableCollection<ImageItem>? _inventoryImages;
+        public ObservableCollection<ImageItem>? InventoryImages
         {
             get
             {
@@ -116,7 +121,7 @@ namespace REviewer.Modules.RE.Common
                     Width = 92,
                     Height = 92,
                     Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
-                    Text = Inventory[i].Quantity.Value.ToString(),
+                    Text = Inventory[i].Quantity?.Value.ToString(),
                     TextVisibility = Visibility.Hidden,
                 });
 
@@ -140,7 +145,7 @@ namespace REviewer.Modules.RE.Common
             {
                 InventoryImages[index].Source = IDatabase.Items[(byte)Inventory[index].Item.Value].Img;
 
-                var item_id = Inventory[index].Item.Value;
+                var item_id = Inventory[index].Item?.Value ?? 255;
 
                 // if value is key item, update the key item
                 if (IDatabase.GetPropertyById((byte) Inventory[index].Item.Value).Type == "Key Item")
@@ -149,7 +154,7 @@ namespace REviewer.Modules.RE.Common
 
                     if (state == 0x8800 || state == 0x8C00)
                     {
-                        UpdateRaceKeyItem(item_id, FullRoomName, 2);
+                        UpdateRaceKeyItem(item_id, FullRoomName ?? "ERROR ROOM NAME", 2);
                     }
                 }
                 UpdateTextInventoryImage(index);
@@ -163,8 +168,8 @@ namespace REviewer.Modules.RE.Common
                 Property item = IDatabase.GetPropertyById((byte)Inventory[index].Item.Value);
 
                 // Update the ImageItem at the given index in the InventoryImages list
-                InventoryImages[index].Text = Inventory[index].Quantity.Value.ToString();
-                InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item.Type) ? Visibility.Hidden : Visibility.Visible;
+                InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString();
+                InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
                 InventoryImages[index].Color = CustomColors.Default;
 
                 InventoryImages[index].Color = item.Color switch

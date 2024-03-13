@@ -5,8 +5,8 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private VariableData _positionX;
-        public VariableData PositionX
+        private VariableData? _positionX;
+        public VariableData? PositionX
         {
             get { return _positionX; }
             set
@@ -16,8 +16,8 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private VariableData _positionY;
-        public VariableData PositionY
+        private VariableData? _positionY;
+        public VariableData? PositionY
         {
             get { return _positionY; }
             set
@@ -26,8 +26,8 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(PositionY));
             }
         }
-        private VariableData _positionZ;
-        public VariableData PositionZ
+        private VariableData? _positionZ;
+        public VariableData? PositionZ
         {
             get { return _positionZ; }
             set
