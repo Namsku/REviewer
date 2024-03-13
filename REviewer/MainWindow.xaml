@@ -54,7 +54,7 @@
                             <TextBlock Text="Please select a game from the list below to get started and adjust it with your own needs." HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
                             <GroupBox Header="Game Selection">
-                                <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22">
+                                <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22" SelectionChanged="ComboBoxGameSelection_SelectionChanged">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
                                     <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
                                 </ComboBox>

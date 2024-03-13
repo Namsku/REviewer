@@ -83,8 +83,11 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        private static readonly List<string> _gameList = ["Bio",];
+        private static readonly List<string> _gameList = ["Bio", "bio2 1.10"];
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
+
+        public SRT SRT { get; private set; }
+        public Tracker TRK { get; private set; }
 
         public MainWindow()
         {
@@ -93,7 +96,7 @@ namespace REviewer
             InitCheckBoxes();
             InitializeSaveWatcher();
             InitializeProcessWatcher();
-            InitializeRootObjectWatcher();
+            // InitializeRootObjectWatcher();
 
             // Loading Data Context
             DataContext = this._ui;
@@ -127,6 +130,7 @@ namespace REviewer
 
             // Updating the TextBox from the Settings panel
             Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
+            Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: true);
         }
 
         private static void UpdateUIElement(TextBlock element, string content)
@@ -147,28 +151,29 @@ namespace REviewer
             var json = File.ReadAllText(configPath);
             var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
 
-            reJson.TryGetValue("RE1", out var savePath);
-            savePath ??= content;
+            reJson.TryGetValue("RE1", out var saveREPath);
 
-            UpdateUI(content, savePath);
+            saveREPath ??= content;
+
+            UpdateUI(content, saveREPath);
         }
 
         private void InitializeProcessWatcher()
         {
             // Set the game list
             _process = null;
-            _processName = _gameList[0];
+            _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
         }
 
         private void InitializeRootObjectWatcher()
         {
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+            // _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
         }
 
         private void InitializeSaveWatcher()
         {
-            _processName = _gameList[0];
+            _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
             var selectedGame = Library.GetGameName(_processName ?? "UNKNOWN GAME ERROR");
             var configPath = ConfigurationManager.AppSettings["Config"];
 
@@ -249,7 +254,6 @@ namespace REviewer
             }
         }
 
-
         private void RootObjectWatcherCallback(object? state)
         {
             // Check if the process is running
@@ -306,7 +310,7 @@ namespace REviewer
         {
             // The process has exited
             _isProcessRunning = false;
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+            // _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
 
             var content = "Not Found";
 
@@ -330,7 +334,7 @@ namespace REviewer
 
         // making some checking if the selected game
 
-        private void GameSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ComboBoxGameSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Get the selected item
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
@@ -340,9 +344,16 @@ namespace REviewer
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
 
+            SRT?.Close();            
+            TRK?.Close();
+
+            _residentEvilGame = null;
+            _MVariables = null;
+
             // Check every second if the process is running
+
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
+            // _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
 
             Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
         }
@@ -400,22 +411,6 @@ namespace REviewer
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
             }
         }
-
-        private void RE2SavePathButton_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new Microsoft.Win32.OpenFolderDialog();
-            var result = dialog.ShowDialog();
-
-            Logger.Instance.Debug(result);
-
-            if (result == true)
-            {
-                RE2SavePath.Text = dialog.FolderName;
-                UpdateConfigFile("RE2", dialog.FolderName);
-                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
-            }
-        }
-
         private void UpdateConfigFile(string game, string path)
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
@@ -448,10 +443,10 @@ namespace REviewer
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         var srtConfig = GenerateSRTUIConfig();
-                        var SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
+                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
                         SRT.Show();
 
-                        var TRK = new Tracker(_tracking, _residentEvilGame);
+                        TRK = new Tracker(_tracking, _residentEvilGame);
                         TRK.Show();
                     });
                 }
@@ -466,7 +461,7 @@ namespace REviewer
         {
             var db = new Dictionary<string, string> {
                 {"Bio", "RE1"},
-                {"Bio2", "RE2"},
+                {"bio2 1.10", "RE2"},
                 {"Bio3", "RE3"},
             };
 
