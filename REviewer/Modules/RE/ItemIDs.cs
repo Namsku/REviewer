@@ -21,6 +21,13 @@ namespace REviewer.Modules.RE
         private readonly string? _processName;
         private readonly Dictionary<string, int> _duplicateItems;
         public Dictionary<byte, Property> Items;
+        public Dictionary<string, string> CorrectProcessName = new Dictionary<string, string>()
+        {
+            { "Bio", "Bio" },
+            { "bio", "Bio" },
+            { "Biohazard", "Bio" },
+            { "biohazard", "Bio" },
+        };
 
         public class Item
         {
@@ -38,7 +45,7 @@ namespace REviewer.Modules.RE
 
         public ItemIDs(string selectedProcessName)
         {
-            _processName = selectedProcessName;
+            _processName = CorrectProcessName[selectedProcessName];
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
 

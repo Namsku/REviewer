@@ -6,7 +6,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
@@ -83,7 +82,11 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        private static readonly List<string> _gameList = ["Bio",];
+        private static readonly Dictionary<int, List<string>> _gameList = new Dictionary<int, List<string>>()
+        {
+            { 0, new List<string> { "Bio", "bio" , "biohazard", "Biohazard" } }
+        };
+
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
 
         public MainWindow()
@@ -157,7 +160,7 @@ namespace REviewer
         {
             // Set the game list
             _process = null;
-            _processName = _gameList[0];
+            _processName = _gameList[0][0];
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
         }
 
@@ -168,7 +171,7 @@ namespace REviewer
 
         private void InitializeSaveWatcher()
         {
-            _processName = _gameList[0];
+            _processName = _gameList[0][0];
             var selectedGame = Library.GetGameName(_processName ?? "UNKNOWN GAME ERROR");
             var configPath = ConfigurationManager.AppSettings["Config"];
 
@@ -217,38 +220,43 @@ namespace REviewer
 
         // Process Watcher
 
-        
+
         private void ProcessWatcherCallback(object? state)
         {
-            // Check if the process is running
-            if (!_isProcessRunning && Process.GetProcessesByName(_processName).Length > 0)
+            if (!_isProcessRunning)
             {
-                // The process is running
-                _isProcessRunning = true;
+                // Check if the process is running
+                for (var i = 0; i < _gameList[0].Count; i++)
+                {
+                    if (Process.GetProcessesByName(_gameList[0][i]).Length > 0)
+                    {
+                        // The process is running
+                        _isProcessRunning = true;
 
-                // Get the process
-                _process = Process.GetProcessesByName(_processName)[0];
-                string md5Hash = Library.GetProcessMD5Hash(_process);
+                        // Get the process
+                        _process = Process.GetProcessesByName(_gameList[0][i])[0];
+                        string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                // Check if the process has the Gemini DLL
-                _isDdrawLoaded = Library.IsDdrawLoaded(_process);
-                string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
+                        // Check if the process has the Gemini DLL
+                        _isDdrawLoaded = Library.IsDdrawLoaded(_process);
+                        string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                        var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
-                // Updating the TextBlock on the MainWindow
-                Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
-                Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
-                
-                // Set the Exited event handler
-                _process.EnableRaisingEvents = true;
-                _process.Exited += Process_Exited;
+                        // Updating the TextBlock on the MainWindow
+                        Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
+                        Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+                        Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
-                // Log the event
-                Logger.Instance.Info($"Process {_processName} has been found");
+                        // Set the Exited event handler
+                        _process.EnableRaisingEvents = true;
+                        _process.Exited += Process_Exited;
+
+                        // Log the event
+                        Logger.Instance.Info($"Process {_gameList[0][i]} has been found");
+                    }
+                }
             }
         }
-
 
         private void RootObjectWatcherCallback(object? state)
         {
@@ -334,7 +342,7 @@ namespace REviewer
         {
             // Get the selected item
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
-            _processName = _gameList[selectedIndex];
+            _processName = _gameList[selectedIndex][0];
 
             // Kill the current process monitoring
             _processWatcher?.Dispose();
