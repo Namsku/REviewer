@@ -100,12 +100,24 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
+                Console.WriteLine("CALLED");
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
-                    if(_inventorySlotSelected.Value == 0x80) return "./resources/re1/unknown.png";
-                    var selected = InventorySlotSelected.Value - 1;
-                    selected = selected < 0 ? 0 : selected;
-                    byte id = (byte) Inventory[selected].Item.Value;
+                    byte id = 0;
+
+                    if (_inventorySlotSelected.Value == 0x80) return "./resources/re1/nothing.png";
+                    
+                    if (SELECTED_GAME == 0)
+                    {
+                        var selected = InventorySlotSelected.Value - 1;
+                        id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
+                    }
+                    else if (SELECTED_GAME == 1)
+                    {
+                        var selected = InventorySlotSelected.Value;
+                        selected = selected < 0 ? 0 : selected;
+                        id = (byte)Inventory[selected].Item.Value;
+                    }
                     return IDatabase.Items[id].Img;
                 }
                 return "./resources/re1/unknown.png";
@@ -369,8 +381,18 @@ namespace REviewer.Modules.RE.Common
             if (e.PropertyName == nameof(VariableData.Value))
             {
                 if (Health == null || CharacterHealthState == null) return;
+                bool state = false;
 
-                if ((_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0)
+                if(SELECTED_GAME == 0)
+                {
+                    state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
+                } 
+                else if(SELECTED_GAME == 1)
+                {
+                    state = (_characterHealthState?.Value != 0x15);
+                }
+
+                if (state)
                 {
                     UpdateHealthColor();
                 }
@@ -425,11 +447,21 @@ namespace REviewer.Modules.RE.Common
 
             var size = ((Dictionary<byte, string>)Character.Database).Count - 1;
             var status = CharacterHealthState?.Value;
+            var state = false;
             var health_table = ((Dictionary<byte, List<int>>)Health.Database)[(byte)(Character.Value & size)];
 
             Brush[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
 
-            if ((status & 0x20) != 0 || (status & 0x40) != 0 || (status & 0x04) != 0 || (status & 0x02) != 0)
+            if (SELECTED_GAME == 0)
+            {
+                state = (status & 0x20) != 0 || (status & 0x40) != 0 || (status & 0x04) != 0 || (status & 0x02) != 0;
+            }
+            else if (SELECTED_GAME == 1)
+            {
+                state = (status == 0x15);
+            }
+
+            if (state)
             {
                 return;
             }

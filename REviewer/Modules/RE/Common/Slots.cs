@@ -9,6 +9,7 @@ namespace REviewer.Modules.RE.Common
     {
         private VariableData? _item;
         private VariableData? _quantity;
+        private VariableData? _type;
         private string? _image;
         private int _position;
 
@@ -29,6 +30,16 @@ namespace REviewer.Modules.RE.Common
             {
                 _quantity = value;
                 OnPropertyChanged(nameof(Quantity));
+            }
+        }
+
+        public VariableData? Type
+        {
+            get { return _type; }
+            set
+            {
+                _type = value;
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -68,13 +79,15 @@ namespace REviewer.Modules.RE.Common
         public static List<Slot> GenerateSlots(nint startOffset, nint endOffset)
         {
             List<Slot> slots = [];
+            int inc = ((endOffset - startOffset) / 2) > 16 ? 4 : 2;
 
-            for (nint i = startOffset; i < endOffset; i += 4)
+            for (nint i = startOffset; i < endOffset; i += inc)
             {
                 slots.Add(new Slot
                 {
                     Item = new VariableData(i, 1),
                     Quantity = new VariableData(i + 1, 1),
+                    Type = inc > 2 ? new VariableData(i + 3, 1) : null,
                     Position = (int) i
                 }); 
             }

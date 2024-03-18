@@ -1026,18 +1026,18 @@
               "68": {
                 "Name": "FilmA",
                 "Type": "Item",
-                "Img": "resources/re2/film-a.png"
+                "Img": "resources/re1/nothing.png"
               },
-              "69": {
-                "Name": "FilmB",
-                "Type": "Item",
-                "Img": "resources/re2/film-b.png"
-              },
-              "70": {
-                "Name": "FilmC",
-                "Type": "Item",
-                "Img": "resources/re2/film-c.png"
-              },
+          "69": {
+            "Name": "FilmB",
+            "Type": "Item",
+            "Img": "resources/re1/nothing.png"
+          },
+          "70": {
+            "Name": "FilmC",
+            "Type": "Item",
+            "Img": "resources/re1/nothing.png"
+          },
               "71": {
                 "Name": "UnicornMedal",
                 "Type": "Key Item",
@@ -1086,7 +1086,7 @@
               "80": {
                 "Name": "FilmD",
                 "Type": "Key Item",
-                "Img": "resources/re2/film-d.png"
+                "Img": "resources/re1/nothing.png"
               },
               "81": {
                 "Name": "VaccineBase",

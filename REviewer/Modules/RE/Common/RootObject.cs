@@ -30,6 +30,7 @@ namespace REviewer.Modules.RE.Common
         private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
 
         public int MAX_INVENTORY_SIZE;
+        public int SELECTED_GAME;
         public int SaveID;
         public int CurrentSaveID;
 
@@ -346,6 +347,17 @@ namespace REviewer.Modules.RE.Common
 
             // Init Save Database
             InitSaveDatabase();
+
+            var processName = IDatabase.GetProcessName().ToLower();
+
+            if (processName == "bio" || processName == "biohazard")
+            {
+                SELECTED_GAME = 0;
+            }
+            else if (processName == "bio2 1.10")
+            {
+                SELECTED_GAME = 1;
+            }
 
             VariableData GetVariableData(String key, dynamic value)
             {
