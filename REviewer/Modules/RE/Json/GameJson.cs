@@ -39,15 +39,15 @@ namespace REviewer.Modules.RE.Json
         public required AdvancedProperty Health { get; set; }
         public required StandardProperty CharacterHealthState { get; set; }
         public required StandardProperty LastItemFound { get; set; }
-        public required StandardProperty LockPick { get; set; }
-        public required StandardProperty InventoryCapacityUsed { get; set; }
+        public StandardProperty? LockPick { get; set; }
+        public StandardProperty? InventoryCapacityUsed { get; set; }
         public required StandardProperty InventorySlotSelected { get; set; }
         public required StandardProperty Stage { get; set; }
         public required StandardProperty Room { get; set; }
         public required StandardProperty LastRoom { get; set; }
         public required StandardProperty Cutscene { get; set; }
-        public required StandardProperty Unk001 { get; set; }
-        public required StandardProperty Event { get; set; }
+        public StandardProperty? Unk001 { get; set; }
+        public StandardProperty? Event { get; set; }
     }
 
     public class JGame
@@ -75,7 +75,7 @@ namespace REviewer.Modules.RE.Json
 
     public class JEnnemy
     {
-        public required StandardProperty EnnemyInfos { get; set; }
+        public StandardProperty? EnnemyInfos { get; set; }
     }
 
     public class Bio

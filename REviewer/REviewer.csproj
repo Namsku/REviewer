@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -20,7 +20,8 @@
 
   <ItemGroup>
         <Resource Include="resources/icons/*.png" />
-	    <Resource Include="resources/re1/*.png" />
+	  <Resource Include="resources/re1/*.png" />
+	  <Resource Include="resources/re2/*.png" />
         <Resource Include="resources/race/*.png" />
 	    <Resource Include="resources/fonts/*" />
   </ItemGroup>

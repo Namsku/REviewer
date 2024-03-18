@@ -18,6 +18,15 @@ namespace REviewer.Modules.RE.Common
             public List<string>? KeyRooms { get; set; }
         }
 
+        public Dictionary<string, int> MAX_STAGE_ID = new Dictionary<string, int>
+        {
+            { "Bio", 0x05 },
+            { "bio", 0x05 },
+            { "Biohazard", 0x05 },
+            { "biohazard", 0x05 },
+            { "bio2 1.10", 0x07 },
+        };
+
         private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
 
         public int MAX_INVENTORY_SIZE;
@@ -132,10 +141,10 @@ namespace REviewer.Modules.RE.Common
 
             JObject jsonObject = new JObject();
 
-            jsonObject["GameState"] = GameState.Value;
-            jsonObject["GameTimer"] = GameTimer.Value;
-            jsonObject["MainMenu"] = MainMenu.Value;
-            jsonObject["SaveContent"] = SaveContent.Value;
+            jsonObject["GameState"] = GameState?.Value;
+            jsonObject["GameTimer"] = GameTimer?.Value;
+            jsonObject["MainMenu"] = MainMenu?.Value;
+            jsonObject["SaveContent"] = SaveContent?.Value;
             jsonObject["Character"] = Character?.Value;
             jsonObject["InventorySlotSelected"] = InventorySlotSelected?.Value;
             jsonObject["Stage"] = Stage?.Value;
@@ -149,12 +158,12 @@ namespace REviewer.Modules.RE.Common
             jsonObject["CharacterHealthState"] = CharacterHealthState?.Value;
             jsonObject["Health"] = Health?.Value;
             jsonObject["LockPick"] = LockPick?.Value;
-            jsonObject["PositionX"] = PositionX.Value;
-            jsonObject["PositionY"] = PositionY.Value;
-            jsonObject["PositionZ"] = PositionZ.Value;
-            jsonObject["RebirthDebug"] = RebirthDebug.Value;
-            jsonObject["RebirthScreen"] = RebirthScreen.Value;
-            jsonObject["RebirthState"] = RebirthState.Value;
+            jsonObject["PositionX"] = PositionX?.Value;
+            jsonObject["PositionY"] = PositionY?.Value;
+            jsonObject["PositionZ"] = PositionZ?.Value;
+            jsonObject["RebirthDebug"] = RebirthDebug?.Value;
+            jsonObject["RebirthScreen"] = RebirthScreen?.Value;
+            jsonObject["RebirthState"] = RebirthState?.Value;
             jsonObject["SaveID"] = SaveID;
 
             jsonObject["Debug"] = Debug;
@@ -291,36 +300,36 @@ namespace REviewer.Modules.RE.Common
             InitKeyRooms();
 
             // Game
-            GameState = new VariableData(Library.HexToNint(bio.Offsets["GameState"]), bio.Game.State);
-            Unk001 = new VariableData(Library.HexToNint(bio.Offsets["GameUnk001"]), bio.Game.Unk001);
-            GameTimer = new VariableData(Library.HexToNint(bio.Offsets["GameTimer"]), bio.Game.Timer);
-            MainMenu = new VariableData(Library.HexToNint(bio.Offsets["MainMenu"]), bio.Game.MainMenu);
-            SaveContent = new VariableData(Library.HexToNint(bio.Offsets["SaveContent"]), bio.Game.SaveContent);
+            GameState = GetVariableData("GameState", bio.Game.State);
+            Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
+            GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
+            MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
+            SaveContent = GetVariableData("SaveContent", bio.Game.SaveContent);
 
             // Player
-            Character = new VariableData(Library.HexToNint(bio.Offsets["Character"]), bio.Player.Character);
-            InventorySlotSelected = new VariableData(Library.HexToNint(bio.Offsets["InventorySlotSelected"]), bio.Player.InventorySlotSelected);
-            Stage = new VariableData(Library.HexToNint(bio.Offsets["Stage"]), bio.Player.Stage);
-            Room = new VariableData(Library.HexToNint(bio.Offsets["Room"]), bio.Player.Room);
-            Cutscene = new VariableData(Library.HexToNint(bio.Offsets["Cutscene"]), bio.Player.Cutscene);
-            LastRoom = new VariableData(Library.HexToNint(bio.Offsets["LastRoom"]), bio.Player.LastRoom);
-            Unk002 = new VariableData(Library.HexToNint(bio.Offsets["GameUnk001"]), bio.Player.Unk001);
-            Event = new VariableData(Library.HexToNint(bio.Offsets["Event"]), bio.Player.Event);
-            LastItemFound = new VariableData(Library.HexToNint(bio.Offsets["LastItemFound"]), bio.Player.LastItemFound);
-            InventoryCapacityUsed = new VariableData(Library.HexToNint(bio.Offsets["InventoryCapacityUsed"]), bio.Player.InventoryCapacityUsed);
-            CharacterHealthState = new VariableData(Library.HexToNint(bio.Offsets["CharacterHealthState"]), bio.Player.CharacterHealthState);
-            Health = new VariableData(Library.HexToNint(bio.Offsets["CharacterHealth"]), bio.Player.Health);
-            LockPick = new VariableData(Library.HexToNint(bio.Offsets["LockPick"]), bio.Player.LockPick);
+            Character = GetVariableData("Character", bio.Player.Character);
+            InventorySlotSelected = GetVariableData("InventorySlotSelected", bio.Player.InventorySlotSelected);
+            Stage = GetVariableData("Stage", bio.Player.Stage);
+            Room = GetVariableData("Room", bio.Player.Room);
+            Cutscene = GetVariableData("Cutscene", bio.Player.Cutscene);
+            LastRoom = GetVariableData("LastRoom", bio.Player.LastRoom);
+            Unk002 = GetVariableData("GameUnk001", bio.Player.Unk001);
+            Event = GetVariableData("Event", bio.Player.Event);
+            LastItemFound = GetVariableData("LastItemFound", bio.Player.LastItemFound);
+            InventoryCapacityUsed = GetVariableData("InventoryCapacityUsed", bio.Player.InventoryCapacityUsed);
+            CharacterHealthState = GetVariableData("CharacterHealthState", bio.Player.CharacterHealthState);
+            Health = GetVariableData("CharacterHealth", bio.Player.Health);
+            LockPick = GetVariableData("LockPick", bio.Player.LockPick);
 
             // Position
-            PositionX = new VariableData(Library.HexToNint(bio.Offsets["PositionX"]), bio.Position.X);
-            PositionY = new VariableData(Library.HexToNint(bio.Offsets["PositionY"]), bio.Position.Y);
-            PositionZ = new VariableData(Library.HexToNint(bio.Offsets["PositionZ"]), bio.Position.Z);
+            PositionX = GetVariableData("PositionX", bio.Position.X);
+            PositionY = GetVariableData("PositionY", bio.Position.Y);
+            PositionZ = GetVariableData("PositionZ", bio.Position.Z);
 
             // Rebirth
-            RebirthDebug = new VariableData(Library.HexToNint(bio.Offsets["RebirthDebug"]), bio.Rebirth.Debug);
-            RebirthScreen = new VariableData(Library.HexToNint(bio.Offsets["RebirthScreen"]), bio.Rebirth.Screen);
-            RebirthState = new VariableData(Library.HexToNint(bio.Offsets["RebirthState"]), bio.Rebirth.State);
+            RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
+            RebirthScreen = GetVariableData("RebirthScreen", bio.Rebirth.Screen);
+            RebirthState = GetVariableData("RebirthState", bio.Rebirth.State);
 
             // ItemBox and Inventory
             InitInventory(bio);
@@ -337,8 +346,19 @@ namespace REviewer.Modules.RE.Common
 
             // Init Save Database
             InitSaveDatabase();
-        }
 
+            VariableData GetVariableData(String key, dynamic value)
+            {
+                if (bio.Offsets.ContainsKey(key))
+                {
+                    return new VariableData(Library.HexToNint(bio.Offsets[key]), value);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
     }
 }

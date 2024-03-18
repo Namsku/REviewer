@@ -46,11 +46,23 @@ namespace REviewer.Modules.RE.Common
             {
                 if (Health == null || GameState == null) return;
 
+                var processName = IDatabase.GetProcessName().ToLower();
                 int state = GameState.Value;
+                bool isDead = false;
+
+                if (processName == "bio" || processName == "biohazard")
+                {
+                    isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
+                    PreviousState = state & 0x0F000000;
+                } 
+                else if (processName == "bio2 1.10")
+                {
+                    isDead = Health.Value > 200 && state != 0x00000000;
+                }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
 
-                if ((state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000)
+                if (isDead)
                 {
                     Health.Value = 255;
                     Deaths += 1;
@@ -58,8 +70,6 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(Deaths));
                     OnPropertyChanged(nameof(Health));
                 }
-
-                PreviousState = state & 0x0F000000;
             }
         }
 

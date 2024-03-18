@@ -146,7 +146,7 @@
                                             <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="25" Width="360" Name="RE2SavePath"/>
+                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RE2SavePath"/>
                                         <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE2SavePathButton_Click"/>
                                     </Grid>
                                 </StackPanel>

@@ -69,7 +69,7 @@ namespace REviewer.Modules.RE.Common
         {
             List<Slot> slots = [];
 
-            for (nint i = startOffset; i < endOffset; i += 2)
+            for (nint i = startOffset; i < endOffset; i += 4)
             {
                 slots.Add(new Slot
                 {

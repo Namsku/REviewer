@@ -102,8 +102,10 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
+                    if(_inventorySlotSelected.Value == 0x80) return "./resources/re1/unknown.png";
                     var selected = InventorySlotSelected.Value - 1;
-                    byte id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
+                    selected = selected < 0 ? 0 : selected;
+                    byte id = (byte) Inventory[selected].Item.Value;
                     return IDatabase.Items[id].Img;
                 }
                 return "./resources/re1/unknown.png";
@@ -151,11 +153,14 @@ namespace REviewer.Modules.RE.Common
 
         private void Room_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            var processName = IDatabase.GetProcessName();
+            var max_stage_id = MAX_STAGE_ID[processName ?? "ERR"];
+
             if (e.PropertyName == nameof(VariableData.Value))
             {
                 if (Stage == null || Room == null) return;
 
-                var sss = (((int)Stage.Value % 5) + 1).ToString() ?? "1";
+                var sss = (((int)Stage.Value % max_stage_id) + 1).ToString() ?? "1";
                 var rrr = ((int)Room.Value).ToString("X2");
                 LastRoomName = FullRoomName ?? "000";
                 FullRoomName = sss + rrr;
