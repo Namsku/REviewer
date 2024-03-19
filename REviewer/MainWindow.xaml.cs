@@ -231,7 +231,7 @@ namespace REviewer
         private void ProcessWatcherCallback(object? state)
         {
             // Check if the process is running
-            if (!_isProcessRunning && Process.GetProcessesByName(_processName).Length > 0)
+            if (!_isProcessRunning && Process.GetProcessesByName(_processName).Length > 0 && MD5 != null)
             {
                 // The process is running
                 _isProcessRunning = true;
@@ -363,8 +363,6 @@ namespace REviewer
 
             InitializeText();
             InitCheckBoxes();
-            Console.WriteLine(this._ui.ChrisInventory);
-
 
             Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
         }
@@ -453,6 +451,7 @@ namespace REviewer
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
                         var srtConfig = GenerateSRTUIConfig();
                         SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
                         SRT.Show();

@@ -54,6 +54,7 @@ namespace REviewer.Modules.RE.Json
     {
         public required StandardProperty State { get; set; }
         public required StandardProperty Timer { get; set; }
+        public StandardProperty? Frame { get; set; }
         public required StandardProperty Unk001 { get; set; }
         public required StandardProperty MainMenu { get; set; }
         public required StandardProperty SaveContent { get; set; }

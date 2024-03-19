@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Printing.IndexedProperties;
 using System.Windows.Media;
 using REviewer.Modules.Utils;
 
@@ -67,6 +68,7 @@ namespace REviewer.Modules.RE.Common
         {
             Item = new VariableData(0, 1);
             Quantity = new VariableData(0, 1);
+            Type = new VariableData(0, 1);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -87,7 +89,7 @@ namespace REviewer.Modules.RE.Common
                 {
                     Item = new VariableData(i, 1),
                     Quantity = new VariableData(i + 1, 1),
-                    Type = inc > 2 ? new VariableData(i + 3, 1) : null,
+                    Type = inc > 2 ? new VariableData(i + 2, 1) : null,
                     Position = (int) i
                 }); 
             }

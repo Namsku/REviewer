@@ -106,6 +106,30 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private VariableData? _frame;
+
+        public VariableData? GameFrame
+        {
+            get { return _frame; }
+            set
+            {
+                if (_frame != null)
+                {
+                    _frame.PropertyChanged -= Frame_PropertyChanged;
+                }
+
+                _frame = value;
+
+                if (_frame != null)
+                {
+                    _frame.PropertyChanged += Frame_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(GameFrame));
+                OnPropertyChanged(nameof(IGTHumanFormat));
+            }
+        }
+
         private void Timer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
@@ -123,11 +147,35 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private void Frame_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SegmentCount >= 0 && SegmentCount < 4)
+                {
+                    var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                    OnPropertyChanged(nameof(IGTSHumanFormat));
+                }
+
+                OnPropertyChanged(nameof(IGTHumanFormat));
+            }
+        }
+
         public string IGTHumanFormat
         {
             get
             {
-                return TimeSpan.FromSeconds(_timer.Value/30.0).ToString(@"hh\:mm\:ss\.ff");
+                if (SELECTED_GAME == 0)
+                {
+                    return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                }
+                else if (SELECTED_GAME == 1)
+                {
+                    return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                }
+
+                return 0.ToString();
             }
         }
 
@@ -163,9 +211,12 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
+                if (SELECTED_GAME == 0)
                 {
-                    Resets += 1;
+                    if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
+                    {
+                        Resets += 1;
+                    }
                 }
 
                 // buttonReset.Enabled = _game.Game.MainMenu.Value == 1;

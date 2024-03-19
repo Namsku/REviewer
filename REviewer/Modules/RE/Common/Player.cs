@@ -100,7 +100,6 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-                Console.WriteLine("CALLED");
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
                     byte id = 0;
@@ -434,6 +433,17 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                if (SELECTED_GAME == 1)
+                {
+                    // https://github.com/deserteagle417/RE2-Autosplitter/blob/main/RE2aio.asl
+                    // Very helpful for this case, thank you dude <3
+
+                    if (LastRoom.Value == 255 && Health.Value == 0 && (GameState.Value & 0x20000) != 0x20000)
+                    {
+                        Resets += 1;
+                    }
+                }
+
                 UpdateHealthColor();
             }
         }

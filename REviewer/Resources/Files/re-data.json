@@ -690,7 +690,7 @@
               },
               "1": {
                 "Name": "Knife",
-                "Type": "Weapon",
+                "Type": "Nothing",
                 "Img": "resources/re2/knife.png"
               },
               "2": {
@@ -731,16 +731,19 @@
               "9": {
                 "Name": "GrenadeLauncherExplosive",
                 "Type": "Weapon",
+                "Color": "Green",
                 "Img": "resources/re2/grenade-launcher.png"
               },
               "10": {
                 "Name": "GrenadeLauncherFlame",
                 "Type": "Weapon",
+                "Color": "Red",
                 "Img": "resources/re2/grenade-launcher.png"
               },
               "11": {
                 "Name": "GrenadeLauncherAcid",
                 "Type": "Weapon",
+                "Color": "Yellow",
                 "Img": "resources/re2/grenade-launcher.png"
               },
               "12": {
@@ -778,11 +781,11 @@
                 "Type": "Weapon",
                 "Img": "resources/re2/gatling-gun.png"
               },
-              "19": {
+            "19": {
                 "Name": "Beretta",
                 "Type": "Weapon",
-                "Img": "resources/re2/beretta.png"
-              },
+                "Img": "resources/re2/berreta.png"
+            },
               "20": {
                 "Name": "HandgunAmmo",
                 "Type": "Ammo",
@@ -801,21 +804,24 @@
               "23": {
                 "Name": "FuelTank",
                 "Type": "Item",
-                "Img": "resources/re2/fueltank.png"
+                "Img": "resources/re2/fuel.png"
               },
               "24": {
                 "Name": "ExplosiveRounds",
                 "Type": "Ammo",
+                "Color": "Green",
                 "Img": "resources/re2/explosive-rounds.png"
               },
               "25": {
                 "Name": "FlameRounds",
                 "Type": "Ammo",
-                "Img": "resources/re2/flamerounds.png"
+                "Color": "Red",
+                "Img": "resources/re2/flame-rounds.png"
               },
               "26": {
                 "Name": "AcidRounds",
                 "Type": "Ammo",
+                "Color": "Yellow",
                 "Img": "resources/re2/acid-rounds.png"
               },
               "27": {
@@ -826,7 +832,7 @@
               "28": {
                 "Name": "SparkshotAmmo",
                 "Type": "Ammo",
-                "Img": "resources/re2/spark-shot-ammo.png"
+                "Img": "resources/re2/ss-stack.png"
               },
               "29": {
                 "Name": "BowgunAmmo",
@@ -866,12 +872,12 @@
               "36": {
                 "Name": "AntivirusBomb",
                 "Type": "Nothing",
-                "Img": "resources/re2/umbrella.png"
+                "Img": "resources/re2/bomb.png"
               },
               "37": {
                 "Name": "ChemicalACw32",
                 "Type": "Nothing",
-                "Img": "resources/re2/umbrella.png"
+                "Img": "resources/re2/chemical.png"
               },
               "38": {
                 "Name": "HerbG",
@@ -928,11 +934,11 @@
                 "Type": "Key Item",
                 "Img": "resources/re2/lockpick.png"
               },
-              "49": {
+            "49": {
                 "Name": "PhotoSherry",
                 "Type": "Item",
-                "Img": "resources/re2/umbrella.png"
-              },
+                "Img": "resources/re2/sherry-photo.png"
+            },
               "50": {
                 "Name": "ValveHandle",
                 "Type": "Key Item",
@@ -1023,21 +1029,21 @@
                 "Type": "Key Item",
                 "Img": "resources/re2/square-crank.png"
               },
-              "68": {
+            "68": {
                 "Name": "FilmA",
-                "Type": "Item",
-                "Img": "resources/re1/nothing.png"
-              },
-          "69": {
-            "Name": "FilmB",
-            "Type": "Item",
-            "Img": "resources/re1/nothing.png"
-          },
-          "70": {
-            "Name": "FilmC",
-            "Type": "Item",
-            "Img": "resources/re1/nothing.png"
-          },
+                "Type": "Key Item",
+                "Img": "resources/re2/film.png"
+            },
+            "69": {
+                "Name": "FilmB",
+                "Type": "Key Item",
+                "Img": "resources/re2/film.png"
+            },
+            "70": {
+                "Name": "FilmC",
+                "Type": "Key Item",
+                "Img": "resources/re2/film.png"
+            },
               "71": {
                 "Name": "UnicornMedal",
                 "Type": "Key Item",
@@ -1086,7 +1092,7 @@
               "80": {
                 "Name": "FilmD",
                 "Type": "Key Item",
-                "Img": "resources/re1/nothing.png"
+                "Img": "resources/re2/film.png"
               },
               "81": {
                 "Name": "VaccineBase",
@@ -1096,7 +1102,7 @@
               "82": {
                 "Name": "GVirus",
                 "Type": "Item",
-                "Img": "resources/re2/gvirus.png"
+                "Img": "resources/re2/g-virus.png"
               },
               "83": {
                 "Name": "SpecialKey",
@@ -1121,7 +1127,7 @@
               "87": {
                 "Name": "PhotoAda",
                 "Type": "Item",
-                "Img": "resources/re2/photoada.png"
+                "Img": "resources/re2/ada-photo.png"
               },
               "88": {
                 "Name": "CabinKey",
@@ -1346,7 +1352,8 @@
             "LastItemFound": "0x98E529",
             "CharacterHealthState": "0x98A109",
             "GameState": "0x989E6C",
-            "GameTimer": "0x98A048",
+            "GameTimer": "0x680588",
+            "GameFrame": "0x68058C",
             "PositionX": "0x989F28",
             "PositionY": "0x989F2C",
             "PositionZ": "0x989F30",
@@ -1441,6 +1448,9 @@
         },
         "Game": {
             "State": {
+                "Size": "4"
+            },
+            "Frame": {
                 "Size": "4"
             },
             "Timer": {

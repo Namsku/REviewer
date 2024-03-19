@@ -46,17 +46,28 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 if (_inventoryCapacity == null) return;
-                int[] _inventoryCapacityArray = [6, 8, 8, 6];
-
+                int[] _inventoryCapacityArray = [];
+                int capacity = _inventoryCapacity.Value;
+                
+                if (SELECTED_GAME == 0) { 
+                    capacity = capacity & 3;
+                    _inventoryCapacityArray = [6, 8, 8, 6];
+                } 
+                else
+                {
+                    capacity = 0;
+                    _inventoryCapacityArray = [11, ];
+                }
+                
                 if (ChrisInventoryHotfix) _inventoryCapacityArray = [8, 8, 8, 8];
 
-                if (_inventoryCapacitySize == _inventoryCapacityArray[_inventoryCapacity.Value & 3])
+                if (_inventoryCapacitySize == _inventoryCapacityArray[capacity])
                 {
                     // avoiding extra checking for nothing here, it's only necessary when the player is switching between jill and chris.
                     return;
                 }
 
-                _inventoryCapacitySize = _inventoryCapacityArray[_inventoryCapacity.Value & 3];
+                _inventoryCapacitySize = _inventoryCapacityArray[capacity];
                 bool isVisible = _inventoryCapacitySize > 6;
 
                 for (int i = MAX_INVENTORY_SIZE - 2; i < MAX_INVENTORY_SIZE ; i++)
@@ -129,6 +140,8 @@ namespace REviewer.Modules.RE.Common
                 Inventory[i].Item.PropertyChanged += (sender, e) => UpdateInventoryImage(index);
                 Inventory[i].Quantity.PropertyChanged += (sender, e) => UpdateTextInventoryImage(index);
 
+                if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged += (sender, e) => UpdateType(index);
+
             }
         }
 
@@ -138,9 +151,19 @@ namespace REviewer.Modules.RE.Common
             OnPropertyChanged(nameof(InventoryCapacitySize));
         }
 
+        private void UpdateType(int index)
+        {
+            Console.WriteLine($"UpdateType -> {Inventory[index].Type.Value}");
+            if(Inventory[index].Type.Value == 2)
+            {
+                InventoryImages[index].Source = "resources/re2/reserved.png";
+                InventoryImages[index].TextVisibility = Visibility.Collapsed;
+                OnPropertyChanged(nameof(InventoryImages));
+            }
+        }
+
         private void UpdateInventoryImage(int index)
         {
-            // Update the ImageItem at the given index in the InventoryImages list
             if (index <= InventoryCapacitySize)
             {
                 InventoryImages[index].Source = IDatabase.Items[(byte)Inventory[index].Item.Value].Img;
@@ -151,12 +174,23 @@ namespace REviewer.Modules.RE.Common
                 if (IDatabase.GetPropertyById((byte) Inventory[index].Item.Value).Type == "Key Item")
                 {
                     int state = GameState.Value & 0x0000FF00;
+                    var isValid = false;
 
-                    if (state == 0x8800 || state == 0x8C00)
+                    if (SELECTED_GAME == 0)
+                    {
+                        isValid = state == 0x8800 || state == 0x8C00;
+                    }
+                    else if (SELECTED_GAME == 1)
+                    {
+                        isValid = state == 0x4000;
+                    }
+
+                    if (isValid)
                     {
                         UpdateRaceKeyItem(item_id, FullRoomName ?? "ERROR ROOM NAME", 2);
                     }
                 }
+
                 UpdateTextInventoryImage(index);
             }
         }
@@ -165,10 +199,19 @@ namespace REviewer.Modules.RE.Common
         {
             if (index < InventoryCapacitySize)
             {
+                string pourcentage_ammo = "";
+                int[] ammo_prct_array = [14, 15, 16, 23, 27, 28];
+
+                if(SELECTED_GAME == 1 && ammo_prct_array.Contains(Inventory[index].Item.Value))
+                {
+                    pourcentage_ammo = "%";
+                }
+
                 Property item = IDatabase.GetPropertyById((byte)Inventory[index].Item.Value);
 
                 // Update the ImageItem at the given index in the InventoryImages list
-                InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString();
+
+                InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString() + pourcentage_ammo;
                 InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
                 InventoryImages[index].Color = CustomColors.Default;
 

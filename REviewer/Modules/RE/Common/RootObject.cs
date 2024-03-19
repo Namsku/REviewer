@@ -304,6 +304,7 @@ namespace REviewer.Modules.RE.Common
             GameState = GetVariableData("GameState", bio.Game.State);
             Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
             GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
+            GameFrame = GetVariableData("GameFrame", bio.Game.Frame);
             MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
             SaveContent = GetVariableData("SaveContent", bio.Game.SaveContent);
 
