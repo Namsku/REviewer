@@ -14,12 +14,20 @@ namespace REviewer.Modules.RE
         private Dictionary<string, Bio>? _data { get; set; }
         private string? _gameName { get; set; }
 
+        public Dictionary<string, string> CorrectProcessName = new Dictionary<string, string>()
+        {
+            { "Bio", "Bio" },
+            { "bio", "Bio" },
+            { "biohazard", "Bio" },
+            { "Biohazard", "Bio" },
+        };
+
         public GameData(string gameName)
         {
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
             _data = JsonConvert.DeserializeObject<Dictionary<string, Bio>>(json);
-            _gameName = gameName;
+            _gameName = CorrectProcessName[gameName];
         }
 
         public RootObject GetGameData(ItemIDs ids)

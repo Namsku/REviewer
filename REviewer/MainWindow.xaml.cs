@@ -99,6 +99,7 @@ namespace REviewer
 
         private static readonly List<string> _gameList = ["Bio", "bio2 1.10"];
         private static readonly List<string> _gameSelection = ["RE1", "RE2"];
+
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
 
         public SRT SRT { get; private set; }
