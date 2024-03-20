@@ -6,7 +6,12 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 
 
 ## Overview
+
+### Resident Evil 1
 ![Alt Text](img/reviewer.png)
+
+### Resident Evil 2
+![Alt Text](img/reviewer-re2.png)
 
 REviewer provides a comprehensive set of features to enhance the speedrunning experience for Resident Evil games. It allows users to monitor various aspects of the game, including:
 
@@ -20,8 +25,8 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 ## Work In Progress
 
-- [x] RE1 (Mediakit version) - Testing phase
-- [ ] RE2 (SourceNext)
+- [x] RE1 (Mediakit version) - 95% / Testing phase
+- [X] RE2 (SourceNext) - 80% / Testing phase
 - [ ] RE3 (SourceNext)
 - [ ] CVX (PS2)
 
