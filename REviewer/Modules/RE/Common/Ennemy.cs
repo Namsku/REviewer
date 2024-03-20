@@ -11,12 +11,25 @@ namespace REviewer.Modules.RE.Common
         private int _pose;
         private int _flag;
         private int _id;
+        private string _name = "ENEMY";
 
         public int OldState;
         public int CurrentState;
 
         private Visibility _visibility = Visibility.Collapsed;
 
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
         public int MaxHealth
         {
             get { return _maxHealth; }

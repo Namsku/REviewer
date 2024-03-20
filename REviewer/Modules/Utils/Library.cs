@@ -18,6 +18,7 @@ namespace REviewer.Modules.Utils
         private static readonly Dictionary<string, string> _keyValuePairs = new()
         {
             {"Bio", "RE1"},
+            {"bio2 1.10", "RE2"},
         };
 
         public static string GetGameName(string processName)

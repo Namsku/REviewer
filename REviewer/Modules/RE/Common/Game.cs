@@ -47,10 +47,21 @@ namespace REviewer.Modules.RE.Common
                 if (Health == null || GameState == null) return;
 
                 int state = GameState.Value;
+                bool isDead = false;
+
+                if(SELECTED_GAME == 0)
+                {
+                    isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
+                    PreviousState = state & 0x0F000000;
+                } 
+                else if (SELECTED_GAME == 1)
+                {
+                    isDead = Health.Value > 200 && state != 0x00000000;
+                }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
 
-                if ((state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000)
+                if (isDead)
                 {
                     Health.Value = 255;
                     Deaths += 1;
@@ -58,8 +69,6 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(Deaths));
                     OnPropertyChanged(nameof(Health));
                 }
-
-                PreviousState = state & 0x0F000000;
             }
         }
 
@@ -97,6 +106,30 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private VariableData? _frame;
+
+        public VariableData? GameFrame
+        {
+            get { return _frame; }
+            set
+            {
+                if (_frame != null)
+                {
+                    _frame.PropertyChanged -= Frame_PropertyChanged;
+                }
+
+                _frame = value;
+
+                if (_frame != null)
+                {
+                    _frame.PropertyChanged += Frame_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(GameFrame));
+                OnPropertyChanged(nameof(IGTHumanFormat));
+            }
+        }
+
         private void Timer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
@@ -114,11 +147,35 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private void Frame_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SegmentCount >= 0 && SegmentCount < 4)
+                {
+                    var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                    OnPropertyChanged(nameof(IGTSHumanFormat));
+                }
+
+                OnPropertyChanged(nameof(IGTHumanFormat));
+            }
+        }
+
         public string IGTHumanFormat
         {
             get
             {
-                return TimeSpan.FromSeconds(_timer.Value/30.0).ToString(@"hh\:mm\:ss\.ff");
+                if (SELECTED_GAME == 0)
+                {
+                    return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                }
+                else if (SELECTED_GAME == 1)
+                {
+                    return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                }
+
+                return 0.ToString();
             }
         }
 
@@ -154,9 +211,12 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
+                if (SELECTED_GAME == 0)
                 {
-                    Resets += 1;
+                    if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
+                    {
+                        Resets += 1;
+                    }
                 }
 
                 // buttonReset.Enabled = _game.Game.MainMenu.Value == 1;

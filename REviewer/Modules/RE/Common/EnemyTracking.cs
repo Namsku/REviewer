@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using NLog;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
@@ -9,6 +10,67 @@ namespace REviewer.Modules.RE.Common
 {
     public class EnnemyTracking : INotifyPropertyChanged
     {
+
+        public Dictionary<byte, string> RE2_Bestiary = new Dictionary<byte, string>
+        {
+            {16, "Zombie"},
+            {17, "Brad"},
+            {18, "Zombie G"},
+            {19, "Zombie F"},
+            {21, "Zombie T"},
+            {22, "Zombie S"},
+            {23, "Zombie N"},
+            {24, "Zombie G"},
+            {30, "Zombie G"},
+            {31, "Zombie R"},
+            {32, "Doggo"},
+            {33, "Crow"},
+            {34, "Licker"},
+            {35, "Croco"},
+            {36, "Licker"},
+            {37, "Spider"},
+            {38, "Spider"},
+            {39, "G-Embryo"},
+            {40, "G-Adult"},
+            {41, "Cockroach"},
+            {42, "Mr.X"},
+            {43, "Sr.X"},
+            {45, "Arms"},
+            {46, "Ivy"},
+            {47, "Vines"},
+            {48, "G1"},
+            {49, "G2"},
+            {50, "G3"},
+            {51, "G4"},
+            {52, "G5"},
+            {57, "Ivy P"},
+            {58, "G Moth"},
+            {59, "Maggots"},
+            {64, "Irons"},
+            {65, "Ada"},
+            {66, "Irons"},
+            {67, "Ada"},
+            {68, "Ben"},
+            {69, "Sherry"},
+            {70, "Ben"},
+            {71, "Annette"},
+            {72, "Kendo"},
+            {73, "Annette"},
+            {74, "Marvin"},
+            {75, "Mayors"},
+            {79, "Sherry"},
+            {80, "Leon"},
+            {81, "Claire"},
+            {84, "Leon"},
+            {85, "Claire"},
+            {88, "Leon"},
+            {89, "Claire"},
+            {90, "Leon"}
+        };
+
+
+        public int SelectedGame;
+
         private Enemy? _enemy;
         public Enemy? Enemy
         {
@@ -24,16 +86,129 @@ namespace REviewer.Modules.RE.Common
         }
         private VariableData? _enemyState;
 
+        private VariableData? _enemyHP;
+
+        public VariableData? EnemyHP
+        {
+            get { return _enemyHP; }
+            set
+            {
+                if (_enemyHP != value)
+                {
+                    if (_enemyHP != null)
+                    {
+                        _enemyHP.PropertyChanged -= EnemyHP_PropertyChanged;
+                    }
+
+                    _enemyHP = value;
+
+                    if (_enemyHP != null)
+                    {
+                        _enemyHP.PropertyChanged += EnemyHP_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(EnemyHP));
+                }
+            }
+        }
+
+        private int? _enemyMaxHP;
+
+        public int? EnemyMaxHP
+        {
+            get { return _enemyMaxHP; }
+            set
+            {
+                if (_enemyMaxHP != value)
+                {
+                    _enemyMaxHP = value;
+                    OnPropertyChanged(nameof(EnemyMaxHP));
+                }
+            }
+        }
+
+        private VariableData? _enemyID;
+
+        public VariableData? EnemyID
+        {
+            get { return _enemyID; }
+            set
+            {
+                if (_enemyID != value)
+                {
+                    if (_enemyID != null)
+                    {
+                        _enemyID.PropertyChanged -= EnemyID_PropertyChanged;
+                    }
+
+                    _enemyID = value;
+
+                    if (_enemyID != null)
+                    {
+                        _enemyID.PropertyChanged += EnemyID_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(EnemyID));
+                }
+            }
+        }
+
+        private void EnemyHP_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SelectedGame == 1)
+                {
+                    // Take only the first 2 bytes
+                    Enemy.CurrentHealth = EnemyHP.Value & 0xFFFF;
+
+                    if (EnemyMaxHP == 0)
+                    {
+                        Enemy.MaxHealth = Enemy.CurrentHealth;
+                        EnemyMaxHP = Enemy.CurrentHealth;
+                    }
+
+                    OnPropertyChanged(nameof(Enemy));
+                }
+                    
+            }
+        }
+
+        private void EnemyMaxHP_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SelectedGame == 1)
+                {
+                    // Enemy.MaxHealth = EnemyMaxHP.Value & 0x0000FFFF;
+                    // OnPropertyChanged(nameof(Enemy));
+                }
+            }
+        }
+
+        private void EnemyID_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SelectedGame == 1)
+                {
+                    Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    OnPropertyChanged(nameof(Enemy));
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }  
 
-        public EnnemyTracking(nint v, StandardProperty property)
+        public EnnemyTracking(nint v, StandardProperty property, int selectedGame)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
+            SelectedGame = selectedGame;
         }
 
         public VariableData? EnemyState
@@ -93,7 +268,32 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                UpdateEnemy(); 
+                if (SelectedGame == 0)
+                    UpdateEnemy();
+                else if (SelectedGame == 1)
+                    UpdateEnemyRE2();
+            }
+        }
+
+        private void UpdateEnemyRE2()
+        {
+            if (_enemyState == null) return;
+
+            if (_enemyState.Value == 0x98E544)
+            {
+                EnemyHP = null;
+                EnemyID = null;
+                EnemyMaxHP = 0;
+
+                Enemy.Visibility = Visibility.Collapsed;
+            } 
+            else
+            {
+                EnemyHP = new VariableData(_enemyState.Value + 0x156, 4);
+                EnemyID = new VariableData(_enemyState.Value + 0x8, 1);
+                EnemyMaxHP = 0;
+
+                Enemy.Visibility = Visibility.Visible;
             }
         }
     }
