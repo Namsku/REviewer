@@ -48,6 +48,7 @@ namespace REviewer.Modules.RE.Json
         public required StandardProperty Cutscene { get; set; }
         public StandardProperty? Unk001 { get; set; }
         public StandardProperty? Event { get; set; }
+        public StandardProperty? PartnerPointer { get; set; }
     }
 
     public class JGame

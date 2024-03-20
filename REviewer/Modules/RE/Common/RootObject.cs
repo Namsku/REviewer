@@ -46,6 +46,8 @@ namespace REviewer.Modules.RE.Common
         public Visibility HealthBarVisibility { get; set; }
         public Visibility BiorandVisibility { get; set; }
         public Visibility ItemBoxVisibility { get; set; }
+        public Visibility SherryVisibility { get; set; }
+        public Visibility PartnerVisibility { get; set; }
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -58,6 +60,7 @@ namespace REviewer.Modules.RE.Common
             BiorandVisibility = (bool) !config["Standard"] ? Visibility.Visible : Visibility.Collapsed;
             ItemBoxVisibility = (bool) config["ItemBox"] ? Visibility.Visible : Visibility.Collapsed;
             ChrisInventoryHotfix = (bool) config["ChrisInventory"] ? true : false;
+            SherryVisibility = (bool)config["Sherry"] ? Visibility.Visible : Visibility.Collapsed;
 
             if (ChrisInventoryHotfix)
             {
@@ -109,7 +112,11 @@ namespace REviewer.Modules.RE.Common
             Dictionary<string, string> db = new Dictionary<string, string>
             {
                 { "Bio", "RE1" },
-                { "Bio2", "RE2" },
+                { "bio", "RE1" },
+                { "Biohazard", "RE1" },
+                { "biohazard", "RE1" },
+                { "Bio2 1.10", "RE2" },
+                { "bio2 1.10", "RE2" },
                 { "Bio3", "RE3" }
             };
 
@@ -127,7 +134,8 @@ namespace REviewer.Modules.RE.Common
 
             var processName = IDatabase.GetProcessName();
             Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");  // replace with your directory
-            Watcher.Filter = "*.dat";  // watch for .dat files
+            Console.WriteLine(Watcher.Path);
+            // Watcher.Filter = "*.dat";  // watch for .dat files
 
             // Add event handlers.
             Watcher.Created += new FileSystemEventHandler(SaveFileDetected);
@@ -322,6 +330,7 @@ namespace REviewer.Modules.RE.Common
             CharacterHealthState = GetVariableData("CharacterHealthState", bio.Player.CharacterHealthState);
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
+            PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
 
             // Position
             PositionX = GetVariableData("PositionX", bio.Position.X);

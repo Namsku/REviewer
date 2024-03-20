@@ -1,6 +1,10 @@
-﻿using REviewer.Modules.Utils;
+﻿using Newtonsoft.Json.Linq;
+using NLog;
+using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
+using System.Windows;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
 {
@@ -528,5 +532,191 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(LockPick));
             }
         }
+
+
+        private VariableData _partnerPose;
+
+        public Dictionary<int, string> pose_database = new Dictionary<int, string>
+        {
+            {0, "???"},
+            {1, "Following"},
+            {2, "???"},
+            {3, "Idle"},
+            {4, "Sit Down" },
+            {5, "Stop" },
+            {6, "Sit Up"},
+        };
+
+        public string SherryPose { get; set; }
+        public string SherryPicture { get; set; }
+
+        public VariableData PartnerPose
+        {
+            get
+            {
+                return _partnerPose;
+            }
+            set
+            {
+                if (_partnerPose != null)
+                {
+                    _partnerPose.PropertyChanged -= PartnerPose_PropertyChanged;
+                }
+
+                _partnerPose = value;
+
+                if (_partnerPose != null)
+                {
+                    _partnerPose.PropertyChanged += PartnerPose_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(PartnerPose));
+            }
+        }
+
+        private void PartnerPose_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                pose_database.TryGetValue(PartnerPose.Value, out string pose);
+                SherryPose = pose;
+
+                if (pose == "Stop")
+                {
+                    SherryPicture = "resources/re2/sherry-thug.png";
+                }
+                else
+                {
+                    SherryPicture = "resources/re2/sherry.png";
+                }
+
+                OnPropertyChanged(nameof(SherryPose));
+                OnPropertyChanged(nameof(SherryPicture));
+            }
+        }
+
+        private VariableData? _partnerPointer;
+        public VariableData? PartnerPointer {
+            
+            get { return _partnerPointer; }
+            set
+            {
+                if (_partnerPointer != value)
+                {
+                    if (_partnerPointer != null)
+                    {
+                        _partnerPointer.PropertyChanged -= PartnerPointer_PropertyChanged;
+                    }
+
+                    _partnerPointer = value;
+
+                    if (_partnerPointer != null)
+                    {
+                        _partnerPointer.PropertyChanged += PartnerPointer_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(PartnerPointer));
+                }
+            }
+        }
+
+        private VariableData _partnerHP;
+
+        public VariableData PartnerHP
+        {
+            get { return _partnerHP; }
+            set
+            {
+                if (_partnerHP != value)
+                {
+                    if (_partnerHP != null)
+                    {
+                        _partnerHP.PropertyChanged -= PartnerHP_PropertyChanged;
+                    }
+
+                    _partnerHP = value;
+
+                    if (_partnerHP != null)
+                    {
+                        _partnerHP.PropertyChanged += PartnerHP_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(PartnerHP));
+                }
+            }
+        }
+
+        public int PartnerHPValue { get; set; }
+        private void PartnerHP_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                PartnerHPValue = (int)(_partnerHP.Value & 0xFFFF);
+                OnPropertyChanged(nameof(PartnerHPValue));
+            }
+        }
+ 
+        public int PartnerMaxHPValue { get; set; }
+
+        private VariableData _partnerMaxHP;
+        public VariableData PartnerMaxHP
+        {
+            get { return _partnerMaxHP; }
+            set
+            {
+                if(_partnerMaxHP != null)
+                {
+                    _partnerMaxHP.PropertyChanged -= PartnerMaxHP_PropertyChanged;
+                }
+
+                _partnerMaxHP = value;
+
+                if (_partnerMaxHP != null)
+                {
+                    _partnerMaxHP.PropertyChanged += PartnerMaxHP_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(PartnerMaxHP));
+            }
+        }
+
+        private void PartnerMaxHP_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                PartnerMaxHPValue = (int)(_partnerMaxHP.Value & 0xFFFF);
+                OnPropertyChanged(nameof(PartnerMaxHPValue));
+            }
+        }
+
+        private void PartnerPointer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (PartnerPointer.Value == 0x98E544)
+                {
+                    PartnerHP = null;
+                    PartnerMaxHP = null;
+                    PartnerPose = null;
+                    SherryPose = "No Sherry in this room";
+                    SherryPicture = "resources/re2/no-sherry.png";
+                    PartnerVisibility = Visibility.Collapsed;
+                    OnPropertyChanged(nameof(SherryPose));
+                    OnPropertyChanged(nameof(SherryPicture));
+                }
+                else
+                {
+                    PartnerPose = new VariableData(PartnerPointer.Value + 0x6, 1);
+                    PartnerHP = new VariableData(PartnerPointer.Value + 0x156, 4);
+                    PartnerMaxHP = new VariableData(PartnerPointer.Value + 0x162, 4);
+                    PartnerVisibility = Visibility.Visible;
+                }
+
+                OnPropertyChanged(nameof(PartnerVisibility));
+                OnPropertyChanged(nameof(PartnerPointer));
+            }
+        }
     }
+
+
 }

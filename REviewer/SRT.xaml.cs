@@ -23,8 +23,8 @@ namespace REviewer
             _gameName = gameName;
             _monitoring = monitoring;
             _itemDatabase = new ItemIDs(gameName);
-            // _raceDatabase = new PlayerRaceProgress(gameName);
-            // KeyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? [];
+
+
             var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? [];
             _game.InitKeyItemsModel(keyItems);
             _game.InitUIConfig(config);

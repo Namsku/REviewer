@@ -6,7 +6,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
@@ -52,6 +51,20 @@ namespace REviewer
             }
         }
 
+        private Visibility _sherry;
+        public Visibility Sherry
+        {
+            get { return _sherry; }
+            set
+            {
+                if (_sherry != value)
+                {
+                    _sherry = value;
+                    OnPropertyChanged(nameof(Sherry));
+                }
+            }
+        }
+
         public UINotify(string version)
         {
             Version = version;
@@ -72,6 +85,7 @@ namespace REviewer
         private bool _isProcessRunning = false;
         private bool _isDdrawLoaded = false;
         private bool _isSaveFound = false;
+        private bool _isMappingDone = false;
 
         private Timer? _processWatcher;
         private Timer? _rootObjectWatcher;
@@ -111,9 +125,11 @@ namespace REviewer
             if (ComboBoxGameSelection.SelectedIndex == 0)
             {
                 _ui.ChrisInventory = Visibility.Visible;
+                _ui.Sherry = Visibility.Collapsed;
             }
             else
             {
+                _ui.Sherry = Visibility.Visible;
                 _ui.ChrisInventory = Visibility.Collapsed;
             }
         }
@@ -168,12 +184,14 @@ namespace REviewer
             // Set the game list
             _process = null;
             _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
-            _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
+            if (_processWatcher == null)
+                _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
         }
 
         private void InitializeRootObjectWatcher()
         {
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+            if (_rootObjectWatcher == null)
+                _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
         }
 
         private void InitializeSaveWatcher()
@@ -262,7 +280,7 @@ namespace REviewer
         private void RootObjectWatcherCallback(object? state)
         {
             // Check if the process is running
-            if (_isProcessRunning && _isDdrawLoaded && _isSaveFound)
+            if (_isProcessRunning && _isDdrawLoaded && _isSaveFound && _residentEvilGame == null)
             {
                 MappingGameVariables();
                 _rootObjectWatcher?.Dispose();
@@ -271,6 +289,13 @@ namespace REviewer
 
         private void MappingGameVariables()
         {
+            if (_isMappingDone)
+            {
+                return; // Mapping already done, no need to do it again
+            }
+
+            _isMappingDone = true;
+
             if (_process == null)
             {
                 throw new ArgumentNullException(nameof(_process));
@@ -345,6 +370,7 @@ namespace REviewer
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
             _processName = _gameList[selectedIndex];
             _isProcessRunning = false;
+            _isMappingDone = false;
 
             // Kill the current process monitoring
             _processWatcher?.Dispose();
@@ -355,6 +381,7 @@ namespace REviewer
 
             _residentEvilGame = null;
             _MVariables = null;
+            _tracking = null;
 
             // Check every second if the process is running
 
@@ -366,27 +393,6 @@ namespace REviewer
 
             Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
         }
-
-        // Events for the options panel
-
-        /*
-        private void IGTimer_Checked(object sender, RoutedEventArgs e)
-        {
-            if (RealTimerCheckBox.IsChecked == true)
-            {
-                RealTimerCheckBox.IsChecked = false;
-            }
-        }
-
-        private void RealTimer_Checked(object sender, RoutedEventArgs e)
-        {
-            if (IGTimerCheckBox.IsChecked == true)
-            {
-                IGTimerCheckBox.IsChecked = false;
-            }
-        }
-
-        */
 
         // Events for selecting the Save Path
         private void RE1SavePathButton_Click(object sender, RoutedEventArgs e)
@@ -451,7 +457,7 @@ namespace REviewer
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
+                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
                         var srtConfig = GenerateSRTUIConfig();
                         SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
                         SRT.Show();
@@ -529,6 +535,7 @@ namespace REviewer
                 ["Standard"] = NormalMode.IsChecked,
                 ["ItemBox"] = ShowItemBox.IsChecked,
                 ["ChrisInventory"] = ChrisInventory.IsChecked,
+                ["Sherry"] = Sherry.IsChecked
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
@@ -544,10 +551,24 @@ namespace REviewer
         }
         private void InitEnemies(string processName)
         {
+            // Console.WriteLine("CALLED INIT ENEMIES");
+            int size = 0;
+            var selectedGame = 0;
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
             var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
             var data = JsonConvert.DeserializeObject<Dictionary<string, Bio>>(json);
             var bio = data?[processName];
+            var pname = processName.ToLower();
+
+            if (pname == "bio" || pname == "biohazard")
+            {
+                size = 396;
+            }
+            else if (pname == "bio2 1.10")
+            {
+                selectedGame = 1;
+                size = 4;
+            }
 
             if (bio == null)
             {
@@ -574,7 +595,8 @@ namespace REviewer
 
             for (var i = 0; i < 16; i++)
             {
-                _tracking.Add(new EnnemyTracking(offset + (i * 396), property));
+                // Console.WriteLine($"Testings -> {i}");
+                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
             }
         }
     }

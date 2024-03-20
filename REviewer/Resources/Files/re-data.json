@@ -1361,7 +1361,8 @@
             "CharacterHealth": "0x98A046",
             "MainMenu": "0x691B86",
             "SaveContent": "0x98E7AC",
-            "EnnemyInfos": ""
+            "EnnemyInfos": "0x98A114",
+            "PartnerPointer": "0x98A110"
         },
         "Player": {
             "Character": {
@@ -1444,6 +1445,9 @@
                     "128": "Event #1 - Yes",
                     "129": "Event #2 - No"
                 }
+            },
+            "PartnerPointer":  {
+                "Size": "4"
             }
         },
         "Game": {
