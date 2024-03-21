@@ -33,6 +33,7 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 ## Known Bugs
 
 - Enemy Tracker is not super stable in some cases.
+- Save/Load State are still not totally working
 
 ## Features
 
@@ -46,7 +47,6 @@ REviewer provides real-time monitoring of the player's health status. It display
 - Yellow: Light Caution
 - Orange: Caution
 - Red: Danger
-
 
 ### Character Information
 
@@ -84,6 +84,17 @@ To start using REviewer, follow these steps:
 7. Enjoy your speedrunning experience!
 
 ## FAQ
+
+### My game is not recognized, what i'm doing wrong
+
+SRT is able to recognize some process name:
+
+- Bio.exe
+- bio.exe
+- Biohazard.exe
+- biohazard.exe
+- Bio2 1.10.exe
+- bio2 1.10.exe
 
 ### How works Timers?
 
