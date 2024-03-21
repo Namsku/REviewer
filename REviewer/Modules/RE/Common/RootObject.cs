@@ -75,9 +75,13 @@ namespace REviewer.Modules.RE.Common
             {
                 MAX_INVENTORY_SIZE = 8;
             }
-            else
+            else if(character == "Sherry" || character == "Claire" || character == "Leon" || character == "Ada")
             {
                 MAX_INVENTORY_SIZE = 11;
+            } 
+            else
+            {
+                MAX_INVENTORY_SIZE = 10;
             }
         }
 

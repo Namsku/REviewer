@@ -112,6 +112,56 @@ namespace REviewer.Modules.RE.Common
             {90, "Leon"}
         };
 
+        public Dictionary<byte, string> RE3_Bestiary = new Dictionary<byte, string>
+        {
+            { 16, "Zombie" },
+            { 17, "Zombie" },
+            { 18, "Zombie" },
+            { 19, "Zombie G" },
+            { 20, "Zombie R" },
+            { 21, "Zombie G" },
+            { 22, "Zombie G" },
+            { 23, "Zombie G" },
+            { 24, "Zombie N" },
+            { 25, "Zombie 5" },
+            { 26, "Zombie 6" },
+            { 27, "Zombie L" },
+            { 28, "Zombie G" },
+            { 29, "Zombie P" },
+            { 30, "Zombie G" },
+            { 31, "Zombie G" },
+            { 32, "Doggo" },
+            { 33, "Crow" },
+            { 34, "Hunter" },
+            { 35, "BS23" },
+            { 36, "Hunter G" },
+            { 37, "Spider" },
+            { 38, "M. Spider" },
+            { 39, "Brain S." },
+            { 40, "BS28" },
+            { 45, "Arm" },
+            { 47, "Marvin" },
+            { 48, "G.Digger" },
+            { 50, "S.Worm" },
+            { 52, "Nemmy" },
+            { 54, "Nemmy 3" },
+            { 80, "Carlos" },
+            { 81, "Mikhail" },
+            { 82, "Nikolai" },
+            { 83, "Brad" },
+            { 84, "Dario" },
+            { 85, "Murphy" },
+            { 86, "Tyrel" },
+            { 87, "Marvin" },
+            { 88, "Brad" },
+            { 89, "Dario" },
+            { 90, "P.Girl" },
+            { 91, "Jill" },
+            { 92, "Carlos" },
+            { 95, "Jill" },
+            { 96, "Nikolai" },
+            { 103, "Irons" }
+        };
 
         public int SelectedGame;
 
@@ -209,7 +259,15 @@ namespace REviewer.Modules.RE.Common
                     if (EnemyMaxHP == 0)
                     {
                         Enemy.MaxHealth = Enemy.CurrentHealth;
-                        EnemyMaxHP = Enemy.CurrentHealth;
+
+                        if(SelectedGame == 2)
+                        {
+                            EnemyMaxHP = ((EnemyHP.Value >> 16) & 0xFFFF);
+                        }
+                        else 
+                        { 
+                            EnemyMaxHP = Enemy.CurrentHealth;
+                        }
                     }
 
                     OnPropertyChanged(nameof(Enemy));
@@ -242,6 +300,11 @@ namespace REviewer.Modules.RE.Common
                 else if (SelectedGame == 1)
                 {
                     Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    OnPropertyChanged(nameof(Enemy));
+                }
+                else if (SelectedGame == 2)
+                {
+                    Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     OnPropertyChanged(nameof(Enemy));
                 }
             }
@@ -324,16 +387,19 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SelectedGame == 0)
                     UpdateEnemy();
-                else if (SelectedGame == 1)
-                    UpdateEnemyRE2();
+                else
+                    UpdateEnemyRE2andRE3();
             }
         }
 
-        private void UpdateEnemyRE2()
+        private void UpdateEnemyRE2andRE3()
         {
             if (_enemyState == null) return;
+            int position_hp = SelectedGame == 1 ? 0x156 : 0xCC;
+            int position_id = SelectedGame == 1 ? 0x8 : 0xC8;
 
-            if (_enemyState.Value == 0x98E544)
+
+            if (_enemyState.Value == 0x98E544 || _enemyState.Value == 0x0A62290 )
             {
                 EnemyHP = null;
                 EnemyID = null;
@@ -343,8 +409,8 @@ namespace REviewer.Modules.RE.Common
             } 
             else
             {
-                EnemyHP = new VariableData(_enemyState.Value + 0x156, 4);
-                EnemyID = new VariableData(_enemyState.Value + 0x8, 1);
+                EnemyHP = new VariableData(_enemyState.Value + position_hp, 4);
+                EnemyID = new VariableData(_enemyState.Value + position_id, 1);
                 EnemyMaxHP = 0;
 
                 Enemy.Visibility = Visibility.Visible;
