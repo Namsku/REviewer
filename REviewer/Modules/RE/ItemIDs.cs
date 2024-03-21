@@ -27,6 +27,8 @@ namespace REviewer.Modules.RE
             { "bio", "Bio" },
             { "Biohazard", "Bio" },
             { "biohazard", "Bio" },
+            { "Bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.10", "Bio2 1.10" }
         };
 
         public class Item
@@ -127,7 +129,7 @@ namespace REviewer.Modules.RE
 
         public string? GetProcessName()
         {
-            return _processName;
+            return Char.ToUpper(_processName[0]) + _processName.Substring(1);
         }
     }
 }

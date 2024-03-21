@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using NLog;
-using REviewer.Modules.Utils;
+﻿using REviewer.Modules.Utils;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using System.Windows;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
@@ -445,6 +441,8 @@ namespace REviewer.Modules.RE.Common
                     if (LastRoom.Value == 255 && Health.Value == 0 && (GameState.Value & 0x20000) != 0x20000)
                     {
                         Resets += 1;
+                        PartnerVisibility = Visibility.Hidden;
+                        OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
 
@@ -700,7 +698,7 @@ namespace REviewer.Modules.RE.Common
                     PartnerPose = null;
                     SherryPose = "No Sherry in this room";
                     SherryPicture = "resources/re2/no-sherry.png";
-                    PartnerVisibility = Visibility.Collapsed;
+                    PartnerVisibility = Visibility.Hidden;
                     OnPropertyChanged(nameof(SherryPose));
                     OnPropertyChanged(nameof(SherryPicture));
                 }

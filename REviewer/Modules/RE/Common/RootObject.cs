@@ -25,6 +25,7 @@ namespace REviewer.Modules.RE.Common
             { "Biohazard", 0x05 },
             { "biohazard", 0x05 },
             { "bio2 1.10", 0x07 },
+            { "Bio2 1.10", 0x07 },
         };
 
         private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];

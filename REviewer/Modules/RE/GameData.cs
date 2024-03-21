@@ -20,6 +20,8 @@ namespace REviewer.Modules.RE
             { "bio", "Bio" },
             { "biohazard", "Bio" },
             { "Biohazard", "Bio" },
+            { "Bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.10", "Bio2 1.10" }
         };
 
         public GameData(string gameName)

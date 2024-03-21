@@ -23,7 +23,14 @@ namespace REviewer
             _game = obj;
             Tracking = trk;
 
-            _game.GameState.PropertyChanged += GameState_PropertyChanged;
+            if (_game.SELECTED_GAME == 0)
+            {
+                _game.GameState.PropertyChanged += GameState_PropertyChanged;
+            } 
+            else if (_game.SELECTED_GAME == 1)
+            {
+                _game.LastRoom.PropertyChanged += LastRoom_PropertyChanged;
+            }
 
             DataContext = this;
         }
@@ -38,6 +45,21 @@ namespace REviewer
                 {
                     enemy.Enemy.Visibility = Visibility.Collapsed;
                     enemy.Enemy.MaxHealth = 0;
+                }
+            }
+        }
+
+        private void LastRoom_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (_game.LastRoom.Value == 255)
+                {
+                    foreach (var enemy in Tracking)
+                    {
+                        enemy.Enemy.Visibility = Visibility.Collapsed;
+                        enemy.Enemy.MaxHealth = 0;
+                    }
                 }
             }
         }

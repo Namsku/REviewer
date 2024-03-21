@@ -15,7 +15,7 @@ namespace REviewer.Modules.RE.Common
         {
             {16, "Zombie"},
             {17, "Brad"},
-            {18, "Zombie G"},
+            {18, "Zombie M"},
             {19, "Zombie F"},
             {21, "Zombie T"},
             {22, "Zombie S"},

@@ -553,6 +553,7 @@ namespace REviewer
         private void InitEnemies(string processName)
         {
             // Console.WriteLine("CALLED INIT ENEMIES");
+            processName = Char.ToUpper(processName[0]) + processName.Substring(1);
             int size = 0;
             var selectedGame = 0;
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
