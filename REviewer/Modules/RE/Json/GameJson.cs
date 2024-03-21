@@ -70,9 +70,9 @@ namespace REviewer.Modules.RE.Json
 
     public class JRebirth
     {
-        public required StandardProperty Debug { get; set; }
-        public required StandardProperty Screen { get; set; }
-        public required StandardProperty State { get; set; }
+        public StandardProperty? Debug { get; set; }
+        public StandardProperty? Screen { get; set; }
+        public StandardProperty? State { get; set; }
     }
 
     public class JEnnemy
