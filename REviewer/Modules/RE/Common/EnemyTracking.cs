@@ -10,6 +10,50 @@ namespace REviewer.Modules.RE.Common
 {
     public class EnnemyTracking : INotifyPropertyChanged
     {
+        Dictionary<byte, string> RE1_Bestiary = new Dictionary<byte, string>
+        {
+            { 0, "Zombie" },
+            { 1, "Zombie N" },
+            { 2, "Doggo" },
+            { 3, "Spider" },
+            { 4, "B. Tiger" },
+            { 5, "Crow" },
+            { 6, "Hunter" },
+            { 7, "Wasp" },
+            { 8, "Plant 42" },
+            { 9, "Chimera" },
+            { 10, "Snake" },
+            { 11, "Neptune" },
+            { 12, "Tyran" },
+            { 13, "Yawn 1" },
+            { 14, "Plant42 R" },
+            { 15, "Plant42 V" },
+            { 16, "Sr. Tyran" },
+            { 17, "Zombie R" },
+            { 18, "Yawn 2" },
+            { 19, "Cobweb" },
+            { 20, "Hands L" },
+            { 21, "Hands R" },
+            { 32, "Chris" },
+            { 33, "Jill" },
+            { 34, "Barry" },
+            { 35, "Rebecca" },
+            { 36, "Wesker" },
+            { 37, "Kenneth" },
+            { 38, "Forrest" },
+            { 39, "Richard" },
+            { 40, "Enrico" },
+            { 41, "Kenneth" },
+            { 42, "Barry" },
+            { 43, "Barry" },
+            { 44, "Rebecca" },
+            { 45, "Barry" },
+            { 46, "Wesker" },
+            { 47, "Chris" },
+            { 48, "Jill" },
+            { 49, "Chris" },
+            { 50, "Jill" }
+        };
 
         public Dictionary<byte, string> RE2_Bestiary = new Dictionary<byte, string>
         {
@@ -190,7 +234,12 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SelectedGame == 1)
+                if(SelectedGame == 0)
+                {                    
+                    Enemy.Name = RE1_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    OnPropertyChanged(nameof(Enemy));
+                }
+                else if (SelectedGame == 1)
                 {
                     Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     OnPropertyChanged(nameof(Enemy));
@@ -209,6 +258,11 @@ namespace REviewer.Modules.RE.Common
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
             SelectedGame = selectedGame;
+
+            if (SelectedGame == 0) 
+            { 
+                EnemyID = new VariableData(v - 132, 1);
+            }
         }
 
         public VariableData? EnemyState

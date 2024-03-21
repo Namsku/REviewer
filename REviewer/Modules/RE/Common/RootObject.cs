@@ -364,6 +364,7 @@ namespace REviewer.Modules.RE.Common
             if (processName == "bio" || processName == "biohazard")
             {
                 SELECTED_GAME = 0;
+                PartnerVisibility = Visibility.Collapsed;
             }
             else if (processName == "bio2 1.10")
             {

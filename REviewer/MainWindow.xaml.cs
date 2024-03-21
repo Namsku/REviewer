@@ -597,7 +597,6 @@ namespace REviewer
 
             for (var i = 0; i < 16; i++)
             {
-                // Console.WriteLine($"Testings -> {i}");
                 _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
             }
         }

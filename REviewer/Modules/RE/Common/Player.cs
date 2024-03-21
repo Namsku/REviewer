@@ -166,6 +166,7 @@ namespace REviewer.Modules.RE.Common
         {
             var processName = IDatabase.GetProcessName();
             var max_stage_id = MAX_STAGE_ID[processName ?? "ERR"];
+            // Console.WriteLine($"Stage X:{(Stage.Value)} - Room X:{(Room.Value)} - Last Room X:{(LastRoom.Value)}");
 
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -229,7 +230,12 @@ namespace REviewer.Modules.RE.Common
 
                         keyRooms.Add(otherRoomName);
 
-                        if (keyRooms.Count == 2)
+                        if (keyRooms.Count == 2 && lastRoomName != "503")
+                        {
+                            UpdateChronometers();
+                            KeyRooms.Remove(roomName);
+                        }
+                        else if (fullRoomName == "505" && lastRoomName == "503")
                         {
                             UpdateChronometers();
                             KeyRooms.Remove(roomName);

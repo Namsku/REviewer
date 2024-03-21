@@ -154,7 +154,7 @@ namespace REviewer.Modules.RE.Common
                 if (SegmentCount >= 0 && SegmentCount < 4)
                 {
                     var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
-                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0) - baseTime).ToString(@"hh\:mm\:ss\.ff");
                     OnPropertyChanged(nameof(IGTSHumanFormat));
                 }
 
