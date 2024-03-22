@@ -35,17 +35,18 @@ namespace REviewer.Modules.RE.Json
 
     public class JPlayer
     {
-        public required StandardProperty Character { get; set; }
-        public required AdvancedProperty Health { get; set; }
-        public required StandardProperty CharacterHealthState { get; set; }
-        public required StandardProperty LastItemFound { get; set; }
+        public StandardProperty? Character { get; set; }
+        public AdvancedProperty Health { get; set; }
+        public StandardProperty? CharacterHealthState { get; set; }
+        public StandardProperty? LastItemFound { get; set; }
         public StandardProperty? LockPick { get; set; }
         public StandardProperty? InventoryCapacityUsed { get; set; }
-        public required StandardProperty InventorySlotSelected { get; set; }
-        public required StandardProperty Stage { get; set; }
-        public required StandardProperty Room { get; set; }
-        public required StandardProperty LastRoom { get; set; }
-        public required StandardProperty Cutscene { get; set; }
+        public StandardProperty? InventorySlotSelected { get; set; }
+        public StandardProperty? CarlosInventorySlotSelected { get; set; }
+        public StandardProperty? Stage { get; set; }
+        public StandardProperty? Room { get; set; }
+        public StandardProperty? LastRoom { get; set; }
+        public StandardProperty? Cutscene { get; set; }
         public StandardProperty? Unk001 { get; set; }
         public StandardProperty? Event { get; set; }
         public StandardProperty? PartnerPointer { get; set; }

@@ -1,4 +1,5 @@
-﻿using REviewer.Modules.Utils;
+﻿using REviewer.Modules.RE.Json;
+using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
@@ -35,6 +36,20 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                if (SELECTED_GAME == 2)
+                {
+                    Console.WriteLine(Character.Value);
+                    if (Character?.Value == 0x08)
+                    {
+                        InitInventory(_bio, true);
+                        InitItemBox(_bio, true);
+                    } else
+                    {
+                        InitInventory(_bio);
+                        InitItemBox(_bio);
+                    }
+                }
+
                 OnPropertyChanged(nameof(CharacterName));
                 OnPropertyChanged(nameof(MaxHealth));
             }
@@ -58,6 +73,42 @@ namespace REviewer.Modules.RE.Common
 
                 var length = ((Dictionary<byte, string>)_character.Database).Count - 1;
                 return ((Dictionary<byte, List<int>>)_health.Database)[(byte)(_character.Value & length)][0].ToString();
+            }
+        }
+
+        private VariableData? _carlosInventorySlotSelected;
+
+        public VariableData? CarlosInventorySlotSelected
+        {
+            get { return _carlosInventorySlotSelected; }
+            set
+            {
+                if (_carlosInventorySlotSelected != value)
+                {
+                    if (_carlosInventorySlotSelected != null)
+                    {
+                        _carlosInventorySlotSelected.PropertyChanged -= CarlosInventorySlotSelected_PropertyChanged;
+                    }
+
+                    _carlosInventorySlotSelected = value;
+
+                    if (_carlosInventorySlotSelected != null)
+                    {
+                        _carlosInventorySlotSelected.PropertyChanged += CarlosInventorySlotSelected_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(CarlosInventorySlotSelected));
+                }
+            }
+        }
+
+        private async void CarlosInventorySlotSelected_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                // Wait 50 ms to avoid flickering
+                await Task.Delay(50);
+                OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
 
@@ -111,7 +162,7 @@ namespace REviewer.Modules.RE.Common
                         var selected = InventorySlotSelected.Value - 1;
                         id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
                     }
-                    else if (SELECTED_GAME == 1)
+                    else if (SELECTED_GAME == 1 || SELECTED_GAME == 2)
                     {
                         var selected = InventorySlotSelected.Value;
                         selected = selected < 0 ? 0 : selected;
@@ -396,6 +447,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     state = (_characterHealthState?.Value != 0x15);
                 }
+                else if (SELECTED_GAME == 2)
+                {
+                    state = (_characterHealthState?.Value != 0x04);
+                }
 
                 if (state)
                 {
@@ -477,6 +532,10 @@ namespace REviewer.Modules.RE.Common
             else if (SELECTED_GAME == 1)
             {
                 state = (status == 0x15);
+            }
+            else if (SELECTED_GAME == 2)
+            {
+                state = (status == 0x04);
             }
 
             if (state)

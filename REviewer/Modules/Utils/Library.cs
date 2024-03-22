@@ -19,6 +19,7 @@ namespace REviewer.Modules.Utils
         {
             {"Bio", "RE1"},
             {"Bio2 1.10", "RE2"},
+            { "BIOHAZARD(R) 3 PC", "RE3" }
         };
 
         public static string GetGameName(string processName)

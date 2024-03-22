@@ -26,6 +26,8 @@ namespace REviewer.Modules.RE.Common
             { "biohazard", 0x05 },
             { "bio2 1.10", 0x07 },
             { "Bio2 1.10", 0x07 },
+            { "BIOHAZARD(R) 3 PC", 0x05 },
+            { "biohazard(r) 3 pc", 0x05 },
         };
 
         private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
@@ -34,6 +36,7 @@ namespace REviewer.Modules.RE.Common
         public int SELECTED_GAME;
         public int SaveID;
         public int CurrentSaveID;
+        public Bio _bio;
 
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase; 
@@ -122,6 +125,9 @@ namespace REviewer.Modules.RE.Common
                 { "biohazard", "RE1" },
                 { "Bio2 1.10", "RE2" },
                 { "bio2 1.10", "RE2" },
+                { "BIOHAZARD(R) 3 PC", "RE3" },
+                { "biohazard(r) 3 pc", "RE3" },
+                { "bio3", "RE3" },
                 { "Bio3", "RE3" }
             };
 
@@ -170,6 +176,9 @@ namespace REviewer.Modules.RE.Common
             jsonObject["LastItemFound"] = LastItemFound?.Value;
             jsonObject["InventoryCapacityUsed"] = InventoryCapacityUsed?.Value;
             jsonObject["CharacterHealthState"] = CharacterHealthState?.Value;
+
+            jsonObject["CarlosInventorySlotSelected"] = CarlosInventorySlotSelected?.Value;
+
             jsonObject["Health"] = Health?.Value;
             jsonObject["LockPick"] = LockPick?.Value;
             jsonObject["PositionX"] = PositionX?.Value;
@@ -306,6 +315,7 @@ namespace REviewer.Modules.RE.Common
         public RootObject(Bio bio, ItemIDs ids)
         {
             if (bio.Player.Character.Database == null) throw new ArgumentNullException(nameof(bio));
+            _bio = bio;
 
             IDatabase = ids;
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
@@ -336,6 +346,9 @@ namespace REviewer.Modules.RE.Common
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
+
+            // Carlos RE3
+            CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
 
             // Position
             PositionX = GetVariableData("PositionX", bio.Position.X);
@@ -373,6 +386,10 @@ namespace REviewer.Modules.RE.Common
             else if (processName == "bio2 1.10")
             {
                 SELECTED_GAME = 1;
+            }
+            else if (processName == "biohazard(r) 3 pc")
+            {
+                SELECTED_GAME = 2;
             }
 
             VariableData GetVariableData(String key, dynamic value)

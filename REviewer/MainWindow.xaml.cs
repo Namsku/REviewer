@@ -97,8 +97,8 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        private static readonly List<string> _gameList = ["Bio", "bio2 1.10"];
-        private static readonly List<string> _gameSelection = ["RE1", "RE2"];
+        private static readonly List<string> _gameList = ["Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC"];
+        private static readonly List<string> _gameSelection = ["RE1", "RE2", "RE3"];
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
 
@@ -427,6 +427,22 @@ namespace REviewer
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
             }
         }
+
+        private void RE3SavePathButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFolderDialog();
+            var result = dialog.ShowDialog();
+
+            Logger.Instance.Debug(result);
+
+            if (result == true)
+            {
+                RE3SavePath.Text = dialog.FolderName;
+                UpdateConfigFile("RE3", dialog.FolderName);
+                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+            }
+        }
+
         private void UpdateConfigFile(string game, string path)
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
@@ -452,7 +468,7 @@ namespace REviewer
                 {
                     if (_residentEvilGame == null || _MVariables == null || _processName == null)
                     {
-                        MessageBox.Show("The game data is not initialized! Please be sure everything is detected!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
@@ -482,7 +498,7 @@ namespace REviewer
             var db = new Dictionary<string, string> {
                 {"Bio", "RE1"},
                 {"bio2 1.10", "RE2"},
-                {"Bio3", "RE3"},
+                {"BIOHAZARD(R) 3 PC", "RE3"},
             };
 
             if (string.IsNullOrEmpty(_processName))
@@ -569,6 +585,11 @@ namespace REviewer
             else if (pname == "bio2 1.10")
             {
                 selectedGame = 1;
+                size = 4;
+            }
+            else if(pname == "biohazard(r) 3 pc")
+            {
+                selectedGame = 2;
                 size = 4;
             }
 
