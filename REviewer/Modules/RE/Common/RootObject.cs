@@ -30,7 +30,7 @@ namespace REviewer.Modules.RE.Common
             { "biohazard(r) 3 pc", 0x05 },
         };
 
-        private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
+        private static readonly string[] ITEM_TYPES = new string[] { "Key Item", "Optionnal Key Item", "Nothing" };
 
         public int MAX_INVENTORY_SIZE;
         public int SELECTED_GAME;
@@ -106,12 +106,12 @@ namespace REviewer.Modules.RE.Common
             List<string> keyRooms = bio.KeyRooms;
 
             // add them into KeyRooms
-            KeyRooms = [];
+            KeyRooms = new Dictionary<string, List<string>> { };
 
             foreach (var room in keyRooms)
             {
                 // Console.WriteLine(room);
-                KeyRooms.Add(room, []);
+                KeyRooms.Add(room, new List<string>());
             }
         }
 
@@ -196,9 +196,9 @@ namespace REviewer.Modules.RE.Common
 
             jsonObject["SegmentsCount"] = SegmentCount;
 
-            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? [0,0,0,0]);
+            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? new List<int>() { 0, 0, 0, 0 });
             jsonObject["KeyItems"] = JArray.FromObject(KeyItems.Select(item => item.State).ToList());
-            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? []);
+            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? new Dictionary<string, List<string>>());
 
             GenerateJsonSave(jsonObject);
         }
@@ -286,7 +286,7 @@ namespace REviewer.Modules.RE.Common
             Resets = Math.Max(Resets, save["Resets"]?.Value<int>() ?? 0);
             Saves = Math.Max(Saves, save["Saves"]?.Value<int>() ?? 0);
 
-            KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? [];
+            KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
 
             for (int i = 0; i < KeyItems?.Count; i++)
             {
@@ -397,7 +397,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (bio.Offsets.ContainsKey(key))
                 {
-                    return new VariableData(Library.HexToNint(bio.Offsets[key]), value);
+                    return new VariableData(Library.HexToInt(bio.Offsets[key]), value);
                 }
                 else
                 {

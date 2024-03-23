@@ -15,8 +15,8 @@ namespace REviewer.Modules.Utils
         public object? Database { get; set; }
         public bool IsUpdated { get; set; } = false;
         public object LockObject { get; set; } = new();
-        public IntPtr Offset { get; set; }
-        public uint Size { get; set; }
+        public int Offset { get; set; }
+        public int Size { get; set; }
         public Brush? Background {
             get { return _background; } 
             set
@@ -88,24 +88,24 @@ namespace REviewer.Modules.Utils
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public VariableData(IntPtr offset, uint size)
+        public VariableData(int offset, int size)
         {
             Offset = offset;
             Size = size;
             Database = null;
         }
 
-        public VariableData(IntPtr offset, StandardProperty property)
+        public VariableData(int offset, StandardProperty property)
         {
             Offset = offset;
-            Size = (uint)property.Size;
+            Size = (int)property.Size;
             Database = (Dictionary<byte, string>?) property.Database;
         }
 
-        public VariableData(IntPtr offset, AdvancedProperty property)
+        public VariableData(int offset, AdvancedProperty property)
         {
             Offset = offset;
-            Size = (uint)property.Size;
+            Size = (int)property.Size;
             Database = (Dictionary<byte, List<int>>?) Library.ConvertDictionnary(property.Database);
         }
     }

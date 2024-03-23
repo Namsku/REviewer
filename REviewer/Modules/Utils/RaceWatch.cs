@@ -1,21 +1,26 @@
 
 namespace REviewer.Modules.Utils
 {
-    public class RaceWatch(nint startTime)
+    public class RaceWatch
     {
-        private nint _offset = startTime;
+        private int _offset;
 
-        public void StartFrom(nint startTime)
+        public RaceWatch(int startTime)
         {
             _offset = startTime;
         }
 
-        internal void Reset()
+        public void StartFrom(int startTime)
+        {
+            _offset = startTime;
+        }
+
+        public void Reset()
         {
             _offset = 0;
         }
 
-        internal nint GetOffset()
+        public int GetOffset()
         {
             return _offset;
         }

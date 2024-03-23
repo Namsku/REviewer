@@ -101,7 +101,7 @@ namespace REviewer.Modules.Utils
             // Get the base address of a module in the process
             var process = Process.GetProcessById((int)processHandle);
             var module = process.Modules.Cast<ProcessModule>().FirstOrDefault(module => module.ModuleName == moduleName);
-            return module?.BaseAddress ?? 0;
+            return module?.BaseAddress ?? (IntPtr) 0;
         }
 
         public static Process? GetProcessByName(string processName)
@@ -188,7 +188,7 @@ namespace REviewer.Modules.Utils
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
-    public static nint HexToNint(string hex)
+    public static int HexToInt(string hex)
         {
             if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
@@ -196,7 +196,7 @@ namespace REviewer.Modules.Utils
             }
 
             long value = Convert.ToInt64(hex, 16);
-            return (nint)value;
+            return (int)value;
         }
         
         public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));

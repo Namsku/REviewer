@@ -325,7 +325,7 @@ namespace REviewer.Modules.RE.Common
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }  
 
-        public EnnemyTracking(nint v, StandardProperty property, int selectedGame)
+        public EnnemyTracking(int v, StandardProperty property, int selectedGame)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();

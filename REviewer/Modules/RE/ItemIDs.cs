@@ -10,10 +10,10 @@ namespace REviewer.Modules.RE
         {
         }
 
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-        public required string Color { get; set; }
-        public required string Img { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Color { get; set; }
+        public string Img { get; set; }
     }
 
     public class ItemIDs
@@ -37,16 +37,16 @@ namespace REviewer.Modules.RE
 
         public class Item
         {
-            public required string Name { get; set; }
-            public required string Type { get; set; }
+            public string Name { get; set; }
+            public string Type { get; set; }
             public string? Color { get; set; }
-            public required string Img { get; set; }
+            public string Img { get; set; }
         }
 
         public class BioHazardItems
         {
-            public required Dictionary<string, Item> ItemIDs { get; set; }
-            public required Dictionary<string, int> DupItems { get; set; }
+            public Dictionary<string, Item> ItemIDs { get; set; }
+            public Dictionary<string, int> DupItems { get; set; }
         }
 
         public ItemIDs(string selectedProcessName)

@@ -29,8 +29,8 @@ namespace REviewer.Modules.RE.Common
         {
             SegmentCount = 0;
             PreviousTimerValue = 0;
-            IGTSegments = [0, 0, 0, 0];
-            IGTSHumanFormat = ["00:00:00.00", "00:00:00.00", "00:00:00.00", "00:00:00.00"];
+            IGTSegments = new List<int>() { 0, 0, 0, 0 };
+            IGTSHumanFormat = new List<string>() { "00:00:00.00", "00:00:00.00", "00:00:00.00", "00:00:00.00" };
 
             OnPropertyChanged(nameof(IGTSHumanFormat));
         }

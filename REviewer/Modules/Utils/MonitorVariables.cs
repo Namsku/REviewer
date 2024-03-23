@@ -10,7 +10,7 @@ using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.Utils
 {
-    public class MonitorVariables(nint processHandle, string processName)
+    public class MonitorVariables
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(nint processHandle, nint baseAddress, byte[] buffer, uint size, out int bytesWritten);
@@ -18,8 +18,8 @@ namespace REviewer.Modules.Utils
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(nint processHandle, nint baseAddress, [Out] byte[] buffer, uint size, out int bytesRead);
 
-        private nint _processHandle = processHandle;
-        private readonly string _processName = processName;
+        private nint _processHandle;
+        private readonly string _processName;
         private readonly object _processHandleLock = new();
 
         private const int BYTE_SIZE = 1;
@@ -37,6 +37,12 @@ namespace REviewer.Modules.Utils
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
         private List<string> _debug = new();
+
+        public MonitorVariables(int processHandle, string processName)
+        {
+            _processHandle = processHandle;
+            _processName = processName;
+        }
 
         private bool CanMonitorObject(object obj)
         {
@@ -236,7 +242,7 @@ namespace REviewer.Modules.Utils
             byte[] buffer = variableData.Size switch
             {
                 INT_SIZE => BitConverter.GetBytes(newValue),
-                BYTE_SIZE => [(byte)newValue],
+                BYTE_SIZE => new byte[] { (byte)newValue },
                 _ => throw new InvalidOperationException("Invalid variable size"),
             };
 

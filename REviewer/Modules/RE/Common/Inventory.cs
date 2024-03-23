@@ -46,20 +46,20 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 if (_inventoryCapacity == null) return;
-                int[] _inventoryCapacityArray = [];
+                int[] _inventoryCapacityArray = new int[] { };
                 int capacity = _inventoryCapacity.Value;
-                
-                if (SELECTED_GAME == 0) { 
+
+                if (SELECTED_GAME == 0) {
                     capacity = capacity & 3;
-                    _inventoryCapacityArray = [6, 8, 8, 6];
-                } 
+                    _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
+                }
                 else
                 {
                     capacity = 0;
-                    _inventoryCapacityArray = [11, ];
+                    _inventoryCapacityArray = new int[] { 11, };
                 }
                 
-                if (ChrisInventoryHotfix) _inventoryCapacityArray = [8, 8, 8, 8];
+                if (ChrisInventoryHotfix) _inventoryCapacityArray = new int[] { 8, 8, 8, 8 };
 
                 if (_inventoryCapacitySize == _inventoryCapacityArray[capacity])
                 {
@@ -111,14 +111,14 @@ namespace REviewer.Modules.RE.Common
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                InventoryCapacity = new VariableData(Library.HexToNint(bio.Offsets["Capacity"]), 4);
+                InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
                 InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
                 var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
                 var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
 
                 Console.WriteLine($"{inventory_name_start} - {inventory_name_end}");
                 
-                Inventory = Slot.GenerateSlots(Library.HexToNint(bio.Offsets[inventory_name_start]), Library.HexToNint(bio.Offsets[inventory_name_end]));
+                Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
                 InventoryImages = new ObservableCollection<ImageItem>();
                 InventoryImages.Clear();
 
@@ -205,12 +205,12 @@ namespace REviewer.Modules.RE.Common
             if (index < InventoryCapacitySize)
             {
                 string pourcentage_ammo = "";
-                int[] ammo_prct_array = [];
+                int[] ammo_prct_array = new int[] { };
 
                 if (SELECTED_GAME == 1)
-                    ammo_prct_array = [14, 15, 16, 23, 27, 28];
+                    ammo_prct_array = new int[] { 14, 15, 16, 23, 27, 28 };
                 else if (SELECTED_GAME == 2)
-                    ammo_prct_array = [14, 15];
+                    ammo_prct_array = new int[] { 14, 15 };
 
                 if (SELECTED_GAME > 0 && ammo_prct_array.Contains(Inventory[index].Item.Value))
                 {

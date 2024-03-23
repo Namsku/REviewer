@@ -564,7 +564,7 @@ namespace REviewer.Modules.RE.Common
             var state = false;
             var health_table = ((Dictionary<byte, List<int>>)Health.Database)[(byte)(Character.Value & size)];
 
-            Brush[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
+            Brush[] colors = new Brush[] { CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White };
 
             if (SELECTED_GAME == 0)
             {

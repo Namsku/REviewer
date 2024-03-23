@@ -44,7 +44,7 @@ namespace REviewer.Modules.RE.Common
 
             if (ItemBox == null)
             {
-                ItemBox = Slot.GenerateSlots(Library.HexToNint(bio.Offsets["ItemBoxStart"]), Library.HexToNint(bio.Offsets["ItemBoxEnd"]));
+                ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets["ItemBoxStart"]), Library.HexToInt(bio.Offsets["ItemBoxEnd"]));
             }
 
             ItemboxImages = new ObservableCollection<ImageItem>();

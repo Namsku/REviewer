@@ -97,8 +97,8 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        private static readonly List<string> _gameList = ["Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC"];
-        private static readonly List<string> _gameSelection = ["RE1", "RE2", "RE3"];
+        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC" };
+        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
 
@@ -317,7 +317,7 @@ namespace REviewer
 
             if (_MVariables == null)
             {
-                _MVariables = new MonitorVariables(_process.Handle, _process.ProcessName);
+                _MVariables = new MonitorVariables((int) _process.Handle, _process.ProcessName);
             }
             else
             {
@@ -326,7 +326,7 @@ namespace REviewer
 
             if (_MVEnemies == null)
             {
-                _MVEnemies = new MonitorVariables(_process.Handle, _process.ProcessName);
+                _MVEnemies = new MonitorVariables((int) _process.Handle, _process.ProcessName);
             }
             else
             {
@@ -608,7 +608,7 @@ namespace REviewer
                 return;
             }
 
-            var offset = Library.HexToNint(bio.Offsets["EnnemyInfos"]);
+            var offset = Library.HexToInt(bio.Offsets["EnnemyInfos"]);
             var property = bio.Ennemy.EnnemyInfos;
 
             if (_tracking == null)
