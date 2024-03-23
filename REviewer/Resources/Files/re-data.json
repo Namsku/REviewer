@@ -1501,7 +1501,7 @@
             "0": {
                 "Name": "Nothing",
                 "Type": "Nothing",
-                "Img": "resources/re3/nothing.png"
+                "Img": "resources/re1/nothing.png"
             },
             "1": {
                 "Name": "CombatKnife",
@@ -2310,127 +2310,131 @@
             "30B",
             "20C"
         ],
-        "Offsets": {
-            "InventoryStart": "0x0A67584",
-            "InventoryEnd": "0x0A675AB",
-            "ItemBoxStart": "0x0A675AC",
-            "ItemBoxEnd": "0xA676AC",
-            "InventorySlotSelected": "0x0A676AC",
+      "Offsets": {
+        "InventoryStart": "0x0A67584",
+        "InventoryEnd": "0x0A675AB",
+        "ItemBoxStart": "0x0A675AC",
+        "ItemBoxEnd": "0xA676AC",
+        "InventorySlotSelected": "0x0A676AC",
 
-            "CarlosInventoryStart": "0x0A676C4",
-            "CarlosInventoryEnd": "0x0A7704",
-            "CarlosItemBoxStart": "0x0A676E4",
-            "CarlosItemBoxEnd": "0xA677E4",
-            "CarlosInventorySlotSelected": "0x0A677EC",
+        "CarlosInventoryStart": "0x0A676C4",
+        "CarlosInventoryEnd": "0x0A676E3",
+        "CarlosItemBoxStart": "0x0A676E4",
+        "CarlosItemBoxEnd": "0xA677E4",
+        "CarlosInventorySlotSelected": "0x0A677EC",
+        "CarlosLastItemFound": "0x0A5C86B",
 
-            "Capacity": "0x0A676AE",
-            "Character": "0x0A673D6",
-            "Stage": "0x0A673C6",
-            "Room": "0x0A673C8",
-            "Cutscene": "0x0A673CA",
-            "LastRoom": "0x0A673CC",
-            "LastCutscene": "0x0A673CE",
-            "LastItemFound": "0x000000",
-            "CharacterHealthState": "0x0A620E7",
-            "GameState": "0xA61CA0",
-            "GameTimer": "0x000000",
-            "GameFrame": "0x000000",
-            "PositionX": "0xA62048",
-            "PositionY": "0xA6204C",
-            "PositionZ": "0xA62050",
-            "CharacterHealth": "0x0A620E0",
-            "EnnemyInfos": "0x0A621E8",
-            "PartnerPointer": "0x0A62288"
+        "Capacity": "0x0A676AE",
+        "Character": "0x0A673D6",
+        "Stage": "0x0A673C6",
+        "Room": "0x0A673C8",
+        "Cutscene": "0x0A673CA",
+        "LastRoom": "0x0A673CC",
+        "LastCutscene": "0x0A673CE",
+        "LastItemFound": "0x0A5C86B",
+        "CharacterHealthState": "0x0A620E7",
+        "GameState": "0xA61CA0",
+        "GameTimer": "0x000000",
+        "GameFrame": "0x000000",
+        "PositionX": "0xA62048",
+        "PositionY": "0xA6204C",
+        "PositionZ": "0xA62050",
+        "CharacterHealth": "0x0A620E0",
+        "EnnemyInfos": "0x0A621E8",
+        "PartnerPointer": "0x0A62288"
+      },
+      "Player": {
+        "Character": {
+          "Size": "1",
+          "Database": {
+            "0": "Jill",
+            "1": "Jill",
+            "2": "Jill",
+            "3": "Jill",
+            "4": "Jill",
+            "5": "Jill",
+            "6": "Jill",
+            "7": "Jill",
+            "8": "Carlos",
+            "9": "Mikhail",
+            "10": "Nicholai",
+            "11": "Brad",
+            "12": "Dario",
+            "13": "???",
+            "14": "Dario",
+            "15": "Tofu"
+          }
         },
-        "Player": {
-            "Character": {
-                "Size": "1",
-                "Database": {
-                    "0": "Jill",
-                    "1": "Jill",
-                    "2": "Jill",
-                    "3": "Jill",
-                    "4": "Jill",
-                    "5": "Jill",
-                    "6": "Jill",
-                    "7": "Jill",
-                    "8": "Carlos",
-                    "9": "Mikhail",
-                    "10": "Nicholai",
-                    "11": "Brad",
-                    "12": "Dario",
-                    "13": "???",
-                    "14": "Dario",
-                    "15": "Tofu"
-                }
-            },
-            "Health": {
-                "Size": "1",
-                "Database": {
-                    "0": [ "200", "101", "41", "21", "0" ],
-                    "1": [ "200", "101", "41", "21", "0" ],
-                    "2": [ "200", "101", "41", "21", "0" ],
-                    "3": [ "200", "101", "41", "21", "0" ],
-                    "4": [ "200", "101", "41", "21", "0" ],
-                    "5": [ "200", "101", "41", "21", "0" ],
-                    "6": [ "200", "101", "41", "21", "0" ],
-                    "7": [ "200", "101", "41", "21", "0" ],
-                    "8": [ "200", "101", "41", "21", "0" ],
-                    "9": [ "200", "101", "41", "21", "0" ],
-                    "10": [ "200", "101", "41", "21", "0" ],
-                    "11": [ "200", "101", "41", "21", "0" ],
-                    "12": [ "200", "101", "41", "21", "0" ],
-                    "13": [ "200", "101", "41", "21", "0" ],
-                    "14": [ "200", "101", "41", "21", "0" ],
-                    "15": [ "200", "101", "41", "21", "0" ]
-                }
-            },
-            "CharacterHealthState": {
-                "Size": "1"
-            },
-            "LastItemFound": {
-                "Size": "1"
-            },
-            "LockPick": {
-                "Size": "1"
-            },
-            "InventoryCapacityUsed": {
-                "Size": "1"
-            },
-            "CarlosInventorySlotSelected": {
-                "Size": "1"
-            },
-            "InventorySlotSelected": {
-                "Size": "1"
-            },
-            "Stage": {
-                "Size": "1"
-            },
-            "Room": {
-                "Size": "1"
-            },
-            "LastRoom": {
-                "Size": "1"
-            },
-            "Cutscene": {
-                "Size": "1"
-            },
-            "Unk001": {
-                "Size": "1"
-            },
-            "Event": {
-                "Size": "1",
-                "Database": {
-                    "0": "Nothing",
-                    "1": "Refused Event",
-                    "128": "Event #1 - Yes",
-                    "129": "Event #2 - No"
-                }
-            },
-            "PartnerPointer": {
-                "Size": "4"
-            }
+        "Health": {
+          "Size": "1",
+          "Database": {
+            "0": [ "200", "101", "41", "21", "0" ],
+            "1": [ "200", "101", "41", "21", "0" ],
+            "2": [ "200", "101", "41", "21", "0" ],
+            "3": [ "200", "101", "41", "21", "0" ],
+            "4": [ "200", "101", "41", "21", "0" ],
+            "5": [ "200", "101", "41", "21", "0" ],
+            "6": [ "200", "101", "41", "21", "0" ],
+            "7": [ "200", "101", "41", "21", "0" ],
+            "8": [ "200", "101", "41", "21", "0" ],
+            "9": [ "200", "101", "41", "21", "0" ],
+            "10": [ "200", "101", "41", "21", "0" ],
+            "11": [ "200", "101", "41", "21", "0" ],
+            "12": [ "200", "101", "41", "21", "0" ],
+            "13": [ "200", "101", "41", "21", "0" ],
+            "14": [ "200", "101", "41", "21", "0" ],
+            "15": [ "200", "101", "41", "21", "0" ]
+          }
         },
+        "CharacterHealthState": {
+          "Size": "1"
+        },
+        "LastItemFound": {
+          "Size": "1"
+        },
+        "CarlosLastItemFound": {
+          "Size": "1"
+        },
+        "LockPick": {
+          "Size": "1"
+        },
+        "InventoryCapacityUsed": {
+          "Size": "1"
+        },
+        "CarlosInventorySlotSelected": {
+          "Size": "1"
+        },
+        "InventorySlotSelected": {
+          "Size": "1"
+        },
+        "Stage": {
+          "Size": "1"
+        },
+        "Room": {
+          "Size": "1"
+        },
+        "LastRoom": {
+          "Size": "1"
+        },
+        "Cutscene": {
+          "Size": "1"
+        },
+        "Unk001": {
+          "Size": "1"
+        },
+        "Event": {
+          "Size": "1",
+          "Database": {
+            "0": "Nothing",
+            "1": "Refused Event",
+            "128": "Event #1 - Yes",
+            "129": "Event #2 - No"
+          }
+        },
+        "PartnerPointer": {
+          "Size": "4"
+        }
+      },
         "Game": {
             "State": {
                 "Size": "4"

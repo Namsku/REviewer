@@ -81,7 +81,8 @@ namespace REviewer.Modules.RE.Common
         public static List<Slot> GenerateSlots(nint startOffset, nint endOffset)
         {
             List<Slot> slots = [];
-            int inc = ((endOffset - startOffset) / 2) > 16 ? 4 : 2;
+            int inc = ((endOffset - startOffset) / 2) > 10 ? 4 : 2;
+            Console.WriteLine(inc);
 
             for (nint i = startOffset; i < endOffset; i += inc)
             {

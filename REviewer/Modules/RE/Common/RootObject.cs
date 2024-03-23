@@ -145,7 +145,7 @@ namespace REviewer.Modules.RE.Common
 
             var processName = IDatabase.GetProcessName();
             Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");  // replace with your directory
-            Console.WriteLine(Watcher.Path);
+            // Console.WriteLine(Watcher.Path);
             // Watcher.Filter = "*.dat";  // watch for .dat files
 
             // Add event handlers.
@@ -349,6 +349,7 @@ namespace REviewer.Modules.RE.Common
 
             // Carlos RE3
             CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
+            CarlosLastItemFound = GetVariableData("CarlosLastItemSeen", bio.Player.CarlosLastItemFound);
 
             // Position
             PositionX = GetVariableData("PositionX", bio.Position.X);

@@ -38,12 +38,13 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == 2)
                 {
-                    Console.WriteLine(Character.Value);
+                    // Console.WriteLine(Character.Value);
                     if (Character?.Value == 0x08)
                     {
                         InitInventory(_bio, true);
                         InitItemBox(_bio, true);
-                    } else
+                    } 
+                    else
                     {
                         InitInventory(_bio);
                         InitItemBox(_bio);
@@ -108,6 +109,8 @@ namespace REviewer.Modules.RE.Common
             {
                 // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
+                Console.WriteLine(CarlosInventorySlotSelected.Value);
+                InventorySlotSelected.Value = CarlosInventorySlotSelected.Value;
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
@@ -164,9 +167,10 @@ namespace REviewer.Modules.RE.Common
                     }
                     else if (SELECTED_GAME == 1 || SELECTED_GAME == 2)
                     {
-                        var selected = InventorySlotSelected.Value;
+                        var vvv = Character.Value == 0x8 ? CarlosInventorySlotSelected.Value : InventorySlotSelected.Value;
+                        var selected = vvv;
                         selected = selected < 0 ? 0 : selected;
-                        id = (byte)Inventory[selected].Item.Value;
+                        id = selected == 0xFF ? (byte) 0 : (byte)Inventory[selected].Item.Value;
                     }
                     return IDatabase.Items[id].Img;
                 }
@@ -327,6 +331,40 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+
+        private VariableData? _carlosLastItemFound;
+        public VariableData? CarlosLastItemFound
+        {
+            get { return _carlosLastItemFound; }
+            set
+            {
+                if (_carlosLastItemFound != value)
+                {
+                    if (_carlosLastItemFound != null)
+                    {
+                        _carlosLastItemFound.PropertyChanged -= CarlosLastItemFound_PropertyChanged;
+                    }
+
+                    _carlosLastItemFound = value;
+
+                    if (_carlosLastItemFound != null)
+                    {
+                        _carlosLastItemFound.PropertyChanged += CarlosLastItemFound_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(CarlosLastItemFound));
+                }
+            }
+        }
+
+        private void CarlosLastItemFound_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                OnPropertyChanged(nameof(LastItemFoundImage));
+            }
+        }
+
         private VariableData? _lastItemFound;
         public VariableData? LastItemFound
         {
@@ -366,10 +404,11 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_lastItemFound != null && IDatabase != null)
                 {
-                    byte value = (byte) (LastItemFound?.Value ?? 255);
+                    var vvv = Character.Value == 8 ? CarlosLastItemFound?.Value : LastItemFound?.Value;
+                    byte value = (byte)(LastItemFound?.Value ?? 255);
                     var state = GameState?.Value & 0xF0000000;
 
-                    
+
                     if (LastItemFound?.Value == 0x31)
                     {
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
@@ -377,8 +416,8 @@ namespace REviewer.Modules.RE.Common
 
                     if (IDatabase.Items[value].Type == "Key Item") // && FullRoomName == null)
                     {
-                        var sss = (((int) Stage.Value % 5) + 1).ToString();
-                        var rrr = ((int) Room.Value).ToString("X2");
+                        var sss = (((int)Stage.Value % 5) + 1).ToString();
+                        var rrr = ((int)Room.Value).ToString("X2");
                         FullRoomName = sss + rrr;
 
                         if ((state != 0x8000000 || state != 0x9000000) && value != 61)
@@ -439,6 +478,8 @@ namespace REviewer.Modules.RE.Common
                 if (Health == null || CharacterHealthState == null) return;
                 bool state = false;
 
+                // Console.WriteLine(_characterHealthState.Value);
+
                 if(SELECTED_GAME == 0)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
@@ -449,7 +490,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 2)
                 {
-                    state = (_characterHealthState?.Value != 0x04);
+                    state = (_characterHealthState?.Value == 0x04);
                 }
 
                 if (state)
@@ -535,7 +576,7 @@ namespace REviewer.Modules.RE.Common
             }
             else if (SELECTED_GAME == 2)
             {
-                state = (status == 0x04);
+                state = (status != 0x04);
             }
 
             if (state)

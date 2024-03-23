@@ -107,46 +107,43 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(InventoryImages));
             }
         }
-        public void InitInventory(Bio bio, bool carlos=false)
+        public void InitInventory(Bio bio, bool carlos = false)
         {
-            InventoryCapacity = new VariableData(Library.HexToNint(bio.Offsets["Capacity"]), 4);
-            InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
-            var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
-            var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
-
-            if (Inventory == null)
+            Application.Current.Dispatcher.Invoke(() =>
             {
+                InventoryCapacity = new VariableData(Library.HexToNint(bio.Offsets["Capacity"]), 4);
+                InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
+                var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
+                var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
+
+                Console.WriteLine($"{inventory_name_start} - {inventory_name_end}");
+                
                 Inventory = Slot.GenerateSlots(Library.HexToNint(bio.Offsets[inventory_name_start]), Library.HexToNint(bio.Offsets[inventory_name_end]));
-            }
-
-            if (InventoryImages == null)
-            {
                 InventoryImages = new ObservableCollection<ImageItem>();
-            }
+                InventoryImages.Clear();
 
-            InventoryImages.Clear();
-
-            for (int i = 0; i < Inventory.Count; i++)
-            {
-                int index = i; 
-
-                InventoryImages.Add(new ImageItem
+                for (int i = 0; i < Inventory.Count; i++)
                 {
-                    Source = IDatabase.Items[(byte)Inventory[i].Item.Value].Img,
-                    Width = 92,
-                    Height = 92,
-                    Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
-                    Text = Inventory[i].Quantity?.Value.ToString(),
-                    TextVisibility = Visibility.Hidden,
-                });
+                    int index = i;
 
-                // Subscribe to the PropertyChanged event of the Item and Quantity properties
-                Inventory[i].Item.PropertyChanged += (sender, e) => UpdateInventoryImage(index);
-                Inventory[i].Quantity.PropertyChanged += (sender, e) => UpdateTextInventoryImage(index);
+                    InventoryImages.Add(new ImageItem
+                    {
+                        Source = IDatabase.Items[(byte)Inventory[i].Item.Value].Img,
+                        Width = 92,
+                        Height = 92,
+                        Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
+                        Text = Inventory[i].Quantity?.Value.ToString(),
+                        TextVisibility = Visibility.Hidden,
+                    });
 
-                if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged += (sender, e) => UpdateType(index);
+                    // Subscribe to the PropertyChanged event of the Item and Quantity properties
+                    Inventory[i].Item.PropertyChanged += (sender, e) => UpdateInventoryImage(index);
+                    Inventory[i].Quantity.PropertyChanged += (sender, e) => UpdateTextInventoryImage(index);
 
-            }
+                    if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged += (sender, e) => UpdateType(index);
+                }
+            });
+
         }
 
         private void UpdateInventoryCapacity()
@@ -157,7 +154,7 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateType(int index)
         {
-            Console.WriteLine($"UpdateType -> {Inventory[index].Type.Value}");
+            // Console.WriteLine($"UpdateType -> {Inventory[index].Type.Value}");
             if(Inventory[index].Type.Value == 2)
             {
                 InventoryImages[index].Source = "resources/re2/reserved.png";
@@ -190,9 +187,8 @@ namespace REviewer.Modules.RE.Common
                     }
                     else if (SELECTED_GAME == 2)
                     {
-                        isValid = state == 0x08000000;
+                        isValid = GameState.Value == 0x09000000;
                     }
-
 
                     if (isValid)
                     {

@@ -312,7 +312,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SelectedGame == 2)
                 {
-                    Console.WriteLine($"Enemy ID -> {EnemyID.Value}");
+                    // Console.WriteLine($"Enemy ID -> {EnemyID.Value}");
                     Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     OnPropertyChanged(nameof(Enemy));
                 }
@@ -407,11 +407,11 @@ namespace REviewer.Modules.RE.Common
             int position_hp = SelectedGame == 1 ? 0x156 : 0xCC;
             int position_id = SelectedGame == 1 ? 0x8 : 0x4a;
 
-            Console.WriteLine($"{position_hp} - {position_id} - {Library.ToHexString(_enemyState.Value)}");
+            // Console.WriteLine($"{position_hp} - {position_id} - {Library.ToHexString(_enemyState.Value)}");
 
             if (_enemyState.Value == 0x98E544 || _enemyState.Value == 0x0A62290 )
             {
-                Console.WriteLine($"Purging");
+                // Console.WriteLine($"Purging");
                 EnemyHP = null;
                 EnemyID = null;
                 EnemyMaxHP = 0;
@@ -420,7 +420,7 @@ namespace REviewer.Modules.RE.Common
             } 
             else
             {
-                Console.WriteLine($"New Enemy Detected");
+                // Console.WriteLine($"New Enemy Detected");
                 EnemyHP = new VariableData(_enemyState.Value + position_hp, 4);
                 EnemyID = new VariableData(_enemyState.Value + position_id, 1);
                 EnemyMaxHP = 0;
