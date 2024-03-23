@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using NLog;
-using REviewer.Modules.RE.Json;
+﻿using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -26,8 +24,8 @@ namespace REviewer.Modules.RE.Common
             { 11, "Neptune" },
             { 12, "Tyran" },
             { 13, "Yawn 1" },
-            { 14, "Plant42 R" },
-            { 15, "Plant42 V" },
+            { 14, "Plant R" },
+            { 15, "Plant V" },
             { 16, "Sr. Tyran" },
             { 17, "Zombie R" },
             { 18, "Yawn 2" },
@@ -112,6 +110,65 @@ namespace REviewer.Modules.RE.Common
             {90, "Leon"}
         };
 
+        public Dictionary<byte, string> RE3_Bestiary = new Dictionary<byte, string>
+        {
+            { 16, "Zombie" },
+            { 17, "Zombie" },
+            { 18, "Zombie" },
+            { 19, "Zombie G" },
+            { 20, "Zombie R" },
+            { 21, "Zombie G" },
+            { 22, "Zombie G" },
+            { 23, "Zombie G" },
+            { 24, "Zombie N" },
+            { 25, "Zombie 5" },
+            { 26, "Zombie 6" },
+            { 27, "Zombie L" },
+            { 28, "Zombie G" },
+            { 29, "Zombie P" },
+            { 30, "Zombie G" },
+            { 31, "Zombie G" },
+            { 32, "Doggo" },
+            { 33, "Crow" },
+            { 34, "Hunter" },
+            { 35, "Brain S." },
+            { 36, "Hunter G" },
+            { 37, "Spider" },
+            { 38, "Spidy" },
+            { 39, "Brain S." },
+            { 40, "Brain S." },
+            { 44, "UMB.S" },
+            { 45, "Arm" },
+            { 47, "Marvin" },
+            { 48, "G.Digger" },
+            { 50, "S.Worm" },
+            { 52, "Nemmy" },
+            { 53, "Nemmy 2" },
+            { 54, "Nemmy 3" },
+            { 55, "Nemmy 3" },
+            { 56, "Nemmy 4" },
+            { 57, "Nemmy 4" },
+            { 58, "Nem. Up" },
+            { 59, "Jill KO" },
+            { 63, "Helicop." },
+            { 64, "Nemmy KO" },
+            { 80, "Carlos" },
+            { 81, "Mikhail" },
+            { 82, "Nichol." },
+            { 83, "Brad" },
+            { 84, "Dario" },
+            { 85, "Murphy" },
+            { 86, "Tyrel" },
+            { 87, "Marvin" },
+            { 88, "Brad" },
+            { 89, "Dario" },
+            { 90, "P.Girl" },
+            { 91, "Jill" },
+            { 92, "Carlos" },
+            { 95, "Jill" },
+            { 96, "Nichol." },
+            { 103, "Irons" }
+        };
 
         public int SelectedGame;
 
@@ -201,7 +258,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SelectedGame == 1)
+                if (SelectedGame > 0)
                 {
                     // Take only the first 2 bytes
                     Enemy.CurrentHealth = EnemyHP.Value & 0xFFFF;
@@ -209,7 +266,22 @@ namespace REviewer.Modules.RE.Common
                     if (EnemyMaxHP == 0)
                     {
                         Enemy.MaxHealth = Enemy.CurrentHealth;
-                        EnemyMaxHP = Enemy.CurrentHealth;
+
+                        if(SelectedGame == 2)
+                        {
+                            EnemyMaxHP = ((EnemyHP.Value >> 16) & 0xFFFF);
+                        }
+                        else 
+                        { 
+                            var hp = Enemy.CurrentHealth;
+                            if (hp > 60000 || hp < 1250 || ( hp > 20000 && hp < 21000))
+                                EnemyMaxHP = Enemy.CurrentHealth;
+                        }
+                    }
+
+                    if (Enemy.CurrentHealth > 60000 && EnemyMaxHP < 1500)
+                    {
+                        Enemy.Visibility = Visibility.Collapsed;
                     }
 
                     OnPropertyChanged(nameof(Enemy));
@@ -244,6 +316,17 @@ namespace REviewer.Modules.RE.Common
                     Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     OnPropertyChanged(nameof(Enemy));
                 }
+                else if (SelectedGame == 2)
+                {
+                    // Console.WriteLine($"Enemy ID -> {EnemyID.Value}");
+                    Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    if (Enemy.Name == "Unknown")
+                    {
+                        Logger.Instance.Error($"Enemy ID -> {EnemyID.Value} not Found");
+                    }
+
+                    OnPropertyChanged(nameof(Enemy));
+                }
             }
         }
 
@@ -253,7 +336,7 @@ namespace REviewer.Modules.RE.Common
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }  
 
-        public EnnemyTracking(nint v, StandardProperty property, int selectedGame)
+        public EnnemyTracking(int v, StandardProperty property, int selectedGame)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
@@ -302,6 +385,12 @@ namespace REviewer.Modules.RE.Common
             Enemy.Pose = (EnemyState.Value >> 8) & 0xFF;
             Enemy.Id = EnemyState.Value & 0xFF;
 
+            if (Enemy.CurrentHealth == 255 && Enemy.Id < 30)
+            {
+                Enemy.MaxHealth = 0;
+                return;
+            }
+
             if (Enemy.CurrentHealth > Enemy.MaxHealth)
             {
                 Enemy.MaxHealth = Enemy.CurrentHealth;
@@ -324,17 +413,22 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SelectedGame == 0)
                     UpdateEnemy();
-                else if (SelectedGame == 1)
-                    UpdateEnemyRE2();
+                else
+                    UpdateEnemyRE2andRE3();
             }
         }
 
-        private void UpdateEnemyRE2()
+        private void UpdateEnemyRE2andRE3()
         {
             if (_enemyState == null) return;
+            int position_hp = SelectedGame == 1 ? 0x156 : 0xCC;
+            int position_id = SelectedGame == 1 ? 0x8 : 0x4a;
 
-            if (_enemyState.Value == 0x98E544)
+            // Console.WriteLine($"{position_hp} - {position_id} - {Library.ToHexString(_enemyState.Value)}");
+
+            if (_enemyState.Value == 0x98E544 || _enemyState.Value == 0x0A62290 )
             {
+                // Console.WriteLine($"Purging");
                 EnemyHP = null;
                 EnemyID = null;
                 EnemyMaxHP = 0;
@@ -343,8 +437,9 @@ namespace REviewer.Modules.RE.Common
             } 
             else
             {
-                EnemyHP = new VariableData(_enemyState.Value + 0x156, 4);
-                EnemyID = new VariableData(_enemyState.Value + 0x8, 1);
+                // Console.WriteLine($"New Enemy Detected");
+                EnemyHP = new VariableData(_enemyState.Value + position_hp, 4);
+                EnemyID = new VariableData(_enemyState.Value + position_id, 1);
                 EnemyMaxHP = 0;
 
                 Enemy.Visibility = Visibility.Visible;

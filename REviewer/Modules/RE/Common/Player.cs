@@ -1,4 +1,5 @@
-﻿using REviewer.Modules.Utils;
+﻿using REviewer.Modules.RE.Json;
+using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
@@ -35,6 +36,21 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                if (SELECTED_GAME == 2)
+                {
+                    // Console.WriteLine(Character.Value);
+                    if (Character?.Value == 0x08)
+                    {
+                        InitInventory(_bio, true);
+                        InitItemBox(_bio, true);
+                    } 
+                    else
+                    {
+                        InitInventory(_bio);
+                        InitItemBox(_bio);
+                    }
+                }
+
                 OnPropertyChanged(nameof(CharacterName));
                 OnPropertyChanged(nameof(MaxHealth));
             }
@@ -58,6 +74,44 @@ namespace REviewer.Modules.RE.Common
 
                 var length = ((Dictionary<byte, string>)_character.Database).Count - 1;
                 return ((Dictionary<byte, List<int>>)_health.Database)[(byte)(_character.Value & length)][0].ToString();
+            }
+        }
+
+        private VariableData? _carlosInventorySlotSelected;
+
+        public VariableData? CarlosInventorySlotSelected
+        {
+            get { return _carlosInventorySlotSelected; }
+            set
+            {
+                if (_carlosInventorySlotSelected != value)
+                {
+                    if (_carlosInventorySlotSelected != null)
+                    {
+                        _carlosInventorySlotSelected.PropertyChanged -= CarlosInventorySlotSelected_PropertyChanged;
+                    }
+
+                    _carlosInventorySlotSelected = value;
+
+                    if (_carlosInventorySlotSelected != null)
+                    {
+                        _carlosInventorySlotSelected.PropertyChanged += CarlosInventorySlotSelected_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(CarlosInventorySlotSelected));
+                }
+            }
+        }
+
+        private async void CarlosInventorySlotSelected_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                // Wait 50 ms to avoid flickering
+                await Task.Delay(50);
+                Console.WriteLine(CarlosInventorySlotSelected.Value);
+                InventorySlotSelected.Value = CarlosInventorySlotSelected.Value;
+                OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
 
@@ -111,11 +165,12 @@ namespace REviewer.Modules.RE.Common
                         var selected = InventorySlotSelected.Value - 1;
                         id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
                     }
-                    else if (SELECTED_GAME == 1)
+                    else if (SELECTED_GAME == 1 || SELECTED_GAME == 2)
                     {
-                        var selected = InventorySlotSelected.Value;
+                        var vvv = Character.Value == 0x8 ? CarlosInventorySlotSelected.Value : InventorySlotSelected.Value;
+                        var selected = vvv;
                         selected = selected < 0 ? 0 : selected;
-                        id = (byte)Inventory[selected].Item.Value;
+                        id = selected == 0xFF ? (byte) 0 : (byte)Inventory[selected].Item.Value;
                     }
                     return IDatabase.Items[id].Img;
                 }
@@ -276,6 +331,40 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+
+        private VariableData? _carlosLastItemFound;
+        public VariableData? CarlosLastItemFound
+        {
+            get { return _carlosLastItemFound; }
+            set
+            {
+                if (_carlosLastItemFound != value)
+                {
+                    if (_carlosLastItemFound != null)
+                    {
+                        _carlosLastItemFound.PropertyChanged -= CarlosLastItemFound_PropertyChanged;
+                    }
+
+                    _carlosLastItemFound = value;
+
+                    if (_carlosLastItemFound != null)
+                    {
+                        _carlosLastItemFound.PropertyChanged += CarlosLastItemFound_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(CarlosLastItemFound));
+                }
+            }
+        }
+
+        private void CarlosLastItemFound_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                OnPropertyChanged(nameof(LastItemFoundImage));
+            }
+        }
+
         private VariableData? _lastItemFound;
         public VariableData? LastItemFound
         {
@@ -315,10 +404,11 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_lastItemFound != null && IDatabase != null)
                 {
-                    byte value = (byte) (LastItemFound?.Value ?? 255);
+                    var vvv = Character.Value == 8 ? CarlosLastItemFound?.Value : LastItemFound?.Value;
+                    byte value = (byte)(LastItemFound?.Value ?? 255);
                     var state = GameState?.Value & 0xF0000000;
 
-                    
+
                     if (LastItemFound?.Value == 0x31)
                     {
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
@@ -326,8 +416,8 @@ namespace REviewer.Modules.RE.Common
 
                     if (IDatabase.Items[value].Type == "Key Item") // && FullRoomName == null)
                     {
-                        var sss = (((int) Stage.Value % 5) + 1).ToString();
-                        var rrr = ((int) Room.Value).ToString("X2");
+                        var sss = (((int)Stage.Value % 5) + 1).ToString();
+                        var rrr = ((int)Room.Value).ToString("X2");
                         FullRoomName = sss + rrr;
 
                         if ((state != 0x8000000 || state != 0x9000000) && value != 61)
@@ -388,6 +478,8 @@ namespace REviewer.Modules.RE.Common
                 if (Health == null || CharacterHealthState == null) return;
                 bool state = false;
 
+                // Console.WriteLine(_characterHealthState.Value);
+
                 if(SELECTED_GAME == 0)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
@@ -395,6 +487,10 @@ namespace REviewer.Modules.RE.Common
                 else if(SELECTED_GAME == 1)
                 {
                     state = (_characterHealthState?.Value != 0x15);
+                }
+                else if (SELECTED_GAME == 2)
+                {
+                    state = (_characterHealthState?.Value == 0x04);
                 }
 
                 if (state)
@@ -468,7 +564,7 @@ namespace REviewer.Modules.RE.Common
             var state = false;
             var health_table = ((Dictionary<byte, List<int>>)Health.Database)[(byte)(Character.Value & size)];
 
-            Brush[] colors = [CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White];
+            Brush[] colors = new Brush[] { CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White };
 
             if (SELECTED_GAME == 0)
             {
@@ -477,6 +573,10 @@ namespace REviewer.Modules.RE.Common
             else if (SELECTED_GAME == 1)
             {
                 state = (status == 0x15);
+            }
+            else if (SELECTED_GAME == 2)
+            {
+                state = (status != 0x04);
             }
 
             if (state)
@@ -697,7 +797,10 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (PartnerPointer.Value == 0x98E544)
+                int position_hp = SELECTED_GAME == 1 ? 0x156 : 0xCC;
+                int position_id = SELECTED_GAME == 1 ? 0x8 : 0x4a;
+
+                if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290)
                 {
                     PartnerHP = null;
                     PartnerMaxHP = null;
@@ -711,8 +814,8 @@ namespace REviewer.Modules.RE.Common
                 else
                 {
                     PartnerPose = new VariableData(PartnerPointer.Value + 0x6, 1);
-                    PartnerHP = new VariableData(PartnerPointer.Value + 0x156, 4);
-                    PartnerMaxHP = new VariableData(PartnerPointer.Value + 0x162, 4);
+                    PartnerHP = new VariableData(PartnerPointer.Value + position_hp, 4);
+                    PartnerMaxHP = new VariableData(PartnerPointer.Value + position_hp + 2, 4);
                     PartnerVisibility = Visibility.Visible;
                 }
 

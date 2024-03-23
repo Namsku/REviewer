@@ -49,14 +49,19 @@ namespace REviewer.Modules.RE.Common
                 int state = GameState.Value;
                 bool isDead = false;
 
-                if(SELECTED_GAME == 0)
+                if (SELECTED_GAME == 0)
                 {
                     isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
                     PreviousState = state & 0x0F000000;
-                } 
+                }
                 else if (SELECTED_GAME == 1)
                 {
                     isDead = Health.Value > 200 && state != 0x00000000;
+                }
+                else if (SELECTED_GAME == 2)
+                {
+                    long vvv = GameState.Value & 0xFF000000;
+                    isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
                 }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");

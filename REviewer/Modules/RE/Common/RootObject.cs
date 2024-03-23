@@ -26,14 +26,17 @@ namespace REviewer.Modules.RE.Common
             { "biohazard", 0x05 },
             { "bio2 1.10", 0x07 },
             { "Bio2 1.10", 0x07 },
+            { "BIOHAZARD(R) 3 PC", 0x05 },
+            { "biohazard(r) 3 pc", 0x05 },
         };
 
-        private static readonly string[] ITEM_TYPES = ["Key Item", "Optionnal Key Item", "Nothing"];
+        private static readonly string[] ITEM_TYPES = new string[] { "Key Item", "Optionnal Key Item", "Nothing" };
 
         public int MAX_INVENTORY_SIZE;
         public int SELECTED_GAME;
         public int SaveID;
         public int CurrentSaveID;
+        public Bio _bio;
 
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase; 
@@ -75,9 +78,13 @@ namespace REviewer.Modules.RE.Common
             {
                 MAX_INVENTORY_SIZE = 8;
             }
-            else
+            else if(character == "Sherry" || character == "Claire" || character == "Leon" || character == "Ada")
             {
                 MAX_INVENTORY_SIZE = 11;
+            } 
+            else
+            {
+                MAX_INVENTORY_SIZE = 10;
             }
         }
 
@@ -99,28 +106,18 @@ namespace REviewer.Modules.RE.Common
             List<string> keyRooms = bio.KeyRooms;
 
             // add them into KeyRooms
-            KeyRooms = [];
+            KeyRooms = new Dictionary<string, List<string>> { };
 
             foreach (var room in keyRooms)
             {
                 // Console.WriteLine(room);
-                KeyRooms.Add(room, []);
+                KeyRooms.Add(room, new List<string>());
             }
         }
 
         public void InitFileWatcher()
         {
-            Dictionary<string, string> db = new Dictionary<string, string>
-            {
-                { "Bio", "RE1" },
-                { "bio", "RE1" },
-                { "Biohazard", "RE1" },
-                { "biohazard", "RE1" },
-                { "Bio2 1.10", "RE2" },
-                { "bio2 1.10", "RE2" },
-                { "Bio3", "RE3" }
-            };
-
+            Dictionary<string, string> db = Library.GetGameList();
 
             if (Watcher != null)
             {
@@ -135,7 +132,7 @@ namespace REviewer.Modules.RE.Common
 
             var processName = IDatabase.GetProcessName();
             Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");  // replace with your directory
-            Console.WriteLine(Watcher.Path);
+            // Console.WriteLine(Watcher.Path);
             // Watcher.Filter = "*.dat";  // watch for .dat files
 
             // Add event handlers.
@@ -166,6 +163,9 @@ namespace REviewer.Modules.RE.Common
             jsonObject["LastItemFound"] = LastItemFound?.Value;
             jsonObject["InventoryCapacityUsed"] = InventoryCapacityUsed?.Value;
             jsonObject["CharacterHealthState"] = CharacterHealthState?.Value;
+
+            jsonObject["CarlosInventorySlotSelected"] = CarlosInventorySlotSelected?.Value;
+
             jsonObject["Health"] = Health?.Value;
             jsonObject["LockPick"] = LockPick?.Value;
             jsonObject["PositionX"] = PositionX?.Value;
@@ -183,9 +183,9 @@ namespace REviewer.Modules.RE.Common
 
             jsonObject["SegmentsCount"] = SegmentCount;
 
-            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? [0,0,0,0]);
+            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? new List<int>() { 0, 0, 0, 0 });
             jsonObject["KeyItems"] = JArray.FromObject(KeyItems.Select(item => item.State).ToList());
-            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? []);
+            jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? new Dictionary<string, List<string>>());
 
             GenerateJsonSave(jsonObject);
         }
@@ -273,7 +273,7 @@ namespace REviewer.Modules.RE.Common
             Resets = Math.Max(Resets, save["Resets"]?.Value<int>() ?? 0);
             Saves = Math.Max(Saves, save["Saves"]?.Value<int>() ?? 0);
 
-            KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? [];
+            KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
 
             for (int i = 0; i < KeyItems?.Count; i++)
             {
@@ -302,6 +302,7 @@ namespace REviewer.Modules.RE.Common
         public RootObject(Bio bio, ItemIDs ids)
         {
             if (bio.Player.Character.Database == null) throw new ArgumentNullException(nameof(bio));
+            _bio = bio;
 
             IDatabase = ids;
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
@@ -332,6 +333,10 @@ namespace REviewer.Modules.RE.Common
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
+
+            // Carlos RE3
+            CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
+            CarlosLastItemFound = GetVariableData("CarlosLastItemSeen", bio.Player.CarlosLastItemFound);
 
             // Position
             PositionX = GetVariableData("PositionX", bio.Position.X);
@@ -370,12 +375,16 @@ namespace REviewer.Modules.RE.Common
             {
                 SELECTED_GAME = 1;
             }
+            else if (processName == "biohazard(r) 3 pc")
+            {
+                SELECTED_GAME = 2;
+            }
 
             VariableData GetVariableData(String key, dynamic value)
             {
                 if (bio.Offsets.ContainsKey(key))
                 {
-                    return new VariableData(Library.HexToNint(bio.Offsets[key]), value);
+                    return new VariableData(Library.HexToInt(bio.Offsets[key]), value);
                 }
                 else
                 {

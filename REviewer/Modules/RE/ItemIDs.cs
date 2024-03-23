@@ -10,10 +10,10 @@ namespace REviewer.Modules.RE
         {
         }
 
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-        public required string Color { get; set; }
-        public required string Img { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Color { get; set; }
+        public string Img { get; set; }
     }
 
     public class ItemIDs
@@ -28,21 +28,25 @@ namespace REviewer.Modules.RE
             { "Biohazard", "Bio" },
             { "biohazard", "Bio" },
             { "Bio2 1.10", "Bio2 1.10" },
-            { "bio2 1.10", "Bio2 1.10" }
+            { "bio2 1.10", "Bio2 1.10" },
+            { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
+            { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
+            { "bio3", "BIOHAZARD(R) 3 PC" },
+            { "Bio3", "BIOHAZARD(R) 3 PC" }
         };
 
         public class Item
         {
-            public required string Name { get; set; }
-            public required string Type { get; set; }
+            public string Name { get; set; }
+            public string Type { get; set; }
             public string? Color { get; set; }
-            public required string Img { get; set; }
+            public string Img { get; set; }
         }
 
         public class BioHazardItems
         {
-            public required Dictionary<string, Item> ItemIDs { get; set; }
-            public required Dictionary<string, int> DupItems { get; set; }
+            public Dictionary<string, Item> ItemIDs { get; set; }
+            public Dictionary<string, int> DupItems { get; set; }
         }
 
         public ItemIDs(string selectedProcessName)

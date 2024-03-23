@@ -46,20 +46,20 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 if (_inventoryCapacity == null) return;
-                int[] _inventoryCapacityArray = [];
+                int[] _inventoryCapacityArray = new int[] { };
                 int capacity = _inventoryCapacity.Value;
-                
-                if (SELECTED_GAME == 0) { 
+
+                if (SELECTED_GAME == 0) {
                     capacity = capacity & 3;
-                    _inventoryCapacityArray = [6, 8, 8, 6];
-                } 
+                    _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
+                }
                 else
                 {
                     capacity = 0;
-                    _inventoryCapacityArray = [11, ];
+                    _inventoryCapacityArray = new int[] { 11, };
                 }
                 
-                if (ChrisInventoryHotfix) _inventoryCapacityArray = [8, 8, 8, 8];
+                if (ChrisInventoryHotfix) _inventoryCapacityArray = new int[] { 8, 8, 8, 8 };
 
                 if (_inventoryCapacitySize == _inventoryCapacityArray[capacity])
                 {
@@ -107,42 +107,43 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(InventoryImages));
             }
         }
-        public void InitInventory(Bio bio)
+        public void InitInventory(Bio bio, bool carlos = false)
         {
-            InventoryCapacity = new VariableData(Library.HexToNint(bio.Offsets["Capacity"]), 4);
-            InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
-
-            if (Inventory == null)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Inventory = Slot.GenerateSlots(Library.HexToNint(bio.Offsets["InventoryStart"]), Library.HexToNint(bio.Offsets["InventoryEnd"]));
-            }
+                InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
+                InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
+                var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
+                var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
 
-            if (InventoryImages == null)
-            {
+                Console.WriteLine($"{inventory_name_start} - {inventory_name_end}");
+                
+                Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
                 InventoryImages = new ObservableCollection<ImageItem>();
-            }
+                InventoryImages.Clear();
 
-            for (int i = 0; i < Inventory.Count; i++)
-            {
-                int index = i; 
-
-                InventoryImages.Add(new ImageItem
+                for (int i = 0; i < Inventory.Count; i++)
                 {
-                    Source = IDatabase.Items[(byte)Inventory[i].Item.Value].Img,
-                    Width = 92,
-                    Height = 92,
-                    Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
-                    Text = Inventory[i].Quantity?.Value.ToString(),
-                    TextVisibility = Visibility.Hidden,
-                });
+                    int index = i;
 
-                // Subscribe to the PropertyChanged event of the Item and Quantity properties
-                Inventory[i].Item.PropertyChanged += (sender, e) => UpdateInventoryImage(index);
-                Inventory[i].Quantity.PropertyChanged += (sender, e) => UpdateTextInventoryImage(index);
+                    InventoryImages.Add(new ImageItem
+                    {
+                        Source = IDatabase.Items[(byte)Inventory[i].Item.Value].Img,
+                        Width = 92,
+                        Height = 92,
+                        Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
+                        Text = Inventory[i].Quantity?.Value.ToString(),
+                        TextVisibility = Visibility.Hidden,
+                    });
 
-                if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged += (sender, e) => UpdateType(index);
+                    // Subscribe to the PropertyChanged event of the Item and Quantity properties
+                    Inventory[i].Item.PropertyChanged += (sender, e) => UpdateInventoryImage(index);
+                    Inventory[i].Quantity.PropertyChanged += (sender, e) => UpdateTextInventoryImage(index);
 
-            }
+                    if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged += (sender, e) => UpdateType(index);
+                }
+            });
+
         }
 
         private void UpdateInventoryCapacity()
@@ -153,7 +154,7 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateType(int index)
         {
-            Console.WriteLine($"UpdateType -> {Inventory[index].Type.Value}");
+            // Console.WriteLine($"UpdateType -> {Inventory[index].Type.Value}");
             if(Inventory[index].Type.Value == 2)
             {
                 InventoryImages[index].Source = "resources/re2/reserved.png";
@@ -184,6 +185,11 @@ namespace REviewer.Modules.RE.Common
                     {
                         isValid = state == 0x4000;
                     }
+                    else if (SELECTED_GAME == 2)
+                    {
+                        state = GameState.Value & 0x0F000000;
+                        isValid = state == 0x09000000;
+                    }
 
                     if (isValid)
                     {
@@ -200,9 +206,14 @@ namespace REviewer.Modules.RE.Common
             if (index < InventoryCapacitySize)
             {
                 string pourcentage_ammo = "";
-                int[] ammo_prct_array = [14, 15, 16, 23, 27, 28];
+                int[] ammo_prct_array = new int[] { };
 
-                if(SELECTED_GAME == 1 && ammo_prct_array.Contains(Inventory[index].Item.Value))
+                if (SELECTED_GAME == 1)
+                    ammo_prct_array = new int[] { 14, 15, 16, 23, 27, 28 };
+                else if (SELECTED_GAME == 2)
+                    ammo_prct_array = new int[] { 14, 15 };
+
+                if (SELECTED_GAME > 0 && ammo_prct_array.Contains(Inventory[index].Item.Value))
                 {
                     pourcentage_ammo = "%";
                 }
@@ -219,6 +230,7 @@ namespace REviewer.Modules.RE.Common
                 {
                     "Yellow" => CustomColors.Yellow,
                     "Orange" => CustomColors.Orange,
+                    "Blue" => CustomColors.Blue,
                     "Red" => CustomColors.Red,
                     _ => CustomColors.Default,
                 };

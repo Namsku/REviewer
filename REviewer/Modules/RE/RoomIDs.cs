@@ -26,12 +26,12 @@ namespace REviewer.Modules.RE
                 }
                 else
                 {
-                    _ids = [];
+                    _ids = new Dictionary<string, string>() { };
                 }
             }
             else
             {
-                _ids = [];
+                _ids = new Dictionary<string, string>() { };
             }
         }
 

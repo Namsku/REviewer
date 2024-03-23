@@ -25,7 +25,7 @@ namespace REviewer
             _itemDatabase = new ItemIDs(gameName);
 
 
-            var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? [];
+            var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? new List<KeyItem>();
             _game.InitKeyItemsModel(keyItems);
             _game.InitUIConfig(config);
 
@@ -59,11 +59,13 @@ namespace REviewer
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
-            var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? [];
+            var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? new List<KeyItem>();
             _game.InitKeyItemsModel(keyItems);
             _game.InitKeyRooms();
             _game.InitStats();
             _game.InitTimers();
+            _game.LastItemFound.Value = 0;
+            _game.InventorySlotSelected.Value = 0;
             // Console.WriteLine("Erasing the mess");
         }
 

@@ -78,12 +78,13 @@ namespace REviewer.Modules.RE.Common
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static List<Slot> GenerateSlots(nint startOffset, nint endOffset)
+        public static List<Slot> GenerateSlots(int startOffset, int endOffset)
         {
-            List<Slot> slots = [];
-            int inc = ((endOffset - startOffset) / 2) > 16 ? 4 : 2;
+            List<Slot> slots = new List<Slot>();
+            int inc = ((endOffset - startOffset) / 2) > 10 ? 4 : 2;
+            Console.WriteLine(inc);
 
-            for (nint i = startOffset; i < endOffset; i += inc)
+            for (int i = startOffset; i < endOffset; i += inc)
             {
                 slots.Add(new Slot
                 {

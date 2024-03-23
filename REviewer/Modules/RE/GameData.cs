@@ -21,7 +21,11 @@ namespace REviewer.Modules.RE
             { "biohazard", "Bio" },
             { "Biohazard", "Bio" },
             { "Bio2 1.10", "Bio2 1.10" },
-            { "bio2 1.10", "Bio2 1.10" }
+            { "bio2 1.10", "Bio2 1.10" },
+            { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
+            { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
+            { "bio3", "BIOHAZARD(R) 3 PC" },
+            { "Bio3", "BIOHAZARD(R) 3 PC" }
         };
 
         public GameData(string gameName)

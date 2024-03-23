@@ -27,13 +27,19 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 80% / Testing phase
-- [ ] RE3 (SourceNext)
+- [ ] RE3 (Rebirth)
 - [ ] CVX (PS2)
+
+Possible other port
+
+- RE2 (Platinium -> China) 
+- RE3 (CHN/TWN) 
 
 ## Known Bugs
 
 - Enemy Tracker is not super stable in some cases.
 - Save/Load State are still not totally working
+- If you are confronted to a game that is not recognized but everything is green, close and re-run it.
 
 ## Features
 
