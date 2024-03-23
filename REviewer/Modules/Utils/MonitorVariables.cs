@@ -194,7 +194,7 @@ namespace REviewer.Modules.Utils
 
             if (!success)
             {
-                Logger.Instance.Error($"Failed to read process memory for base address {baseAddress:X} and size {size:X} for process {_processName} with handle {_processHandle}");
+                // Logger.Instance.Error($"Failed to read process memory for base address {baseAddress:X} and size {size:X} for process {_processName} with handle {_processHandle}");
                 // Stop();
                 return buffer;
                 // throw new InvalidOperationException("Failed to read process memory");

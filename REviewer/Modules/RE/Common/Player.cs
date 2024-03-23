@@ -797,7 +797,10 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (PartnerPointer.Value == 0x98E544)
+                int position_hp = SELECTED_GAME == 1 ? 0x156 : 0xCC;
+                int position_id = SELECTED_GAME == 1 ? 0x8 : 0x4a;
+
+                if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290)
                 {
                     PartnerHP = null;
                     PartnerMaxHP = null;
@@ -811,8 +814,8 @@ namespace REviewer.Modules.RE.Common
                 else
                 {
                     PartnerPose = new VariableData(PartnerPointer.Value + 0x6, 1);
-                    PartnerHP = new VariableData(PartnerPointer.Value + 0x156, 4);
-                    PartnerMaxHP = new VariableData(PartnerPointer.Value + 0x162, 4);
+                    PartnerHP = new VariableData(PartnerPointer.Value + position_hp, 4);
+                    PartnerMaxHP = new VariableData(PartnerPointer.Value + position_hp + 2, 4);
                     PartnerVisibility = Visibility.Visible;
                 }
 

@@ -11,6 +11,7 @@ using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace REviewer
 {
@@ -97,6 +98,10 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
+        public int BIOHAZARD_1_MK = 0;
+        public int BIOHAZARD_2_SC = 1;
+        public int BIOHAZARD_3_RB = 2;
+
         private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC" };
         private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
 
@@ -123,19 +128,24 @@ namespace REviewer
             if (_ui == null)
                 _ui = new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
 
-            if (ComboBoxGameSelection.SelectedIndex == 0)
+            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_1_MK)
             {
                 _ui.ChrisInventory = Visibility.Visible;
                 _ui.Sherry = Visibility.Collapsed;
             }
-            else
+            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_SC)
             {
+                _ui.ChrisInventory = Visibility.Collapsed;
                 _ui.Sherry = Visibility.Visible;
+            }
+            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_3_RB)
+            {
+                _ui.Sherry = Visibility.Collapsed;
                 _ui.ChrisInventory = Visibility.Collapsed;
             }
         }
 
-        private void UpdateUI(string content, string savePath)
+        private void UpdateUI(string content, string savePath, int position)
         {
             // Updating the TextBlock on the MainWindow
             if (MD5 != null)
@@ -150,8 +160,18 @@ namespace REviewer
                 Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
                 // Updating the TextBox from the Settings panel
-                Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
-                Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
+                if (position == BIOHAZARD_1_MK)
+                {
+                    Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
+                }
+                else if (position == BIOHAZARD_2_SC)
+                {
+                    Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
+                }
+                else if (position == BIOHAZARD_3_RB)
+                {
+                    Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                }
             }
         }
 
@@ -173,11 +193,13 @@ namespace REviewer
             var json = File.ReadAllText(configPath);
             var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
 
-            reJson.TryGetValue(_gameSelection[ComboBoxGameSelection.SelectedIndex], out var saveREPath);
+            for(int i = 0; i < _gameSelection.Count; i++)
+            {
+                reJson.TryGetValue(_gameSelection[i], out var saveREPath);
+                saveREPath ??= content;
 
-            saveREPath ??= content;
-
-            UpdateUI(content, saveREPath);
+                UpdateUI(content, saveREPath, i);
+            }
         }
 
         private void InitializeProcessWatcher()
@@ -260,7 +282,7 @@ namespace REviewer
                 string md5Hash = Library.GetProcessMD5Hash(_process);
 
                 // Check if the process has the Gemini DLL
-                _isDdrawLoaded = Library.IsDdrawLoaded(_process);
+                _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
                 string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
                 var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
@@ -398,15 +420,15 @@ namespace REviewer
         // Events for selecting the Save Path
         private void RE1SavePathButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.OpenFolderDialog();
-            var result = dialog.ShowDialog();
-
-            Logger.Instance.Debug(result);
-
-            if (result == true)
+            var dialog = new CommonOpenFileDialog
             {
-                RE1SavePath.Text = dialog.FolderName;
-                UpdateConfigFile("RE1", dialog.FolderName);
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RE1SavePath.Text = dialog.FileName;
+                UpdateConfigFile("RE1", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
                 if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
@@ -415,31 +437,35 @@ namespace REviewer
 
         private void RE2SavePathButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.OpenFolderDialog();
-            var result = dialog.ShowDialog();
-
-            Logger.Instance.Debug(result);
-
-            if (result == true)
+            var dialog = new CommonOpenFileDialog
             {
-                RE2SavePath.Text = dialog.FolderName;
-                UpdateConfigFile("RE2", dialog.FolderName);
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RE2SavePath.Text = dialog.FileName;
+                UpdateConfigFile("RE2", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+
+                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
             }
         }
 
         private void RE3SavePathButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.OpenFolderDialog();
-            var result = dialog.ShowDialog();
-
-            Logger.Instance.Debug(result);
-
-            if (result == true)
+            var dialog = new CommonOpenFileDialog
             {
-                RE3SavePath.Text = dialog.FolderName;
-                UpdateConfigFile("RE3", dialog.FolderName);
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RE3SavePath.Text = dialog.FileName;
+                UpdateConfigFile("RE3", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+
+                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
             }
         }
 
@@ -495,11 +521,7 @@ namespace REviewer
 
         public bool IsSRTAbleToRun()
         {
-            var db = new Dictionary<string, string> {
-                {"Bio", "RE1"},
-                {"bio2 1.10", "RE2"},
-                {"BIOHAZARD(R) 3 PC", "RE3"},
-            };
+            var db = Library.GetGameList();
 
             if (string.IsNullOrEmpty(_processName))
             {

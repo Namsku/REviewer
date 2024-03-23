@@ -22,6 +22,25 @@ namespace REviewer.Modules.Utils
             { "BIOHAZARD(R) 3 PC", "RE3" }
         };
 
+        public static Dictionary<string, string> _gameList = new Dictionary<string, string>
+            {
+                { "Bio", "RE1" },
+                { "bio", "RE1" },
+                { "Biohazard", "RE1" },
+                { "biohazard", "RE1" },
+                { "Bio2 1.10", "RE2" },
+                { "bio2 1.10", "RE2" },
+                { "BIOHAZARD(R) 3 PC", "RE3" },
+                { "biohazard(r) 3 pc", "RE3" },
+                { "bio3", "RE3" },
+                { "Bio3", "RE3" }
+            };
+
+        public static Dictionary<string, string> GetGameList()
+        {
+            return _gameList;
+        }
+
         public static string GetGameName(string processName)
         {
             if (_keyValuePairs.TryGetValue(processName, out var gameName))

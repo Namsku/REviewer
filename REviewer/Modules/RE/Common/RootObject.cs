@@ -117,20 +117,7 @@ namespace REviewer.Modules.RE.Common
 
         public void InitFileWatcher()
         {
-            Dictionary<string, string> db = new Dictionary<string, string>
-            {
-                { "Bio", "RE1" },
-                { "bio", "RE1" },
-                { "Biohazard", "RE1" },
-                { "biohazard", "RE1" },
-                { "Bio2 1.10", "RE2" },
-                { "bio2 1.10", "RE2" },
-                { "BIOHAZARD(R) 3 PC", "RE3" },
-                { "biohazard(r) 3 pc", "RE3" },
-                { "bio3", "RE3" },
-                { "Bio3", "RE3" }
-            };
-
+            Dictionary<string, string> db = Library.GetGameList();
 
             if (Watcher != null)
             {

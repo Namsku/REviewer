@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using NLog;
-using REviewer.Modules.RE.Json;
+﻿using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
+using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -133,12 +131,12 @@ namespace REviewer.Modules.RE.Common
             { 32, "Doggo" },
             { 33, "Crow" },
             { 34, "Hunter" },
-            { 35, "BS23" },
+            { 35, "Brain S." },
             { 36, "Hunter G" },
             { 37, "Spider" },
             { 38, "Spidy" },
             { 39, "Brain S." },
-            { 40, "BS28" },
+            { 40, "Brain S." },
             { 44, "UMB.S" },
             { 45, "Arm" },
             { 47, "Marvin" },
@@ -150,6 +148,7 @@ namespace REviewer.Modules.RE.Common
             { 55, "Nemmy 3" },
             { 56, "Nemmy 4" },
             { 57, "Nemmy 4" },
+            { 58, "Nem. Up" },
             { 59, "Jill KO" },
             { 63, "Helicop." },
             { 64, "Nemmy KO" },
@@ -314,6 +313,11 @@ namespace REviewer.Modules.RE.Common
                 {
                     // Console.WriteLine($"Enemy ID -> {EnemyID.Value}");
                     Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    if (Enemy.Name == "Unknown")
+                    {
+                        Logger.Instance.Error($"Enemy ID -> {EnemyID.Value} not Found");
+                    }
+
                     OnPropertyChanged(nameof(Enemy));
                 }
             }
