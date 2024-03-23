@@ -24,8 +24,8 @@ namespace REviewer.Modules.RE.Common
             { 11, "Neptune" },
             { 12, "Tyran" },
             { 13, "Yawn 1" },
-            { 14, "Plant42 R" },
-            { 15, "Plant42 V" },
+            { 14, "Plant R" },
+            { 15, "Plant V" },
             { 16, "Sr. Tyran" },
             { 17, "Zombie R" },
             { 18, "Yawn 2" },
@@ -154,7 +154,7 @@ namespace REviewer.Modules.RE.Common
             { 64, "Nemmy KO" },
             { 80, "Carlos" },
             { 81, "Mikhail" },
-            { 82, "Nikolai" },
+            { 82, "Nichol." },
             { 83, "Brad" },
             { 84, "Dario" },
             { 85, "Murphy" },
@@ -166,7 +166,7 @@ namespace REviewer.Modules.RE.Common
             { 91, "Jill" },
             { 92, "Carlos" },
             { 95, "Jill" },
-            { 96, "Nikolai" },
+            { 96, "Nichol." },
             { 103, "Irons" }
         };
 
