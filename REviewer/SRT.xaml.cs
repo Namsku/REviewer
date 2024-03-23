@@ -64,6 +64,8 @@ namespace REviewer
             _game.InitKeyRooms();
             _game.InitStats();
             _game.InitTimers();
+            _game.LastItemFound.Value = 0;
+            _game.InventorySlotSelected.Value = 0;
             // Console.WriteLine("Erasing the mess");
         }
 

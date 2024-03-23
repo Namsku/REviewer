@@ -187,7 +187,8 @@ namespace REviewer.Modules.RE.Common
                     }
                     else if (SELECTED_GAME == 2)
                     {
-                        isValid = GameState.Value == 0x09000000;
+                        state = GameState.Value & 0x0F000000;
+                        isValid = state == 0x09000000;
                     }
 
                     if (isValid)

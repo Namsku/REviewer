@@ -19,7 +19,7 @@ namespace REviewer.Modules.Utils
         {
             {"Bio", "RE1"},
             {"Bio2 1.10", "RE2"},
-            { "BIOHAZARD(R) 3 PC", "RE3" }
+            {"BIOHAZARD(R) 3 PC", "RE3" }
         };
 
         public static Dictionary<string, string> _gameList = new Dictionary<string, string>
@@ -36,9 +36,22 @@ namespace REviewer.Modules.Utils
                 { "Bio3", "RE3" }
             };
 
+        public static Dictionary<string, List<string>> _gameVersions = new Dictionary<string, List<string>>
+        {
+            { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
+            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10" } },
+            { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3" } }
+        };
+
+
         public static Dictionary<string, string> GetGameList()
         {
             return _gameList;
+        }
+
+        public static List<string> GetGameVersions(string key)
+        {
+            return _gameVersions.TryGetValue(key, out List<string>  versions) ? versions : new List<string>();
         }
 
         public static string GetGameName(string processName)

@@ -26,8 +26,8 @@ namespace REviewer
             if (_game.SELECTED_GAME == 0)
             {
                 _game.GameState.PropertyChanged += GameState_PropertyChanged;
-            } 
-            else if (_game.SELECTED_GAME == 1)
+            }
+            else if (_game.SELECTED_GAME == 1 || _game.SELECTED_GAME == 2)
             {
                 _game.LastRoom.PropertyChanged += LastRoom_PropertyChanged;
             }

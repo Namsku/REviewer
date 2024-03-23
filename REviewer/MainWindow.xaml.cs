@@ -272,31 +272,36 @@ namespace REviewer
         private void ProcessWatcherCallback(object? state)
         {
             // Check if the process is running
-            if (!_isProcessRunning && Process.GetProcessesByName(_processName).Length > 0 && MD5 != null)
+            var process_list = Library.GetGameVersions(_processName);
+
+            for (int i = 0; i < process_list.Count; i++)
             {
-                // The process is running
-                _isProcessRunning = true;
+                if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
+                {
+                    // The process is running
+                    _isProcessRunning = true;
 
-                // Get the process
-                _process = Process.GetProcessesByName(_processName)[0];
-                string md5Hash = Library.GetProcessMD5Hash(_process);
+                    // Get the process
+                    _process = Process.GetProcessesByName(process_list[i])[0];
+                    string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                // Check if the process has the Gemini DLL
-                _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
-                string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
+                    // Check if the process has the Gemini DLL
+                    _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
+                    string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                    var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
-                // Updating the TextBlock on the MainWindow
-                Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
-                Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
+                    // Updating the TextBlock on the MainWindow
+                    Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
+                    Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+                    Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
-                // Set the Exited event handler
-                _process.EnableRaisingEvents = true;
-                _process.Exited += Process_Exited;
+                    // Set the Exited event handler
+                    _process.EnableRaisingEvents = true;
+                    _process.Exited += Process_Exited;
 
-                // Log the event
-                Logger.Instance.Info($"Process {_processName} has been found");
+                    // Log the event
+                    Logger.Instance.Info($"Process {process_list[i]} has been found");
+                }
             }
         }
 
