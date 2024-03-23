@@ -273,11 +273,13 @@ namespace REviewer.Modules.RE.Common
                         }
                         else 
                         { 
-                            EnemyMaxHP = Enemy.CurrentHealth;
+                            var hp = Enemy.CurrentHealth;
+                            if (hp > 60000 || hp < 1250 || ( hp > 20000 && hp < 21000))
+                                EnemyMaxHP = Enemy.CurrentHealth;
                         }
                     }
 
-                    if (Enemy.CurrentHealth > 60000 && EnemyMaxHP < 450)
+                    if (Enemy.CurrentHealth > 60000 && EnemyMaxHP < 1500)
                     {
                         Enemy.Visibility = Visibility.Collapsed;
                     }
@@ -382,6 +384,12 @@ namespace REviewer.Modules.RE.Common
             Enemy.Flag = (EnemyState.Value >> 16) & 0xFF;
             Enemy.Pose = (EnemyState.Value >> 8) & 0xFF;
             Enemy.Id = EnemyState.Value & 0xFF;
+
+            if (Enemy.CurrentHealth == 255 && Enemy.Id < 30)
+            {
+                Enemy.MaxHealth = 0;
+                return;
+            }
 
             if (Enemy.CurrentHealth > Enemy.MaxHealth)
             {
