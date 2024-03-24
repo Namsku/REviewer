@@ -12,6 +12,9 @@ using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Timers;
+using Timer = System.Threading.Timer;
+
 
 namespace REviewer
 {
