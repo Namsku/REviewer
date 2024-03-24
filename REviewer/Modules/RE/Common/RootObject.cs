@@ -423,6 +423,9 @@ namespace REviewer.Modules.RE.Common
                 SaveContent.PropertyChanged -= SaveContent_PropertyChanged;
             }
 
+            DisposeInventory();
+            DisposeItemBox();
+
             GC.SuppressFinalize(this);
         }
 

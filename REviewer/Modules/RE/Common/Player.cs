@@ -1,6 +1,7 @@
 ﻿using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common

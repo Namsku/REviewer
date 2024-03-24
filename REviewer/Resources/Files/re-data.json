@@ -2314,13 +2314,13 @@
             "InventoryStart": "0x0A67584",
             "InventoryEnd": "0x0A675AB",
             "ItemBoxStart": "0x0A675AC",
-            "ItemBoxEnd": "0xA676AC",
+            "ItemBoxEnd": "0xA676AB",
             "InventorySlotSelected": "0x0A676AC",
 
             "CarlosInventoryStart": "0x0A676C4",
             "CarlosInventoryEnd": "0x0A676E3",
             "CarlosItemBoxStart": "0x0A676E4",
-            "CarlosItemBoxEnd": "0xA677E4",
+            "CarlosItemBoxEnd": "0x0A677E4",
             "CarlosInventorySlotSelected": "0x0A677EC",
             "CarlosLastItemFound": "0x0A5C86B",
 

@@ -109,6 +109,8 @@ namespace REviewer.Modules.RE.Common
         }
         public void InitInventory(Bio bio, bool carlos = false)
         {
+            DisposeInventory(); // Dispose previous objects
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
@@ -236,5 +238,18 @@ namespace REviewer.Modules.RE.Common
                 };
             }
         }
+
+        public void DisposeInventory()
+        {
+            if (Inventory == null) return;
+            for (int i = 0; i < Inventory.Count; i++)
+            {
+                int index = i;
+                Inventory[i].Item.PropertyChanged -= (sender, e) => UpdateInventoryImage(index);
+                Inventory[i].Quantity.PropertyChanged -= (sender, e) => UpdateTextInventoryImage(index);
+                if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged -= (sender, e) => UpdateType(index);
+            }
+        }
+
     }
 }

@@ -5,8 +5,24 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private int _previousState;
+        private double _saveState;
 
+        private double _srtTimeHotfix;
+        public double SrtTimeHotfix
+        {
+            get { return _srtTimeHotfix; }
+            set
+            {
+                _srtTimeHotfix = value;
+                Console.WriteLine($"SRT Time Hotfix: {_srtTimeHotfix}");
+                OnPropertyChanged(nameof(SrtTimeHotfix));
+            }
+        }
+
+        private System.Timers.Timer _srtTimer;
+        public bool timerRunning = false;
+
+        private int _previousState;
         public int PreviousState
         {
             get { return _previousState; }
@@ -185,14 +201,37 @@ namespace REviewer.Modules.RE.Common
                     {
                         return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
                     }
+                    else if(GameState.Value != 0x08000000)
+                    {
+                        _saveState = (_gameSave.Value - _timer.Value + _frame.Value) / 60.0;
+                        return TimeSpan.FromSeconds((_gameSave.Value - _timer.Value + _frame.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    } 
                     else
                     {
-                        return TimeSpan.FromSeconds(((_gameSave.Value - _timer.Value) + _frame.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                        if (!timerRunning) StartSRTTimer();
+                        return TimeSpan.FromMilliseconds(_saveState * 1000 + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
 
                 return 0.ToString();
             }
+        }
+
+        public void StartSRTTimer()
+        {
+            timerRunning = true;
+            SrtTimeHotfix = 0;
+            Console.WriteLine("Starting SRT Timer");
+
+            _srtTimer = new System.Timers.Timer(20); // Fire event every 100 milliseconds
+            _srtTimer.Elapsed += TimerElapsed;
+            _srtTimer.Start();
+        }
+
+        private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            SrtTimeHotfix += 20;
+            OnPropertyChanged(nameof(IGTHumanFormat));
         }
 
         private VariableData? _gameSave;
