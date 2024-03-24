@@ -2334,8 +2334,9 @@
             "LastItemFound": "0x0A5C86B",
             "CharacterHealthState": "0x0A620E7",
             "GameState": "0xA61CA0",
-            "GameTimer": "0x000000",
-            "GameFrame": "0x000000",
+            "GameTimer": "0xA61D64",
+            "GameFrame": "0xA449D4",
+            "GameSave": "0xA67378",
             "PositionX": "0xA62048",
             "PositionY": "0xA6204C",
             "PositionZ": "0xA62050",
@@ -2443,6 +2444,9 @@
                 "Size": "4"
             },
             "Timer": {
+                "Size": "4"
+            },
+            "Save": {
                 "Size": "4"
             },
             "Unk001": {

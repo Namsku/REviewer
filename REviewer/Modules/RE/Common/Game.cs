@@ -179,8 +179,53 @@ namespace REviewer.Modules.RE.Common
                 {
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
                 }
+                else if (SELECTED_GAME == 2)
+                {
+                    if ((GameState.Value & 0x4000) == 0x4000)
+                    {
+                        return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    }
+                    else
+                    {
+                        return TimeSpan.FromSeconds(((_gameSave.Value - _timer.Value) + _frame.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    }
+                }
 
                 return 0.ToString();
+            }
+        }
+
+        private VariableData? _gameSave;
+
+        public VariableData? GameSave
+        {
+            get { return _gameSave; }
+            set
+            {
+                if (_gameSave != value)
+                {
+                    if (_gameSave != null)
+                    {
+                        _gameSave.PropertyChanged -= GameSave_PropertyChanged;
+                    }
+
+                    _gameSave = value;
+
+                    if (_gameSave != null)
+                    {
+                        _gameSave.PropertyChanged += GameSave_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(GameSave));
+                }
+            }
+        }
+
+        private void GameSave_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                OnPropertyChanged(nameof(IGTHumanFormat));
             }
         }
 

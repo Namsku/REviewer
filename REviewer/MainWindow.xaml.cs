@@ -101,9 +101,9 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        public int BIOHAZARD_1_MK = 0;
-        public int BIOHAZARD_2_SC = 1;
-        public int BIOHAZARD_3_RB = 2;
+        public const int BIOHAZARD_1_MK = 0;
+        public const int BIOHAZARD_2_SC = 1;
+        public const int BIOHAZARD_3_RB = 2;
 
         private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC" };
         private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
@@ -112,6 +112,8 @@ namespace REviewer
 
         public SRT SRT { get; private set; }
         public Tracker TRK { get; private set; }
+
+        private readonly object _lock = new object();
 
         public MainWindow()
         {
@@ -124,27 +126,28 @@ namespace REviewer
 
             // Loading Data Context
             DataContext = this._ui;
+
+            Closed += MainWindow_Closed;
         }
 
         private void InitCheckBoxes()
         {
-            if (_ui == null)
-                _ui = new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
+            _ui ??= new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
 
-            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_1_MK)
+            switch (ComboBoxGameSelection.SelectedIndex)
             {
-                _ui.ChrisInventory = Visibility.Visible;
-                _ui.Sherry = Visibility.Collapsed;
-            }
-            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_SC)
-            {
-                _ui.ChrisInventory = Visibility.Collapsed;
-                _ui.Sherry = Visibility.Visible;
-            }
-            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_3_RB)
-            {
-                _ui.Sherry = Visibility.Collapsed;
-                _ui.ChrisInventory = Visibility.Collapsed;
+                case BIOHAZARD_1_MK:
+                    _ui.ChrisInventory = Visibility.Visible;
+                    _ui.Sherry = Visibility.Collapsed;
+                    break;
+                case BIOHAZARD_2_SC:
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Visible;
+                    break;
+                case BIOHAZARD_3_RB:
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Collapsed;
+                    break;
             }
         }
 
@@ -163,17 +166,18 @@ namespace REviewer
                 Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
                 // Updating the TextBox from the Settings panel
-                if (position == BIOHAZARD_1_MK)
+
+                switch (position)
                 {
-                    Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
-                }
-                else if (position == BIOHAZARD_2_SC)
-                {
-                    Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
-                }
-                else if (position == BIOHAZARD_3_RB)
-                {
-                    Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                    case BIOHAZARD_1_MK:
+                        Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_2_SC:
+                        Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_3_RB:
+                        Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                        break;
                 }
             }
         }
@@ -190,18 +194,19 @@ namespace REviewer
 
             if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
             {
-                throw new ArgumentNullException(nameof(configPath));
+                throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
             }
 
             var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
+            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                         ?? throw new ArgumentNullException("The game data is null");
 
-            for(int i = 0; i < _gameSelection.Count; i++)
+            for (int i = 0; i < _gameSelection.Count; i++)
             {
-                reJson.TryGetValue(_gameSelection[i], out var saveREPath);
-                saveREPath ??= content;
-
-                UpdateUI(content, saveREPath, i);
+                if (reJson.TryGetValue(_gameSelection[i], out var saveREPath))
+                {
+                    UpdateUI(content, saveREPath, i);
+                }
             }
         }
 
@@ -251,19 +256,23 @@ namespace REviewer
             panelSettings.Visibility = Visibility.Hidden;
             panelAbout.Visibility = Visibility.Hidden;
 
+            const int MAIN_PANEL = 1;
+            const int OPTN_PANEL = 2;
+            const int HELP_PANEL = 3;
+
             // Get the selected item
             var selectedItem = (REviewerMenuItem)menuListView.SelectedItem;
 
             // Show the corresponding grid
             switch (selectedItem.MenuIndex)
             {
-                case 1:
+                case MAIN_PANEL:
                     panelMain.Visibility = Visibility.Visible;
                     break;
-                case 2:
+                case OPTN_PANEL:
                     panelSettings.Visibility = Visibility.Visible;
                     break;
-                case 3:
+                case HELP_PANEL:
                     panelAbout.Visibility = Visibility.Visible;
                     break;
             }
@@ -274,48 +283,60 @@ namespace REviewer
 
         private void ProcessWatcherCallback(object? state)
         {
-            // Check if the process is running
-            var process_list = Library.GetGameVersions(_processName);
-
-            for (int i = 0; i < process_list.Count; i++)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
+                lock (_lock)
                 {
-                    // The process is running
-                    _isProcessRunning = true;
+                    // Check if the process is running
+                    var process_list = Library.GetGameVersions(_processName);
 
-                    // Get the process
-                    _process = Process.GetProcessesByName(process_list[i])[0];
-                    string md5Hash = Library.GetProcessMD5Hash(_process);
+                    for (int i = 0; i < process_list.Count; i++)
+                    {
+                        if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
+                        {
+                            // The process is running
+                            _isProcessRunning = true;
 
-                    // Check if the process has the Gemini DLL
-                    _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
-                    string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                    var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
+                            // Get the process
+                            _process = Process.GetProcessesByName(process_list[i])[0];
+                            string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                    // Updating the TextBlock on the MainWindow
-                    Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
-                    Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                    Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
+                            // Check if the process has the Gemini DLL
+                            _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
+                            string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                            var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
-                    // Set the Exited event handler
-                    _process.EnableRaisingEvents = true;
-                    _process.Exited += Process_Exited;
+                            // Updating the TextBlock on the MainWindow
+                            Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
+                            Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+                            Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
-                    // Log the event
-                    Logger.Instance.Info($"Process {process_list[i]} has been found");
+                            // Set the Exited event handler
+                            _process.EnableRaisingEvents = true;
+                            _process.Exited += Process_Exited;
+
+                            // Log the event
+                            Logger.Instance.Info($"Process {process_list[i]} has been found");
+                        }
+                    }
                 }
-            }
+            });
         }
 
         private void RootObjectWatcherCallback(object? state)
         {
-            // Check if the process is running
-            if (_isProcessRunning && _isDdrawLoaded && _isSaveFound && _residentEvilGame == null)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                MappingGameVariables();
-                _rootObjectWatcher?.Dispose();
-            }
+                lock (_lock)
+                {
+                    // Check if the process is running
+                    if (_isProcessRunning && _isDdrawLoaded && _isSaveFound && _residentEvilGame == null)
+                    {
+                        MappingGameVariables();
+                        _rootObjectWatcher?.Dispose();
+                    }
+                }
+            });
         }
 
         private void MappingGameVariables()
@@ -391,6 +412,26 @@ namespace REviewer
         {
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
+
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                // Unsubscribe from process Exited event
+                if (_process != null)
+                    _process.Exited -= Process_Exited;
+
+                // Dispose other disposable resources
+                _processWatcher?.Dispose();
+                _rootObjectWatcher?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Error($"Error in Dispose method: {ex}");
+            }
         }
 
         // making some checking if the selected game
@@ -496,34 +537,51 @@ namespace REviewer
         // Event for clicking the Run Button
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            if (IsSRTAbleToRun())
+            try
             {
-                try
+                if (IsSRTAbleToRun())
                 {
-                    if (_residentEvilGame == null || _MVariables == null || _processName == null)
-                    {
-                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
-                        var srtConfig = GenerateSRTUIConfig();
-                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
-                        SRT.Show();
-
-                        if (_tracking != null)
+                        lock (_lock)
                         {
-                            TRK = new Tracker(_tracking, _residentEvilGame);
-                            TRK.Show();
+                            if (IsSRTAbleToRun())
+                            {
+                                try
+                                {
+                                    if (_residentEvilGame == null || _MVariables == null || _processName == null)
+                                    {
+                                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        return;
+                                    }
+
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
+                                        var srtConfig = GenerateSRTUIConfig();
+                                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
+                                        SRT.Show();
+
+                                        if (_tracking != null)
+                                        {
+                                            TRK = new Tracker(_tracking, _residentEvilGame);
+                                            TRK.Show();
+                                        }
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"An error has occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
                         }
                     });
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An error has occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Instance.Error($"Error in Run_Click method: {ex}");
             }
         }
 

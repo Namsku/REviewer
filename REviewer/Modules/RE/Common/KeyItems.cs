@@ -15,10 +15,10 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-               if (_keyItemImages == null)
-               {
-                   _keyItemImages = new ObservableCollection<ImageItem>();
-               }
+                if (_keyItemImages == null)
+                {
+                    _keyItemImages = new ObservableCollection<ImageItem>();
+                }
                 return _keyItemImages;
             }
             set

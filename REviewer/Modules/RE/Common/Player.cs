@@ -426,6 +426,17 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
+                    if (SELECTED_GAME == 1)
+                    {
+                        if (value == 80)
+                        {
+                            Random random = new Random();
+                            List<string> easter_egg = new List<string> { "orca.png", "death2024.png", "namsku.png" };
+                            int randomIndex = random.Next(0, easter_egg.Count); // Generate a random index within the range of the list
+                            return "./resources/re2/" + easter_egg[randomIndex]; // Concatenate the random easter egg with the directory path
+                        }
+                    }
+
                     return IDatabase.GetPropertyImgById(value);
                 }
                 return null;
