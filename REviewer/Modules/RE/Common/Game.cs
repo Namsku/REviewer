@@ -14,7 +14,6 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 _srtTimeHotfix = value;
-                Console.WriteLine($"SRT Time Hotfix: {_srtTimeHotfix}");
                 OnPropertyChanged(nameof(SrtTimeHotfix));
             }
         }
@@ -197,19 +196,19 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 2)
                 {
-                    if ((GameState.Value & 0x4000) == 0x4000)
+                    if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0)
                     {
+                        if (timerRunning)
+                        {
+                            _srtTimer.Stop();
+                            _saveState = 0;
+                        }
                         return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
                     }
-                    else if(GameState.Value != 0x08000000)
-                    {
-                        _saveState = (_gameSave.Value - _timer.Value + _frame.Value) / 60.0;
-                        return TimeSpan.FromSeconds((_gameSave.Value - _timer.Value + _frame.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
-                    } 
                     else
                     {
                         if (!timerRunning) StartSRTTimer();
-                        return TimeSpan.FromMilliseconds(_saveState * 1000 + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
+                        return TimeSpan.FromMilliseconds(_gameSave.Value  + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
 
