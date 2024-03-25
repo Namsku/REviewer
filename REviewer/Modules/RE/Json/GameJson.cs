@@ -44,6 +44,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? InventoryCapacityUsed { get; set; }
         public StandardProperty? InventorySlotSelected { get; set; }
         public StandardProperty? CarlosInventorySlotSelected { get; set; }
+        public StandardProperty? ItemBoxState { get; set; }
         public StandardProperty? Stage { get; set; }
         public StandardProperty? Room { get; set; }
         public StandardProperty? LastRoom { get; set; }

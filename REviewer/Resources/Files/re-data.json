@@ -342,7 +342,7 @@
             },
             "66": {
                 "Name": "Serum",
-                "Type": "Key Item",
+                "Type": "Nothing",
                 "Img": "resources/re1/serum.png"
             },
             "67": {
@@ -965,7 +965,7 @@
             },
             "55": {
                 "Name": "JaguarStone",
-                "Type": "Item",
+                "Type": "Nothing",
                 "Img": "resources/re2/jaguar-stone.png"
             },
             "56": {
@@ -1340,6 +1340,7 @@
             "InventoryEnd": "0x98ED5D",
             "ItemBoxStart": "0x098ED68",
             "ItemBoxEnd": "0x098EE59",
+            "ItemBoxState": "00691F70",
             "Capacity": "0x98E9A4",
             "Character": "0x98EB24",
             "InventorySlotSelected": "0x691F68",
@@ -1418,6 +1419,9 @@
                 "Size": "1"
             },
             "InventorySlotSelected": {
+                "Size": "1"
+            },
+            "ItemBoxState": {
                 "Size": "1"
             },
             "Stage": {
@@ -1624,7 +1628,7 @@
             "23": {
                 "Name": "ShotgunAmmo",
                 "Type": "Ammo",
-                "Img": "resources/re3/magnum-bullets.png"
+                "Img": "resources/re3/shotgun-shells.png"
             },
             "24": {
                 "Name": "GrenadeRounds",

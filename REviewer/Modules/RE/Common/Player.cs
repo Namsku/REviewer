@@ -835,6 +835,20 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(PartnerPointer));
             }
         }
+
+        private VariableData? _itemboxState;
+        public VariableData? ItemBoxState
+        {
+            get { return _itemboxState; }
+            set
+            {
+                if (_itemboxState != value)
+                {
+                    _itemboxState = value;
+                    OnPropertyChanged(nameof(ItemBoxState));
+                }
+            }
+        }
     }
 
 

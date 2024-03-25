@@ -185,7 +185,7 @@ namespace REviewer.Modules.RE.Common
                     }
                     else if (SELECTED_GAME == 1)
                     {
-                        isValid = state == 0x4000;
+                        isValid = ((state == 0x4000) && (ItemBoxState?.Value != 1));
                     }
                     else if (SELECTED_GAME == 2)
                     {
@@ -224,9 +224,16 @@ namespace REviewer.Modules.RE.Common
 
                 // Update the ImageItem at the given index in the InventoryImages list
 
-                InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString() + pourcentage_ammo;
-                InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
-                InventoryImages[index].Color = CustomColors.Default;
+                if (InventoryImages[index].Source == "resources/re2/reserved.png")
+                {
+                    InventoryImages[index].TextVisibility = Visibility.Hidden;
+                }
+                else
+                {
+                    InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString() + pourcentage_ammo;
+                    InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
+                    InventoryImages[index].Color = CustomColors.Default;
+                }
 
                 InventoryImages[index].Color = item.Color switch
                 {

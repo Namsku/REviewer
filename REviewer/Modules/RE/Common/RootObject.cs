@@ -334,6 +334,7 @@ namespace REviewer.Modules.RE.Common
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
+            ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
 
             // Carlos RE3
             CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
