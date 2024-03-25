@@ -118,8 +118,6 @@ namespace REviewer.Modules.RE.Common
                 var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
                 var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
 
-                Console.WriteLine($"{inventory_name_start} - {inventory_name_end}");
-                
                 Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
                 InventoryImages = new ObservableCollection<ImageItem>();
                 InventoryImages.Clear();

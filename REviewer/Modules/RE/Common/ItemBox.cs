@@ -44,13 +44,7 @@ namespace REviewer.Modules.RE.Common
             var inventory_name_start = carlos ? "CarlosItemBoxStart" : "ItemBoxStart";
             var inventory_name_end = carlos ? "CarlosItemBoxEnd" : "ItemBoxEnd";
 
-            Console.WriteLine("ItemBox Start: " + bio.Offsets[inventory_name_start] + " -> " + carlos);
-
-            if (ItemBox == null)
-            {
-                ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
-            }
-
+            ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
             ItemboxImages = new ObservableCollection<ImageItem>();
             ItemboxImages.Clear();
 
@@ -64,6 +58,7 @@ namespace REviewer.Modules.RE.Common
                     Width = 45,
                     Height = 60,
                     Opacity = 1,
+                    Visibility = Visibility.Collapsed,
                 });
 
                 // Subscribe to the PropertyChanged event of the Item and Quantity properties
@@ -78,6 +73,7 @@ namespace REviewer.Modules.RE.Common
             // Update the ImageItem at the given index in the InventoryImages list
             ItemboxImages[index].Source = IDatabase.Items[(byte)ItemBox[index].Item.Value].Img;
             ItemboxImages[index].Text = ItemBox[index].Quantity.Value.ToString();
+            ItemboxImages[index].Visibility = (byte)ItemBox[index].Item.Value != 0 ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged(nameof(ItemboxImages));
         }
 

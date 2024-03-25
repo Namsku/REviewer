@@ -271,7 +271,8 @@
                                        Source="{Binding Source}" 
                                        Width="{Binding Width}" 
                                        Height="{Binding Height}" 
-                                       Opacity="{Binding Opacity}" />
+                                       Opacity="{Binding Opacity}" 
+                                       Visibility="{Binding Visibility}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
