@@ -14,6 +14,11 @@ using REviewer.Modules.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Timers;
 using Timer = System.Threading.Timer;
+using System.Windows.Documents;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Reflection;
+using System;
 
 
 namespace REviewer
@@ -109,6 +114,8 @@ namespace REviewer
         private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
+        private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
+        // private static Version CurrentVersion = System.Version.Parse("0.0.7");
 
         public SRT SRT { get; private set; }
         public Tracker TRK { get; private set; }
@@ -123,6 +130,8 @@ namespace REviewer
             InitializeSaveWatcher();
             InitializeProcessWatcher();
             InitializeRootObjectWatcher();
+
+            CheckForNewVersion();
 
             // Loading Data Context
             DataContext = this._ui;
@@ -302,14 +311,14 @@ namespace REviewer
                             string md5Hash = Library.GetProcessMD5Hash(_process);
 
                             // Check if the process has the Gemini DLL
-                            _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
-                            string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                            var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
+                            // _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
+                            // string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                            // var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
                             // Updating the TextBlock on the MainWindow
                             Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
                             Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                            Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
+                            // Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
                             // Set the Exited event handler
                             _process.EnableRaisingEvents = true;
@@ -330,8 +339,9 @@ namespace REviewer
                 lock (_lock)
                 {
                     // Check if the process is running
-                    if (_isProcessRunning && _isDdrawLoaded && _isSaveFound && _residentEvilGame == null)
+                    if (_isProcessRunning && _isSaveFound && _residentEvilGame == null)
                     {
+                        Console.WriteLine("Mapping stuff");
                         MappingGameVariables();
                         _rootObjectWatcher?.Dispose();
                     }
@@ -392,12 +402,16 @@ namespace REviewer
         {
             // The process has exited
             _isProcessRunning = false;
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+            _isMappingDone = false;
 
-            var content = "Not Found";
 
             // Stoping the monitoring 
             _MVariables?.Stop();
+            _MVEnemies?.Stop();
+
+            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
+
+            var content = "Not Found";
 
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
@@ -709,5 +723,71 @@ namespace REviewer
                 _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
             }
         }
+
+        private void CheckForNewVersion()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var version = await GetLatestVersionAsync();
+                    // Console.WriteLine($"{version} - {CurrentVersion}");
+                    if (version > CurrentVersion)
+                    {
+                        Dispatcher.Invoke(() => versionBox.Visibility = Visibility.Visible);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            });
+        }
+
+        private async Task<Version> GetLatestVersionAsync()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
+            var response = await client.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
+            // Console.WriteLine(response);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var body = JsonConvert.DeserializeObject<VersionCheckBody>(jsonResponse);
+                var tagName = body.tag_name.Split('-')[0].Replace("v","");
+                return System.Version.Parse(tagName);
+            }
+            throw new Exception("Unable to get latest version");
+
+        }
+
+        private void UpdateLink_Click(object sender, RoutedEventArgs e)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "https://github.com/namsku/biorand/releases",
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        }
+
+        private void Link_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Hyperlink hyperlink)
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = hyperlink.NavigateUri.ToString(),
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+        }
     }
+
+    public class VersionCheckBody
+    {
+        public string tag_name { get; set; }
+    }
+
 }

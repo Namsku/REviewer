@@ -5,6 +5,10 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
+        public bool isGameDone = false;
+        public bool isNewGame = false;
+        public double FinalInGameTime = 0;
+
         private double _saveState;
 
         private double _srtTimeHotfix;
@@ -77,6 +81,8 @@ namespace REviewer.Modules.RE.Common
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
+                    isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
+                    isNewGame = (isGameDone == true && GameSave.Value == 0);
                 }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
@@ -88,6 +94,19 @@ namespace REviewer.Modules.RE.Common
 
                     OnPropertyChanged(nameof(Deaths));
                     OnPropertyChanged(nameof(Health));
+                }
+
+                if(isGameDone = true && FinalInGameTime == 0)
+                {
+                    FinalInGameTime = GameTimer.Value / 60.0;
+                    OnPropertyChanged(nameof(IGTHumanFormat));
+                }
+
+                if(isNewGame)
+                {
+                    FinalInGameTime = 0;
+                    isGameDone = false;
+                    OnPropertyChanged(nameof(IGTHumanFormat));
                 }
             }
         }
@@ -192,6 +211,10 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 1)
                 {
+                    if (isGameDone)
+                    {
+                        return TimeSpan.FromSeconds(FinalInGameTime).ToString(@"hh\:mm\:ss\.ff");
+                    }
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
                 }
                 else if (SELECTED_GAME == 2)
@@ -203,7 +226,7 @@ namespace REviewer.Modules.RE.Common
                             _srtTimer.Stop();
                             _saveState = 0;
                         }
-                        return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                        return TimeSpan.FromSeconds(_gameSave.Value).ToString(@"hh\:mm\:ss\.ff");
                     }
                     else
                     {

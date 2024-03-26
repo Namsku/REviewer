@@ -45,7 +45,23 @@
                 <local:REviewerMenuItem MenuIndex="3" Image="/resources/icons/about.png" />
             </ListView>
 
-            <StackPanel Grid.Column="1" Margin="10">
+  
+            <StackPanel Grid.Column="1" Margin="0">
+                <Border x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
+                    <TextBlock><Hyperlink Click="UpdateLink_Click">A new update is available!</Hyperlink></TextBlock>
+                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" x:Name="versionLabel" />
+                    <StackPanel Grid.Column="2" Margin="0 0" Orientation="Horizontal">
+                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://discord.gg/xxqtuubayy">Discord</Hyperlink></TextBlock>
+                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://github.com/Namsku/REviewer/">GitHub</Hyperlink></TextBlock>
+                    </StackPanel>
+                </Grid>
                 <Grid>
                     <Grid x:Name="panelMain" Visibility="Visible">
                         <StackPanel>
