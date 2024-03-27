@@ -8,7 +8,7 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 ## Overview
 
 ### Resident Evil 1
-![Alt Text](img/reviewer-re.png)
+![Alt Text](img/reviewer-re1.png)
 
 ### Resident Evil 2
 ![Alt Text](img/reviewer-re2.png)
