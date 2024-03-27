@@ -28,6 +28,8 @@ namespace REviewer.Modules.RE
             { "biohazard", "Bio" },
             { "Bio2 1.10", "Bio2 1.10" },
             { "bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.1", "Bio2 1.10" },
+            { "bio2 v1.1", "Bio2 1.10" },
             { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
             { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
             { "bio3", "BIOHAZARD(R) 3 PC" },

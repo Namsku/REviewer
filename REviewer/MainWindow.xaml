@@ -100,14 +100,6 @@
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Content="Rebirth" HorizontalAlignment="Left" Margin="10,-14,0,0" Height="25" Grid.Column="0"/>
-                                        <TextBlock Name="Rebirth" Text="Rebirth Value" HorizontalAlignment="Left" Margin="10,-4,10,0" Height="25" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
                                         <Label Content="Save" HorizontalAlignment="Left" Margin="10,-14,0,0" Height="25" Grid.Column="0"/>
                                         <TextBlock Name="Save" Text="Save Value" HorizontalAlignment="left" Margin="24, -4,10,0" Height="25" Grid.Column="1"/>
                                     </Grid>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -12,6 +13,9 @@ namespace REviewer.Modules.RE.Common
         private int _shots;
         private int _hits;
         private int _roomsVisited;
+
+        public Visibility DebugVisibility { get; set; }
+        public Visibility HitVisibility { get; set; }
 
         public int Deaths
         {

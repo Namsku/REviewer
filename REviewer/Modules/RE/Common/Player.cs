@@ -849,6 +849,41 @@ namespace REviewer.Modules.RE.Common
                 }
             }
         }
+
+        private VariableData? _hitFlag;
+        public VariableData? HitFlag
+        {
+            get { return _hitFlag; }
+            set
+            {
+                if (value != _hitFlag)
+                {
+                    if (_hitFlag != null)
+                    {
+                        _hitFlag.PropertyChanged -= HitFlag_PropertyChanged;
+                    }
+
+                    _hitFlag = value;
+                    Console.WriteLine(HitFlag.Value);
+
+                    if (_hitFlag != null)
+                    {
+                        _hitFlag.PropertyChanged += HitFlag_PropertyChanged;
+                    }
+                }
+            }
+        }
+        private void HitFlag_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (HitFlag.Value != 0)
+                {
+                    Hits += 1;
+                    OnPropertyChanged(nameof(Hits));
+                }
+            }
+        }
     }
 
 

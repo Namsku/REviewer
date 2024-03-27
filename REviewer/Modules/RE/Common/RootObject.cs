@@ -26,6 +26,8 @@ namespace REviewer.Modules.RE.Common
             { "biohazard", 0x05 },
             { "bio2 1.10", 0x07 },
             { "Bio2 1.10", 0x07 },
+            { "Bio2 1.1", 0x07 },
+            { "Bio2 v1.1", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
         };
@@ -335,6 +337,7 @@ namespace REviewer.Modules.RE.Common
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
             ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
+            HitFlag = GetVariableData("HitFlag", bio.Player.HitFlag);
 
             // Carlos RE3
             CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
@@ -376,6 +379,8 @@ namespace REviewer.Modules.RE.Common
             else if (processName == "bio2 1.10")
             {
                 SELECTED_GAME = 1;
+                DebugVisibility = Visibility.Collapsed;
+                HitVisibility = Visibility.Visible;
             }
             else if (processName == "biohazard(r) 3 pc")
             {

@@ -167,7 +167,7 @@ namespace REviewer
             {
                 UpdateUIElement(MD5, content);
                 UpdateUIElement(ProcessTextBlock, content);
-                UpdateUIElement(Rebirth, content);
+                // UpdateUIElement(Rebirth, content);
 
                 _isSaveFound = "Not Found" == savePath ? false : true;
                 var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
@@ -339,9 +339,8 @@ namespace REviewer
                 lock (_lock)
                 {
                     // Check if the process is running
-                    if (_isProcessRunning && _isSaveFound && _residentEvilGame == null)
+                    if (_isProcessRunning && _isSaveFound)
                     {
-                        Console.WriteLine("Mapping stuff");
                         MappingGameVariables();
                         _rootObjectWatcher?.Dispose();
                     }
@@ -416,7 +415,7 @@ namespace REviewer
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
             Library.UpdateTextBlock(ProcessTextBlock, text: content, color: CustomColors.Red, isBold: true);
-            Library.UpdateTextBlock(Rebirth, text: content, color: CustomColors.Red, isBold: true);
+            // Library.UpdateTextBlock(Rebirth, text: content, color: CustomColors.Red, isBold: true);
 
             // Log the event
             Logger.Instance.Info($"Process {_processName} has exited");
@@ -511,7 +510,7 @@ namespace REviewer
                 UpdateConfigFile("RE2", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
+                if (ComboBoxGameSelection.SelectedIndex == 1) _isSaveFound = true;
             }
         }
 
@@ -528,7 +527,7 @@ namespace REviewer
                 UpdateConfigFile("RE3", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
+                if (ComboBoxGameSelection.SelectedIndex == 2) _isSaveFound = true;
             }
         }
 
@@ -684,7 +683,7 @@ namespace REviewer
             {
                 size = 396;
             }
-            else if (pname == "bio2 1.10")
+            else if (pname == "bio2 1.10" || pname == "bio2 1.1")
             {
                 selectedGame = 1;
                 size = 4;

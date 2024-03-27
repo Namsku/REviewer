@@ -277,12 +277,12 @@ namespace REviewer.Modules.RE.Common
                         else 
                         { 
                             var hp = Enemy.CurrentHealth;
-                            if (hp > 60000 || hp < 1250 || ( hp > 20000 && hp < 21000))
+                            if (hp > 60000 || hp < 2000 || ( hp > 20000 && hp < 21000))
                                 EnemyMaxHP = Enemy.CurrentHealth;
                         }
                     }
 
-                    if (Enemy.CurrentHealth > 40000)
+                    if (Enemy.CurrentHealth > 60000)
                     {
                         Enemy.Visibility = Visibility.Collapsed;
                     }
