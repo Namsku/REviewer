@@ -119,13 +119,13 @@
                                     <CheckBox Name="ShowItemBox" Content="Show ItemBox (This takes a lot place)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15"/>
                                     <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Setting Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}"/>
                                     <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}"/>
-
+                                    
                                     <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
                                     <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
                                 </StackPanel>
                             </GroupBox>
 
-                            <Button Content="Run" HorizontalAlignment="Right" Margin="10,35,0,0" Width="75" Height="25" Click="Run_Click"/>
+                            <Button Content="Run" HorizontalAlignment="Right" Margin="10,35,10,10" Width="75" Height="25" Click="Run_Click"/>
                         </StackPanel>
                     </Grid>
 
