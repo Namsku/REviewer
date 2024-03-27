@@ -8,7 +8,7 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 ## Overview
 
 ### Resident Evil 1
-![Alt Text](img/reviewer.png)
+![Alt Text](img/reviewer-re1.png)
 
 ### Resident Evil 2
 ![Alt Text](img/reviewer-re2.png)
@@ -86,11 +86,11 @@ REviewer remembers the last item seen by the player, allowing them to quickly re
 To start using REviewer, follow these steps:
 
 1. Download and install the tool. 
-2. Launch the Resident Evil game you want to speedrun.
-3. Open REviewer
-4. Edit -> Settings -> Save the save repository path of your game (usually /savedata)
-5. Select the appropriate game version.
-7. Enjoy your speedrunning experience!
+2. Open REviewer
+3. Edit -> Settings -> Save the save repository path of your game (usually /savedata)
+4. Select the appropriate game version.
+5. Launch your game
+6. Enjoy your speedrunning experience!
 
 ## FAQ
 
@@ -104,6 +104,8 @@ SRT is able to recognize some process name:
 - biohazard.exe
 - Bio2 1.10.exe
 - bio2 1.10.exe
+- bio2 v1.1.exe
+- bio2 1.1.exe
 
 ### How works Timers?
 
