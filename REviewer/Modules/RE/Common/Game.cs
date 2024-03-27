@@ -5,8 +5,27 @@ namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
-        private int _previousState;
+        public bool isGameDone = false;
+        public bool isNewGame = false;
+        public double FinalInGameTime = 0;
 
+        private double _saveState;
+
+        private double _srtTimeHotfix;
+        public double SrtTimeHotfix
+        {
+            get { return _srtTimeHotfix; }
+            set
+            {
+                _srtTimeHotfix = value;
+                OnPropertyChanged(nameof(SrtTimeHotfix));
+            }
+        }
+
+        private System.Timers.Timer _srtTimer;
+        public bool timerRunning = false;
+
+        private int _previousState;
         public int PreviousState
         {
             get { return _previousState; }
@@ -62,6 +81,8 @@ namespace REviewer.Modules.RE.Common
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
+                    isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
+                    isNewGame = (isGameDone == true && GameSave.Value == 0);
                 }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
@@ -73,6 +94,19 @@ namespace REviewer.Modules.RE.Common
 
                     OnPropertyChanged(nameof(Deaths));
                     OnPropertyChanged(nameof(Health));
+                }
+
+                if(isGameDone = true && FinalInGameTime == 0)
+                {
+                    FinalInGameTime = GameTimer.Value / 60.0;
+                    OnPropertyChanged(nameof(IGTHumanFormat));
+                }
+
+                if(isNewGame)
+                {
+                    FinalInGameTime = 0;
+                    isGameDone = false;
+                    OnPropertyChanged(nameof(IGTHumanFormat));
                 }
             }
         }
@@ -177,10 +211,82 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 1)
                 {
+                    if (isGameDone)
+                    {
+                        return TimeSpan.FromSeconds(FinalInGameTime).ToString(@"hh\:mm\:ss\.ff");
+                    }
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                }
+                else if (SELECTED_GAME == 2)
+                {
+                    if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0)
+                    {
+                        if (timerRunning)
+                        {
+                            _srtTimer.Stop();
+                            _saveState = 0;
+                        }
+                        return TimeSpan.FromSeconds(_gameSave.Value).ToString(@"hh\:mm\:ss\.ff");
+                    }
+                    else
+                    {
+                        if (!timerRunning) StartSRTTimer();
+                        return TimeSpan.FromMilliseconds(_gameSave.Value  + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
+                    }
                 }
 
                 return 0.ToString();
+            }
+        }
+
+        public void StartSRTTimer()
+        {
+            timerRunning = true;
+            SrtTimeHotfix = 0;
+            Console.WriteLine("Starting SRT Timer");
+
+            _srtTimer = new System.Timers.Timer(20); // Fire event every 100 milliseconds
+            _srtTimer.Elapsed += TimerElapsed;
+            _srtTimer.Start();
+        }
+
+        private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            SrtTimeHotfix += 20;
+            OnPropertyChanged(nameof(IGTHumanFormat));
+        }
+
+        private VariableData? _gameSave;
+
+        public VariableData? GameSave
+        {
+            get { return _gameSave; }
+            set
+            {
+                if (_gameSave != value)
+                {
+                    if (_gameSave != null)
+                    {
+                        _gameSave.PropertyChanged -= GameSave_PropertyChanged;
+                    }
+
+                    _gameSave = value;
+
+                    if (_gameSave != null)
+                    {
+                        _gameSave.PropertyChanged += GameSave_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(GameSave));
+                }
+            }
+        }
+
+        private void GameSave_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                OnPropertyChanged(nameof(IGTHumanFormat));
             }
         }
 

@@ -26,11 +26,15 @@ namespace REviewer.Modules.RE.Common
             { "biohazard", 0x05 },
             { "bio2 1.10", 0x07 },
             { "Bio2 1.10", 0x07 },
+            { "Bio2 1.1", 0x07 },
+            { "Bio2 v1.1", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
         };
 
         private static readonly string[] ITEM_TYPES = new string[] { "Key Item", "Optionnal Key Item", "Nothing" };
+
+        private bool disposed = false;
 
         public int MAX_INVENTORY_SIZE;
         public int SELECTED_GAME;
@@ -119,27 +123,25 @@ namespace REviewer.Modules.RE.Common
         {
             Dictionary<string, string> db = Library.GetGameList();
 
+            // Dispose of existing watcher if any
+            DisposeFileSystemWatcher();
+
+            Watcher = new FileSystemWatcher();
+            var processName = IDatabase.GetProcessName();
+            Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");
+            Watcher.Created += SaveFileDetected;
+            Watcher.EnableRaisingEvents = true;
+        }
+
+        private void DisposeFileSystemWatcher()
+        {
             if (Watcher != null)
             {
                 Watcher.EnableRaisingEvents = false;
+                Watcher.Created -= SaveFileDetected;
                 Watcher.Dispose();
+                Watcher = null;
             }
-
-            if (Watcher == null)
-            {
-                Watcher = new FileSystemWatcher();
-            }
-
-            var processName = IDatabase.GetProcessName();
-            Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");  // replace with your directory
-            // Console.WriteLine(Watcher.Path);
-            // Watcher.Filter = "*.dat";  // watch for .dat files
-
-            // Add event handlers.
-            Watcher.Created += new FileSystemEventHandler(SaveFileDetected);
-
-            // Begin watching.
-            Watcher.EnableRaisingEvents = true;
         }
 
         private void SaveState()
@@ -315,6 +317,7 @@ namespace REviewer.Modules.RE.Common
             Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
             GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
             GameFrame = GetVariableData("GameFrame", bio.Game.Frame);
+            GameSave = GetVariableData("GameSave", bio.Game.Save);
             MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
             SaveContent = GetVariableData("SaveContent", bio.Game.SaveContent);
 
@@ -333,6 +336,8 @@ namespace REviewer.Modules.RE.Common
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
+            ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
+            HitFlag = GetVariableData("HitFlag", bio.Player.HitFlag);
 
             // Carlos RE3
             CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
@@ -374,6 +379,8 @@ namespace REviewer.Modules.RE.Common
             else if (processName == "bio2 1.10")
             {
                 SELECTED_GAME = 1;
+                DebugVisibility = Visibility.Collapsed;
+                HitVisibility = Visibility.Visible;
             }
             else if (processName == "biohazard(r) 3 pc")
             {
@@ -390,6 +397,57 @@ namespace REviewer.Modules.RE.Common
                 {
                     return null;
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            if (GameState != null)
+            {
+                GameState.PropertyChanged -= GameState_PropertyChanged;
+            }
+
+            if (GameTimer != null)
+            {
+                GameTimer.PropertyChanged -= Timer_PropertyChanged;
+            }
+
+            if (GameFrame != null)
+            {
+                GameFrame.PropertyChanged -= Frame_PropertyChanged;
+            }
+
+            if (MainMenu != null)
+            {
+                MainMenu.PropertyChanged -= MainMenu_PropertyChanged;
+            }
+
+            if (SaveContent != null)
+            {
+                SaveContent.PropertyChanged -= SaveContent_PropertyChanged;
+            }
+
+            DisposeInventory();
+            DisposeItemBox();
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed resources
+                    DisposeFileSystemWatcher();
+                }
+
+                // Dispose unmanaged resources
+
+                disposed = true;
             }
         }
 

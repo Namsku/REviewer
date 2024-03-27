@@ -1,66 +1,79 @@
-﻿using System.Collections;
+﻿using REviewer.Modules.RE.Common;
+using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Media;
-using REviewer.Modules.RE.Common;
+using System.Threading;
 
 namespace REviewer.Modules.Utils
 {
     public class MonitorVariables
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool WriteProcessMemory(nint processHandle, nint baseAddress, byte[] buffer, uint size, out int bytesWritten);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool ReadProcessMemory(nint processHandle, nint baseAddress, [Out] byte[] buffer, uint size, out int bytesRead);
-
-        private nint _processHandle;
-        private readonly string _processName;
         private readonly object _processHandleLock = new();
-
-        private const int BYTE_SIZE = 1;
-        private const int INT_SIZE = 4;
-        private const int MONITORING_INTERVAL = 55;
-
-        private System.Threading.Timer? _monitoringTimer;
-
+        private readonly object _lockObject = new();
+        private readonly string _processName;
+        private nint _processHandle;
         private volatile int _running = 1;
-
+        private System.Threading.Timer? _monitoringTimer;
         private RootObject? _currentRootObject;
         private ObservableCollection<EnnemyTracking>? _enemyTracking;
-        private readonly object _lockObject = new();
+
+        private const int MonitoringInterval = 55;
+        private const int ByteSize = 1;
+        private const int IntSize = 4;
 
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
-        private List<string> _debug = new();
-
-        public MonitorVariables(int processHandle, string processName)
+        public MonitorVariables(nint processHandle, string processName)
         {
             _processHandle = processHandle;
             _processName = processName;
         }
 
-        private bool CanMonitorObject(object obj)
+        public void Start(RootObject? rootObject)
         {
-            if (_processHandle == 0 || obj == null)
+            if (rootObject == null)
             {
-                Stop();
-                return false;
+                Logger.Instance.Error("RootObject is null");
+                return;
             }
 
-            return true;
+            _currentRootObject = rootObject;
+            StartMonitoring(rootObject);
         }
 
-        private bool IsProcessActive()
+        public void Start(ObservableCollection<EnnemyTracking> enemyTrackings)
         {
-            return Process.GetProcessesByName(_processName).Length > 0;
+            if (enemyTrackings == null)
+            {
+                Logger.Instance.Error("EnemyTrackings is null");
+                return;
+            }
+
+            _enemyTracking = enemyTrackings;
+            StartMonitoring(enemyTrackings);
         }
 
-        public void Monitor()
+        public void Stop()
+        {
+            Logger.Instance.Info("Stopping monitoring");
+            _monitoringTimer?.Dispose();
+            _monitoringTimer = null;
+            Interlocked.Exchange(ref _running, 0);
+        }
+
+        private void StartMonitoring(object monitoredObject)
+        {
+            _monitoringTimer = new System.Threading.Timer(state => Monitor(monitoredObject), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(MonitoringInterval));
+            Logger.Instance.Info($"Started monitoring for {monitoredObject.GetType().Name}");
+        }
+
+        private void Monitor(object obj)
         {
             bool isProcessActive;
             lock (_processHandleLock)
@@ -75,14 +88,7 @@ namespace REviewer.Modules.Utils
 
             if (isProcessActive)
             {
-                if(_currentRootObject != null)
-                {
-                    MonitorObject(_currentRootObject);
-                }
-                else if (_enemyTracking != null)
-                {
-                    MonitorObject(_enemyTracking);
-                }
+                MonitorObject(obj);
             }
         }
 
@@ -99,33 +105,47 @@ namespace REviewer.Modules.Utils
 
             foreach (var property in properties)
             {
-                if (property.PropertyType != typeof(System.String)
-                    && property.PropertyType != typeof(System.Int32)
-                        && property.Name != "KeyItemImages"
-                            && property.PropertyType != typeof(ImageSource)
-                             && property.PropertyType != typeof(Brush)
-                                && property.PropertyType != typeof(Brushes)
-                                    && property.PropertyType != typeof(List<string>)
-                                )
-                {
-                    MonitorProperty(property, obj);
-                }
+                if (!IsValidProperty(property))
+                    continue;
+
+                MonitorProperty(property, obj);
             }
+        }
+
+        private bool IsValidProperty(PropertyInfo property)
+        {
+            return property.PropertyType != typeof(string)
+                   && property.PropertyType != typeof(int)
+                   && property.Name != "KeyItemImages"
+                   && property.PropertyType != typeof(System.Windows.Media.ImageSource)
+                   && property.PropertyType != typeof(System.Windows.Media.Brush)
+                   && property.PropertyType != typeof(System.Windows.Media.Brushes)
+                   && property.PropertyType != typeof(List<string>);
+        }
+
+        private bool CanMonitorObject(object obj)
+        {
+            if (_processHandle == 0 || obj == null)
+            {
+                Stop();
+                return false;
+            }
+
+            return true;
         }
 
         private void MonitorProperty(PropertyInfo property, object obj)
         {
-            
             if (obj == null)
             {
                 return;
             }
 
-            lock (_lockObject) 
+            lock (_lockObject)
             {
-                if (obj is ObservableCollection<EnnemyTracking> ennemyTrackings)
+                if (obj is ObservableCollection<EnnemyTracking> enemyTrackings)
                 {
-                    foreach (var item in ennemyTrackings)
+                    foreach (var item in enemyTrackings)
                     {
                         MonitorObject(item);
                     }
@@ -134,7 +154,7 @@ namespace REviewer.Modules.Utils
                 }
 
                 var value = property?.GetValue(obj);
-                
+
                 if (value is VariableData variableData)
                 {
                     MonitorVariableData(variableData);
@@ -152,6 +172,12 @@ namespace REviewer.Modules.Utils
                 }
             }
         }
+
+        private bool IsProcessActive()
+        {
+            return Process.GetProcessesByName(_processName).Length > 0;
+        }
+
         private void MonitorVariableData(VariableData variableData)
         {
             if (variableData.IsUpdated)
@@ -165,7 +191,6 @@ namespace REviewer.Modules.Utils
             }
         }
 
-
         public int ReadVariableData(VariableData variableData)
         {
             byte[] buffer = ReadProcessMemory(variableData.Offset, (uint)variableData.Size);
@@ -177,8 +202,8 @@ namespace REviewer.Modules.Utils
 
             return variableData.Size switch
             {
-                INT_SIZE => BitConverter.ToInt32(buffer, 0),
-                BYTE_SIZE => buffer[0],
+                IntSize => BitConverter.ToInt32(buffer, 0),
+                ByteSize => buffer[0],
                 _ => throw new InvalidOperationException("Invalid variable size"),
             };
         }
@@ -203,46 +228,12 @@ namespace REviewer.Modules.Utils
             return buffer;
         }
 
-        public void Start(RootObject? rootObject)
-        {
-            if (rootObject == null)
-            {
-                Logger.Instance.Error("RootObject is null");
-                return;
-            }
-
-            _currentRootObject = rootObject;
-            _monitoringTimer = new System.Threading.Timer(state => Monitor(), rootObject, TimeSpan.Zero, TimeSpan.FromMilliseconds(MONITORING_INTERVAL));
-            Logger.Instance.Info("Started RootObject monitoring");
-        }
-
-        public void Start(ObservableCollection<EnnemyTracking> ennemyTrackings)
-        {
-            if (ennemyTrackings == null)
-            {
-                Logger.Instance.Error("EnnemyTrackings is null");
-                return;
-            }
-
-            _enemyTracking = ennemyTrackings;
-            _monitoringTimer = new System.Threading.Timer(state => Monitor(), ennemyTrackings, TimeSpan.Zero, TimeSpan.FromMilliseconds(MONITORING_INTERVAL));
-            Logger.Instance.Info("Started Enemy monitoring");
-        }
-
-        public void Stop()
-        {
-            Logger.Instance.Info("Stopping monitoring");
-            _monitoringTimer?.Dispose();
-            _monitoringTimer = null;
-            Interlocked.Exchange(ref _running, 0);
-        }
-
         public bool WriteVariableData(VariableData variableData, int newValue)
         {
             byte[] buffer = variableData.Size switch
             {
-                INT_SIZE => BitConverter.GetBytes(newValue),
-                BYTE_SIZE => new byte[] { (byte)newValue },
+                IntSize => BitConverter.GetBytes(newValue),
+                ByteSize => new byte[] { (byte)newValue },
                 _ => throw new InvalidOperationException("Invalid variable size"),
             };
 
@@ -261,6 +252,12 @@ namespace REviewer.Modules.Utils
             }
         }
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool WriteProcessMemory(nint processHandle, nint baseAddress, byte[] buffer, uint size, out int bytesWritten);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool ReadProcessMemory(nint processHandle, nint baseAddress, [Out] byte[] buffer, uint size, out int bytesRead);
+
         internal void UpdateProcessHandle(nint handle)
         {
             _processHandle = handle;
@@ -276,3 +273,4 @@ namespace REviewer.Modules.Utils
         }
     }
 }
+

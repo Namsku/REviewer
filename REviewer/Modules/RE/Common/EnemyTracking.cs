@@ -58,7 +58,7 @@ namespace REviewer.Modules.RE.Common
             {16, "Zombie"},
             {17, "Brad"},
             {18, "Zombie M"},
-            {19, "Zombie F"},
+            {19, "Misty"},
             {21, "Zombie T"},
             {22, "Zombie S"},
             {23, "Zombie N"},
@@ -76,7 +76,7 @@ namespace REviewer.Modules.RE.Common
             {40, "G-Adult"},
             {41, "Insect"},
             {42, "Mr.X"},
-            {43, "Sr.X"},
+            {43, "Uber X"},
             {45, "Arms"},
             {46, "Ivy"},
             {47, "Vines"},
@@ -84,7 +84,10 @@ namespace REviewer.Modules.RE.Common
             {49, "G2"},
             {50, "G3"},
             {51, "G4"},
-            {52, "G5"},
+            {52, "G4"},
+            {53, "G5"},
+            {54, "G5"},
+            {55, "G5 Arms"},
             {57, "Ivy P"},
             {58, "G Moth"},
             {59, "Maggots"},
@@ -274,12 +277,12 @@ namespace REviewer.Modules.RE.Common
                         else 
                         { 
                             var hp = Enemy.CurrentHealth;
-                            if (hp > 60000 || hp < 1250 || ( hp > 20000 && hp < 21000))
+                            if (hp > 60000 || hp < 2000 || ( hp > 20000 && hp < 21000))
                                 EnemyMaxHP = Enemy.CurrentHealth;
                         }
                     }
 
-                    if (Enemy.CurrentHealth > 60000 && EnemyMaxHP < 1500)
+                    if (Enemy.CurrentHealth > 60000)
                     {
                         Enemy.Visibility = Visibility.Collapsed;
                     }
@@ -314,6 +317,10 @@ namespace REviewer.Modules.RE.Common
                 else if (SelectedGame == 1)
                 {
                     Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
+                    if (Enemy.Name == "Unknown")
+                    {
+                        Logger.Instance.Error($"Enemy ID -> {EnemyID.Value} not Found");
+                    }
                     OnPropertyChanged(nameof(Enemy));
                 }
                 else if (SelectedGame == 2)

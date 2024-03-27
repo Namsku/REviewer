@@ -39,17 +39,14 @@ namespace REviewer.Modules.RE.Common
         }
         public void InitItemBox(Bio bio, bool carlos=false)
         {
+            DisposeItemBox();
+
             var inventory_name_start = carlos ? "CarlosItemBoxStart" : "ItemBoxStart";
             var inventory_name_end = carlos ? "CarlosItemBoxEnd" : "ItemBoxEnd";
 
-            if (ItemBox == null)
-            {
-                ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets["ItemBoxStart"]), Library.HexToInt(bio.Offsets["ItemBoxEnd"]));
-            }
-
+            ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
             ItemboxImages = new ObservableCollection<ImageItem>();
-
-            ItemBox.Clear();
+            ItemboxImages.Clear();
 
             for (int i = 0; i < ItemBox.Count; i++)
             {
@@ -61,12 +58,12 @@ namespace REviewer.Modules.RE.Common
                     Width = 45,
                     Height = 60,
                     Opacity = 1,
+                    Visibility = Visibility.Collapsed,
                 });
 
                 // Subscribe to the PropertyChanged event of the Item and Quantity properties
                 ItemBox[i].Item.PropertyChanged += (sender, e) => UpdateItemboxImage(index);
                 ItemBox[i].Quantity.PropertyChanged += (sender, e) => UpdateItemboxImage(index);
-
             }
 
         }
@@ -76,6 +73,19 @@ namespace REviewer.Modules.RE.Common
             // Update the ImageItem at the given index in the InventoryImages list
             ItemboxImages[index].Source = IDatabase.Items[(byte)ItemBox[index].Item.Value].Img;
             ItemboxImages[index].Text = ItemBox[index].Quantity.Value.ToString();
+            ItemboxImages[index].Visibility = (byte)ItemBox[index].Item.Value != 0 ? Visibility.Visible : Visibility.Collapsed;
+            OnPropertyChanged(nameof(ItemboxImages));
+        }
+
+        public void DisposeItemBox()
+        {
+            if (ItemBox == null) return;
+            for (int i = 0; i < ItemBox.Count; i++)
+            {
+                int index = i;
+                ItemBox[i].Item.PropertyChanged -= (sender, e) => UpdateItemboxImage(index);
+                ItemBox[i].Quantity.PropertyChanged -= (sender, e) => UpdateItemboxImage(index);
+            }
         }
     }
 }

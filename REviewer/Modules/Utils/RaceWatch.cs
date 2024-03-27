@@ -1,4 +1,6 @@
 
+using System.ComponentModel;
+
 namespace REviewer.Modules.Utils
 {
     public class RaceWatch

@@ -109,6 +109,8 @@ namespace REviewer.Modules.RE.Common
         }
         public void InitInventory(Bio bio, bool carlos = false)
         {
+            DisposeInventory(); // Dispose previous objects
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
@@ -116,8 +118,6 @@ namespace REviewer.Modules.RE.Common
                 var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
                 var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
 
-                Console.WriteLine($"{inventory_name_start} - {inventory_name_end}");
-                
                 Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
                 InventoryImages = new ObservableCollection<ImageItem>();
                 InventoryImages.Clear();
@@ -183,7 +183,7 @@ namespace REviewer.Modules.RE.Common
                     }
                     else if (SELECTED_GAME == 1)
                     {
-                        isValid = state == 0x4000;
+                        isValid = ((state == 0x4000) && (ItemBoxState?.Value != 1));
                     }
                     else if (SELECTED_GAME == 2)
                     {
@@ -222,9 +222,16 @@ namespace REviewer.Modules.RE.Common
 
                 // Update the ImageItem at the given index in the InventoryImages list
 
-                InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString() + pourcentage_ammo;
-                InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
-                InventoryImages[index].Color = CustomColors.Default;
+                if (InventoryImages[index].Source == "resources/re2/reserved.png")
+                {
+                    InventoryImages[index].TextVisibility = Visibility.Hidden;
+                }
+                else
+                {
+                    InventoryImages[index].Text = Inventory[index].Quantity?.Value.ToString() + pourcentage_ammo;
+                    InventoryImages[index].TextVisibility = ITEM_TYPES.Contains(item?.Type) ? Visibility.Hidden : Visibility.Visible;
+                    InventoryImages[index].Color = CustomColors.Default;
+                }
 
                 InventoryImages[index].Color = item.Color switch
                 {
@@ -236,5 +243,18 @@ namespace REviewer.Modules.RE.Common
                 };
             }
         }
+
+        public void DisposeInventory()
+        {
+            if (Inventory == null) return;
+            for (int i = 0; i < Inventory.Count; i++)
+            {
+                int index = i;
+                Inventory[i].Item.PropertyChanged -= (sender, e) => UpdateInventoryImage(index);
+                Inventory[i].Quantity.PropertyChanged -= (sender, e) => UpdateTextInventoryImage(index);
+                if (Inventory[i].Type != null) Inventory[i].Type.PropertyChanged -= (sender, e) => UpdateType(index);
+            }
+        }
+
     }
 }

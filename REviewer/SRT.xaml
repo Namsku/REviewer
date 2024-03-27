@@ -271,7 +271,8 @@
                                        Source="{Binding Source}" 
                                        Width="{Binding Width}" 
                                        Height="{Binding Height}" 
-                                       Opacity="{Binding Opacity}" />
+                                       Opacity="{Binding Opacity}" 
+                                       Visibility="{Binding Visibility}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -323,7 +324,7 @@
                     </Grid>
 
 
-                    <Grid Grid.Column="3">
+                    <Grid Grid.Column="3" Visibility="{Binding DebugVisibility}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -331,6 +332,16 @@
 
                         <TextBlock Grid.Row="0" Text="Debug" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
                         <TextBlock Name="Debug" Grid.Row="1" Text="{Binding Debug}" Foreground="White" FontSize="45" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <Grid Grid.Column="3" Visibility="{Binding HitVisibliity}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Hit" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
+                        <TextBlock Name="Hit" Grid.Row="1" Text="{Binding Hits}" Foreground="White" FontSize="45" HorizontalAlignment="Center"/>
                     </Grid>
                 </Grid>
             </StackPanel>

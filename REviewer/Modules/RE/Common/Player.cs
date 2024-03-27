@@ -1,6 +1,7 @@
 ﻿using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
@@ -426,6 +427,17 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
+                    if (SELECTED_GAME == 1)
+                    {
+                        if (value == 80)
+                        {
+                            Random random = new Random();
+                            List<string> easter_egg = new List<string> { "orca.png", "death2024.png", "namsku.png" };
+                            int randomIndex = random.Next(0, easter_egg.Count); // Generate a random index within the range of the list
+                            return "./resources/re2/" + easter_egg[randomIndex]; // Concatenate the random easter egg with the directory path
+                        }
+                    }
+
                     return IDatabase.GetPropertyImgById(value);
                 }
                 return null;
@@ -821,6 +833,55 @@ namespace REviewer.Modules.RE.Common
 
                 OnPropertyChanged(nameof(PartnerVisibility));
                 OnPropertyChanged(nameof(PartnerPointer));
+            }
+        }
+
+        private VariableData? _itemboxState;
+        public VariableData? ItemBoxState
+        {
+            get { return _itemboxState; }
+            set
+            {
+                if (_itemboxState != value)
+                {
+                    _itemboxState = value;
+                    OnPropertyChanged(nameof(ItemBoxState));
+                }
+            }
+        }
+
+        private VariableData? _hitFlag;
+        public VariableData? HitFlag
+        {
+            get { return _hitFlag; }
+            set
+            {
+                if (value != _hitFlag)
+                {
+                    if (_hitFlag != null)
+                    {
+                        _hitFlag.PropertyChanged -= HitFlag_PropertyChanged;
+                    }
+
+                    _hitFlag = value;
+                    Console.WriteLine(HitFlag.Value);
+
+                    if (_hitFlag != null)
+                    {
+                        _hitFlag.PropertyChanged += HitFlag_PropertyChanged;
+                    }
+                }
+            }
+        }
+        private void HitFlag_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (HitFlag.Value != 0)
+                {
+                    Hits += 1;
+                    OnPropertyChanged(nameof(Hits));
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using Newtonsoft.Json;
+using REviewer.Modules.RE.Json;
 
 
 namespace REviewer.Modules.Utils
@@ -30,6 +31,8 @@ namespace REviewer.Modules.Utils
                 { "biohazard", "RE1" },
                 { "Bio2 1.10", "RE2" },
                 { "bio2 1.10", "RE2" },
+                { "bio2 1.1", "RE2" },
+                { "bio2 v1.1", "RE2" },
                 { "BIOHAZARD(R) 3 PC", "RE3" },
                 { "biohazard(r) 3 pc", "RE3" },
                 { "bio3", "RE3" },
@@ -39,7 +42,7 @@ namespace REviewer.Modules.Utils
         public static Dictionary<string, List<string>> _gameVersions = new Dictionary<string, List<string>>
         {
             { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
-            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10" } },
+            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2 v1.1" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3" } }
         };
 

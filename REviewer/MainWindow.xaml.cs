@@ -12,6 +12,14 @@ using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Timers;
+using Timer = System.Threading.Timer;
+using System.Windows.Documents;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Reflection;
+using System;
+
 
 namespace REviewer
 {
@@ -98,17 +106,21 @@ namespace REviewer
         private ItemIDs? _itemIDs;
         private UINotify _ui;
 
-        public int BIOHAZARD_1_MK = 0;
-        public int BIOHAZARD_2_SC = 1;
-        public int BIOHAZARD_3_RB = 2;
+        public const int BIOHAZARD_1_MK = 0;
+        public const int BIOHAZARD_2_SC = 1;
+        public const int BIOHAZARD_3_RB = 2;
 
         private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC" };
         private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
+        private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
+        // private static Version CurrentVersion = System.Version.Parse("0.0.7");
 
         public SRT SRT { get; private set; }
         public Tracker TRK { get; private set; }
+
+        private readonly object _lock = new object();
 
         public MainWindow()
         {
@@ -119,29 +131,32 @@ namespace REviewer
             InitializeProcessWatcher();
             InitializeRootObjectWatcher();
 
+            CheckForNewVersion();
+
             // Loading Data Context
             DataContext = this._ui;
+
+            Closed += MainWindow_Closed;
         }
 
         private void InitCheckBoxes()
         {
-            if (_ui == null)
-                _ui = new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
+            _ui ??= new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
 
-            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_1_MK)
+            switch (ComboBoxGameSelection.SelectedIndex)
             {
-                _ui.ChrisInventory = Visibility.Visible;
-                _ui.Sherry = Visibility.Collapsed;
-            }
-            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_SC)
-            {
-                _ui.ChrisInventory = Visibility.Collapsed;
-                _ui.Sherry = Visibility.Visible;
-            }
-            else if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_3_RB)
-            {
-                _ui.Sherry = Visibility.Collapsed;
-                _ui.ChrisInventory = Visibility.Collapsed;
+                case BIOHAZARD_1_MK:
+                    _ui.ChrisInventory = Visibility.Visible;
+                    _ui.Sherry = Visibility.Collapsed;
+                    break;
+                case BIOHAZARD_2_SC:
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Visible;
+                    break;
+                case BIOHAZARD_3_RB:
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Collapsed;
+                    break;
             }
         }
 
@@ -152,7 +167,7 @@ namespace REviewer
             {
                 UpdateUIElement(MD5, content);
                 UpdateUIElement(ProcessTextBlock, content);
-                UpdateUIElement(Rebirth, content);
+                // UpdateUIElement(Rebirth, content);
 
                 _isSaveFound = "Not Found" == savePath ? false : true;
                 var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
@@ -160,17 +175,18 @@ namespace REviewer
                 Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
                 // Updating the TextBox from the Settings panel
-                if (position == BIOHAZARD_1_MK)
+
+                switch (position)
                 {
-                    Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
-                }
-                else if (position == BIOHAZARD_2_SC)
-                {
-                    Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
-                }
-                else if (position == BIOHAZARD_3_RB)
-                {
-                    Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                    case BIOHAZARD_1_MK:
+                        Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_2_SC:
+                        Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_3_RB:
+                        Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                        break;
                 }
             }
         }
@@ -187,18 +203,19 @@ namespace REviewer
 
             if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
             {
-                throw new ArgumentNullException(nameof(configPath));
+                throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
             }
 
             var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
+            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                         ?? throw new ArgumentNullException("The game data is null");
 
-            for(int i = 0; i < _gameSelection.Count; i++)
+            for (int i = 0; i < _gameSelection.Count; i++)
             {
-                reJson.TryGetValue(_gameSelection[i], out var saveREPath);
-                saveREPath ??= content;
-
-                UpdateUI(content, saveREPath, i);
+                if (reJson.TryGetValue(_gameSelection[i], out var saveREPath))
+                {
+                    UpdateUI(content, saveREPath, i);
+                }
             }
         }
 
@@ -248,19 +265,23 @@ namespace REviewer
             panelSettings.Visibility = Visibility.Hidden;
             panelAbout.Visibility = Visibility.Hidden;
 
+            const int MAIN_PANEL = 1;
+            const int OPTN_PANEL = 2;
+            const int HELP_PANEL = 3;
+
             // Get the selected item
             var selectedItem = (REviewerMenuItem)menuListView.SelectedItem;
 
             // Show the corresponding grid
             switch (selectedItem.MenuIndex)
             {
-                case 1:
+                case MAIN_PANEL:
                     panelMain.Visibility = Visibility.Visible;
                     break;
-                case 2:
+                case OPTN_PANEL:
                     panelSettings.Visibility = Visibility.Visible;
                     break;
-                case 3:
+                case HELP_PANEL:
                     panelAbout.Visibility = Visibility.Visible;
                     break;
             }
@@ -271,48 +292,60 @@ namespace REviewer
 
         private void ProcessWatcherCallback(object? state)
         {
-            // Check if the process is running
-            var process_list = Library.GetGameVersions(_processName);
-
-            for (int i = 0; i < process_list.Count; i++)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
+                lock (_lock)
                 {
-                    // The process is running
-                    _isProcessRunning = true;
+                    // Check if the process is running
+                    var process_list = Library.GetGameVersions(_processName);
 
-                    // Get the process
-                    _process = Process.GetProcessesByName(process_list[i])[0];
-                    string md5Hash = Library.GetProcessMD5Hash(_process);
+                    for (int i = 0; i < process_list.Count; i++)
+                    {
+                        if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
+                        {
+                            // The process is running
+                            _isProcessRunning = true;
 
-                    // Check if the process has the Gemini DLL
-                    _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
-                    string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                    var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
+                            // Get the process
+                            _process = Process.GetProcessesByName(process_list[i])[0];
+                            string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                    // Updating the TextBlock on the MainWindow
-                    Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
-                    Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                    Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
+                            // Check if the process has the Gemini DLL
+                            // _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
+                            // string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
+                            // var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
 
-                    // Set the Exited event handler
-                    _process.EnableRaisingEvents = true;
-                    _process.Exited += Process_Exited;
+                            // Updating the TextBlock on the MainWindow
+                            Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
+                            Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+                            // Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
-                    // Log the event
-                    Logger.Instance.Info($"Process {process_list[i]} has been found");
+                            // Set the Exited event handler
+                            _process.EnableRaisingEvents = true;
+                            _process.Exited += Process_Exited;
+
+                            // Log the event
+                            Logger.Instance.Info($"Process {process_list[i]} has been found");
+                        }
+                    }
                 }
-            }
+            });
         }
 
         private void RootObjectWatcherCallback(object? state)
         {
-            // Check if the process is running
-            if (_isProcessRunning && _isDdrawLoaded && _isSaveFound && _residentEvilGame == null)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                MappingGameVariables();
-                _rootObjectWatcher?.Dispose();
-            }
+                lock (_lock)
+                {
+                    // Check if the process is running
+                    if (_isProcessRunning && _isSaveFound)
+                    {
+                        MappingGameVariables();
+                        _rootObjectWatcher?.Dispose();
+                    }
+                }
+            });
         }
 
         private void MappingGameVariables()
@@ -368,17 +401,21 @@ namespace REviewer
         {
             // The process has exited
             _isProcessRunning = false;
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 500);
+            _isMappingDone = false;
 
-            var content = "Not Found";
 
             // Stoping the monitoring 
             _MVariables?.Stop();
+            _MVEnemies?.Stop();
+
+            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
+
+            var content = "Not Found";
 
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
             Library.UpdateTextBlock(ProcessTextBlock, text: content, color: CustomColors.Red, isBold: true);
-            Library.UpdateTextBlock(Rebirth, text: content, color: CustomColors.Red, isBold: true);
+            // Library.UpdateTextBlock(Rebirth, text: content, color: CustomColors.Red, isBold: true);
 
             // Log the event
             Logger.Instance.Info($"Process {_processName} has exited");
@@ -388,6 +425,26 @@ namespace REviewer
         {
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
+
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                // Unsubscribe from process Exited event
+                if (_process != null)
+                    _process.Exited -= Process_Exited;
+
+                // Dispose other disposable resources
+                _processWatcher?.Dispose();
+                _rootObjectWatcher?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Error($"Error in Dispose method: {ex}");
+            }
         }
 
         // making some checking if the selected game
@@ -453,7 +510,7 @@ namespace REviewer
                 UpdateConfigFile("RE2", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
+                if (ComboBoxGameSelection.SelectedIndex == 1) _isSaveFound = true;
             }
         }
 
@@ -470,7 +527,7 @@ namespace REviewer
                 UpdateConfigFile("RE3", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
+                if (ComboBoxGameSelection.SelectedIndex == 2) _isSaveFound = true;
             }
         }
 
@@ -493,34 +550,51 @@ namespace REviewer
         // Event for clicking the Run Button
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            if (IsSRTAbleToRun())
+            try
             {
-                try
+                if (IsSRTAbleToRun())
                 {
-                    if (_residentEvilGame == null || _MVariables == null || _processName == null)
-                    {
-                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
-                        var srtConfig = GenerateSRTUIConfig();
-                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
-                        SRT.Show();
-
-                        if (_tracking != null)
+                        lock (_lock)
                         {
-                            TRK = new Tracker(_tracking, _residentEvilGame);
-                            TRK.Show();
+                            if (IsSRTAbleToRun())
+                            {
+                                try
+                                {
+                                    if (_residentEvilGame == null || _MVariables == null || _processName == null)
+                                    {
+                                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        return;
+                                    }
+
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
+                                        var srtConfig = GenerateSRTUIConfig();
+                                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
+                                        SRT.Show();
+
+                                        if (_tracking != null)
+                                        {
+                                            TRK = new Tracker(_tracking, _residentEvilGame);
+                                            TRK.Show();
+                                        }
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"An error has occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
                         }
                     });
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An error has occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Instance.Error($"Error in Run_Click method: {ex}");
             }
         }
 
@@ -605,11 +679,13 @@ namespace REviewer
             var bio = data?[processName];
             var pname = processName.ToLower();
 
+
+
             if (pname == "bio" || pname == "biohazard")
             {
                 size = 396;
             }
-            else if (pname == "bio2 1.10")
+            else if (pname == "bio2 1.10" || pname == "bio2 1.1")
             {
                 selectedGame = 1;
                 size = 4;
@@ -648,5 +724,71 @@ namespace REviewer
                 _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
             }
         }
+
+        private void CheckForNewVersion()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var version = await GetLatestVersionAsync();
+                    // Console.WriteLine($"{version} - {CurrentVersion}");
+                    if (version > CurrentVersion)
+                    {
+                        Dispatcher.Invoke(() => versionBox.Visibility = Visibility.Visible);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            });
+        }
+
+        private async Task<Version> GetLatestVersionAsync()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
+            var response = await client.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
+            // Console.WriteLine(response);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var body = JsonConvert.DeserializeObject<VersionCheckBody>(jsonResponse);
+                var tagName = body.tag_name.Split('-')[0].Replace("v","");
+                return System.Version.Parse(tagName);
+            }
+            throw new Exception("Unable to get latest version");
+
+        }
+
+        private void UpdateLink_Click(object sender, RoutedEventArgs e)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "https://github.com/namsku/biorand/releases",
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        }
+
+        private void Link_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Hyperlink hyperlink)
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = hyperlink.NavigateUri.ToString(),
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+        }
     }
+
+    public class VersionCheckBody
+    {
+        public string tag_name { get; set; }
+    }
+
 }

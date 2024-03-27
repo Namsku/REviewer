@@ -45,7 +45,23 @@
                 <local:REviewerMenuItem MenuIndex="3" Image="/resources/icons/about.png" />
             </ListView>
 
-            <StackPanel Grid.Column="1" Margin="10">
+  
+            <StackPanel Grid.Column="1" Margin="0">
+                <Border x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
+                    <TextBlock><Hyperlink Click="UpdateLink_Click">A new update is available!</Hyperlink></TextBlock>
+                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" x:Name="versionLabel" />
+                    <StackPanel Grid.Column="2" Margin="0 0" Orientation="Horizontal">
+                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://discord.gg/xxqtuubayy">Discord</Hyperlink></TextBlock>
+                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://github.com/Namsku/REviewer/">GitHub</Hyperlink></TextBlock>
+                    </StackPanel>
+                </Grid>
                 <Grid>
                     <Grid x:Name="panelMain" Visibility="Visible">
                         <StackPanel>
@@ -84,14 +100,6 @@
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Content="Rebirth" HorizontalAlignment="Left" Margin="10,-14,0,0" Height="25" Grid.Column="0"/>
-                                        <TextBlock Name="Rebirth" Text="Rebirth Value" HorizontalAlignment="Left" Margin="10,-4,10,0" Height="25" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
                                         <Label Content="Save" HorizontalAlignment="Left" Margin="10,-14,0,0" Height="25" Grid.Column="0"/>
                                         <TextBlock Name="Save" Text="Save Value" HorizontalAlignment="left" Margin="24, -4,10,0" Height="25" Grid.Column="1"/>
                                     </Grid>
@@ -111,13 +119,13 @@
                                     <CheckBox Name="ShowItemBox" Content="Show ItemBox (This takes a lot place)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15"/>
                                     <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Setting Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}"/>
                                     <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}"/>
-
+                                    
                                     <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
                                     <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
                                 </StackPanel>
                             </GroupBox>
 
-                            <Button Content="Run" HorizontalAlignment="Right" Margin="10,35,0,0" Width="75" Height="25" Click="Run_Click"/>
+                            <Button Content="Run" HorizontalAlignment="Right" Margin="10,35,10,10" Width="75" Height="25" Click="Run_Click"/>
                         </StackPanel>
                     </Grid>
 
