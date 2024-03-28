@@ -38,6 +38,14 @@ Possible other port
 - RE2 (Platinium -> China) 
 - RE3 (CHN/TWN) 
 
+## Details
+
+| Game           | Platform | IGT | Enemy Tracker | Partner | Inventory | Item Box | Save State | Key Items |
+|----------------|----------|-----|---------------|---------|-----------|----------|------------|-----------|
+| RE1 Mediakit   |  PC      |  X  |        X      |         |     X     |     X    |      X     |     X     |
+| RE2 SourceNext |  PC      |  X  |        X      |     X   |     X     |     X    |      X     |     X     |
+| RE3 Rebirth    |  PC      |     |        X      |     X   |     X     |     X    |            |     X     |
+
 ## Known Bugs
 
 - Enemy Tracker is not super stable in some cases.
