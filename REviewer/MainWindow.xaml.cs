@@ -1,98 +1,28 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Newtonsoft.Json;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Timers;
 using Timer = System.Threading.Timer;
 using System.Windows.Documents;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Reflection;
-using System;
-
 
 namespace REviewer
 {
-    public class REviewerMenuItem
-    {
-        public ImageSource? Image { get; set; }
-        public int MenuIndex { get; set; }
-
-    }
-
-    public class UINotify : INotifyPropertyChanged
-    {
-        private string? _version;
-        public string? Version
-        {
-            get { return _version; }
-            set
-            {
-                if (Version != value)
-                {
-                    _version = value;
-                    OnPropertyChanged(nameof(Version));
-                }
-            }
-        }
-
-        private Visibility _visibility;
-        public Visibility ChrisInventory
-        {
-            get { return _visibility; }
-            set
-            {
-                if (_visibility != value)
-                {
-                    _visibility = value;
-                    OnPropertyChanged(nameof(ChrisInventory));
-                }
-            }
-        }
-
-        private Visibility _sherry;
-        public Visibility Sherry
-        {
-            get { return _sherry; }
-            set
-            {
-                if (_sherry != value)
-                {
-                    _sherry = value;
-                    OnPropertyChanged(nameof(Sherry));
-                }
-            }
-        }
-
-        public UINotify(string version)
-        {
-            Version = version;
-            ChrisInventory = Visibility.Collapsed;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
     public partial class MainWindow : Window
     {
         private Process? _process;
         private string? _processName;
 
         private bool _isProcessRunning = false;
-        private bool _isDdrawLoaded = false;
         private bool _isSaveFound = false;
         private bool _isMappingDone = false;
 
@@ -104,7 +34,7 @@ namespace REviewer
         private MonitorVariables? _MVEnemies;
         private ObservableCollection<EnnemyTracking>? _tracking;
         private ItemIDs? _itemIDs;
-        private UINotify _ui;
+        private UINotify? _ui;
 
         public const int BIOHAZARD_1_MK = 0;
         public const int BIOHAZARD_2_SC = 1;
@@ -117,8 +47,8 @@ namespace REviewer
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
         // private static Version CurrentVersion = System.Version.Parse("0.0.7");
 
-        public SRT SRT { get; private set; }
-        public Tracker TRK { get; private set; }
+        public SRT? SRT { get; private set; }
+        public Tracker? TRK { get; private set; }
 
         private readonly object _lock = new object();
 
@@ -167,14 +97,12 @@ namespace REviewer
             {
                 UpdateUIElement(MD5, content);
                 UpdateUIElement(ProcessTextBlock, content);
-                // UpdateUIElement(Rebirth, content);
 
-                _isSaveFound = "Not Found" == savePath ? false : true;
                 var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
                 var saveColor = "Not Found" == savePath ? CustomColors.Red : CustomColors.Green;
-                Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
-                // Updating the TextBox from the Settings panel
+                Console.WriteLine($"You have been called -> {savePath} - {saveContent} - {saveColor}");
+                Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
                 switch (position)
                 {
@@ -199,16 +127,7 @@ namespace REviewer
         private void InitializeText()
         {
             const string content = "Not Found";
-            var configPath = ConfigurationManager.AppSettings["Config"];
-
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
-            {
-                throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
-            }
-
-            var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
-                         ?? throw new ArgumentNullException("The game data is null");
+            var reJson = Library.GetReviewerConfig();
 
             for (int i = 0; i < _gameSelection.Count; i++)
             {
@@ -238,15 +157,7 @@ namespace REviewer
         {
             _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
             var selectedGame = Library.GetGameName(_processName ?? "UNKNOWN GAME ERROR");
-            var configPath = ConfigurationManager.AppSettings["Config"];
-
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
-            {
-                throw new ArgumentNullException(nameof(configPath));
-            }
-
-            var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
+            var reJson = Library.GetReviewerConfig();
 
             reJson.TryGetValue(selectedGame, out var savePath);
             savePath ??= "Not Found";
@@ -260,7 +171,6 @@ namespace REviewer
 
         private void MenuListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Hide all grids
             panelMain.Visibility = Visibility.Hidden;
             panelSettings.Visibility = Visibility.Hidden;
             panelAbout.Visibility = Visibility.Hidden;
@@ -269,10 +179,8 @@ namespace REviewer
             const int OPTN_PANEL = 2;
             const int HELP_PANEL = 3;
 
-            // Get the selected item
             var selectedItem = (REviewerMenuItem)menuListView.SelectedItem;
 
-            // Show the corresponding grid
             switch (selectedItem.MenuIndex)
             {
                 case MAIN_PANEL:
@@ -310,15 +218,9 @@ namespace REviewer
                             _process = Process.GetProcessesByName(process_list[i])[0];
                             string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                            // Check if the process has the Gemini DLL
-                            // _isDdrawLoaded = true; // Library.IsDdrawLoaded(_process);
-                            // string geminiStatus = _isDdrawLoaded ? "Found" : "Not Found";
-                            // var colorGemini = _isDdrawLoaded ? CustomColors.Green : CustomColors.Red;
-
                             // Updating the TextBlock on the MainWindow
                             Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
                             Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-                            // Library.UpdateTextBlock(Rebirth, text: geminiStatus, color: colorGemini, isBold: true);
 
                             // Set the Exited event handler
                             _process.EnableRaisingEvents = true;
@@ -334,12 +236,18 @@ namespace REviewer
 
         private void RootObjectWatcherCallback(object? state)
         {
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 lock (_lock)
                 {
                     // Check if the process is running
-                    if (_isProcessRunning && _isSaveFound)
+
+                    var selectedIndex = ComboBoxGameSelection.SelectedIndex;
+                    var reJson = Library.GetReviewerConfig();
+                    var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
+
+                    if (_isProcessRunning && isSaveFound)
                     {
                         MappingGameVariables();
                         _rootObjectWatcher?.Dispose();
@@ -415,13 +323,12 @@ namespace REviewer
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
             Library.UpdateTextBlock(ProcessTextBlock, text: content, color: CustomColors.Red, isBold: true);
-            // Library.UpdateTextBlock(Rebirth, text: content, color: CustomColors.Red, isBold: true);
-
+            
             // Log the event
             Logger.Instance.Info($"Process {_processName} has exited");
         }
 
-        private void MainWindow_Closed(object sender, EventArgs e)
+        private void MainWindow_Closed(object? sender, EventArgs e)
         {
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
@@ -452,7 +359,9 @@ namespace REviewer
         private void ComboBoxGameSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Get the selected item
+
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
+            _isSaveFound = false;
             _processName = _gameList[selectedIndex];
             _isProcessRunning = false;
             _isMappingDone = false;
@@ -470,11 +379,17 @@ namespace REviewer
 
             // Check every second if the process is running
 
+            const string content = "Not Found";
+            var reJson = Library.GetReviewerConfig();
+
+            reJson.TryGetValue(_gameSelection[selectedIndex], out var saveREPath);
+            saveREPath = saveREPath ?? "Not Found";
+
+            UpdateUI(content, saveREPath, selectedIndex);
+            InitCheckBoxes();
+
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
             _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
-
-            InitializeText();
-            InitCheckBoxes();
 
             Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
         }
@@ -534,14 +449,7 @@ namespace REviewer
         private void UpdateConfigFile(string game, string path)
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
-
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
-            {
-                throw new ArgumentNullException(nameof(configPath));
-            }
-
-            var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+            var reJson = Library.GetReviewerConfig();
 
             reJson[game] = path;
             File.WriteAllText(configPath, JsonConvert.SerializeObject(reJson, Formatting.Indented));
@@ -610,14 +518,7 @@ namespace REviewer
 
             var game = db[_processName];
             var configPath = ConfigurationManager.AppSettings["Config"];
-
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
-            {
-                throw new ArgumentNullException(nameof(configPath));
-            }
-
-            var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? throw new ArgumentNullException("The game data is null");
+            var reJson = Library.GetReviewerConfig();
 
             if (!_isProcessRunning)
             {
@@ -669,61 +570,37 @@ namespace REviewer
         }
         private void InitEnemies(string processName)
         {
-            // Console.WriteLine("CALLED INIT ENEMIES");
-            processName = Char.ToUpper(processName[0]) + processName.Substring(1);
-            int size = 0;
-            var selectedGame = 0;
+            processName = char.ToUpper(processName[0]) + processName.Substring(1);
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
-            var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
+            var json = File.ReadAllText(reDataPath) ?? throw new ArgumentNullException(nameof(reDataPath));
             var data = JsonConvert.DeserializeObject<Dictionary<string, Bio>>(json);
-            var bio = data?[processName];
+            var bio = data?.GetValueOrDefault(processName);
             var pname = processName.ToLower();
 
-
-
-            if (pname == "bio" || pname == "biohazard")
+            int size = pname switch
             {
-                size = 396;
-            }
-            else if (pname == "bio2 1.10" || pname == "bio2 1.1")
-            {
-                selectedGame = 1;
-                size = 4;
-            }
-            else if(pname == "biohazard(r) 3 pc")
-            {
-                selectedGame = 2;
-                size = 4;
-            }
+                "bio" or "biohazard" => 396,
+                "bio2 1.10" or "bio2 1.1" => 4,
+                "biohazard(r) 3 pc" => 4,
+                _ => 0
+            };
 
-            if (bio == null)
-            {
-                throw new ArgumentNullException(nameof(bio));
-            }
-
-            if (!bio.Offsets.ContainsKey("EnnemyInfos"))
-            {
-                return;
-            }
-
-            if (bio.Offsets["EnnemyInfos"] == "")
+            if (bio?.Offsets == null || !bio.Offsets.ContainsKey("EnnemyInfos") || bio.Offsets["EnnemyInfos"] == "")
             {
                 return;
             }
 
             var offset = Library.HexToInt(bio.Offsets["EnnemyInfos"]);
-            var property = bio.Ennemy.EnnemyInfos;
+            var property = bio?.Ennemy?.EnnemyInfos;
 
-            if (_tracking == null)
-            {
-                _tracking = new ObservableCollection<EnnemyTracking>();
-            }
+            _tracking ??= new ObservableCollection<EnnemyTracking>();
 
             for (var i = 0; i < 16; i++)
             {
-                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
+                _tracking.Add(new EnnemyTracking(offset + (i * size), property, size > 0 ? 1 : 0));
             }
         }
+
 
         private void CheckForNewVersion()
         {
@@ -744,51 +621,75 @@ namespace REviewer
                 }
             });
         }
-
         private async Task<Version> GetLatestVersionAsync()
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
-            var response = await client.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
-            // Console.WriteLine(response);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var body = JsonConvert.DeserializeObject<VersionCheckBody>(jsonResponse);
-                var tagName = body.tag_name.Split('-')[0].Replace("v","");
-                return System.Version.Parse(tagName);
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
+                var response = await client.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
+                // Logger.Instance.Debug(response.ToString());
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var body = JsonConvert.DeserializeObject<VersionCheckBody>(jsonResponse);
+                    var tagName = body.tag_name.Split('-')[0].Replace("v", "");
+                    return System.Version.Parse(tagName);
+                }
             }
-            throw new Exception("Unable to get latest version");
+            catch (HttpRequestException ex)
+            {
+                Logger.Instance.Debug($"HTTP request exception: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                Logger.Instance.Debug($"JSON deserialization exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Debug($"An error occurred: {ex.Message}");
+            }
 
+            throw new Exception("Unable to get latest version");
         }
 
         private void UpdateLink_Click(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "https://github.com/namsku/biorand/releases",
-                UseShellExecute = true
-            };
-            Process.Start(psi);
-        }
-
-        private void Link_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Hyperlink hyperlink)
+            try
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = hyperlink.NavigateUri.ToString(),
+                    FileName = "https://github.com/namsku/biorand/releases",
                     UseShellExecute = true
                 };
                 Process.Start(psi);
             }
+            catch (Exception ex)
+            {
+                Logger.Instance.Debug($"An error occurred while opening the link: {ex.Message}");
+            }
         }
-    }
 
-    public class VersionCheckBody
-    {
-        public string tag_name { get; set; }
+        private void Link_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is Hyperlink hyperlink)
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = hyperlink.NavigateUri.ToString(),
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Debug($"An error occurred while opening the link: {ex.Message}");
+            }
+        }
+
     }
 
 }

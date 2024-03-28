@@ -54,7 +54,7 @@ namespace REviewer.Modules.Utils
 
         public static List<string> GetGameVersions(string key)
         {
-            return _gameVersions.TryGetValue(key, out List<string>  versions) ? versions : new List<string>();
+            return _gameVersions.TryGetValue(key, out List<string>?  versions) ? versions : new List<string>();
         }
 
         public static string GetGameName(string processName)
@@ -162,6 +162,21 @@ namespace REviewer.Modules.Utils
             return false;
         }
 
+        public static Dictionary<string, string> GetReviewerConfig()
+        {
+            var configPath = ConfigurationManager.AppSettings["Config"];
+
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+            {
+                throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
+            }
+
+            var json = File.ReadAllText(configPath);
+            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                         ?? throw new ArgumentNullException("The game data is null");
+
+            return reJson;
+        }
         private static Dictionary<string, string>? LoadGamePaths()
         {
             if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
@@ -212,7 +227,7 @@ namespace REviewer.Modules.Utils
 
         public static string GetProcessMD5Hash(Process process)
         {
-            if (process.MainModule == null)
+            if (process.MainModule?.FileName == null)
             {
                 throw new ArgumentNullException("The process has no main module");
             }
