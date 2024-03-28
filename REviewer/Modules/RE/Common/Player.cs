@@ -155,6 +155,8 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
+                var items = IDatabase.GetItems();
+
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
                     byte id = 0;
@@ -173,7 +175,7 @@ namespace REviewer.Modules.RE.Common
                         selected = selected < 0 ? 0 : selected;
                         id = selected == 0xFF ? (byte) 0 : (byte)Inventory[selected].Item.Value;
                     }
-                    return IDatabase.Items[id].Img;
+                    return items[id].Img;
                 }
                 return "./resources/re1/unknown.png";
             }
@@ -408,14 +410,14 @@ namespace REviewer.Modules.RE.Common
                     var vvv = Character.Value == 8 ? CarlosLastItemFound?.Value : LastItemFound?.Value;
                     byte value = (byte)(LastItemFound?.Value ?? 255);
                     var state = GameState?.Value & 0xF0000000;
-
+                    var items = IDatabase.GetItems();
 
                     if (LastItemFound?.Value == 0x31)
                     {
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                     }
 
-                    if (IDatabase.Items[value].Type == "Key Item") // && FullRoomName == null)
+                    if (items[value].Type == "Key Item") // && FullRoomName == null)
                     {
                         var sss = (((int)Stage.Value % 5) + 1).ToString();
                         var rrr = ((int)Room.Value).ToString("X2");
@@ -518,6 +520,8 @@ namespace REviewer.Modules.RE.Common
             } 
         }
 
+        public int OldHealth = 0;
+
         private VariableData? _health;
         public VariableData? Health
         {
@@ -547,8 +551,19 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 1)
+                if (SELECTED_GAME == 0)
                 {
+                    if (Health.Value < OldHealth)
+                    {
+                        if (Health.Value != 88 && Character.Value != 3) Hits += 1;
+                    }
+                }
+                else if (SELECTED_GAME == 1)
+                {
+                    if (Health.Value < OldHealth)
+                    {
+                        Hits += 1;
+                    }
                     // https://github.com/deserteagle417/RE2-Autosplitter/blob/main/RE2aio.asl
                     // Very helpful for this case, thank you dude <3
 
@@ -559,7 +574,16 @@ namespace REviewer.Modules.RE.Common
                         OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
+                else if (SELECTED_GAME == 2)
+                {
+                    if (Health.Value < OldHealth)
+                    {
+                        Hits += 1;
+                    }
+                }
 
+
+                OldHealth = Health.Value;
                 UpdateHealthColor();
             }
         }

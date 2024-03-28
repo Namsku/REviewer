@@ -23,7 +23,6 @@ namespace REviewer
         private string? _processName;
 
         private bool _isProcessRunning = false;
-        private bool _isSaveFound = false;
         private bool _isMappingDone = false;
 
         private Timer? _processWatcher;
@@ -361,7 +360,6 @@ namespace REviewer
             // Get the selected item
 
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
-            _isSaveFound = false;
             _processName = _gameList[selectedIndex];
             _isProcessRunning = false;
             _isMappingDone = false;
@@ -408,7 +406,6 @@ namespace REviewer
                 UpdateConfigFile("RE1", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 0) _isSaveFound = true;
             }
         }
 
@@ -425,7 +422,6 @@ namespace REviewer
                 UpdateConfigFile("RE2", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 1) _isSaveFound = true;
             }
         }
 
@@ -442,7 +438,6 @@ namespace REviewer
                 UpdateConfigFile("RE3", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
-                if (ComboBoxGameSelection.SelectedIndex == 2) _isSaveFound = true;
             }
         }
 
@@ -551,7 +546,7 @@ namespace REviewer
             var srtConfig = new Dictionary<string, bool?>
             {
                 ["HealthBar"] = HealthBar.IsChecked,
-                ["Standard"] = NormalMode.IsChecked,
+                ["Standard"] = !NormalMode.IsChecked,
                 ["ItemBox"] = ShowItemBox.IsChecked,
                 ["ChrisInventory"] = ChrisInventory.IsChecked,
                 ["Sherry"] = Sherry.IsChecked
@@ -585,6 +580,14 @@ namespace REviewer
                 _ => 0
             };
 
+            int selectedGame = pname switch
+            {
+                "bio" or "biohazard" => 0,
+                "bio2 1.10" or "bio2 1.1" => 1,
+                "biohazard(r) 3 pc" => 2,
+                _ => 0
+            };
+
             if (bio?.Offsets == null || !bio.Offsets.ContainsKey("EnnemyInfos") || bio.Offsets["EnnemyInfos"] == "")
             {
                 return;
@@ -597,7 +600,7 @@ namespace REviewer
 
             for (var i = 0; i < 16; i++)
             {
-                _tracking.Add(new EnnemyTracking(offset + (i * size), property, size > 0 ? 1 : 0));
+                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
             }
         }
 

@@ -14,21 +14,7 @@ namespace REviewer.Modules.RE
         private Dictionary<string, Bio>? _data { get; set; }
         private string? _gameName { get; set; }
 
-        public Dictionary<string, string> CorrectProcessName = new Dictionary<string, string>()
-        {
-            { "Bio", "Bio" },
-            { "bio", "Bio" },
-            { "biohazard", "Bio" },
-            { "Biohazard", "Bio" },
-            { "Bio2 1.10", "Bio2 1.10" },
-            { "bio2 1.10", "Bio2 1.10" },
-            { "bio2 1.1", "Bio2 1.10" },
-            { "bio2 v1.1", "Bio2 1.10" },
-            { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
-            { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
-            { "bio3", "BIOHAZARD(R) 3 PC" },
-            { "Bio3", "BIOHAZARD(R) 3 PC" }
-        };
+        public Dictionary<string, string> CorrectProcessName = Library.GetGameProcesses();
 
         public GameData(string gameName)
         {

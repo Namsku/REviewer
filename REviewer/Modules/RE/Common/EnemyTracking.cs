@@ -312,14 +312,17 @@ namespace REviewer.Modules.RE.Common
                 if(SelectedGame == 0)
                 {                    
                     Enemy.Name = RE1_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
-                    OnPropertyChanged(nameof(Enemy));
+                    if (Enemy.Name == "Unknown")
+                    {
+                        Logger.Instance.Error($"RE1 - Enemy ID -> {EnemyID.Value} not Found");
+                    }
                 }
                 else if (SelectedGame == 1)
                 {
                     Enemy.Name = RE2_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     if (Enemy.Name == "Unknown")
                     {
-                        Logger.Instance.Error($"Enemy ID -> {EnemyID.Value} not Found");
+                        Logger.Instance.Error($"RE2 - Enemy ID -> {EnemyID.Value} not Found");
                     }
                     OnPropertyChanged(nameof(Enemy));
                 }
@@ -329,7 +332,7 @@ namespace REviewer.Modules.RE.Common
                     Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     if (Enemy.Name == "Unknown")
                     {
-                        Logger.Instance.Error($"Enemy ID -> {EnemyID.Value} not Found");
+                        Logger.Instance.Error($"RE3 - Enemy ID -> {EnemyID.Value} not Found");
                     }
 
                     OnPropertyChanged(nameof(Enemy));
@@ -419,9 +422,15 @@ namespace REviewer.Modules.RE.Common
             if (e.PropertyName == nameof(VariableData.Value))
             {
                 if (SelectedGame == 0)
+                {
+                    Console.WriteLine("FOUND RE1");
                     UpdateEnemy();
+                }
                 else
+                {
+                    Console.WriteLine("FOUND RE2 and 3");
                     UpdateEnemyRE2andRE3();
+                }
             }
         }
 

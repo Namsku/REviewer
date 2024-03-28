@@ -324,17 +324,7 @@
                     </Grid>
 
 
-                    <Grid Grid.Column="3" Visibility="{Binding DebugVisibility}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Text="Debug" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
-                        <TextBlock Name="Debug" Grid.Row="1" Text="{Binding Debug}" Foreground="White" FontSize="45" HorizontalAlignment="Center"/>
-                    </Grid>
-
-                    <Grid Grid.Column="3" Visibility="{Binding HitVisibliity}">
+                    <Grid Grid.Column="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>

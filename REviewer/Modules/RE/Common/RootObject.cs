@@ -40,7 +40,7 @@ namespace REviewer.Modules.RE.Common
         public int SELECTED_GAME;
         public int SaveID;
         public int CurrentSaveID;
-        public Bio _bio;
+        public Bio? _bio;
 
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase; 
@@ -51,11 +51,112 @@ namespace REviewer.Modules.RE.Common
         public List<JObject>? SaveDatabase;
         public Dictionary<string, List<string>>? KeyRooms { get; set; }
 
-        public Visibility HealthBarVisibility { get; set; }
-        public Visibility BiorandVisibility { get; set; }
-        public Visibility ItemBoxVisibility { get; set; }
-        public Visibility SherryVisibility { get; set; }
-        public Visibility PartnerVisibility { get; set; }
+        public Visibility? HealthBarVisibility { get; set; }
+        public Visibility? BiorandVisibility { get; set; }
+        public Visibility? ItemBoxVisibility { get; set; }
+        public Visibility? SherryVisibility { get; set; }
+        public Visibility? PartnerVisibility { get; set; }
+
+        
+        public RootObject(Bio bio, ItemIDs ids)
+        {
+            if (bio.Player?.Character?.Database == null)
+                throw new ArgumentNullException(nameof(bio));
+
+            _bio = bio;
+            IDatabase = ids;
+            InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
+            InitKeyRooms();
+
+            // Game
+            GameState = GetVariableData("GameState", bio.Game.State);
+            Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
+            GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
+            GameFrame = GetVariableData("GameFrame", bio.Game.Frame);
+            GameSave = GetVariableData("GameSave", bio.Game.Save);
+            MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
+            SaveContent = GetVariableData("SaveContent", bio.Game.SaveContent);
+
+            // Player
+            Character = GetVariableData("Character", bio.Player.Character);
+            InventorySlotSelected = GetVariableData("InventorySlotSelected", bio.Player.InventorySlotSelected);
+            Stage = GetVariableData("Stage", bio.Player.Stage);
+            Room = GetVariableData("Room", bio.Player.Room);
+            Cutscene = GetVariableData("Cutscene", bio.Player.Cutscene);
+            LastRoom = GetVariableData("LastRoom", bio.Player.LastRoom);
+            Unk002 = GetVariableData("GameUnk001", bio.Player.Unk001);
+            Event = GetVariableData("Event", bio.Player.Event);
+            LastItemFound = GetVariableData("LastItemFound", bio.Player.LastItemFound);
+            InventoryCapacityUsed = GetVariableData("InventoryCapacityUsed", bio.Player.InventoryCapacityUsed);
+            CharacterHealthState = GetVariableData("CharacterHealthState", bio.Player.CharacterHealthState);
+            Health = GetVariableData("CharacterHealth", bio.Player.Health);
+            LockPick = GetVariableData("LockPick", bio.Player.LockPick);
+            PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
+            ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
+            HitFlag = GetVariableData("HitFlag", bio.Player.HitFlag);
+
+            // Carlos RE3
+            CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
+            CarlosLastItemFound = GetVariableData("CarlosLastItemSeen", bio.Player.CarlosLastItemFound);
+
+            // Position
+            PositionX = GetVariableData("PositionX", bio.Position.X);
+            PositionY = GetVariableData("PositionY", bio.Position.Y);
+            PositionZ = GetVariableData("PositionZ", bio.Position.Z);
+
+            // Rebirth
+            RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
+            RebirthScreen = GetVariableData("RebirthScreen", bio.Rebirth.Screen);
+            RebirthState = GetVariableData("RebirthState", bio.Rebirth.State);
+
+            // ItemBox and Inventory
+            InitInventory(bio);
+            InitItemBox(bio);
+            
+            // Timers
+            InitTimers();
+
+            // Stats
+            InitStats();
+
+            // File Watcher
+            InitFileWatcher();
+
+            // Init Save Database
+            InitSaveDatabase();
+
+            var processName = IDatabase.GetProcessName().ToLower();
+
+            if (processName == "bio" || processName == "biohazard")
+            {
+                SELECTED_GAME = 0;
+                PartnerVisibility = Visibility.Collapsed;
+            }
+            else if (processName == "bio2 1.10")
+            {
+                SELECTED_GAME = 1;
+                DebugVisibility = Visibility.Collapsed;
+                HitVisibility = Visibility.Visible;
+            }
+            else if (processName == "biohazard(r) 3 pc")
+            {
+                SELECTED_GAME = 2;
+            }
+
+            VariableData GetVariableData(String key, dynamic value)
+            {
+                if (bio.Offsets == null) throw new ArgumentNullException(nameof(bio));
+
+                if (bio.Offsets.TryGetValue(key, out string? offset))
+                {
+                    return new VariableData(Library.HexToInt(offset), value);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -64,16 +165,29 @@ namespace REviewer.Modules.RE.Common
 
         public void InitUIConfig(Dictionary<string, bool?> config)
         {
-            HealthBarVisibility = (bool) config["HealthBar"] ? Visibility.Visible : Visibility.Collapsed;
-            BiorandVisibility = (bool) !config["Standard"] ? Visibility.Visible : Visibility.Collapsed;
-            ItemBoxVisibility = (bool) config["ItemBox"] ? Visibility.Visible : Visibility.Collapsed;
-            ChrisInventoryHotfix = (bool) config["ChrisInventory"] ? true : false;
-            SherryVisibility = (bool)config["Sherry"] ? Visibility.Visible : Visibility.Collapsed;
+            HealthBarVisibility = GetVisibility(config, "HealthBar");
+            BiorandVisibility = GetVisibility(config, "Standard");
+            ItemBoxVisibility = GetVisibility(config, "ItemBox");
 
-            if (ChrisInventoryHotfix)
+            if (config.TryGetValue("ChrisInventory", out bool? chrisInventory))
             {
-                UpdateInventoryCapacity();
+                ChrisInventoryHotfix = chrisInventory == true;
+                if (ChrisInventoryHotfix)
+                {
+                    UpdateInventoryCapacity();
+                }
             }
+
+            SherryVisibility = GetVisibility(config, "Sherry");
+        }
+
+        private Visibility GetVisibility(Dictionary<string, bool?> config, string key)
+        {
+            if (config.TryGetValue(key, out bool? value))
+            {
+                return value == true ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed; // Default value if key not found or value is null
         }
 
         public void InitMaxInventoryCapacity(string character)
@@ -95,29 +209,38 @@ namespace REviewer.Modules.RE.Common
         public void InitKeyRooms()
         {
             var reDataPath = ConfigurationManager.AppSettings["REdata"];
-            var json = reDataPath != null ? File.ReadAllText(reDataPath) : throw new ArgumentNullException(nameof(reDataPath));
-            var processName = IDatabase.GetProcessName();
-            var bios = JsonConvert.DeserializeObject<Dictionary<string, KRoom>>(json);
-
-            if (bios == null) throw new ArgumentNullException(nameof(bios));
-            if (processName == null) throw new ArgumentNullException(nameof(processName));
-
-            if (!bios.TryGetValue(processName, out var bio))
+            if (reDataPath == null)
             {
-                throw new KeyNotFoundException($"Bio with key {processName} not found in JSON.");
+                // Handle missing REdata path gracefully
+                // Log error or provide default behavior
+                return;
             }
 
-            List<string> keyRooms = bio.KeyRooms;
-
-            // add them into KeyRooms
-            KeyRooms = new Dictionary<string, List<string>> { };
-
-            foreach (var room in keyRooms)
+            var json = File.ReadAllText(reDataPath);
+            var processName = IDatabase.GetProcessName();
+            if (processName == null)
             {
-                // Console.WriteLine(room);
+                // Handle missing process name gracefully
+                // Log error or provide default behavior
+                return;
+            }
+
+            var bios = JsonConvert.DeserializeObject<Dictionary<string, KRoom>>(json);
+            if (bios == null || !bios.TryGetValue(processName, out var bio) || bio.KeyRooms == null)
+            {
+                // Handle missing or invalid data gracefully
+                // Log error or provide default behavior
+                return;
+            }
+
+            // Use lazy loading instead of eagerly creating a new dictionary
+            KeyRooms = new Dictionary<string, List<string>>(bio.KeyRooms.Count);
+            foreach (var room in bio.KeyRooms)
+            {
                 KeyRooms.Add(room, new List<string>());
             }
         }
+
 
         public void InitFileWatcher()
         {
@@ -182,6 +305,7 @@ namespace REviewer.Modules.RE.Common
             jsonObject["Deaths"] = Deaths;
             jsonObject["Resets"] = Resets;
             jsonObject["Saves"] = Saves;
+            jsonObject["Hits"] = Hits;
 
             jsonObject["SegmentsCount"] = SegmentCount;
 
@@ -298,105 +422,6 @@ namespace REviewer.Modules.RE.Common
                 var jsonObject = JObject.Parse(jsonString); // Parse the JSON string into a JObject
                 SaveDatabase.Add(jsonObject); // Add the JObject to the SaveDatabase list
                 CurrentSaveID = Math.Max(CurrentSaveID, jsonObject["SaveID"].Value<int>()); // Update the CurrentSaveID based on the SaveID value in the JObject
-            }
-        }
-
-        public RootObject(Bio bio, ItemIDs ids)
-        {
-            if (bio.Player.Character.Database == null) throw new ArgumentNullException(nameof(bio));
-            _bio = bio;
-
-            IDatabase = ids;
-            InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
-
-            // KeyRooms
-            InitKeyRooms();
-
-            // Game
-            GameState = GetVariableData("GameState", bio.Game.State);
-            Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
-            GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
-            GameFrame = GetVariableData("GameFrame", bio.Game.Frame);
-            GameSave = GetVariableData("GameSave", bio.Game.Save);
-            MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
-            SaveContent = GetVariableData("SaveContent", bio.Game.SaveContent);
-
-            // Player
-            Character = GetVariableData("Character", bio.Player.Character);
-            InventorySlotSelected = GetVariableData("InventorySlotSelected", bio.Player.InventorySlotSelected);
-            Stage = GetVariableData("Stage", bio.Player.Stage);
-            Room = GetVariableData("Room", bio.Player.Room);
-            Cutscene = GetVariableData("Cutscene", bio.Player.Cutscene);
-            LastRoom = GetVariableData("LastRoom", bio.Player.LastRoom);
-            Unk002 = GetVariableData("GameUnk001", bio.Player.Unk001);
-            Event = GetVariableData("Event", bio.Player.Event);
-            LastItemFound = GetVariableData("LastItemFound", bio.Player.LastItemFound);
-            InventoryCapacityUsed = GetVariableData("InventoryCapacityUsed", bio.Player.InventoryCapacityUsed);
-            CharacterHealthState = GetVariableData("CharacterHealthState", bio.Player.CharacterHealthState);
-            Health = GetVariableData("CharacterHealth", bio.Player.Health);
-            LockPick = GetVariableData("LockPick", bio.Player.LockPick);
-            PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
-            ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
-            HitFlag = GetVariableData("HitFlag", bio.Player.HitFlag);
-
-            // Carlos RE3
-            CarlosInventorySlotSelected = GetVariableData("CarlosInventorySlotSelected", bio.Player.CarlosInventorySlotSelected);
-            CarlosLastItemFound = GetVariableData("CarlosLastItemSeen", bio.Player.CarlosLastItemFound);
-
-            // Position
-            PositionX = GetVariableData("PositionX", bio.Position.X);
-            PositionY = GetVariableData("PositionY", bio.Position.Y);
-            PositionZ = GetVariableData("PositionZ", bio.Position.Z);
-
-            // Rebirth
-            RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
-            RebirthScreen = GetVariableData("RebirthScreen", bio.Rebirth.Screen);
-            RebirthState = GetVariableData("RebirthState", bio.Rebirth.State);
-
-            // ItemBox and Inventory
-            InitInventory(bio);
-            InitItemBox(bio);
-            
-            // Timers
-            InitTimers();
-
-            // Stats
-            InitStats();
-
-            // File Watcher
-            InitFileWatcher();
-
-            // Init Save Database
-            InitSaveDatabase();
-
-            var processName = IDatabase.GetProcessName().ToLower();
-
-            if (processName == "bio" || processName == "biohazard")
-            {
-                SELECTED_GAME = 0;
-                PartnerVisibility = Visibility.Collapsed;
-            }
-            else if (processName == "bio2 1.10")
-            {
-                SELECTED_GAME = 1;
-                DebugVisibility = Visibility.Collapsed;
-                HitVisibility = Visibility.Visible;
-            }
-            else if (processName == "biohazard(r) 3 pc")
-            {
-                SELECTED_GAME = 2;
-            }
-
-            VariableData GetVariableData(String key, dynamic value)
-            {
-                if (bio.Offsets.ContainsKey(key))
-                {
-                    return new VariableData(Library.HexToInt(bio.Offsets[key]), value);
-                }
-                else
-                {
-                    return null;
-                }
             }
         }
 

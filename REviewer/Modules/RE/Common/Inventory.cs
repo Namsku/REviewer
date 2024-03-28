@@ -117,6 +117,7 @@ namespace REviewer.Modules.RE.Common
                 InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
                 var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
                 var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
+                var items = IDatabase.GetItems();
 
                 Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
                 InventoryImages = new ObservableCollection<ImageItem>();
@@ -128,7 +129,7 @@ namespace REviewer.Modules.RE.Common
 
                     InventoryImages.Add(new ImageItem
                     {
-                        Source = IDatabase.Items[(byte)Inventory[i].Item.Value].Img,
+                        Source = items[(byte)Inventory[i].Item.Value].Img,
                         Width = 92,
                         Height = 92,
                         Opacity = i < MAX_INVENTORY_SIZE ? 1 : 0,
@@ -165,9 +166,10 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateInventoryImage(int index)
         {
+            var items = IDatabase.GetItems();
             if (index <= InventoryCapacitySize)
             {
-                InventoryImages[index].Source = IDatabase.Items[(byte)Inventory[index].Item.Value].Img;
+                InventoryImages[index].Source = items[(byte)Inventory[index].Item.Value].Img;
 
                 var item_id = Inventory[index].Item?.Value ?? 255;
 

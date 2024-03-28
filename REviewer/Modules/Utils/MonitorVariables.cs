@@ -194,11 +194,8 @@ namespace REviewer.Modules.Utils
         public int ReadVariableData(VariableData variableData)
         {
             byte[] buffer = ReadProcessMemory(variableData.Offset, (uint)variableData.Size);
-            if (buffer == null)
-            {
-                // Logger.Instance.Error($"Failed to read process memory for process {_processName} with handle {_processHandle}");
-                // throw new InvalidOperationException("Failed to read process memory");
-            }
+
+            if (buffer == null) throw new InvalidOperationException("Buffer should not be null");
 
             return variableData.Size switch
             {

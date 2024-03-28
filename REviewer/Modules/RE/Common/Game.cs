@@ -226,12 +226,22 @@ namespace REviewer.Modules.RE.Common
                             _srtTimer.Stop();
                             _saveState = 0;
                         }
-                        return TimeSpan.FromSeconds(_gameSave.Value).ToString(@"hh\:mm\:ss\.ff");
+
+                        if(Room.Value == 13 && Cutscene.Value == 11)
+                        {
+                            return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
+                        }
+
+                        return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                     else
                     {
-                        if (!timerRunning) StartSRTTimer();
-                        return TimeSpan.FromMilliseconds(_gameSave.Value  + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
+                        if (!timerRunning) {
+                            StartSRTTimer();
+                        }
+
+                        // _gameSave.Value  +
+                        return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
 

@@ -46,6 +46,21 @@ namespace REviewer.Modules.Utils
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3" } }
         };
 
+        private static readonly Dictionary<string, string> _correctProccessName = new Dictionary<string, string>()
+        {
+            { "Bio", "Bio" },
+            { "bio", "Bio" },
+            { "Biohazard", "Bio" },
+            { "biohazard", "Bio" },
+            { "Bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.1", "Bio2 1.10" },
+            { "bio2 v1.1", "Bio2 1.10" },
+            { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
+            { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
+            { "bio3", "BIOHAZARD(R) 3 PC" },
+            { "Bio3", "BIOHAZARD(R) 3 PC" }
+        };
 
         public static Dictionary<string, string> GetGameList()
         {
@@ -55,6 +70,11 @@ namespace REviewer.Modules.Utils
         public static List<string> GetGameVersions(string key)
         {
             return _gameVersions.TryGetValue(key, out List<string>?  versions) ? versions : new List<string>();
+        }
+
+        public static Dictionary<string, string> GetGameProcesses()
+        {
+            return _correctProccessName;
         }
 
         public static string GetGameName(string processName)
