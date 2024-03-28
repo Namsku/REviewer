@@ -39,12 +39,11 @@ Possible other port
 - RE3 (CHN/TWN) 
 
 ## Details
-
 | Game           | Platform | IGT | Enemy Tracker | Partner | Inventory | Item Box | Save State | Key Items |
 |----------------|----------|-----|---------------|---------|-----------|----------|------------|-----------|
-| RE1 Mediakit   |  PC      |  X  |        X      |         |     X     |     X    |      X     |     X     |
-| RE2 SourceNext |  PC      |  X  |        X      |     X   |     X     |     X    |      X     |     X     |
-| RE3 Rebirth    |  PC      |     |        X      |     X   |     X     |     X    |            |     X     |
+| RE1 Mediakit   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE2 SourceN.   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE3 Rebirth    |  PC      | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> |
 
 ## Known Bugs
 
