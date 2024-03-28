@@ -227,11 +227,6 @@ namespace REviewer.Modules.RE.Common
                             _saveState = 0;
                         }
 
-                        if(Room.Value == 13 && Cutscene.Value == 11)
-                        {
-                            return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
-                        }
-
                         return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                     else
@@ -240,7 +235,6 @@ namespace REviewer.Modules.RE.Common
                             StartSRTTimer();
                         }
 
-                        // _gameSave.Value  +
                         return TimeSpan.FromMilliseconds(SrtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
