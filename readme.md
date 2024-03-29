@@ -7,6 +7,13 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 
 ## Overview
 
+## Details
+| Game           | Platform | IGT | Enemy Tracker | Partner | Inventory | Item Box | Save State | Key Items |
+|----------------|----------|-----|---------------|---------|-----------|----------|------------|-----------|
+| RE1 Mediakit   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE2 SourceN.   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE3 Rebirth    |  PC      | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> |
+
 ### Resident Evil 1
 ![Alt Text](img/reviewer-re1.png)
 

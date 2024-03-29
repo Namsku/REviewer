@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Printing.IndexedProperties;
 using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
@@ -223,6 +224,8 @@ namespace REviewer.Modules.RE.Common
                     {
                         if (timerRunning)
                         {
+                            Console.WriteLine("Timer stopped");
+                            timerRunning = false;
                             _srtTimer.Stop();
                             _saveState = 0;
                         }
@@ -232,6 +235,7 @@ namespace REviewer.Modules.RE.Common
                     else
                     {
                         if (!timerRunning) {
+                            Console.WriteLine("Timer started");
                             StartSRTTimer();
                         }
 
@@ -247,9 +251,8 @@ namespace REviewer.Modules.RE.Common
         {
             timerRunning = true;
             SrtTimeHotfix = 0;
-            Console.WriteLine("Starting SRT Timer");
 
-            _srtTimer = new System.Timers.Timer(20); // Fire event every 100 milliseconds
+            _srtTimer = new System.Timers.Timer(20);
             _srtTimer.Elapsed += TimerElapsed;
             _srtTimer.Start();
         }
