@@ -12,6 +12,20 @@ using REviewer.Modules.RE.Json;
 
 namespace REviewer.Modules.Utils
 {
+    public class JsonConfig
+    {
+        public string? RE1 { get; set; }
+        public string? RE2 { get; set; }
+        public string? RE3 { get; set; }
+        public string? RECVX { get; set; }
+        public bool isHealthBarChecked { get; set; }
+        public bool isItemBoxChecked { get; set; }
+        public bool isChrisInventoryChecked { get; set; }
+        public bool isSherryChecked { get; set; }
+        public bool isMinimalistChecked { get; set; }
+        public bool isNoSegmentsTimerChecked { get; set; }
+        public bool isNoStatsChecked { get; set; }
+    }
     public class Library
     {
 
@@ -215,6 +229,33 @@ namespace REviewer.Modules.Utils
 
             return reJson;
         }
+
+        public static Dictionary<string, bool> GetOptions()
+        {
+            var reJson = GetReviewerConfig();
+
+            return new Dictionary<string, bool>
+            {
+                { "isBiorandMode", reJson["isBiorandMode"] == "true" },
+                { "isNormalMode", reJson["isNormalMode"] == "true"},
+                { "isHealthBarChecked", reJson["isHealthBarChecked"] == "true" },
+                { "isItemBoxChecked", reJson["isItemBoxChecked"] == "true" },
+                { "isChrisInventoryChecked", reJson["isChrisInventoryChecked"] == "true" },
+                { "isSherryChecked", reJson["isSherryChecked"] == "true" },
+                { "isMinimalistChecked", reJson["isMinimalistChecked"] == "true" },
+                { "isNoSegmentsTimerChecked", reJson["isNoSegmentsTimerChecked"] == "true" },
+                { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" }
+            };
+        }
+        public static void UpdateConfigFile(string key, string value)
+        {
+            var configPath = ConfigurationManager.AppSettings["Config"];
+            var reJson = Library.GetReviewerConfig();
+
+            reJson[key] = value;
+            File.WriteAllText(configPath, JsonConvert.SerializeObject(reJson, Formatting.Indented));
+        }
+
         private static Dictionary<string, string>? LoadGamePaths()
         {
             if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
