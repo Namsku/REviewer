@@ -56,6 +56,8 @@ namespace REviewer
             InitializeComponent();
             InitializeText();
             InitCheckBoxes();
+            InitializeSavedOptions();
+            
             InitializeSaveWatcher();
             InitializeProcessWatcher();
             InitializeRootObjectWatcher();
@@ -135,6 +137,22 @@ namespace REviewer
                     UpdateUI(content, saveREPath, i);
                 }
             }
+        }
+
+        private void InitializeSavedOptions()
+        {
+            var config = Library.GetOptions();
+
+            _ui.isBiorandMode = config["isBiorandMode"];
+            _ui.isNormalMode = config["isNormalMode"];
+
+            _ui.isHealthBarChecked = config["isHealthBarChecked"];
+            _ui.isItemBoxChecked = config["isItemBoxChecked"];
+            _ui.isChrisInventoryChecked = config["isChrisInventoryChecked"];
+            _ui.isSherryChecked = config["isSherryChecked"];
+            _ui.isMinimalistChecked = config["isMinimalistChecked"];
+            _ui.isNoSegmentsTimerChecked = config["isNoSegmentsTimerChecked"];
+            _ui.isNoStatsChecked = config["isNoStatsChecked"];
         }
 
         private void InitializeProcessWatcher()
@@ -403,7 +421,7 @@ namespace REviewer
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 RE1SavePath.Text = dialog.FileName;
-                UpdateConfigFile("RE1", dialog.FileName);
+                Library.UpdateConfigFile("RE1", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
             }
@@ -419,7 +437,7 @@ namespace REviewer
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 RE2SavePath.Text = dialog.FileName;
-                UpdateConfigFile("RE2", dialog.FileName);
+                Library.UpdateConfigFile("RE2", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
             }
@@ -435,19 +453,10 @@ namespace REviewer
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 RE3SavePath.Text = dialog.FileName;
-                UpdateConfigFile("RE3", dialog.FileName);
+                Library.UpdateConfigFile("RE3", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
             }
-        }
-
-        private void UpdateConfigFile(string game, string path)
-        {
-            var configPath = ConfigurationManager.AppSettings["Config"];
-            var reJson = Library.GetReviewerConfig();
-
-            reJson[game] = path;
-            File.WriteAllText(configPath, JsonConvert.SerializeObject(reJson, Formatting.Indented));
         }
 
         // Event for clicking the Run Button
