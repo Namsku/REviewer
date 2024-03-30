@@ -153,6 +153,7 @@ namespace REviewer
             _ui.isMinimalistChecked = config["isMinimalistChecked"];
             _ui.isNoSegmentsTimerChecked = config["isNoSegmentsTimerChecked"];
             _ui.isNoStatsChecked = config["isNoStatsChecked"];
+            _ui.isNoKeyItemsChecked = config["isNoKeyItemsChecked"];
         }
 
         private void InitializeProcessWatcher()
@@ -560,7 +561,9 @@ namespace REviewer
                 ["ChrisInventory"] = ChrisInventory.IsChecked,
                 ["Sherry"] = Sherry.IsChecked,
                 ["NoSegTimers"] = NoSegTimes.IsChecked,
-                ["NoStats"] = NoStats.IsChecked
+                ["NoStats"] = NoStats.IsChecked,
+                ["NoKeyItems"] = NoKeyItems.IsChecked,
+                ["Minimalist"] = Minimalist.IsChecked,
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked

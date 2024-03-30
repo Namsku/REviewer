@@ -230,7 +230,8 @@ namespace REviewer.Modules.Utils
                 { "isSherryChecked", reJson["isSherryChecked"] == "true" },
                 { "isMinimalistChecked", reJson["isMinimalistChecked"] == "true" },
                 { "isNoSegmentsTimerChecked", reJson["isNoSegmentsTimerChecked"] == "true" },
-                { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" }
+                { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" },
+                { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" }
             };
         }
         public static void UpdateConfigFile(string key, string value)

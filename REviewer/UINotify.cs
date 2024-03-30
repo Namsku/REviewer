@@ -185,6 +185,20 @@ namespace REviewer
                 }
             }
         }
+
+        private bool _isNoKeyItemsChecked;
+        public bool isNoKeyItemsChecked
+        {
+            get { return _isNoKeyItemsChecked; }
+            set
+            {
+                if (_isNoKeyItemsChecked != value)
+                {
+                    _isNoKeyItemsChecked = value;
+                    Library.UpdateConfigFile("isNoKeyItemsChecked", _isNoKeyItemsChecked.ToString().ToLower());
+                }
+            }
+        }
     }
 
 }

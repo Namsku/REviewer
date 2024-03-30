@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:REviewer.Modules.SRT"
         mc:Ignorable="d"
-        Title="SRT" Height="auto" Width="400"
+        Title="SRT" Height="auto" Width="{Binding WindowWidth}"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         SizeToContent="Height"
@@ -17,7 +17,7 @@
     <Grid>
         <Grid>
             <Grid.LayoutTransform>
-                <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0.5" CenterY="0.5" />
+                <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX="{Binding WindowCenter}" CenterY="{Binding WindowCenter}" />
             </Grid.LayoutTransform>
 
             <Grid.RowDefinitions>
@@ -150,7 +150,7 @@
             </StackPanel>
 
             <!-- Key Items -->
-            <StackPanel Grid.Row="3" HorizontalAlignment="Center" Visibility="{Binding BiorandVisibility}">
+            <StackPanel Grid.Row="3" HorizontalAlignment="Center" Visibility="{Binding KeyItemsVisibility}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -337,7 +337,7 @@
             </StackPanel>
 
             <!-- Timers -->
-            <StackPanel Grid.Row="7" HorizontalAlignment="Stretch" Visibility="{Binding BiorandVisibility}">
+            <StackPanel Grid.Row="7" HorizontalAlignment="Stretch" Visibility="{Binding SegsVisibility}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

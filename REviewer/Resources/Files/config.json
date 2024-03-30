@@ -7,5 +7,6 @@
     "isSherryChecked": false,
     "isMinimalistChecked": false,
     "isNoSegmentsTimerChecked": false,
-    "isNoStatsChecked": false
+    "isNoStatsChecked": false,
+    "isNoKeyItemsChecked": false
 }

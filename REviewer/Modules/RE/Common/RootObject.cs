@@ -67,6 +67,23 @@ namespace REviewer.Modules.RE.Common
         public Visibility? PartnerVisibility { get; set; }
         public Visibility? StatsVisibility { get; set; }
         public Visibility? SegsVisibility { get; set; }
+        public Visibility? KeyItemsVisibility { get; set; }
+
+        private int? _windowWidth;
+        public int? WindowWidth
+        {
+            get { return _windowWidth; }
+            set
+            {
+                if (_windowWidth != value)
+                {
+                    _windowWidth = value;
+                    OnPropertyChanged(nameof(WindowWidth));
+                }
+            }
+        }        
+        public double? WindowScale { get; set; }
+        public double? WindowCenter { get; set; }
         public RootObject(Bio bio, ItemIDs ids)
         {
             if (bio.Player?.Character?.Database == null)
@@ -187,10 +204,39 @@ namespace REviewer.Modules.RE.Common
                 }
             }
 
+            if (config.TryGetValue("Minimalist", out bool? minimalist))
+            {
+                if(minimalist == true)
+                {
+                    WindowWidth = 230;
+                    WindowScale = 0.4;
+                    WindowCenter = 0.2;
+                }
+                else
+                {
+                    WindowWidth = 400;
+                    WindowScale = 0.7;
+                    WindowCenter = 0.5;
+                }
+            }
+
             SherryVisibility = GetVisibility(config, "Sherry");
             StatsVisibility = GetVisibility(config, "NoStats") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             SegsVisibility = GetVisibility(config, "NoSegTimers") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            KeyItemsVisibility = GetVisibility(config, "NoKeyItems") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
+            if (BiorandVisibility == Visibility.Visible)
+            {
+                StatsVisibility = StatsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
+                SegsVisibility = SegsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
+                KeyItemsVisibility = KeyItemsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
+            } 
+            else
+            {
+                StatsVisibility = Visibility.Collapsed;
+                SegsVisibility = Visibility.Collapsed;
+                KeyItemsVisibility = Visibility.Collapsed;
+            }
         }
 
         private Visibility GetVisibility(Dictionary<string, bool?> config, string key)
