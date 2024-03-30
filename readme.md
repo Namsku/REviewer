@@ -9,9 +9,12 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 ## Details
 | Game           | Platform | IGT | Enemy Tracker | Partner | Inventory | Item Box | Save State | Key Items |
 |----------------|----------|-----|---------------|---------|-----------|----------|------------|-----------|
-| RE1 Mediakit   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
-| RE2 SourceN.   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
-| RE3 Rebirth    |  PC      | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> |
+| RE1 Mediakit   |  PC      | X | X | | X | X | X | X |
+| RE2 SourceN.   |  PC      | X | X | X | X | X | X | X |
+| RE3 Rebirth    |  PC      | X* | X | X | X | X | | X |
+
+- There is no real time IGT in RE3 Rebirth, I have implemented an approximate one.
+- On the other side, the final IGT will be alwys correct because i'm using the one that the game is using to give your final time.
 
 ### Resident Evil 1
 ![Alt Text](img/reviewer-re1.png)
@@ -36,7 +39,7 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 95% / Testing phase
-- [X] RE3 (Rebirth) - 80% / Testing phase - NO IGT YET
+- [X] RE3 (Rebirth) - 95% / Testing phase - NO IGT YET
 - [ ] CVX (PS2)
 
 Possible other port
