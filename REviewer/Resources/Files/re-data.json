@@ -556,22 +556,13 @@
             "Room": "0xC386F1",
             "Cutscene": "0xC386F2",
             "LastRoom": "0xC386F3",
-            "GameUnk001": "0xC386F4",
-            "Unk002": "0xC33097",
-            "Event": "0xC386F5",
             "LastItemFound": "0xC386F6",
             "InventoryCapacityUsed": "0xC386F7",
             "CharacterHealthState": "0xC35290",
             "GameState": "0xC33090",
             "GameTimer": "0xAA8E10",
-            "PositionX": "0xC2EAB0",
-            "PositionY": "0xC2EAB4",
-            "PositionZ": "0xC2EAB8",
-            "RebirthDebug": "0x1217ACA6",
-            "RebirthState": "0xC30020",
             "CharacterHealth": "0xC3523C",
             "MainMenu": "0xAA8E57",
-            "RebirthScreen": "0xC3002C",
             "LockPick": "0xC3879C",
             "SaveContent": "0xc38500",
             "EnnemyInfos": "0xC353B9"
@@ -935,7 +926,7 @@
             },
             "49": {
                 "Name": "PhotoSherry",
-                "Type": "Item",
+                "Type": "Nothing",
                 "Img": "resources/re2/sherry-photo.png"
             },
             "50": {
@@ -1125,7 +1116,7 @@
             },
             "87": {
                 "Name": "PhotoAda",
-                "Type": "Item",
+                "Type": "Nothing",
                 "Img": "resources/re2/ada-photo.png"
             },
             "88": {

@@ -29,10 +29,19 @@ namespace REviewer.Modules.Utils
                 { "bio", "RE1" },
                 { "Biohazard", "RE1" },
                 { "biohazard", "RE1" },
+                { "Bio2", "RE2" },
                 { "Bio2 1.10", "RE2" },
                 { "bio2 1.10", "RE2" },
                 { "bio2 1.1", "RE2" },
                 { "bio2 v1.1", "RE2" },
+                { "re2mm", "RE2"},
+                { "RE2MM", "RE2"},
+                { "REVisited", "RE2" },
+                { "UEv3", "RE2"},
+                { "toos_ver2_0_0", "RE2" },
+                { "toos(hard)_ver2_0_0", "RE2" },
+                { "bunny", "RE2" },
+                { "bunny2", "RE2" },
                 { "BIOHAZARD(R) 3 PC", "RE3" },
                 { "biohazard(r) 3 pc", "RE3" },
                 { "bio3", "RE3" },
@@ -42,10 +51,34 @@ namespace REviewer.Modules.Utils
         public static Dictionary<string, List<string>> _gameVersions = new Dictionary<string, List<string>>
         {
             { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
-            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2 v1.1" } },
+            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2", "bio2 v1.1", "bunny", "bunny2" , "re2mm", "RE2MM", "REVisited", "UEv3", "toos_ver2_0_0", "toos(hard)_ver2_0_0" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3" } }
         };
 
+        private static readonly Dictionary<string, string> _correctProccessName = new Dictionary<string, string>()
+        {
+            { "Bio", "Bio" },
+            { "bio", "Bio" },
+            { "Biohazard", "Bio" },
+            { "biohazard", "Bio" },
+            { "Bio2", "Bio2 1.10" },
+            { "Bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.10", "Bio2 1.10" },
+            { "bio2 1.1", "Bio2 1.10" },
+            { "bio2 v1.1", "Bio2 1.10" },
+            { "re2mm", "Bio2 1.10" },
+            { "RE2MM", "Bio2 1.10" },
+            { "REVisited", "Bio2 1.10" },
+            { "UEv3", "Bio2 1.10" },
+            { "toos_ver2_0_0", "Bio2 1.10" },
+            { "toos(hard)_ver2_0_0", "Bio2 1.10" },
+            { "bunny", "Bio2 1.10" },
+            { "bunny2", "Bio2 1.10" },
+            { "BIOHAZARD(R) 3 PC", "BIOHAZARD(R) 3 PC" },
+            { "biohazard(r) 3 pc", "BIOHAZARD(R) 3 PC" },
+            { "bio3", "BIOHAZARD(R) 3 PC" },
+            { "Bio3", "BIOHAZARD(R) 3 PC" }
+        };
 
         public static Dictionary<string, string> GetGameList()
         {
@@ -54,7 +87,12 @@ namespace REviewer.Modules.Utils
 
         public static List<string> GetGameVersions(string key)
         {
-            return _gameVersions.TryGetValue(key, out List<string>  versions) ? versions : new List<string>();
+            return _gameVersions.TryGetValue(key, out List<string>?  versions) ? versions : new List<string>();
+        }
+
+        public static Dictionary<string, string> GetGameProcesses()
+        {
+            return _correctProccessName;
         }
 
         public static string GetGameName(string processName)
@@ -162,6 +200,49 @@ namespace REviewer.Modules.Utils
             return false;
         }
 
+        public static Dictionary<string, string> GetReviewerConfig()
+        {
+            var configPath = ConfigurationManager.AppSettings["Config"];
+
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+            {
+                throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
+            }
+
+            var json = File.ReadAllText(configPath);
+            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                         ?? throw new ArgumentNullException("The game data is null");
+
+            return reJson;
+        }
+
+        public static Dictionary<string, bool> GetOptions()
+        {
+            var reJson = GetReviewerConfig();
+
+            return new Dictionary<string, bool>
+            {
+                { "isBiorandMode", reJson["isBiorandMode"] == "true" },
+                { "isNormalMode", reJson["isNormalMode"] == "true"},
+                { "isHealthBarChecked", reJson["isHealthBarChecked"] == "true" },
+                { "isItemBoxChecked", reJson["isItemBoxChecked"] == "true" },
+                { "isChrisInventoryChecked", reJson["isChrisInventoryChecked"] == "true" },
+                { "isSherryChecked", reJson["isSherryChecked"] == "true" },
+                { "isMinimalistChecked", reJson["isMinimalistChecked"] == "true" },
+                { "isNoSegmentsTimerChecked", reJson["isNoSegmentsTimerChecked"] == "true" },
+                { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" },
+                { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" }
+            };
+        }
+        public static void UpdateConfigFile(string key, string value)
+        {
+            var configPath = ConfigurationManager.AppSettings["Config"];
+            var reJson = Library.GetReviewerConfig();
+
+            reJson[key] = value;
+            File.WriteAllText(configPath, JsonConvert.SerializeObject(reJson, Formatting.Indented));
+        }
+
         private static Dictionary<string, string>? LoadGamePaths()
         {
             if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
@@ -212,7 +293,7 @@ namespace REviewer.Modules.Utils
 
         public static string GetProcessMD5Hash(Process process)
         {
-            if (process.MainModule == null)
+            if (process.MainModule?.FileName == null)
             {
                 throw new ArgumentNullException("The process has no main module");
             }

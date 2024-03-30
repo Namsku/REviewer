@@ -47,7 +47,7 @@ namespace REviewer
             MaxHealth.FontFamily = _pixelBoyFont;
 
             Death.FontFamily = _pixelBoyFont;
-            Debug.FontFamily = _pixelBoyFont;
+            // Debug.FontFamily = _pixelBoyFont;
             Hit.FontFamily = _pixelBoyFont;
             Resets.FontFamily = _pixelBoyFont;
             Saves.FontFamily = _pixelBoyFont;

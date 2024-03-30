@@ -4,8 +4,14 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 
 **Note: REviewer is currently in alpha stage and UNSTABLE. Use with caution.**
 
-
 ## Overview
+
+## Details
+| Game           | Platform | IGT | Enemy Tracker | Partner | Inventory | Item Box | Save State | Key Items |
+|----------------|----------|-----|---------------|---------|-----------|----------|------------|-----------|
+| RE1 Mediakit   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE2 SourceN.   |  PC      | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> |
+| RE3 Rebirth    |  PC      | | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | <div style="text-align: center;">X</div> | | <div style="text-align: center;">X</div> |
 
 ### Resident Evil 1
 ![Alt Text](img/reviewer-re1.png)
@@ -93,19 +99,6 @@ To start using REviewer, follow these steps:
 6. Enjoy your speedrunning experience!
 
 ## FAQ
-
-### My game is not recognized, what i'm doing wrong
-
-SRT is able to recognize some process name:
-
-- Bio.exe
-- bio.exe
-- Biohazard.exe
-- biohazard.exe
-- Bio2 1.10.exe
-- bio2 1.10.exe
-- bio2 v1.1.exe
-- bio2 1.1.exe
 
 ### How works Timers?
 

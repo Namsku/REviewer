@@ -1,10 +1,18 @@
 ﻿using System.ComponentModel;
+using System.Printing.IndexedProperties;
+using System.Runtime.InteropServices;
 using REviewer.Modules.Utils;
 
 namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
         public bool isGameDone = false;
         public bool isNewGame = false;
         public double FinalInGameTime = 0;
@@ -219,19 +227,32 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 2)
                 {
-                    if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0)
+                    if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
                     {
                         if (timerRunning)
                         {
+                            Console.WriteLine("Timer stopped");
+                            timerRunning = false;
                             _srtTimer.Stop();
                             _saveState = 0;
                         }
-                        return TimeSpan.FromSeconds(_gameSave.Value).ToString(@"hh\:mm\:ss\.ff");
+
+                        if (Cutscene.Value == 2 && Room.Value == 0xE && (Stage.Value % 5) == 4)
+                        {
+                            return TimeSpan.FromMilliseconds(((_gameSave.Value) / 60.0 * 1000)).ToString(@"hh\:mm\:ss\.ff");
+                        }
+                        return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
                     }
                     else
                     {
-                        if (!timerRunning) StartSRTTimer();
-                        return TimeSpan.FromMilliseconds(_gameSave.Value  + _srtTimeHotfix).ToString(@"hh\:mm\:ss\.ff");
+                        if (!timerRunning)
+                        {
+                            Console.WriteLine("Timer started");
+                            StartSRTTimer();
+                        }
+                        _saveState = (_gameSave.Value) / 60.0 * 1000;
+
+                        return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
 
@@ -243,9 +264,8 @@ namespace REviewer.Modules.RE.Common
         {
             timerRunning = true;
             SrtTimeHotfix = 0;
-            Console.WriteLine("Starting SRT Timer");
 
-            _srtTimer = new System.Timers.Timer(20); // Fire event every 100 milliseconds
+            _srtTimer = new System.Timers.Timer(20);
             _srtTimer.Elapsed += TimerElapsed;
             _srtTimer.Start();
         }

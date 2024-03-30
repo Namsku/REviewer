@@ -69,7 +69,7 @@
                             <TextBlock Text="This is a tool designed to help with Resident Evil/Biorand" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                             <TextBlock Text="Please select a game from the list below to get started and adjust it with your own needs." HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-                            <GroupBox Header="Game Selection">
+                            <GroupBox Header="Game Selection" Margin="10,0,10,0">
                                 <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22" SelectionChanged="ComboBoxGameSelection_SelectionChanged">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
                                     <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
@@ -77,7 +77,7 @@
                                 </ComboBox>
                             </GroupBox>
 
-                            <GroupBox Header="Status" Margin="0,0,0,0">
+                            <GroupBox Header="Status" Margin="10,0,10,0">
                                 <StackPanel>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -106,19 +106,19 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Mode" Margin="0,0,0,0">
+                            <GroupBox Header="Mode" Margin="10,0,10,0">
                                 <StackPanel>
-                                    <RadioButton Name="NormalMode" Content="Normal" HorizontalAlignment="Left" Margin="10,5,0,0" Height="15"/>
-                                    <RadioButton Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="True"/>
+                                    <RadioButton Name="NormalMode" Content="Normal" HorizontalAlignment="Left" Margin="10,5,0,0" Height="15" IsChecked="{Binding isNormalMode}"/>
+                                    <RadioButton Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Options" Margin="0,0,0,0">
+                            <GroupBox Header="Options" Margin="10,0,10,0">
                                 <StackPanel>
-                                    <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15"/>
-                                    <CheckBox Name="ShowItemBox" Content="Show ItemBox (This takes a lot place)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15"/>
-                                    <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Setting Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}"/>
-                                    <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}"/>
+                                    <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isHealthBarChecked}"/>
+                                    <CheckBox Name="ShowItemBox" Content="Show ItemBox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isItemBoxChecked}"/>
+                                    <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}" IsChecked="{Binding isChrisInventoryChecked}"/>
+                                    <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}" IsChecked="{Binding isSherryChecked}"/>
                                     
                                     <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
                                     <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
@@ -130,7 +130,7 @@
                     </Grid>
 
                     <Grid x:Name="panelSettings" Visibility="Hidden">
-                        <StackPanel>
+                        <StackPanel Margin="10,0,10,0">
                             <TextBlock Text="Settings" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
                             <GroupBox Header="Resident Evil 1" Margin="0,0,0,0">
                                 <StackPanel>
@@ -179,15 +179,25 @@
 
                             <GroupBox Header="Resident Evil - Code Veronica" Margin="0,0,0,0" IsEnabled="False">
                                 <StackPanel>
-                                    <Label Content="Save Path" HorizontalAlignment="Left" Margin="10,5,0,0"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="" HorizontalAlignment="Left" Margin="10,5,0,0"/>
-                                        <Button Grid.Column="1" Content="..." HorizontalAlignment="Right" Margin="0,5,10,0" Width="25" Height="25"/>
+                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
+                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RECVXSavePath"/>
+                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25"/>
                                     </Grid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Windows Layout" Margin="0,0,0,0">
+                                <StackPanel>
+                                    <CheckBox Name="Minimalist" Content="Minimalist UI (For small resolutions)" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isMinimalistChecked}"/>
+                                    <CheckBox Name="NoStats" Content="No Statistics" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoStatsChecked}"/>
+                                    <CheckBox Name="NoSegTimes" Content="No Segment Times" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoSegmentsTimerChecked}"/>
+                                    <CheckBox Name="NoKeyItems" Content="No Key Items" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoKeyItemsChecked}"/>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
@@ -200,6 +210,7 @@
                             <TextBlock Text="IntelOrca" FontSize="14" Margin="0,10,0,0"/>
                             <TextBlock Text="SniperWolf" FontSize="14" Margin="0,10,0,0"/>
                             <TextBlock Text="NoxxGaming" FontSize="14" Margin="0,10,0,0"/>
+                            <TextBlock Text="Otamega72" FontSize="14" Margin="0,10,0,0"/>
                             <TextBlock Text="Albert_Fn_Wesker" FontSize="14" Margin="0,10,0,0"/>
                             <TextBlock Text="Death2024 for breaking my stuff" FontSize="14" Margin="0,10,0,0"/>
                             <TextBlock Text="Images" FontSize="16" FontWeight="Bold" Margin="0,10,0,10"/>

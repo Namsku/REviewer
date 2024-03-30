@@ -1,3 +1,12 @@
 {
-
+    "isNormalMode": false,
+    "isBiorandMode": true,
+    "isHealthBarChecked": false,
+    "isItemBoxChecked": false,
+    "isChrisInventoryChecked": false,
+    "isSherryChecked": false,
+    "isMinimalistChecked": false,
+    "isNoSegmentsTimerChecked": false,
+    "isNoStatsChecked": false,
+    "isNoKeyItemsChecked": false
 }

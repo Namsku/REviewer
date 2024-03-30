@@ -37,6 +37,8 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateChronometers()
         {
+            if (IGTSegments == null) return;
+
             SegmentCount += 1 % 4;
             IGTSegments[SegmentCount - 1] = GameTimer?.Value ?? 0;
 

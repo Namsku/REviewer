@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:REviewer.Modules.SRT"
         mc:Ignorable="d"
-        Title="REviewer Enemy Tracker" Height="auto" Width="530"
+        Title="REviewer Enemy Tracker" Height="auto" Width="{Binding WindowWidth, Mode=TwoWay}"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         SizeToContent="Height"
@@ -15,6 +15,10 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX="1" CenterY="1" />
+        </Grid.LayoutTransform>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
