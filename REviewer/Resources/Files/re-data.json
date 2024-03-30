@@ -926,7 +926,7 @@
             },
             "49": {
                 "Name": "PhotoSherry",
-                "Type": "Item",
+                "Type": "Nothing",
                 "Img": "resources/re2/sherry-photo.png"
             },
             "50": {
@@ -1116,7 +1116,7 @@
             },
             "87": {
                 "Name": "PhotoAda",
-                "Type": "Item",
+                "Type": "Nothing",
                 "Img": "resources/re2/ada-photo.png"
             },
             "88": {

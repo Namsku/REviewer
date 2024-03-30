@@ -10,7 +10,20 @@ namespace REviewer
     public partial class Tracker : Window, INotifyPropertyChanged
     {
         private readonly RootObject _game;
-        public int? WindowWidth { get; set; }
+        private double _windowWidth;
+
+        public double WindowWidth
+        {
+            get { return _windowWidth; }
+            set
+            {
+                if (_windowWidth != value)
+                {
+                    _windowWidth = value;
+                    OnPropertyChanged(nameof(WindowWidth));
+                }
+            }
+        }
         public double? WindowScale { get; set; }
         public ObservableCollection<EnnemyTracking> Tracking { get; set; }
         public Tracker(ObservableCollection<EnnemyTracking> trk, RootObject obj)
@@ -18,20 +31,21 @@ namespace REviewer
             _game = obj ?? throw new ArgumentNullException(nameof(obj));
             Tracking = trk ?? throw new ArgumentNullException(nameof(trk));
 
+
             InitializeComponent();
-            SetWindowProperties();
             SubscribeToEvents();
+            SetWindowProperties();
 
             DataContext = this;
         }
 
         private void SetWindowProperties()
         {
-            WindowWidth = _game.WindowWidth == 400 ? 730 : 510;
+            WindowWidth = _game.WindowWidth == 400 ? 530 : 355;
             WindowScale = _game.WindowWidth == 400 ? 1 : 0.7;
 
-            OnPropertyChanged(nameof(WindowWidth));
-            OnPropertyChanged(nameof(WindowScale));
+            OnPropertyChanged(nameof(WindowWidth)); // Raise PropertyChanged event for WindowWidth
+            OnPropertyChanged(nameof(WindowScale)); // Raise PropertyChanged event for WindowScale
         }
 
         private void SubscribeToEvents()

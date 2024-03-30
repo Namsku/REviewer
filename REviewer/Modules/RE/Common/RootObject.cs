@@ -440,14 +440,12 @@ namespace REviewer.Modules.RE.Common
         {
             var save = SaveDatabase?.FirstOrDefault(s => s["SaveID"]?.Value<int>() == value);
 
-            if (save == null)
-            {
-                return;
-            }
+            if (save == null) return;
+            if (IGTSegments == null) return;
 
             for (int i = 0; i < 4; i++)
             {
-                IGTSegments[i] = Math.Max((int)IGTSegments[i], save["Segments"][i]?.Value<int>() ?? 0);
+                IGTSegments[i] = Math.Max((int)IGTSegments[i], save["Segments"]?[i]?.Value<int>() ?? 0);
             }
 
             SegmentCount = save["SegmentsCount"]?.Value<int>() ?? 0;
