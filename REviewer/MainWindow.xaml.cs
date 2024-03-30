@@ -558,7 +558,9 @@ namespace REviewer
                 ["Standard"] = !NormalMode.IsChecked,
                 ["ItemBox"] = ShowItemBox.IsChecked,
                 ["ChrisInventory"] = ChrisInventory.IsChecked,
-                ["Sherry"] = Sherry.IsChecked
+                ["Sherry"] = Sherry.IsChecked,
+                ["NoSegTimers"] = NoSegTimes.IsChecked,
+                ["NoStats"] = NoStats.IsChecked
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked

@@ -282,7 +282,7 @@
             </StackPanel>
 
             <!-- Stats -->
-            <StackPanel Grid.Row="6" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Row="6" HorizontalAlignment="Stretch" Visibility="{Binding StatsVisibility}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

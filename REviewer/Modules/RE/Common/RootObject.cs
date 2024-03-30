@@ -65,8 +65,8 @@ namespace REviewer.Modules.RE.Common
         public Visibility? ItemBoxVisibility { get; set; }
         public Visibility? SherryVisibility { get; set; }
         public Visibility? PartnerVisibility { get; set; }
-
-        
+        public Visibility? StatsVisibility { get; set; }
+        public Visibility? SegsVisibility { get; set; }
         public RootObject(Bio bio, ItemIDs ids)
         {
             if (bio.Player?.Character?.Database == null)
@@ -188,6 +188,9 @@ namespace REviewer.Modules.RE.Common
             }
 
             SherryVisibility = GetVisibility(config, "Sherry");
+            StatsVisibility = GetVisibility(config, "NoStats") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            SegsVisibility = GetVisibility(config, "NoSegTimers") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+
         }
 
         private Visibility GetVisibility(Dictionary<string, bool?> config, string key)

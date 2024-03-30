@@ -12,20 +12,6 @@ using REviewer.Modules.RE.Json;
 
 namespace REviewer.Modules.Utils
 {
-    public class JsonConfig
-    {
-        public string? RE1 { get; set; }
-        public string? RE2 { get; set; }
-        public string? RE3 { get; set; }
-        public string? RECVX { get; set; }
-        public bool isHealthBarChecked { get; set; }
-        public bool isItemBoxChecked { get; set; }
-        public bool isChrisInventoryChecked { get; set; }
-        public bool isSherryChecked { get; set; }
-        public bool isMinimalistChecked { get; set; }
-        public bool isNoSegmentsTimerChecked { get; set; }
-        public bool isNoStatsChecked { get; set; }
-    }
     public class Library
     {
 
