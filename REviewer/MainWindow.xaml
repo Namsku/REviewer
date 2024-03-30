@@ -69,7 +69,7 @@
                             <TextBlock Text="This is a tool designed to help with Resident Evil/Biorand" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                             <TextBlock Text="Please select a game from the list below to get started and adjust it with your own needs." HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-                            <GroupBox Header="Game Selection">
+                            <GroupBox Header="Game Selection" Margin="10,0,10,0">
                                 <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22" SelectionChanged="ComboBoxGameSelection_SelectionChanged">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
                                     <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
@@ -77,7 +77,7 @@
                                 </ComboBox>
                             </GroupBox>
 
-                            <GroupBox Header="Status" Margin="0,0,0,0">
+                            <GroupBox Header="Status" Margin="10,0,10,0">
                                 <StackPanel>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -106,14 +106,14 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Mode" Margin="0,0,0,0">
+                            <GroupBox Header="Mode" Margin="10,0,10,0">
                                 <StackPanel>
                                     <RadioButton Name="NormalMode" Content="Normal" HorizontalAlignment="Left" Margin="10,5,0,0" Height="15" IsChecked="{Binding isNormalMode}"/>
                                     <RadioButton Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Options" Margin="0,0,0,0">
+                            <GroupBox Header="Options" Margin="10,0,10,0">
                                 <StackPanel>
                                     <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isHealthBarChecked}"/>
                                     <CheckBox Name="ShowItemBox" Content="Show ItemBox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isItemBoxChecked}"/>
@@ -130,7 +130,7 @@
                     </Grid>
 
                     <Grid x:Name="panelSettings" Visibility="Hidden">
-                        <StackPanel>
+                        <StackPanel Margin="10,0,10,0">
                             <TextBlock Text="Settings" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
                             <GroupBox Header="Resident Evil 1" Margin="0,0,0,0">
                                 <StackPanel>
