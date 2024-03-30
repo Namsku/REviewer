@@ -39,7 +39,7 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 95% / Testing phase
-- [X] RE3 (Rebirth) - 95% / Testing phase - NO IGT YET
+- [X] RE3 (Rebirth) - 95% / Testing phase
 - [ ] CVX (PS2)
 
 Possible other port
