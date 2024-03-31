@@ -12,6 +12,7 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 | RE1 Mediakit   |  PC      | X | X | | X | X | X | X |
 | RE2 SourceN.   |  PC      | X | X | X | X | X | X | X |
 | RE3 Rebirth    |  PC      | X* | X | X | X | X | | X |
+| RE3 CHN/TWN    |  PC      | X* | X | X | X | X | | X |
 
 - There is no real time IGT in RE3 Rebirth, I have implemented an approximate one.
 - On the other side, the final IGT will be alwys correct because i'm using the one that the game is using to give your final time.
@@ -40,12 +41,13 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 95% / Testing phase
 - [X] RE3 (Rebirth) - 95% / Testing phase
+- [X] RE3 (CHN/TWN) - 95% / Testing phase
 - [ ] CVX (PS2)
 
 Possible other port
 
 - RE2 (Platinium -> China) 
-- RE3 (CHN/TWN) 
+
 
 ## Known Bugs
 
