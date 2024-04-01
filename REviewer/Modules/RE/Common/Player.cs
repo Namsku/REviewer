@@ -37,8 +37,9 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 2)
+                if (SELECTED_GAME == 300)
                 {
+                    Console.WriteLine("Character changed");
                     // Console.WriteLine(Character.Value);
                     if (Character?.Value == 0x08)
                     {
@@ -147,6 +148,7 @@ namespace REviewer.Modules.RE.Common
             {
                 // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
+                Console.WriteLine(InventorySlotSelected.Value);
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
@@ -163,18 +165,19 @@ namespace REviewer.Modules.RE.Common
 
                     if (_inventorySlotSelected.Value == 0x80) return "./resources/re1/nothing.png";
                     
-                    if (SELECTED_GAME == 0)
+                    if (SELECTED_GAME == 100 || SELECTED_GAME == 400)
                     {
                         var selected = InventorySlotSelected.Value - 1;
                         id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
                     }
-                    else if (SELECTED_GAME == 1 || SELECTED_GAME == 2)
+                    else if (SELECTED_GAME == 200 || SELECTED_GAME == 300)
                     {
                         var vvv = Character.Value == 0x8 ? CarlosInventorySlotSelected.Value : InventorySlotSelected.Value;
                         var selected = vvv;
                         selected = selected < 0 ? 0 : selected;
                         id = selected == 0xFF ? (byte) 0 : (byte)Inventory[selected].Item.Value;
                     }
+
                     return items[id].Img;
                 }
                 return "./resources/re1/unknown.png";
@@ -429,7 +432,7 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
-                    if (SELECTED_GAME == 1)
+                    if (SELECTED_GAME == 200)
                     {
                         if (value == 80)
                         {
@@ -494,15 +497,15 @@ namespace REviewer.Modules.RE.Common
 
                 // Console.WriteLine(_characterHealthState.Value);
 
-                if(SELECTED_GAME == 0)
+                if(SELECTED_GAME == 100)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
                 } 
-                else if(SELECTED_GAME == 1)
+                else if(SELECTED_GAME == 200)
                 {
                     state = (_characterHealthState?.Value != 0x15);
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     state = (_characterHealthState?.Value == 0x04);
                 }
@@ -551,14 +554,14 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     if (Health.Value < OldHealth)
                     {
                         if (Health.Value != 88 && Character.Value != 3) Hits += 1;
                     }
                 }
-                else if (SELECTED_GAME == 1)
+                else if (SELECTED_GAME == 200)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -574,7 +577,7 @@ namespace REviewer.Modules.RE.Common
                         OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -602,15 +605,15 @@ namespace REviewer.Modules.RE.Common
 
             Brush[] colors = new Brush[] { CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White };
 
-            if (SELECTED_GAME == 0)
+            if (SELECTED_GAME == 100)
             {
                 state = (status & 0x20) != 0 || (status & 0x40) != 0 || (status & 0x04) != 0 || (status & 0x02) != 0;
             }
-            else if (SELECTED_GAME == 1)
+            else if (SELECTED_GAME == 200)
             {
                 state = (status == 0x15);
             }
-            else if (SELECTED_GAME == 2)
+            else if (SELECTED_GAME == 300)
             {
                 state = (status != 0x04);
             }
@@ -833,8 +836,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                int position_hp = SELECTED_GAME == 1 ? 0x156 : 0xCC;
-                int position_id = SELECTED_GAME == 1 ? 0x8 : 0x4a;
+                int position_hp = SELECTED_GAME == 200 ? 0x156 : 0xCC;
+                int position_id = SELECTED_GAME == 200 ? 0x8 : 0x4a;
 
                 if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290)
                 {

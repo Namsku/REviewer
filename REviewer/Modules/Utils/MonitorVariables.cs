@@ -29,7 +29,7 @@ namespace REviewer.Modules.Utils
 
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
-        public MonitorVariables(nint processHandle, string processName)
+        public MonitorVariables(nint processHandle, string processName, IntPtr virtualMemoryPointer , IntPtr productPointer)
         {
             _processHandle = processHandle;
             _processName = processName;

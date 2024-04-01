@@ -2486,5 +2486,902 @@
                 "Size": "4"
             }
         }
+    },
+    "CVX PS2 US": {
+        "ItemIDs": {
+            "0": {
+                "Name": "Nothing",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "1": {
+                "Name": "RocketLauncher",
+                "Type": "Weapon",
+                "Img": "resources/cvx/rocket-launcher.png"
+            },
+            "2": {
+                "Name": "AssaultRifle",
+                "Type": "Weapon",
+                "Img": "resources/cvx/ak47-assault-rifle.png"
+            },
+            "3": {
+                "Name": "SniperRifle",
+                "Type": "Weapon",
+                "Img": "resources/cvx/mr7-sniper-rifle.png"
+            },
+            "4": {
+                "Name": "Shotgun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/spas-12.png"
+            },
+            "5": {
+                "Name": "HandgunGlock17",
+                "Type": "Weapon",
+                "Img": "resources/cvx/glock-17.png"
+            },
+            "6": {
+                "Name": "GrenadeLauncher",
+                "Type": "Weapon",
+                "Img": "resources/cvx/m79-grenade-launcher.png"
+            },
+            "7": {
+                "Name": "BowGun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/cross-bow-handgun.png"
+            },
+            "8": {
+                "Name": "CombatKnife",
+                "Type": "Weapon",
+                "Img": "resources/cvx/combat-knife.png"
+            },
+            "9": {
+                "Name": "Handgun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/ingram.png"
+            },
+            "10": {
+                "Name": "CustomHandgun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/modified-glock-17.png"
+            },
+            "11": {
+                "Name": "LinearLauncher",
+                "Type": "Weapon",
+                "Img": "resources/cvx/linear-launcher.png"
+            },
+            "12": {
+                "Name": "HandgunBullets",
+                "Type": "Ammo",
+                "Img": "resources/cvx/handgun-bullets.png"
+            },
+            "13": {
+                "Name": "MagnumBullets",
+                "Type": "Ammo",
+                "Img": "resources/cvx/magnum-bullets.png"
+            },
+            "14": {
+                "Name": "ShotgunShells",
+                "Type": "Ammo",
+                "Img": "resources/cvx/shotgun-shells.png"
+            },
+            "15": {
+                "Name": "GrenadeRounds",
+                "Type": "Ammo",
+                "Img": "resources/cvx/grenade-rounds.png"
+            },
+            "16": {
+                "Name": "AcidRounds",
+                "Type": "Ammo",
+                "Img": "resources/cvx/acid-rounds.png"
+            },
+            "17": {
+                "Name": "FlameRounds",
+                "Type": "Ammo",
+                "Img": "resources/cvx/flame-rounds.png"
+            },
+            "18": {
+                "Name": "BowGunArrows",
+                "Type": "Ammo",
+                "Img": "resources/cvx/bow-gun-arrows.png"
+            },
+            "19": {
+                "Name": "M93RPart",
+                "Type": "Nothing",
+                "Img": "resources/cvx/m93r-part.png"
+            },
+            "20": {
+                "Name": "FAidSpray",
+                "Type": "Nothing",
+                "Img": "resources/cvx/first-aid-spray.png"
+            },
+            "21": {
+                "Name": "GreenHerb",
+                "Type": "Nothing",
+                "Img": "resources/cvx/green-herb.png"
+            },
+            "22": {
+                "Name": "RedHerb",
+                "Type": "Nothing",
+                "Img": "resources/cvx/red-herb.png"
+            },
+            "23": {
+                "Name": "BlueHerb",
+                "Type": "Nothing",
+                "Img": "resources/cvx/blue-herb.png"
+            },
+            "24": {
+                "Name": "MixedHerb2Green",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-gb.png"
+            },
+            "25": {
+                "Name": "MixedHerbRedGreen",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-gr.png"
+            },
+            "26": {
+                "Name": "MixedHerbBlueGreen",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-gb.png"
+            },
+            "27": {
+                "Name": "MixedHerb2GreenBlue",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-grb.png"
+            },
+            "28": {
+                "Name": "MixedHerb3Green",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-ggg.png"
+            },
+            "29": {
+                "Name": "MixedHerbGreenBlueRed",
+                "Type": "Nothing",
+                "Img": "resources/cvx/mixed-herb-grb.png"
+            },
+            "30": {
+                "Name": "MagnumBulletsInsideCase",
+                "Type": "Item",
+                "Img": "resources/cvx/magnum-bullets.png"
+            },
+            "31": {
+                "Name": "InkRibbon",
+                "Type": "Item",
+                "Img": "resources/cvx/ink-ribbon.png"
+            },
+            "32": {
+                "Name": "Magnum",
+                "Type": "Weapon",
+                "Img": "resources/cvx/magnum.png"
+            },
+            "33": {
+                "Name": "GoldLugers",
+                "Type": "Weapon",
+                "Img": "resources/cvx/gold-lugers.png"
+            },
+            "34": {
+                "Name": "SubMachineGun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/ingram.png"
+            },
+            "35": {
+                "Name": "BowGunPowder",
+                "Type": "Item",
+                "Img": "resources/cvx/bow-gun-powder.png"
+            },
+            "36": {
+                "Name": "GunPowderArrow",
+                "Type": "Item",
+                "Img": "resources/cvx/gun-powder-arrow.png"
+            },
+            "37": {
+                "Name": "BOWGasRounds",
+                "Type": "Ammo",
+                "Img": "resources/cvx/bow-gas-rounds.png"
+            },
+            "38": {
+                "Name": "MGunBullets",
+                "Type": "Ammo",
+                "Img": "resources/cvx/machine-gun-bullets.png"
+            },
+            "39": {
+                "Name": "GasMask",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gas-mask.png"
+            },
+            "40": {
+                "Name": "RifleBullets",
+                "Type": "Ammo",
+                "Img": "resources/cvx/rifle-bullets.png"
+            },
+            "41": {
+                "Name": "DuraluminCaseUnused",
+                "Type": "Item",
+                "Img": "resources/cvx/duralumin-case.png"
+            },
+            "42": {
+                "Name": "ARifleBullets",
+                "Type": "Ammo",
+                "Img": "resources/cvx/army-proof.png"
+            },
+            "43": {
+                "Name": "AlexandersPierce",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alexanders-pierce.png"
+            },
+            "44": {
+                "Name": "AlexandersJewel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alexanders-jewel.png"
+            },
+            "45": {
+                "Name": "AlfredsRing",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alfreds-ring.png"
+            },
+            "46": {
+                "Name": "AlfredsJewel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alfreds-jewel.png"
+            },
+            "47": {
+                "Name": "PrisonersDiary",
+                "Type": "Nothing",
+                "Img": "resources/cvx/prisoners-diary.png"
+            },
+            "48": {
+                "Name": "DirectorsMemo",
+                "Type": "Nothing",
+                "Img": "resources/cvx/dijs-diary.png"
+            },
+            "49": {
+                "Name": "Instructions",
+                "Type": "Item",
+                "Img": "resources/cvx/playing-manual.png"
+            },
+            "50": {
+                "Name": "Lockpick",
+                "Type": "Key Item",
+                "Img": "resources/cvx/lockpick.png"
+            },
+            "51": {
+                "Name": "GlassEye",
+                "Type": "Key Item",
+                "Img": "resources/cvx/glass-eye.png"
+            },
+            "52": {
+                "Name": "PianoRoll",
+                "Type": "Key Item",
+                "Img": "resources/cvx/piano-roll.png"
+            },
+            "53": {
+                "Name": "SteeringWheel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/steering-wheel.png"
+            },
+            "54": {
+                "Name": "CraneKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/crane-key.png"
+            },
+            "55": {
+                "Name": "Lighter",
+                "Type": "Key Item",
+                "Img": "resources/cvx/lighter.png"
+            },
+            "56": {
+                "Name": "EaglePlate",
+                "Type": "Key Item",
+                "Img": "resources/cvx/eagle-plate.png"
+            },
+            "57": {
+                "Name": "SidePack",
+                "Type": "Nothing",
+                "Img": "resources/cvx/side-pack.png"
+            },
+            "58": {
+                "Name": "MapRoll",
+                "Type": "Nothing",
+                "Img": "resources/cvx/facility-entrance-fax.png"
+            },
+            "59": {
+                "Name": "HawkEmblem",
+                "Type": "Key Item",
+                "Img": "resources/cvx/hawk-emblem.png"
+            },
+            "60": {
+                "Name": "QueenAntObject",
+                "Type": "IteKey Itemm",
+                "Img": "resources/cvx/queen-ant-object.png"
+            },
+            "61": {
+                "Name": "KingAntObject",
+                "Type": "Key Item",
+                "Img": "resources/cvx/king-ant-object.png"
+            },
+            "62": {
+                "Name": "BiohazardCard",
+                "Type": "Key Item",
+                "Img": "resources/cvx/biohazard-card.png"
+            },
+            "63": {
+                "Name": "DuraluminCaseM93RParts",
+                "Type": "Item",
+                "Img": "resources/cvx/duralumin-case.png"
+            },
+            "64": {
+                "Name": "Detonator",
+                "Type": "Key Item",
+                "Img": "resources/cvx/detonator.png"
+            },
+            "65": {
+                "Name": "ControlLever",
+                "Type": "Key Item",
+                "Img": "resources/cvx/control-lever.png"
+            },
+            "66": {
+                "Name": "GoldDragonfly",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-dragonfly.png"
+            },
+            "67": {
+                "Name": "SilverKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/silver-key.png"
+            },
+            "68": {
+                "Name": "GoldKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-key.png"
+            },
+            "69": {
+                "Name": "ArmyProof",
+                "Type": "Nothing",
+                "Img": "resources/cvx/army-proof.png"
+            },
+            "70": {
+                "Name": "NavyProof",
+                "Type": "Nothing",
+                "Img": "resources/cvx/navy-proof.png"
+            },
+            "71": {
+                "Name": "AirForceProof",
+                "Type": "Nothing",
+                "Img": "resources/cvx/air-force-proof.png"
+            },
+            "72": {
+                "Name": "KeyWithTag",
+                "Type": "Key ItemNoesources/cvx/nothing.png"
+            },
+            "73": {
+                "Name": "IDCard",
+                "Type": "Key Item",
+                "Img": "resources/cvx/id-card.png"
+            },
+            "74": {
+                "Name": "Map",
+                "Type": "Nothing",
+                "Img": "resources/cvx/map.png"
+            },
+            "75": {
+                "Name": "AirportKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/airport-key.png"
+            },
+            "76": {
+                "Name": "EmblemCard",
+                "Type": "Key Item",
+                "Img": "resources/cvx/emblem-card.png"
+            },
+            "77": {
+                "Name": "SkeletonPicture",
+                "Type": "Key Item",
+                "Img": "resources/cvx/skeleton-picture.png"
+            },
+            "78": {
+                "Name": "MusicBoxPlate",
+                "Type": "Key Item",
+                "Img": "resources/cvx/music-box-plate.png"
+            },
+            "79": {
+                "Name": "GoldDragonflyNoWings",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-dragonfly.png"
+            },
+            "80": {
+                "Name": "Album",
+                "Type": "Item",
+                "Img": "resources/cvx/album.png"
+            },
+            "81": {
+                "Name": "Halberd",
+                "Type": "Key Item",
+                "Img": "resources/cvx/halberd.png"
+            },
+            "82": {
+                "Name": "Extinguisher",
+                "Type": "Key Item",
+                "Img": "resources/cvx/extinguisher.png"
+            },
+            "83": {
+                "Name": "Briefcase",
+                "Type": "Key Item",
+                "Img": "resources/cvx/briefcase.png"
+            },
+            "84": {
+                "Name": "PadlockKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/padlock-key.png"
+            },
+            "85": {
+                "Name": "TG01",
+                "Type": "Key Item",
+                "Img": "resources/cvx/tg-01.png"
+            },
+            "86": {
+                "Name": "SpAlloyEmblem",
+                "Type": "Key Item",
+                "Img": "resources/cvx/special-alloy-emblem.png"
+            },
+            "87": {
+                "Name": "ValveHandle",
+                "Type": "Key Item",
+                "Img": "resources/cvx/valve-handle.png"
+            },
+            "88": {
+                "Name": "OctaValveHandle",
+                "Type": "Key Item",
+                "Img": "resources/cvx/octa-valve-handle.png"
+            },
+            "89": {
+                "Name": "MachineRoomKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/machine-room-key.png"
+            },
+            "90": {
+                "Name": "MiningRoomKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/mining-room-key.png"
+            },
+            "91": {
+                "Name": "BarCodeSticker",
+                "Type": "Key Item",
+                "Img": "resources/cvx/bar-code-sticker.png"
+            },
+            "92": {
+                "Name": "SterileRoomKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/sterile-room-key.png"
+            },
+            "93": {
+                "Name": "DoorKnob",
+                "Type": "Key Item",
+                "Img": "resources/cvx/door-knob.png"
+            },
+            "94": {
+                "Name": "BatteryPack",
+                "Type": "Key Item",
+                "Img": "resources/cvx/battery-pack.png"
+            },
+            "95": {
+                "Name": "HemostaticWire",
+                "Type": "Key Item",
+                "Img": "resources/cvx/hemostatic.png"
+            },
+            "96": {
+                "Name": "TurnTableKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/turn-table-key.png"
+            },
+            "97": {
+                "Name": "ChemStorageKey",
+                "Type": "Key Item",
+                "Img": "resources/cvx/chemical-storage-key.png"
+            },
+            "98": {
+                "Name": "ClementAlpha",
+                "Type": "Key Item",
+                "Img": "resources/cvx/clement-alpha.png"
+            },
+            "99": {
+                "Name": "ClementSigma",
+                "Type": "IteKey Itemm",
+                "Img": "resources/cvx/clement-sigma.png"
+            },
+            "100": {
+                "Name": "TankObject",
+                "Type": "Key Item",
+                "Img": "resources/cvx/tank-object.png"
+            },
+            "101": {
+                "Name": "SpAlloyEmblemUnused",
+                "Type": "Item",
+                "Img": "resources/cvx/special-alloy-emblem.png"
+            },
+            "102": {
+                "Name": "AlfredsMemo",
+                "Type": "Nothing",
+                "Img": "resources/cvx/alfreds-memo.png"
+            },
+            "103": {
+                "Name": "RustedSword",
+                "Type": "Key Item",
+                "Img": "resources/cvx/rusted-sword.png"
+            },
+            "104": {
+                "Name": "Hemostatic",
+                "Type": "Key Item",
+                "Img": "resources/cvx/hemostatic.png"
+            },
+            "105": {
+                "Name": "SecurityCard",
+                "Type": "Key Item",
+                "Img": "resources/cvx/security-card.png"
+            },
+            "106": {
+                "Name": "SecurityFile",
+                "Type": "Key Item",
+                "Img": "resources/cvx/security-file.png"
+            },
+            "107": {
+                "Name": "AlexiasChoker",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alexias-choker.png"
+            },
+            "108": {
+                "Name": "AlexiasJewel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/alexias-jewel.png"
+            },
+            "109": {
+                "Name": "QueenAntRelief",
+                "Type": "Key Item",
+                "Img": "resources/cvx/queen-ant-object.png"
+            },
+            "110": {
+                "Name": "KingAntRelief",
+                "Type": "Key Item",
+                "Img": "resources/cvx/king-ant-object.png"
+            },
+            "111": {
+                "Name": "RedJewel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/red-jewel.png"
+            },
+            "112": {
+                "Name": "BlueJewel",
+                "Type": "Key Item",
+                "Img": "resources/cvx/blue-jewel.png"
+            },
+            "113": {
+                "Name": "Socket",
+                "Type": "Key Item",
+                "Img": "resources/cvx/socket.png"
+            },
+            "114": {
+                "Name": "SqValveHandle",
+                "Type": "Key Item",
+                "Img": "resources/cvx/square-valve-handle.png"
+            },
+            "115": {
+                "Name": "Serum",
+                "Type": "Key Item",
+                "Img": "resources/cvx/serum.png"
+            },
+            "116": {
+                "Name": "EarthenwareVase",
+                "Type": "Key Item",
+                "Img": "resources/cvx/earthenware-vase.png"
+            },
+            "117": {
+                "Name": "PaperWeight",
+                "Type": "Key Item",
+                "Img": "resources/cvx/paper-weight.png"
+            },
+            "118": {
+                "Name": "SilverDragonflyNoWings",
+                "Type": "Key Item",
+                "Img": "resources/cvx/dragonfly-object.png"
+            },
+            "119": {
+                "Name": "SilverDragonfly",
+                "Type": "Key Item",
+                "Img": "resources/cvx/silver-dragonfly.png"
+            },
+            "120": {
+                "Name": "WingObject",
+                "Type": "Key Item",
+                "Img": "resources/cvx/wing-object.png"
+            },
+            "121": {
+                "Name": "Crystal",
+                "Type": "Key Item",
+                "Img": "resources/cvx/crystal.png"
+            },
+            "122": {
+                "Name": "GoldDragonfly1Wing",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-dragonfly-1-wings.png"
+            },
+            "123": {
+                "Name": "GoldDragonfly2Wing",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-dragonfly-2-wings.png"
+            },
+            "124": {
+                "Name": "GoldDragonfly3Wing",
+                "Type": "Key Item",
+                "Img": "resources/cvx/gold-dragonfly-3-wings.png"
+            },
+            "125": {
+                "Name": "File",
+                "Type": "Nothing",
+                "Img": "resources/cvx/unknown.png"
+            },
+            "126": {
+                "Name": "Plant Pot",
+                "Type": "Key Item",
+                "Img": "resources/cvx/plant-pot.png"
+            },
+            "127": {
+                "Name": "Picture B",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "128": {
+                "Name": "Plant Pot",
+                "Type": "Key Item",
+                "Img": "resources/cvx/plant-pot.png"
+            },
+            "129": {
+                "Name": "DuralumInCaseBowGunPowder",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "130": {
+                "Name": "DuraluminCaseMagnumRounds",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "131": {
+                "Name": "BowGunPowderUnused",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "132": {
+                "Name": "EnhancedHandgun",
+                "Type": "Weapon",
+                "Img": "resources/cvx/modified-glock-17.png"
+            },
+            "133": {
+                "Name": "Memo",
+                "Type": "Nothing",
+                "Img": "resources/cvx/memo-to-new-master.png"
+            },
+            "134": {
+                "Name": "BoardClip",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "135": {
+                "Name": "Card",
+                "Type": "Nothing",
+                "Img": "resources/cvx/unknown.png"
+            },
+            "136": {
+                "Name": "NewspaperClip",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "137": {
+                "Name": "LugerReplica",
+                "Type": "Nothing",
+                "Img": "resources/cvx/luger-replica.png"
+            },
+            "138": {
+                "Name": "QueenAntReliefComplete",
+                "Type": "Nothing",
+                "Img": "resources/cvx/queen-ant-object.png"
+            },
+            "139": {
+                "Name": "FamilyPicture",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "140": {
+                "Name": "FileFolders",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "141": {
+                "Name": "QuestionA",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "142": {
+                "Name": "M1P",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "143": {
+                "Name": "CalicoBullets",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "144": {
+                "Name": "ClementMixture",
+                "Type": "Nothing",
+                "Img": "resources/cvx/clement-mixture.png"
+            },
+            "145": {
+                "Name": "PlayingManual",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "146": {
+                "Name": "QuestionB",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "147": {
+                "Name": "QuestionC",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "148": {
+                "Name": "QuestionD",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "149": {
+                "Name": "EmptyExtinguisher",
+                "Type": "Key Items",
+                "Img": "resources/cvx/empty-extinguisher.png"
+            },
+            "150": {
+                "Name": "SquareSocket",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "151": {
+                "Name": "QuestionE",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "152": {
+                "Name": "CrestKeyS",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "153": {
+                "Name": "CrestKeyG",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            },
+            "255": {
+                "Name": "Unknown",
+                "Type": "Nothing",
+                "Img": "resources/cvx/nothing.png"
+            }
+        },
+        "DupItems": {
+        },
+        "RoomIDs": {
+        },
+        "KeyRooms": [
+        ],
+        "Offsets": {
+            "InventoryStart": "0x00433374",
+            "InventoryEnd": "0x04333A6",
+            "ItemBoxStart": "0x0433470",
+            "ItemBoxEnd": "0x043366F",
+            "InventorySlotSelected": "0x00433370",
+            "Character": "0x00433184",
+            "Room": "0x004339A0",
+            "Cutscene": "0x004328EC",
+            "LastRoom": "0x004328F0",
+            "LastCutscene": "0x004328F0",
+            "CharacterHealthState": "0x0043236A",
+            "GameTimer": "0x004339A0",
+            "PositionX": "0x004322F0",
+            "PositionY": "0x004322F4",
+            "PositionZ": "0x004322F8",
+            "Rotation": "0x00432300",
+            "CharacterHealth": "0x004326FC",
+            "EnnemyInfos": "0x004062E0",
+            "EnnemyCount": "0x012503C8",
+            "Difficulty": "0x0043318C"
+        },
+        "Player": {
+            "Character": {
+                "Size": "1",
+                "Database": {
+                    "0": "Claire",
+                    "1": "Chris",
+                    "2": "Steve",
+                    "3": "Wesker"
+                }
+            },
+            "Health": {
+                "Size": "4",
+                "Database": {
+                    "0": [ "160", "101", "41", "21", "0" ],
+                    "1": [ "160", "101", "41", "21", "0" ],
+                    "2": [ "160", "101", "41", "21", "0" ],
+                    "3": [ "160", "101", "41", "21", "0" ],
+                    "4": [ "160", "101", "41", "21", "0" ]
+                }
+            },
+            "CharacterHealthState": {
+                "Size": "1"
+            },
+            "LastItemFound": {
+                "Size": "1"
+            },
+            "InventorySlotSelected": {
+                "Size": "4"
+            },
+            "Stage": {
+                "Size": "1"
+            },
+            "Room": {
+                "Size": "4"
+            },
+            "LastRoom": {
+                "Size": "4"
+            },
+            "Cutscene": {
+                "Size": "4"
+            },
+            "PartnerPointer": {
+                "Size": "4"
+            },
+            "EnemyCount": {
+                "Size": "4"
+            }
+        },
+        "Game": {
+            "State": {
+                "Size": "4"
+            },
+            "Frame": {
+                "Size": "4"
+            },
+            "Timer": {
+                "Size": "4"
+            },
+            "Save": {
+                "Size": "4"
+            },
+            "Unk001": {
+                "Size": "4"
+            },
+            "MainMenu": {
+                "Size": "1"
+            },
+            "SaveContent": {
+                "Size": "4"
+            },
+            "Difficulty": {
+                "Size": "1"
+            }
+        },
+        "Position": {
+            "X": {
+                "Size": "4"
+            },
+            "Y": {
+                "Size": "4"
+            },
+            "Z": {
+                "Size": "4"
+            }
+        },
+        "Ennemy": {
+            "EnnemyInfos": {
+                "Size": "4"
+            }
+        }
     }
+
 }

@@ -49,7 +49,7 @@ namespace REviewer.Modules.RE.Common
                 int[] _inventoryCapacityArray = new int[] { };
                 int capacity = _inventoryCapacity.Value;
 
-                if (SELECTED_GAME == 0) {
+                if (SELECTED_GAME == 100) {
                     capacity = capacity & 3;
                     _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
                 }
@@ -113,13 +113,21 @@ namespace REviewer.Modules.RE.Common
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
-                InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
+                if (SELECTED_GAME == 400)
+                {
+                    InventoryCapacitySize = 11;
+                } 
+                else
+                { 
+                    InventoryCapacity = new VariableData(Library.HexToInt(bio.Offsets["Capacity"]), 4);
+                    InventoryCapacity.PropertyChanged += (sender, e) => UpdateInventoryCapacity();
+                }
+
                 var inventory_name_start = carlos ? "CarlosInventoryStart" : "InventoryStart";
                 var inventory_name_end = carlos ? "CarlosInventoryEnd" : "InventoryEnd";
                 var items = IDatabase.GetItems();
 
-                Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
+                Inventory = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]) + _virtualMemoryPointer, Library.HexToInt(bio.Offsets[inventory_name_end]) + _virtualMemoryPointer, SELECTED_GAME);
                 InventoryImages = new ObservableCollection<ImageItem>();
                 InventoryImages.Clear();
 
@@ -167,6 +175,9 @@ namespace REviewer.Modules.RE.Common
         private void UpdateInventoryImage(int index)
         {
             var items = IDatabase.GetItems();
+
+            Console.WriteLine($"UpdateInventoryImage -> {Inventory[index].Item.Value}");
+
             if (index <= InventoryCapacitySize)
             {
                 InventoryImages[index].Source = items[(byte)Inventory[index].Item.Value].Img;
@@ -176,18 +187,25 @@ namespace REviewer.Modules.RE.Common
                 // if value is key item, update the key item
                 if (IDatabase.GetPropertyById((byte) Inventory[index].Item.Value).Type == "Key Item")
                 {
-                    int state = GameState.Value & 0x0000FF00;
-                    var isValid = false;
+                    int state = 0;
+                    var isValid = true;
 
-                    if (SELECTED_GAME == 0)
+                    if (SELECTED_GAME != 400)
+                    {
+                        state = GameState.Value & 0x0000FF00;
+                        isValid = false;
+                    }
+
+
+                    if (SELECTED_GAME == 100)
                     {
                         isValid = state == 0x8800 || state == 0x8C00;
                     }
-                    else if (SELECTED_GAME == 1)
+                    else if (SELECTED_GAME == 200)
                     {
                         isValid = ((state == 0x4000) && (ItemBoxState?.Value != 1));
                     }
-                    else if (SELECTED_GAME == 2)
+                    else if (SELECTED_GAME == 300)
                     {
                         state = GameState.Value & 0x0F000000;
                         isValid = state == 0x09000000;
@@ -210,12 +228,12 @@ namespace REviewer.Modules.RE.Common
                 string pourcentage_ammo = "";
                 int[] ammo_prct_array = new int[] { };
 
-                if (SELECTED_GAME == 1)
+                if (SELECTED_GAME == 200)
                     ammo_prct_array = new int[] { 14, 15, 16, 23, 27, 28 };
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                     ammo_prct_array = new int[] { 14, 15 };
 
-                if (SELECTED_GAME > 0 && ammo_prct_array.Contains(Inventory[index].Item.Value))
+                if (SELECTED_GAME > 100 && ammo_prct_array.Contains(Inventory[index].Item.Value))
                 {
                     pourcentage_ammo = "%";
                 }

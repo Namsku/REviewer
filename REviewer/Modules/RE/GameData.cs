@@ -11,6 +11,7 @@ namespace REviewer.Modules.RE
 
     public class GameData
     {
+        private int _virtualMemoryPointer { get; set; }
         private Dictionary<string, Bio>? _data { get; set; }
         private string? _gameName { get; set; }
 
@@ -24,14 +25,16 @@ namespace REviewer.Modules.RE
             _gameName = CorrectProcessName[gameName];
         }
 
-        public RootObject GetGameData(ItemIDs ids)
+        public RootObject GetGameData(ItemIDs ids, int virtualMemoryPointer)
         {
             if (_data == null || _gameName == null)
             {
                 throw new ArgumentNullException("The game data or game name is null");
             }
 
-            var obj = new RootObject(_data[_gameName], ids);
+            _virtualMemoryPointer = virtualMemoryPointer;
+
+            var obj = new RootObject(_data[_gameName], ids, _virtualMemoryPointer);
 
             Logger.Instance.Info("RootObject has been created");
             return obj; 

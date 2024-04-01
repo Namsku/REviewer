@@ -53,6 +53,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? Event { get; set; }
         public StandardProperty? PartnerPointer { get; set; }
         public StandardProperty? HitFlag { get; set; }
+        public StandardProperty? EnnemyCount { get; set; }
     }
 
     public class JGame

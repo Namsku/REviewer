@@ -45,7 +45,7 @@ namespace REviewer.Modules.RE.Common
             var inventory_name_end = carlos ? "CarlosItemBoxEnd" : "ItemBoxEnd";
             var items = IDatabase.GetItems();
 
-            ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]), Library.HexToInt(bio.Offsets[inventory_name_end]));
+            ItemBox = Slot.GenerateSlots(Library.HexToInt(bio.Offsets[inventory_name_start]) + _virtualMemoryPointer, Library.HexToInt(bio.Offsets[inventory_name_end]) + _virtualMemoryPointer, SELECTED_GAME);
             ItemboxImages = new ObservableCollection<ImageItem>();
             ItemboxImages.Clear();
 

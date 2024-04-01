@@ -39,6 +39,7 @@ namespace REviewer.Modules.RE.Common
             { "bunny2", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
+            { "CVX PS2 US", 0x09 },
         };
 
         private static readonly string[] ITEM_TYPES = new string[] { "Key Item", "Optionnal Key Item", "Nothing" };
@@ -50,7 +51,7 @@ namespace REviewer.Modules.RE.Common
         public int SaveID;
         public int CurrentSaveID;
         public Bio? _bio;
-
+        private int _virtualMemoryPointer;
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase; 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -84,13 +85,38 @@ namespace REviewer.Modules.RE.Common
         }        
         public double? WindowScale { get; set; }
         public double? WindowCenter { get; set; }
-        public RootObject(Bio bio, ItemIDs ids)
+        public RootObject(Bio bio, ItemIDs ids, int virtualMemoryPointer)
         {
             if (bio.Player?.Character?.Database == null)
                 throw new ArgumentNullException(nameof(bio));
 
             _bio = bio;
+            _virtualMemoryPointer = virtualMemoryPointer;
             IDatabase = ids;
+
+            var processName = IDatabase.GetProcessName().ToLower();
+
+            if (processName == "bio" || processName == "biohazard")
+            {
+                SELECTED_GAME = 100;
+                PartnerVisibility = Visibility.Collapsed;
+            }
+            else if (processName == "bio2 1.10")
+            {
+                SELECTED_GAME = 200;
+                DebugVisibility = Visibility.Collapsed;
+                HitVisibility = Visibility.Visible;
+            }
+            else if (processName == "biohazard(r) 3 pc")
+            {
+                SELECTED_GAME = 300;
+            }
+            else if (processName == "cvx ps2 us")
+            {
+                SELECTED_GAME = 400;
+                PartnerVisibility = Visibility.Collapsed;
+            }
+
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
             InitKeyRooms();
 
@@ -131,9 +157,9 @@ namespace REviewer.Modules.RE.Common
             PositionZ = GetVariableData("PositionZ", bio.Position.Z);
 
             // Rebirth
-            RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
-            RebirthScreen = GetVariableData("RebirthScreen", bio.Rebirth.Screen);
-            RebirthState = GetVariableData("RebirthState", bio.Rebirth.State);
+            // RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
+            // RebirthScreen = GetVariableData("RebirthScreen", bio.Rebirth.Screen);
+            // RebirthState = GetVariableData("RebirthState", bio.Rebirth.State);
 
             // ItemBox and Inventory
             InitInventory(bio);
@@ -151,23 +177,6 @@ namespace REviewer.Modules.RE.Common
             // Init Save Database
             InitSaveDatabase();
 
-            var processName = IDatabase.GetProcessName().ToLower();
-
-            if (processName == "bio" || processName == "biohazard")
-            {
-                SELECTED_GAME = 0;
-                PartnerVisibility = Visibility.Collapsed;
-            }
-            else if (processName == "bio2 1.10")
-            {
-                SELECTED_GAME = 1;
-                DebugVisibility = Visibility.Collapsed;
-                HitVisibility = Visibility.Visible;
-            }
-            else if (processName == "biohazard(r) 3 pc")
-            {
-                SELECTED_GAME = 2;
-            }
 
             VariableData GetVariableData(String key, dynamic value)
             {
@@ -175,7 +184,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (bio.Offsets.TryGetValue(key, out string? offset))
                 {
-                    return new VariableData(Library.HexToInt(offset), value);
+                    return new VariableData(Library.HexToInt(offset) + virtualMemoryPointer, value);
                 }
                 else
                 {

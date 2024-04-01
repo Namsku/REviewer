@@ -38,9 +38,22 @@ namespace REviewer
         public const int BIOHAZARD_1_MK = 0;
         public const int BIOHAZARD_2_SC = 1;
         public const int BIOHAZARD_3_RB = 2;
+        public const int BIOHAZARD_CV_X = 3;
 
-        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC" };
-        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3"};
+        public const string PCSX2 = "pcsx2";
+        public const string PCSX2QT = "pcsx2-qt";
+        public const string PCSX264QT = "pcsx2-qtx64";
+        public const string PCSX264QTAV = "pcsx2-qtx64-avx2";
+        public const string PCSX264WX = "pcsx2x64";
+        public const string PCSX264WXAV = "pcsx2x64-avx2";
+
+        public IntPtr VirtualMemoryPointer { get; private set; }
+        public IntPtr ProductPointer { get; private set; }
+        public int ProductLength { get; private set; }
+        public bool IsBigEndian { get; private set; }
+
+        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC", "CVX PS2 US" };
+        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3", "RECVX"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
@@ -88,6 +101,10 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
+                case BIOHAZARD_CV_X:
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Collapsed;
+                    break;
             }
         }
 
@@ -115,6 +132,9 @@ namespace REviewer
                         break;
                     case BIOHAZARD_3_RB:
                         Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_CV_X:
+                        Library.UpdateTextBox(RECVXSavePath, text: savePath, isBold: false);
                         break;
                 }
             }
@@ -160,6 +180,9 @@ namespace REviewer
         {
             // Set the game list
             _process = null;
+            ProductPointer = IntPtr.Zero;
+            VirtualMemoryPointer = IntPtr.Zero;
+
             _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
             if (_processWatcher == null)
                 _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
@@ -227,8 +250,37 @@ namespace REviewer
 
                     for (int i = 0; i < process_list.Count; i++)
                     {
+                        // https://github.com/kapdap/re-cvx-srt-provider/
+                        // Kapdap you da real mvp
+                        // <3
                         if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
                         {
+                            var tmp_process = Process.GetProcessesByName(process_list[i])[0];
+                            if (tmp_process.ProcessName.ToLower().StartsWith(PCSX2))
+                            {
+                                if (tmp_process.ProcessName.ToLower() == PCSX2) // PCSX2 1.6 and earlier
+                                {
+                                    VirtualMemoryPointer = new IntPtr(0x20000000);
+                                    ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00015B90);
+                                }
+                                else // PCSX2 1.7+
+                                {
+                                    // https://forums.pcsx2.net/Thread-PCSX2-1-7-Cheat-Engine-Script-Compatibility
+                                    IntPtr process = NativeWrappers.LoadLibrary(_process.MainModule.FileName);
+                                    IntPtr address = NativeWrappers.GetProcAddress(process, "EEmem");
+
+                                    VirtualMemoryPointer = (IntPtr)_process.ReadValue<long>(address);
+
+                                    if (_process.ProcessName.ToLower() == PCSX264WX ||
+                                        _process.ProcessName.ToLower() == PCSX264WXAV)
+                                        ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x000155D0);
+                                    else
+                                        ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00012610);
+
+                                    NativeWrappers.FreeLibrary(process);
+                                }
+                            }
+
                             // The process is running
                             _isProcessRunning = true;
 
@@ -293,7 +345,7 @@ namespace REviewer
                 // Mapping the game data (Room IDs, Item IDs, etc.)
                 GameData gameData = new GameData(_process.ProcessName);
                 _itemIDs = new ItemIDs(_process.ProcessName);
-                _residentEvilGame = gameData.GetGameData(_itemIDs);
+                _residentEvilGame = gameData.GetGameData(_itemIDs, (int) VirtualMemoryPointer);
             }
 
             if (_tracking == null)
@@ -303,7 +355,7 @@ namespace REviewer
 
             if (_MVariables == null)
             {
-                _MVariables = new MonitorVariables((int) _process.Handle, _process.ProcessName);
+                _MVariables = new MonitorVariables((int) _process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
             }
             else
             {
@@ -312,7 +364,7 @@ namespace REviewer
 
             if (_MVEnemies == null)
             {
-                _MVEnemies = new MonitorVariables((int) _process.Handle, _process.ProcessName);
+                _MVEnemies = new MonitorVariables((int) _process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
             }
             else
             {
@@ -329,6 +381,8 @@ namespace REviewer
             _isProcessRunning = false;
             _isMappingDone = false;
 
+            ProductPointer = IntPtr.Zero;
+            VirtualMemoryPointer = IntPtr.Zero;
 
             // Stoping the monitoring 
             _MVariables?.Stop();
@@ -382,6 +436,9 @@ namespace REviewer
             _processName = _gameList[selectedIndex];
             _isProcessRunning = false;
             _isMappingDone = false;
+
+            VirtualMemoryPointer = IntPtr.Zero;
+            ProductPointer = IntPtr.Zero;
 
             // Kill the current process monitoring
             _processWatcher?.Dispose();
@@ -455,6 +512,22 @@ namespace REviewer
             {
                 RE3SavePath.Text = dialog.FileName;
                 Library.UpdateConfigFile("RE3", dialog.FileName);
+                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+
+            }
+        }
+
+        private void RECVXSavePathButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RECVXSavePath.Text = dialog.FileName;
+                Library.UpdateConfigFile("RECVX", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
             }

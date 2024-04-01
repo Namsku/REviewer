@@ -2,7 +2,6 @@
 using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
-using REviewer.Modules.RE.Common;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -171,6 +170,32 @@ namespace REviewer.Modules.RE.Common
             { 95, "Jill" },
             { 96, "Nichol." },
             { 103, "Irons" }
+        };
+
+        public Dictionary<byte, string> RECVX_Bestiary = new Dictionary<byte, string> 
+        {
+            { 254, "Unknown" },
+            { 255, "None" },
+            { 1, "Zombie" },
+            { 2, "GlupWorm" },
+            { 3, "Spider" },
+            { 4, "Doggo" },
+            { 5, "Hunter" },
+            { 6, "Moth" },
+            { 7, "Bat" },
+            { 9, "B.snatch" },
+            { 12, "Alexia" },
+            { 13, "Alexia B" },
+            { 14, "Alexia C" },
+            { 15, "Nosferatu" },
+            { 17, "Mr.Steve" },
+            { 19, "Tyrant" },
+            { 21, "Albinoid C." },
+            { 22, "Albinoid A." },
+            { 23, "Big Spider" },
+            { 26, "Zombie" },
+            { 29, "Tenticle" },
+            { 30, "Y.Alexia" }
         };
 
         public int SelectedGame;
@@ -423,12 +448,10 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SelectedGame == 0)
                 {
-                    Console.WriteLine("FOUND RE1");
                     UpdateEnemy();
                 }
                 else
                 {
-                    Console.WriteLine("FOUND RE2 and 3");
                     UpdateEnemyRE2andRE3();
                 }
             }

@@ -76,16 +76,16 @@ namespace REviewer.Modules.RE.Common
                 int state = GameState.Value;
                 bool isDead = false;
 
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
                     PreviousState = state & 0x0F000000;
                 }
-                else if (SELECTED_GAME == 1)
+                else if (SELECTED_GAME == 200)
                 {
                     isDead = Health.Value > 200 && state != 0x00000000;
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
@@ -213,11 +213,11 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 1)
+                else if (SELECTED_GAME == 200)
                 {
                     if (isGameDone)
                     {
@@ -225,7 +225,7 @@ namespace REviewer.Modules.RE.Common
                     }
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
                     {
@@ -254,6 +254,10 @@ namespace REviewer.Modules.RE.Common
 
                         return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
                     }
+                }
+                else if (SELECTED_GAME == 400)
+                {
+                    return TimeSpan.FromSeconds(GameTimer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
                 }
 
                 return 0.ToString();
@@ -342,7 +346,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
                     {
