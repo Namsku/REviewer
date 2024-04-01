@@ -215,8 +215,37 @@ namespace REviewer.Modules.RE.Common
         }
         private VariableData? _enemyState;
 
-        private VariableData? _enemyHP;
+        private VariableData? _enemySelected;
+        private VariableData? EnemySelected
+        {
+            get { return _enemySelected; }
+            set
+            {
+                if (_enemySelected != null)
+                {
+                    _enemySelected.PropertyChanged -= EnemySelected_PropertyChanged;
+                }
 
+                _enemyHP = value;
+
+                if (_enemySelected != null)
+                {
+                    _enemySelected.PropertyChanged += EnemySelected_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(EnemySelected));
+            }
+        }
+
+        private void EnemySelected_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+
+            }
+        }
+
+        private VariableData? _enemyHP;
         public VariableData? EnemyHP
         {
             get { return _enemyHP; }
@@ -305,11 +334,6 @@ namespace REviewer.Modules.RE.Common
                             if (hp > 60000 || hp < 2000 || ( hp > 20000 && hp < 21000))
                                 EnemyMaxHP = Enemy.CurrentHealth;
                         }
-                    }
-
-                    if (Enemy.CurrentHealth > 60000)
-                    {
-                        Enemy.Visibility = Visibility.Collapsed;
                     }
 
                     OnPropertyChanged(nameof(Enemy));

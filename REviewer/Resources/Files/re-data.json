@@ -1352,8 +1352,7 @@
         "MainMenu": "0x691B86",
         "SaveContent": "0x98E7AC",
         "EnnemyInfos": "0x98A114",
-        "PartnerPointer": "0x98A110",
-        "HitFlag": "0x98A0C0"
+        "PartnerPointer": "0x98A110"
       },
         "Player": {
             "Character": {
