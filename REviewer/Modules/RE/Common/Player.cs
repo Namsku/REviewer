@@ -420,7 +420,7 @@ namespace REviewer.Modules.RE.Common
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                     }
 
-                    if (items[value].Type == "Key Item") // && FullRoomName == null)
+                    if (IDatabase.GetPropertyTypeById(value) == "Key Item") // && FullRoomName == null)
                     {
                         var sss = (((int)Stage.Value % 5) + 1).ToString();
                         var rrr = ((int)Room.Value).ToString("X2");
@@ -558,7 +558,15 @@ namespace REviewer.Modules.RE.Common
                 {
                     if (Health.Value < OldHealth)
                     {
-                        if (Health.Value != 88 && Character.Value != 3) Hits += 1;
+                        if (Health.Value != 88 && Character.Value != 3)
+                        {
+                            if (SELECTED_GAME == 2)
+                            {
+                                // Changing Character Hotfix
+                                if ((GameState.Value & 0xFF000000) == 0x42000000) return;
+                            }
+                            Hits += 1;
+                        }
                     }
                 }
                 else if (SELECTED_GAME == 200)

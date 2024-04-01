@@ -336,6 +336,11 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
+                    if (Enemy.CurrentHealth > 64000 && EnemyMaxHP < 2000)
+                    {
+                        Enemy.Visibility = Visibility.Collapsed;
+                    }
+
                     OnPropertyChanged(nameof(Enemy));
                 }
                     
