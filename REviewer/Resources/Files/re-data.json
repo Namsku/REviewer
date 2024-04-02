@@ -2530,13 +2530,13 @@
             },
             "8": {
                 "Name": "CombatKnife",
-                "Type": "Weapon",
+                "Type": "Nothing",
                 "Img": "resources/cvx/combat-knife.png"
             },
             "9": {
                 "Name": "Handgun",
                 "Type": "Weapon",
-                "Img": "resources/cvx/ingram.png"
+                "Img": "resources/cvx/m93r.png"
             },
             "10": {
                 "Name": "CustomHandgun",
@@ -2571,11 +2571,13 @@
             "16": {
                 "Name": "AcidRounds",
                 "Type": "Ammo",
+                "Color": "Yellow",
                 "Img": "resources/cvx/acid-rounds.png"
             },
             "17": {
                 "Name": "FlameRounds",
                 "Type": "Ammo",
+                "Color": "Red",
                 "Img": "resources/cvx/flame-rounds.png"
             },
             "18": {
@@ -2651,7 +2653,7 @@
             "32": {
                 "Name": "Magnum",
                 "Type": "Weapon",
-                "Img": "resources/cvx/magnum.png"
+                "Img": "resources/cvx/colt-python.png"
             },
             "33": {
                 "Name": "GoldLugers",
@@ -2671,6 +2673,7 @@
             "36": {
                 "Name": "GunPowderArrow",
                 "Type": "Item",
+                "Color": "Red",
                 "Img": "resources/cvx/gun-powder-arrow.png"
             },
             "37": {
@@ -2691,7 +2694,7 @@
             "40": {
                 "Name": "RifleBullets",
                 "Type": "Ammo",
-                "Img": "resources/cvx/rifle-bullets.png"
+                "Img": "resources/cvx/riffle-bullets.png"
             },
             "41": {
                 "Name": "DuraluminCaseUnused",
@@ -2701,7 +2704,7 @@
             "42": {
                 "Name": "ARifleBullets",
                 "Type": "Ammo",
-                "Img": "resources/cvx/army-proof.png"
+                "Img": "resources/cvx/assault-rifle-bullets.png"
             },
             "43": {
                 "Name": "AlexandersPierce",
@@ -2835,22 +2838,23 @@
             },
             "69": {
                 "Name": "ArmyProof",
-                "Type": "Nothing",
+                "Type": "Key Item",
                 "Img": "resources/cvx/army-proof.png"
             },
             "70": {
                 "Name": "NavyProof",
-                "Type": "Nothing",
+                "Type": "Key Item",
                 "Img": "resources/cvx/navy-proof.png"
             },
             "71": {
                 "Name": "AirForceProof",
-                "Type": "Nothing",
+                "Type": "Key Item",
                 "Img": "resources/cvx/air-force-proof.png"
             },
             "72": {
                 "Name": "KeyWithTag",
-                "Type": "Key ItemNoesources/cvx/nothing.png"
+                "Type": "Key Item",
+                "Img": "resources/cvx/storage-key.png"
             },
             "73": {
                 "Name": "IDCard",
@@ -3128,19 +3132,19 @@
                 "Img": "resources/cvx/nothing.png"
             },
             "128": {
-                "Name": "Plant Pot",
-                "Type": "Key Item",
-                "Img": "resources/cvx/plant-pot.png"
+                "Name": "DuralumInCaseBowGunPowder",
+                "Type": "Nothing",
+                "Img": "resources/cvx/duralumin-case.png"
             },
             "129": {
                 "Name": "DuralumInCaseBowGunPowder",
                 "Type": "Nothing",
-                "Img": "resources/cvx/nothing.png"
+                "Img": "resources/cvx/duralumin-case.png"
             },
             "130": {
                 "Name": "DuraluminCaseMagnumRounds",
                 "Type": "Nothing",
-                "Img": "resources/cvx/nothing.png"
+                "Img": "resources/cvx/duralumin-case.png"
             },
             "131": {
                 "Name": "BowGunPowderUnused",
@@ -3200,7 +3204,7 @@
             "142": {
                 "Name": "M1P",
                 "Type": "Nothing",
-                "Img": "resources/cvx/nothing.png"
+                "Img": "resources/cvx/m-100p.png"
             },
             "143": {
                 "Name": "CalicoBullets",

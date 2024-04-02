@@ -479,9 +479,13 @@ namespace REviewer.Modules.RE.Common
                 {
                     UpdateEnemy();
                 }
-                else
+                else if(SelectedGame == 1 || SelectedGame == 2)
                 {
                     UpdateEnemyRE2andRE3();
+                }
+                else
+                {
+                    UpdateEnemyCVX();
                 }
             }
         }

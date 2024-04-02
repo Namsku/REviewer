@@ -509,6 +509,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     state = (_characterHealthState?.Value == 0x04);
                 }
+                else if(SELECTED_GAME == 400)
+                {
+                    state = (_characterHealthState.Value != 5) && (_characterHealthState.Value != 7);
+                }
 
                 if (state)
                 {
@@ -624,6 +628,10 @@ namespace REviewer.Modules.RE.Common
             else if (SELECTED_GAME == 300)
             {
                 state = (status != 0x04);
+            }
+            else if (SELECTED_GAME == 400)
+            {
+                state = (_characterHealthState.Value == 5) || (_characterHealthState.Value == 7);
             }
 
             if (state)

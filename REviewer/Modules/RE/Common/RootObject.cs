@@ -66,9 +66,10 @@ namespace REviewer.Modules.RE.Common
         public Visibility? ItemBoxVisibility { get; set; }
         public Visibility? SherryVisibility { get; set; }
         public Visibility? PartnerVisibility { get; set; }
-        public Visibility? StatsVisibility { get; set; }
+        public Visibility? StatsVisibility { get; set; } 
         public Visibility? SegsVisibility { get; set; }
         public Visibility? KeyItemsVisibility { get; set; }
+        public Visibility? LastItemSeenVisibility { get; set; }
 
         private int? _windowWidth;
         public int? WindowWidth
@@ -94,6 +95,9 @@ namespace REviewer.Modules.RE.Common
             _virtualMemoryPointer = virtualMemoryPointer;
             IDatabase = ids;
 
+            LastItemSeenVisibility = Visibility.Visible;
+            PartnerVisibility = Visibility.Visible;
+
             var processName = IDatabase.GetProcessName().ToLower();
 
             if (processName == "bio" || processName == "biohazard")
@@ -115,6 +119,7 @@ namespace REviewer.Modules.RE.Common
             {
                 SELECTED_GAME = 400;
                 PartnerVisibility = Visibility.Collapsed;
+                LastItemSeenVisibility = Visibility.Collapsed;
             }
 
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
