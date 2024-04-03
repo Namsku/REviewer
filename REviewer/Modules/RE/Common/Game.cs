@@ -92,6 +92,10 @@ namespace REviewer.Modules.RE.Common
                     isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
                     isNewGame = (isGameDone == true && GameSave.Value == 0);
                 }
+                else if (SELECTED_GAME == 400)
+                {
+                    isDead = Health.Value < 0;
+                }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
 
@@ -183,12 +187,14 @@ namespace REviewer.Modules.RE.Common
             {
                 OnPropertyChanged(nameof(IGTHumanFormat));
 
+                double frames = SELECTED_GAME == 400 ? 60.0 : 30.0;
+
                 if(IGTSegments == null || GameTimer == null) return;
 
                 if (SegmentCount >= 0 && SegmentCount < 4)
                 {
                     var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
-                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / frames).ToString(@"hh\:mm\:ss\.ff");
                     OnPropertyChanged(nameof(IGTSHumanFormat));
                 }
             }
@@ -257,7 +263,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 400)
                 {
-                    return TimeSpan.FromSeconds(GameTimer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                    return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
                 }
 
                 return 0.ToString();

@@ -53,6 +53,12 @@ namespace REviewer.Modules.RE.Common
                     capacity = capacity & 3;
                     _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
                 }
+                else if (SELECTED_GAME == 400)
+                {
+                    InventoryCapacitySize = 11;
+                    _inventoryCapacityArray = new int[] { 11, };
+                    return;
+                }
                 else
                 {
                     capacity = 0;
@@ -115,7 +121,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == 400)
                 {
-                    InventoryCapacitySize = 11;
+                    _inventoryCapacitySize = 11;
                 } 
                 else
                 { 
@@ -131,8 +137,9 @@ namespace REviewer.Modules.RE.Common
                 InventoryImages = new ObservableCollection<ImageItem>();
                 InventoryImages.Clear();
 
-                for (int i = 0; i < Inventory.Count; i++)
+                for (int i = 0, j = 0; i < Inventory.Count; i++, j++)
                 {
+                    if (j == 12) break;
                     int index = i;
 
                     InventoryImages.Add(new ImageItem
@@ -176,7 +183,7 @@ namespace REviewer.Modules.RE.Common
         {
             var items = IDatabase.GetItems();
 
-            Console.WriteLine($"UpdateInventoryImage -> {Inventory[index].Item.Value}");
+            Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
 
             if (index <= InventoryCapacitySize)
             {
