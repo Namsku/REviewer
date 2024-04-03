@@ -40,7 +40,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Visibility="{Binding Enemy.Visibility}">
+                            <Grid Background="{Binding Enemy.BackgroundColor}" Visibility="{Binding Enemy.Visibility}" Width="520">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="auto"/>

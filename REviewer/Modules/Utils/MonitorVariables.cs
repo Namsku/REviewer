@@ -1,4 +1,5 @@
 ﻿using REviewer.Modules.RE.Common;
+using REviewer.Modules.RE.Enemies;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -118,6 +119,7 @@ namespace REviewer.Modules.Utils
                    && property.PropertyType != typeof(int)
                    && property.Name != "KeyItemImages"
                    && property.PropertyType != typeof(System.Windows.Media.ImageSource)
+                   && property.PropertyType != typeof(System.Windows.Media.SolidColorBrush)
                    && property.PropertyType != typeof(System.Windows.Media.Brush)
                    && property.PropertyType != typeof(System.Windows.Media.Brushes)
                    && property.PropertyType != typeof(List<string>);

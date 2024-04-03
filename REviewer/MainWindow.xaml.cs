@@ -14,6 +14,7 @@ using Timer = System.Threading.Timer;
 using System.Windows.Documents;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using REviewer.Modules.RE.Enemies;
 
 namespace REviewer
 {
@@ -57,7 +58,6 @@ namespace REviewer
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
-        // private static Version CurrentVersion = System.Version.Parse("0.0.7");
 
         public SRT? SRT { get; private set; }
         public Tracker? TRK { get; private set; }
@@ -119,7 +119,7 @@ namespace REviewer
                 var saveContent = "Not Found" == savePath ? "Not Found" : "Found";
                 var saveColor = "Not Found" == savePath ? CustomColors.Red : CustomColors.Green;
 
-                Console.WriteLine($"You have been called -> {savePath} - {saveContent} - {saveColor}");
+                // Console.WriteLine($"You have been called -> {savePath} - {saveContent} - {saveColor}");
                 Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
 
                 switch (position)
@@ -675,19 +675,27 @@ namespace REviewer
                 _ => 0
             };
 
-            if (bio?.Offsets == null || !bio.Offsets.ContainsKey("EnnemyInfos") || bio.Offsets["EnnemyInfos"] == "")
+            if (bio?.Offsets == null || !bio.Offsets.ContainsKey("EnemyInfos") || bio.Offsets["EnemyInfos"] == "")
             {
                 return;
             }
 
-            var offset = Library.HexToInt(bio.Offsets["EnnemyInfos"]);
-            var property = bio?.Ennemy?.EnemyInfos;
+            var offset = Library.HexToInt(bio.Offsets["EnemyInfos"]);
+            var enemyPointer = 0;
+
+            bio.Offsets.TryGetValue("EnemyPointer", out var enemyPointerOffset);
+            if (enemyPointerOffset != null && enemyPointerOffset != "")
+            {
+                enemyPointer = Library.HexToInt(enemyPointerOffset);
+            }
+
+            var property = bio?.Enemy?.EnemyInfos;
 
             _tracking ??= new ObservableCollection<EnnemyTracking>();
 
             for (var i = 0; i < 16; i++)
             {
-                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame));
+                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
             }
         }
 
@@ -749,7 +757,7 @@ namespace REviewer
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "https://github.com/namsku/biorand/releases",
+                    FileName = "https://github.com/namsku/REviewer/releases",
                     UseShellExecute = true
                 };
                 Process.Start(psi);

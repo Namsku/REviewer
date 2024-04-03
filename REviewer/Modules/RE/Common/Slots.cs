@@ -21,7 +21,7 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 _item = value;
-                Console.WriteLine(_item.Value);
+                //Console.WriteLine(_item.Value);
                 OnPropertyChanged(nameof(Item));
             }
         }
@@ -32,7 +32,7 @@ namespace REviewer.Modules.RE.Common
             set
             {
                 _quantity = value;
-                Console.WriteLine(_quantity.Value);
+                // Console.WriteLine(_quantity.Value);
                 OnPropertyChanged(nameof(Quantity));
             }
         }

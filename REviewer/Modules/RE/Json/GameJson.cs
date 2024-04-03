@@ -84,6 +84,7 @@ namespace REviewer.Modules.RE.Json
     public class JEnemy
     {
         public StandardProperty? EnemyInfos { get; set; }
+        public StandardProperty? EnemyPointer { get; set; }
     }
 
     public class Bio
@@ -98,6 +99,6 @@ namespace REviewer.Modules.RE.Json
         public JGame? Game { get; set; }
         public JPosition? Position { get; set; }
         public JRebirth? Rebirth { get; set; }
-        public JEnemy? Ennemy { get; set; }
+        public JEnemy? Enemy { get; set; }
     }
 }

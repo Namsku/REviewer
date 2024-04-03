@@ -1326,35 +1326,35 @@
             "309",
             "504"
         ],
-      "Offsets": {
-        "InventoryStart": "0x98ED34",
-        "InventoryEnd": "0x98ED5D",
-        "ItemBoxStart": "0x098ED68",
-        "ItemBoxEnd": "0x098EE59",
-        "ItemBoxState": "00691F70",
-        "Capacity": "0x98E9A4",
-        "Character": "0x98EB24",
-        "InventorySlotSelected": "0x691F68",
-        "Stage": "0x098EB14",
-        "Room": "0x98EB16",
-        "Cutscene": "0x98EB18",
-        "LastRoom": "0x98EB1A",
-        "LastCutscene": "0x98EB1C",
-        "LastItemFound": "0x98E529",
-        "CharacterHealthState": "0x98A109",
-        "GameState": "0x989E6C",
-        "GameTimer": "0x680588",
-        "GameFrame": "0x68058C",
-        "PositionX": "0x989F28",
-        "PositionY": "0x989F2C",
-        "PositionZ": "0x989F30",
-        "CharacterHealth": "0x98A046",
-        "MainMenu": "0x691B86",
-        "SaveContent": "0x98E7AC",
-        "EnemyInfos": "0x98A114",
-        "PartnerPointer": "0x98A110",
-        "EnemyPointer": "0x924510"
-      },
+        "Offsets": {
+            "InventoryStart": "0x98ED34",
+            "InventoryEnd": "0x98ED5D",
+            "ItemBoxStart": "0x098ED68",
+            "ItemBoxEnd": "0x098EE59",
+            "ItemBoxState": "00691F70",
+            "Capacity": "0x98E9A4",
+            "Character": "0x98EB24",
+            "InventorySlotSelected": "0x691F68",
+            "Stage": "0x098EB14",
+            "Room": "0x98EB16",
+            "Cutscene": "0x98EB18",
+            "LastRoom": "0x98EB1A",
+            "LastCutscene": "0x98EB1C",
+            "LastItemFound": "0x98E529",
+            "CharacterHealthState": "0x98A109",
+            "GameState": "0x989E6C",
+            "GameTimer": "0x680588",
+            "GameFrame": "0x68058C",
+            "PositionX": "0x989F28",
+            "PositionY": "0x989F2C",
+            "PositionZ": "0x989F30",
+            "CharacterHealth": "0x98A046",
+            "MainMenu": "0x691B86",
+            "SaveContent": "0x98E7AC",
+            "EnemyInfos": "0x98A114",
+            "PartnerPointer": "0x98A110",
+            "EnemyPointer": "0x98A0A4"
+        },
         "Player": {
             "Character": {
                 "Size": "1",
@@ -1493,7 +1493,7 @@
         "Enemy": {
           "EnemyInfos": {
             "Size": "4"
-          }
+          },
           "EnemyPointer": {
             "Size":  "4"
           }

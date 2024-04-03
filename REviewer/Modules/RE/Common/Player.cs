@@ -39,7 +39,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == 300)
                 {
-                    Console.WriteLine("Character changed");
+                    // Console.WriteLine("Character changed");
                     // Console.WriteLine(Character.Value);
                     if (Character?.Value == 0x08)
                     {
@@ -111,7 +111,7 @@ namespace REviewer.Modules.RE.Common
             {
                 // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
-                Console.WriteLine(CarlosInventorySlotSelected.Value);
+                // Console.WriteLine(CarlosInventorySlotSelected.Value);
                 InventorySlotSelected.Value = CarlosInventorySlotSelected.Value;
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
@@ -148,7 +148,7 @@ namespace REviewer.Modules.RE.Common
             {
                 // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
-                Console.WriteLine(InventorySlotSelected.Value);
+                // Console.WriteLine(InventorySlotSelected.Value);
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
@@ -907,7 +907,7 @@ namespace REviewer.Modules.RE.Common
                     }
 
                     _hitFlag = value;
-                    Console.WriteLine(HitFlag.Value);
+                    // Console.WriteLine(HitFlag.Value);
 
                     if (_hitFlag != null)
                     {

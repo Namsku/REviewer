@@ -237,7 +237,7 @@ namespace REviewer.Modules.RE.Common
                     {
                         if (timerRunning)
                         {
-                            Console.WriteLine("Timer stopped");
+                            // Console.WriteLine("Timer stopped");
                             timerRunning = false;
                             _srtTimer.Stop();
                             _saveState = 0;
@@ -253,7 +253,7 @@ namespace REviewer.Modules.RE.Common
                     {
                         if (!timerRunning)
                         {
-                            Console.WriteLine("Timer started");
+                            // Console.WriteLine("Timer started");
                             StartSRTTimer();
                         }
                         _saveState = (_gameSave.Value) / 60.0 * 1000;

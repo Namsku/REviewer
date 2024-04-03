@@ -1,4 +1,5 @@
 ﻿using REviewer.Modules.RE.Common;
+using REviewer.Modules.RE.Enemies;
 using REviewer.Modules.Utils;
 using System;
 using System.Collections.ObjectModel;
