@@ -681,7 +681,7 @@ namespace REviewer
             }
 
             var offset = Library.HexToInt(bio.Offsets["EnnemyInfos"]);
-            var property = bio?.Ennemy?.EnnemyInfos;
+            var property = bio?.Ennemy?.EnemyInfos;
 
             _tracking ??= new ObservableCollection<EnnemyTracking>();
 

@@ -1351,8 +1351,9 @@
         "CharacterHealth": "0x98A046",
         "MainMenu": "0x691B86",
         "SaveContent": "0x98E7AC",
-        "EnnemyInfos": "0x98A114",
-        "PartnerPointer": "0x98A110"
+        "EnemyInfos": "0x98A114",
+        "PartnerPointer": "0x98A110",
+        "EnemyPointer": "0x924510"
       },
         "Player": {
             "Character": {
@@ -1489,10 +1490,13 @@
                 "Size": "4"
             }
         },
-        "Ennemy": {
-            "EnnemyInfos": {
-                "Size": "4"
-            }
+        "Enemy": {
+          "EnemyInfos": {
+            "Size": "4"
+          }
+          "EnemyPointer": {
+            "Size":  "4"
+          }
         }
     },
     "BIOHAZARD(R) 3 PC": {
@@ -3382,5 +3386,4 @@
             }
         }
     }
-
 }

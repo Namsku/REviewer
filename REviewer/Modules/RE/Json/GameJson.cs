@@ -53,7 +53,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? Event { get; set; }
         public StandardProperty? PartnerPointer { get; set; }
         public StandardProperty? HitFlag { get; set; }
-        public StandardProperty? EnnemyCount { get; set; }
+        public StandardProperty? EnemyCount { get; set; }
     }
 
     public class JGame
@@ -81,9 +81,9 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? State { get; set; }
     }
 
-    public class JEnnemy
+    public class JEnemy
     {
-        public StandardProperty? EnnemyInfos { get; set; }
+        public StandardProperty? EnemyInfos { get; set; }
     }
 
     public class Bio
@@ -98,6 +98,6 @@ namespace REviewer.Modules.RE.Json
         public JGame? Game { get; set; }
         public JPosition? Position { get; set; }
         public JRebirth? Rebirth { get; set; }
-        public JEnnemy? Ennemy { get; set; }
+        public JEnemy? Ennemy { get; set; }
     }
 }
