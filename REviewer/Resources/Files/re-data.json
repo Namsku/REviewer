@@ -1349,6 +1349,7 @@
             "PositionY": "0x989F2C",
             "PositionZ": "0x989F30",
             "CharacterHealth": "0x98A046",
+            "CharacterMaxHealth": "0x98A052",
             "MainMenu": "0x691B86",
             "SaveContent": "0x98E7AC",
             "EnemyInfos": "0x98A114",
@@ -1378,7 +1379,7 @@
                 }
             },
             "Health": {
-                "Size": "1",
+                "Size": "4",
                 "Database": {
                     "0": [ "200", "101", "41", "21", "0" ],
                     "1": [ "200", "101", "41", "21", "0" ],
@@ -1400,6 +1401,9 @@
             },
             "CharacterHealthState": {
                 "Size": "1"
+            },
+            "CharacterMaxHealth": {
+                "Size": "4"
             },
             "LastItemFound": {
                 "Size": "1"
@@ -1428,12 +1432,12 @@
             "Cutscene": {
                 "Size": "1"
             },
-          "Unk001": {
-            "Size": "1"
-          },
-          "HitFlag": {
-            "Size": "4"
-          },
+            "Unk001": {
+                "Size": "1"
+            },
+            "HitFlag": {
+                "Size": "4"
+            },
             "Event": {
                 "Size": "1",
                 "Database": {

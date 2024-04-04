@@ -68,9 +68,19 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        public string? _maxHealth;
         public string? MaxHealth
         {
+            set
+            {
+                if (_maxHealth != value)
+                {
+                    _maxHealth = value;
+                    OnPropertyChanged(nameof(CarlosInventorySlotSelected));
+                }
+            }
             get {
+                if (SELECTED_GAME == 200) return _maxHealth;
                 if (_character?.Database == null) return "ERR";
                 if (_health?.Database == null) return "0";
 
@@ -529,12 +539,51 @@ namespace REviewer.Modules.RE.Common
 
         public int OldHealth = 0;
 
+        private VariableData? _characterMaxHealth;
+        public VariableData? CharacterMaxHealth
+        {
+            get { return _characterMaxHealth; }
+            set
+            {
+                if (_characterMaxHealth != value)
+                {
+                    if (_characterMaxHealth != null)
+                    {
+                        _characterMaxHealth.PropertyChanged -= MaxHealth_PropertyChanged;
+                    }
+
+                    _characterMaxHealth = value;
+
+                    if (_characterMaxHealth != null)
+                    {
+                        _characterMaxHealth.PropertyChanged += MaxHealth_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(CharacterMaxHealth));
+                }
+            }
+        }
+
+        private void MaxHealth_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SELECTED_GAME == 200)
+                {
+                    CharacterMaxHealth.Value = CharacterMaxHealth.Value & 0xFFFF;
+                    MaxHealth = CharacterMaxHealth.Value.ToString();
+                }
+
+            }
+        }
+
         private VariableData? _health;
         public VariableData? Health
         {
             get { return _health; }
             set
             {
+                Console.WriteLine(Health);
                 if (_health != value)
                 {
                     if (_health != null)
@@ -575,6 +624,8 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 200)
                 {
+                    Health.Value = Health.Value & 0xFFFF;
+
                     if (Health.Value < OldHealth)
                     {
                         Hits += 1;
@@ -639,7 +690,7 @@ namespace REviewer.Modules.RE.Common
                 return;
             }
 
-            if (_health?.Value == health_table[0])
+            if (_health?.Value >= health_table[0])
             {
                 _health.Background = CustomColors.Default;
                 return;

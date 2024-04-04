@@ -37,6 +37,7 @@ namespace REviewer.Modules.RE.Json
     {
         public StandardProperty? Character { get; set; }
         public AdvancedProperty? Health { get; set; }
+        public StandardProperty? CharacterMaxHealth { get; set; }
         public StandardProperty? CharacterHealthState { get; set; }
         public StandardProperty? LastItemFound { get; set; }
         public StandardProperty? CarlosLastItemFound { get; set; }

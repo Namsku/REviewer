@@ -147,6 +147,7 @@ namespace REviewer.Modules.RE.Common
             InventoryCapacityUsed = GetVariableData("InventoryCapacityUsed", bio.Player.InventoryCapacityUsed);
             CharacterHealthState = GetVariableData("CharacterHealthState", bio.Player.CharacterHealthState);
             Health = GetVariableData("CharacterHealth", bio.Player.Health);
+            CharacterMaxHealth = GetVariableData("CharacterMaxHealth", bio.Player.CharacterMaxHealth);
             LockPick = GetVariableData("LockPick", bio.Player.LockPick);
             PartnerPointer = GetVariableData("PartnerPointer", bio.Player.PartnerPointer);
             ItemBoxState = GetVariableData("ItemBoxState", bio.Player.ItemBoxState);
