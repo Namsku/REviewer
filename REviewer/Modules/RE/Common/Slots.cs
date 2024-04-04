@@ -101,7 +101,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else
                 {
-                    Console.WriteLine("CVX Slot created");
+                    // Console.WriteLine("CVX Slot created");
                     slots.Add(new Slot
                     {
                         Item = new VariableData(i + 2, 1),

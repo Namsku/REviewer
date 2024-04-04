@@ -10,11 +10,18 @@ using Newtonsoft.Json;
 using REviewer.Modules.RE.Json;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace REviewer.Modules.Utils
 {
-
+    public enum StringEnumType
+    {
+        AutoDetect,
+        ASCII,
+        UTF8,
+        UTF16
+    }
     public static class NativeWrappers
     {
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -48,15 +55,6 @@ namespace REviewer.Modules.Utils
             return b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
     }
-
-    public enum StringEnumType
-    {
-        AutoDetect,
-        ASCII,
-        UTF8,
-        UTF16
-    }
-
     public static class ExtensionMethods
     {
         public static bool Is64Bit(this Process process)
@@ -225,7 +223,6 @@ namespace REviewer.Modules.Utils
             return val;
         }
     }
-
     public class Library
     {
 
@@ -427,16 +424,14 @@ namespace REviewer.Modules.Utils
         {
             var configPath = ConfigurationManager.AppSettings["Config"];
 
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+            if (!File.Exists(configPath))
             {
                 throw new ArgumentNullException(nameof(configPath), "Configuration file path is invalid or missing.");
             }
 
             var json = File.ReadAllText(configPath);
-            var reJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
-                         ?? throw new ArgumentNullException("The game data is null");
-
-            return reJson;
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                   ?? throw new ArgumentNullException("The game data is null");
         }
 
         public static Dictionary<string, bool> GetOptions()
@@ -468,7 +463,7 @@ namespace REviewer.Modules.Utils
 
         private static Dictionary<string, string>? LoadGamePaths()
         {
-            if (string.IsNullOrEmpty(_configPath) || !File.Exists(_configPath))
+            if (!File.Exists(_configPath))
             {
                 Logger.Instance.Error("Config path is null or file does not exist");
                 return null;
@@ -477,6 +472,7 @@ namespace REviewer.Modules.Utils
             var json = File.ReadAllText(_configPath);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }
+
         public static string GetSavePath(string gameName)
         {
             var _gamePaths = LoadGamePaths();
@@ -487,7 +483,7 @@ namespace REviewer.Modules.Utils
                 return "";
             }
 
-            if (_gamePaths != null && _gamePaths.TryGetValue(gameKey, out string? gamePath))
+            if (_gamePaths?.TryGetValue(gameKey, out string? gamePath) == true)
             {
                 return gamePath;
             }
@@ -498,48 +494,38 @@ namespace REviewer.Modules.Utils
 
         public static Dictionary<byte, List<int>>? ConvertDictionnary(Dictionary<string, List<string>>? originalDict)
         {
-            if (originalDict == null)
-            {
-                return null;
-            }
+            if (originalDict == null) return null;
 
-            var newDict = new Dictionary<byte, List<int>>();
-
-            foreach (var pair in originalDict)
-            {
-                var intList = pair.Value.Select(int.Parse).ToList();
-                newDict.Add(byte.Parse(pair.Key), intList);
-            }
-
-            return newDict;
+            return originalDict
+                .Where(pair => byte.TryParse(pair.Key, out _))
+                .ToDictionary(
+                    pair => byte.Parse(pair.Key),
+                    pair => pair.Value
+                        .Select(str => int.TryParse(str, out var num) ? num : (int?)null)
+                        .Where(num => num.HasValue)
+                        .Select(num => num.Value)
+                        .ToList()
+                );
         }
 
         public static string GetProcessMD5Hash(Process process)
         {
-            if (process.MainModule?.FileName == null)
-            {
-                throw new ArgumentNullException("The process has no main module");
-            }
-
             using var md5 = MD5.Create();
             using var stream = File.OpenRead(process.MainModule.FileName);
             var hash = md5.ComputeHash(stream);
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
-    public static int HexToInt(string hex)
+        public static int HexToInt(string hex)
         {
-            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-            {
-                hex = hex[2..];
-            }
-
-            long value = Convert.ToInt64(hex, 16);
-            return (int)value;
+            return Convert.ToInt32(hex, 16);
         }
-        
-        public static string ToHexString(int value) => string.Join(" ", Enumerable.Range(0, 4).Select(i => value.ToString("X8").Substring(i * 2, 2)));
 
+        public static string ToHexString(int value)
+        {
+            var hex = value.ToString("X8");
+            return Regex.Replace(hex, ".{2}", "$0 ");
+        }
 
     }
 }

@@ -234,7 +234,7 @@ namespace REviewer.Modules.RE.Enemies
                     _enemySelected.PropertyChanged -= EnemySelected_PropertyChanged;
                 }
 
-                Console.WriteLine(value.Value);
+                //Console.WriteLine(value.Value);
                 _enemySelected = value;
 
                 if (_enemySelected != null)
@@ -254,7 +254,7 @@ namespace REviewer.Modules.RE.Enemies
                 {
                     if (EnemySelected.Value == _enemyState.Value)
                     {
-                        Console.WriteLine("New One");
+                        //Console.WriteLine("New One");
                         Enemy.BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
                     }
                     else

@@ -183,7 +183,7 @@ namespace REviewer.Modules.RE.Common
         {
             var items = IDatabase.GetItems();
 
-            Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
+            // Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
 
             if (index <= InventoryCapacitySize)
             {
