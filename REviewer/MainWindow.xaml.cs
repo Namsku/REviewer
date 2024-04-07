@@ -712,7 +712,7 @@ namespace REviewer
             int selectedGame = pname switch
             {
                 "bio" or "biohazard" => 0,
-                "bio2 1.10" or "bio2 1.1" or "bio2 chn leon" => 1,
+                "bio2 1.10" or "bio2 1.1" or "bio2 chn claire" or "bio2 chn leon" => 1,
                 "biohazard(r) 3 pc" => 2,
                 _ => 0
             };

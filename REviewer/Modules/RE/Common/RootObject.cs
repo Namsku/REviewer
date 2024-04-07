@@ -43,6 +43,7 @@ namespace REviewer.Modules.RE.Common
             { "bio2 chn leon", 0x07 },
             { "Bio2 chn claire", 0x07 },
             { "Bio2 chn leon", 0x07 },
+            { "Irregular1.8", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
             { "CVX PS2 US", 0x09 },
