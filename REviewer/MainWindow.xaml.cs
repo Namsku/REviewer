@@ -735,7 +735,7 @@ namespace REviewer
 
             _tracking ??= new ObservableCollection<EnemyTracking>();
 
-            for (var i = 0; i < 16; i++)
+            for (var i = 0; i < 32; i++)
             {
                 _tracking.Add(new EnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
             }

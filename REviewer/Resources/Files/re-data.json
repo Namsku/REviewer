@@ -2159,34 +2159,34 @@
       "504"
     ],
     "Offsets": {
-      "InventoryStart": "0xAA3154",
-      "InventoryEnd": "0xAA317E",
-      "ItemBoxStart": "0xAA3180",
-      "ItemBoxEnd": "0xAA327C",
-      "ItemBoxState": "00691F70",
-      "Capacity": "0x0",
-      "Character": "0xAA2F44",
-      "InventorySlotSelected": "0x736388",
-      "Stage": "0xAA2F34",
-      "Room": "0xAA2F36",
-      "Cutscene": "0xAA2F38",
-      "LastRoom": "0xAA2F3A",
-      "LastCutscene": "0xAA2F3C",
-      "LastItemFound": "0xA9946F",
-      "CharacterHealthState": "0x0",
-      "GameState": "0xA9E28C",
-      "GameTimer": "0x72E054",
-      "GameFrame": "0x72E058",
-      "PositionX": "0x0",
-      "PositionY": "0x0",
-      "PositionZ": "0x0",
-      "CharacterHealth": "0xA9E466",
-      "CharacterMaxHealth": "0xA9E472",
-      "MainMenu": "0x0",
-      "SaveContent": "0x0",
-      "EnemyInfos": "0xA9E534",
-      "PartnerPointer": "0xA9E530",
-      "EnemyPointer": "0x9CAE58"
+        "InventoryStart": "0xAA3154",
+        "InventoryEnd": "0xAA317E",
+        "ItemBoxStart": "0xAA3180",
+        "ItemBoxEnd": "0xAA327C",
+        "ItemBoxState": "00691F70",
+        "Capacity": "0x0",
+        "Character": "0xAA2F44",
+        "InventorySlotSelected": "0x736388",
+        "Stage": "0xAA2F34",
+        "Room": "0xAA2F36",
+        "Cutscene": "0xAA2F38",
+        "LastRoom": "0xAA2F3A",
+        "LastCutscene": "0xAA2F3C",
+        "LastItemFound": "0xA9946F",
+        "CharacterHealthState": "0xA9E529",
+        "GameState": "0xA9E28C",
+        "GameTimer": "0x72E054",
+        "GameFrame": "0x72E058",
+        "PositionX": "0x0",
+        "PositionY": "0x0",
+        "PositionZ": "0x0",
+        "CharacterHealth": "0xA9E466",
+        "CharacterMaxHealth": "0xA9E472",
+        "MainMenu": "0x0",
+        "SaveContent": "0x0",
+        "EnemyInfos": "0xA9E534",
+        "PartnerPointer": "0xA9E530",
+        "EnemyPointer": "0x9CAE58"
     },
     "Player": {
       "Character": {
@@ -2993,7 +2993,7 @@
     "Offsets": {
       "InventoryStart": "00AA30D4",
       "InventoryEnd": "00AA30FD",
-      "ItemBoxStart": "0xAA30FE",
+      "ItemBoxStart": "0xAA3100",
       "ItemBoxEnd": "0xAA31F0",
       "ItemBoxState": "0x736310",
       "Capacity": "0x0",
@@ -4013,7 +4013,8 @@
       "PositionZ": "0xA62050",
       "CharacterHealth": "0x0A620E0",
       "EnemyInfos": "0x0A621EC",
-      "PartnerPointer": "0x0A621E8"
+      "PartnerPointer": "0x0A621E8",
+      "EnemyPointer": "0x0A62128"
     },
     "Player": {
       "Character": {
@@ -4153,9 +4154,12 @@
       }
     },
     "Enemy": {
-      "EnemyInfos": {
-        "Size": "4"
-      }
+        "EnemyInfos": {
+            "Size": "4"
+        },
+        "EnemyPointer": {
+            "Size": "4"
+        }
     }
   },
   "CVX PS2 US": {
