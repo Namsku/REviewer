@@ -231,6 +231,7 @@ namespace REviewer.Modules.Utils
         {
             {"Bio", "RE1"},
             {"Bio2 1.10", "RE2"},
+            {"bio2 chn claire", "RE2C"},
             {"BIOHAZARD(R) 3 PC", "RE3" },
             {"CVX PS2 US", "RECVX" }
         };
@@ -246,6 +247,11 @@ namespace REviewer.Modules.Utils
                 { "bio2 1.10", "RE2" },
                 { "bio2 1.1", "RE2" },
                 { "bio2 v1.1", "RE2" },
+                { "CLAIRE", "RE2C" },
+                { "LEON", "RE2C" },
+                { "leon", "RE2C" },
+                { "bio2 chn claire", "RE2C" },
+                { "bio2 chn leon", "RE2C" },
                 { "re2mm", "RE2"},
                 { "RE2MM", "RE2"},
                 { "REVisited", "RE2" },
@@ -265,6 +271,8 @@ namespace REviewer.Modules.Utils
         {
             { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
             { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2", "bio2 v1.1", "bunny", "bunny2" , "re2mm", "RE2MM", "REVisited", "UEv3", "toos_ver2_0_0", "toos(hard)_ver2_0_0" } },
+            { "bio2 chn claire", new List<string> { "CLAIRE", "claire", "bio2 chn claire" } },
+            { "bio2 chn leon", new List<string> {"LEON", "leon", "bio2 chn leon" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3" } },
             { "CVX PS2 US", new List<string> { "pcsx2", "pcsx2-qt", "pcsx2-qtx64", "pcsx2-qtx64-avx2", "pcsx2x64", "pcsx2x64-avx2" } }
         };
@@ -280,6 +288,10 @@ namespace REviewer.Modules.Utils
             { "bio2 1.10", "Bio2 1.10" },
             { "bio2 1.1", "Bio2 1.10" },
             { "bio2 v1.1", "Bio2 1.10" },
+            { "CLAIRE", "bio2 chn claire" },
+            { "leon", "bio2 chn leon" },
+            { "bio2 chn claire", "bio2 chn claire" },
+            { "bio2 chn leon", "bio2 chn leon" },
             { "re2mm", "Bio2 1.10" },
             { "RE2MM", "Bio2 1.10" },
             { "REVisited", "Bio2 1.10" },

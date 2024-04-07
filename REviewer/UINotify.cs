@@ -35,6 +35,21 @@ namespace REviewer
             }
         }
 
+        private Visibility _classicVisibility;
+
+        public Visibility ClassicVisibility
+        {
+            get { return _classicVisibility; }
+            set
+            {
+                if (_classicVisibility != value)
+                {
+                    _classicVisibility = value;
+                    OnPropertyChanged(nameof(ClassicVisibility));
+                }
+            }
+        }
+
         private Visibility _sherry;
         public Visibility Sherry
         {

@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using REviewer.Modules.RE.Enemies;
+using System;
 
 namespace REviewer
 {
@@ -32,14 +33,16 @@ namespace REviewer
         private RootObject? _residentEvilGame;
         private MonitorVariables? _MVariables;
         private MonitorVariables? _MVEnemies;
-        private ObservableCollection<EnnemyTracking>? _tracking;
+        private ObservableCollection<EnemyTracking>? _tracking;
         private ItemIDs? _itemIDs;
         private UINotify? _ui;
 
-        public const int BIOHAZARD_1_MK = 0;
-        public const int BIOHAZARD_2_SC = 1;
-        public const int BIOHAZARD_3_RB = 2;
-        public const int BIOHAZARD_CV_X = 3;
+        public const int BIOHAZARD_1_MK = 0; // Mediakit
+        public const int BIOHAZARD_2_SC = 1; // SourceNext
+        public const int BIOHAZARD_2_PC = 2; // RE2 - Platinium - China - Claire
+        public const int BIOHAZARD_2_PL = 3; // RE2 - Platinium - China - Leon
+        public const int BIOHAZARD_3_RB = 4; // Rebirth
+        public const int BIOHAZARD_CV_X = 5; // CVX 
 
         public const string PCSX2 = "pcsx2";
         public const string PCSX2QT = "pcsx2-qt";
@@ -53,8 +56,8 @@ namespace REviewer
         public int ProductLength { get; private set; }
         public bool IsBigEndian { get; private set; }
 
-        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "BIOHAZARD(R) 3 PC", "CVX PS2 US" };
-        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE3", "RECVX"};
+        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "bio2 chn claire", "bio2 chn leon", "BIOHAZARD(R) 3 PC", "CVX PS2 US" };
+        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE2C", "RE2C", "RE3", "RECVX"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
@@ -90,18 +93,44 @@ namespace REviewer
             switch (ComboBoxGameSelection.SelectedIndex)
             {
                 case BIOHAZARD_1_MK:
+                    _ui.isNormalMode = false;
+                    _ui.isBiorandMode = true;
+                    _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Visible;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_SC:
+                    _ui.isNormalMode = false;
+                    _ui.isBiorandMode = true;
+                    _ui.ClassicVisibility = Visibility.Visible;
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Visible;
+                    break;
+                case BIOHAZARD_2_PC:
+                    _ui.isNormalMode = true;
+                    _ui.isBiorandMode = false;
+                    _ui.ClassicVisibility = Visibility.Collapsed;
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Visible;
+                    break;
+                case BIOHAZARD_2_PL:
+                    _ui.isNormalMode = true;
+                    _ui.isBiorandMode = false;
+                    _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_RB:
+                    _ui.isNormalMode = false;
+                    _ui.isBiorandMode = true;
+                    _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_CV_X:
+                    _ui.isNormalMode = false;
+                    _ui.isBiorandMode = true;
+                    _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
@@ -129,6 +158,10 @@ namespace REviewer
                         break;
                     case BIOHAZARD_2_SC:
                         Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
+                        break;
+                    case BIOHAZARD_2_PC:
+                        break;
+                    case BIOHAZARD_2_PL:
                         break;
                     case BIOHAZARD_3_RB:
                         Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
@@ -162,10 +195,8 @@ namespace REviewer
         private void InitializeSavedOptions()
         {
             var config = Library.GetOptions();
-
             _ui.isBiorandMode = config["isBiorandMode"];
             _ui.isNormalMode = config["isNormalMode"];
-
             _ui.isHealthBarChecked = config["isHealthBarChecked"];
             _ui.isItemBoxChecked = config["isItemBoxChecked"];
             _ui.isChrisInventoryChecked = config["isChrisInventoryChecked"];
@@ -196,6 +227,14 @@ namespace REviewer
 
         private void InitializeSaveWatcher()
         {
+            var index = ComboBoxGameSelection.SelectedIndex;
+
+            if (index == BIOHAZARD_2_PC)
+            {
+                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
+                return;
+            }
+
             _processName = _gameList[ComboBoxGameSelection.SelectedIndex];
             var selectedGame = Library.GetGameName(_processName ?? "UNKNOWN GAME ERROR");
             var reJson = Library.GetReviewerConfig();
@@ -312,10 +351,13 @@ namespace REviewer
                 lock (_lock)
                 {
                     // Check if the process is running
+                    var index = ComboBoxGameSelection.SelectedIndex;
 
                     var selectedIndex = ComboBoxGameSelection.SelectedIndex;
                     var reJson = Library.GetReviewerConfig();
                     var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
+
+                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL) isSaveFound = true;
 
                     if (_isProcessRunning && isSaveFound)
                     {
@@ -615,7 +657,7 @@ namespace REviewer
                 throw new ArgumentNullException(nameof(configPath));
             }
 
-            if (!reJson.TryGetValue(game, out _))
+            if (!reJson.TryGetValue(game, out _) && game != "RE2C")
             {
                 MessageBox.Show("The game save path is not set/not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -662,7 +704,7 @@ namespace REviewer
             int size = pname switch
             {
                 "bio" or "biohazard" => 396,
-                "bio2 1.10" or "bio2 1.1" => 4,
+                "bio2 1.10" or "bio2 1.1" or "bio2 chn claire" or "bio2 chn leon" => 4,
                 "biohazard(r) 3 pc" => 4,
                 _ => 0
             };
@@ -670,7 +712,7 @@ namespace REviewer
             int selectedGame = pname switch
             {
                 "bio" or "biohazard" => 0,
-                "bio2 1.10" or "bio2 1.1" => 1,
+                "bio2 1.10" or "bio2 1.1" or "bio2 chn leon" => 1,
                 "biohazard(r) 3 pc" => 2,
                 _ => 0
             };
@@ -691,11 +733,11 @@ namespace REviewer
 
             var property = bio?.Enemy?.EnemyInfos;
 
-            _tracking ??= new ObservableCollection<EnnemyTracking>();
+            _tracking ??= new ObservableCollection<EnemyTracking>();
 
             for (var i = 0; i < 16; i++)
             {
-                _tracking.Add(new EnnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
+                _tracking.Add(new EnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
             }
         }
 

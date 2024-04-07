@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace REviewer.Modules.RE.Enemies
 {
-    public class EnnemyTracking : INotifyPropertyChanged
+    public class EnemyTracking : INotifyPropertyChanged
     {
         public Dictionary<byte, string> RE1_Bestiary = new Dictionary<byte, string>
         {
@@ -203,6 +203,7 @@ namespace REviewer.Modules.RE.Enemies
         public int ID_OFFSET_RE3 = 0x4A;
 
         public int DEFAULT_PTR_RE2 = 0x098E544;
+        public int DEFAULT_PTR_RE2_PN = 0xAA2964;
         public int DEFAULT_PTR_RE3 = 0x0A62290;
 
         public int SelectedGame;
@@ -353,10 +354,12 @@ namespace REviewer.Modules.RE.Enemies
                         else
                         {
                             var hp = Enemy.CurrentHealth;
-                            if (hp > 60000 || hp < 2000 || hp > 20000 && hp < 21000)
-                                EnemyMaxHP = Enemy.CurrentHealth;
+                            EnemyMaxHP = Enemy.CurrentHealth;
+                            Console.WriteLine($"Updating to {EnemyMaxHP}");
                         }
                     }
+
+
 
                     if (Enemy.CurrentHealth > 64000 && EnemyMaxHP < 2000)
                     {
@@ -422,7 +425,7 @@ namespace REviewer.Modules.RE.Enemies
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public EnnemyTracking(int v, StandardProperty property, int selectedGame, int enemyPointer)
+        public EnemyTracking(int v, StandardProperty property, int selectedGame, int enemyPointer)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
@@ -530,7 +533,7 @@ namespace REviewer.Modules.RE.Enemies
             int positionHp = SelectedGame == 1 ? HP_OFFSET_RE2 : HP_OFFSET_RE3;
             int positionId = SelectedGame == 1 ? ID_OFFSET_RE2 : ID_OFFSET_RE3;
 
-            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE3)
+            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE2_PN || _enemyState.Value == DEFAULT_PTR_RE3)
             {
                 PurgeEnemy();
             }

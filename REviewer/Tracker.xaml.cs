@@ -26,8 +26,8 @@ namespace REviewer
             }
         }
         public double? WindowScale { get; set; }
-        public ObservableCollection<EnnemyTracking> Tracking { get; set; }
-        public Tracker(ObservableCollection<EnnemyTracking> trk, RootObject obj)
+        public ObservableCollection<EnemyTracking> Tracking { get; set; }
+        public Tracker(ObservableCollection<EnemyTracking> trk, RootObject obj)
         {
             _game = obj ?? throw new ArgumentNullException(nameof(obj));
             Tracking = trk ?? throw new ArgumentNullException(nameof(trk));

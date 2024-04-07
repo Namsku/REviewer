@@ -73,6 +73,8 @@
                                 <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22" SelectionChanged="ComboBoxGameSelection_SelectionChanged">
                                     <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
                                     <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
+                                    <ComboBoxItem Content="Resident Evil 2 - Claire - Platinium (China)"/>
+                                    <ComboBoxItem Content="Resident Evil 2 - Leon - Platinium (China)"/>
                                     <ComboBoxItem Content="Resident Evil 3 - Rebirth"/>
                                     <ComboBoxItem Content="Resident Evil CVX - PS2 - US"/>
                                 </ComboBox>
@@ -96,7 +98,7 @@
                                         <Label Content="Process" HorizontalAlignment="Left" Margin="10,-15,0,0" Height="25" Grid.Column="0"/>
                                         <TextBlock Name="ProcessTextBlock" Text="Process Value" HorizontalAlignment="Left" Margin="9,-5,0,0" Height="25" Grid.Column="1"/>
                                     </Grid>
-                                    <Grid>
+                                    <Grid Visibility="{Binding ClassicVisibility}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -107,7 +109,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Mode" Margin="10,0,10,0">
+                            <GroupBox Header="Mode" Margin="10,0,10,0" Visibility="{Binding ClassicVisibility}">
                                 <StackPanel>
                                     <RadioButton Name="NormalMode" Content="Normal" HorizontalAlignment="Left" Margin="10,5,0,0" Height="15" IsChecked="{Binding isNormalMode}"/>
                                     <RadioButton Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>

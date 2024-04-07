@@ -37,6 +37,12 @@ namespace REviewer.Modules.RE.Common
             { "toos(HARD)_ver2_0_0", 0x07},
             { "bunny", 0x07 },
             { "bunny2", 0x07 },
+            { "CLAIRE", 0x07 },
+            { "LEON", 0x07 },
+            { "bio2 chn claire", 0x07 },
+            { "bio2 chn leon", 0x07 },
+            { "Bio2 chn claire", 0x07 },
+            { "Bio2 chn leon", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
             { "CVX PS2 US", 0x09 },
@@ -105,7 +111,7 @@ namespace REviewer.Modules.RE.Common
                 SELECTED_GAME = 100;
                 PartnerVisibility = Visibility.Collapsed;
             }
-            else if (processName == "bio2 1.10")
+            else if (processName == "bio2 1.10" || processName == "bio2 chn leon" || processName == "bio2 chn claire" || processName == "claire" || processName == "leon")
             {
                 SELECTED_GAME = 200;
                 DebugVisibility = Visibility.Collapsed;
@@ -178,7 +184,10 @@ namespace REviewer.Modules.RE.Common
             InitStats();
 
             // File Watcher
-            InitFileWatcher();
+            if (processName != "bio2 chn claire" && processName != "bio2 chn leon")
+            {
+                InitFileWatcher();
+            }
 
             // Init Save Database
             InitSaveDatabase();

@@ -119,7 +119,7 @@ namespace REviewer.Modules.RE.Common
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (SELECTED_GAME == 400)
+                if (SELECTED_GAME == 400 || SELECTED_GAME == 200)
                 {
                     _inventoryCapacitySize = 11;
                 } 
@@ -183,7 +183,7 @@ namespace REviewer.Modules.RE.Common
         {
             var items = IDatabase.GetItems();
 
-            // Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
+            Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
 
             if (index <= InventoryCapacitySize)
             {

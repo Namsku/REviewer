@@ -73,7 +73,7 @@ namespace REviewer.Modules.RE.Common
         {
             var items = IDatabase.GetItems();
             // Update the ImageItem at the given index in the InventoryImages list
-            ItemboxImages[index].Source = items[(byte)ItemBox[index].Item.Value].Img;
+            ItemboxImages[index].Source = IDatabase.GetPropertyImgById((byte)ItemBox[index].Item.Value);
             ItemboxImages[index].Text = ItemBox[index].Quantity.Value.ToString();
             ItemboxImages[index].Visibility = (byte)ItemBox[index].Item.Value != 0 ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged(nameof(ItemboxImages));
