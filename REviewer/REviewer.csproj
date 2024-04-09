@@ -15,8 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dolphin.Memory.Access" Version="1.0.3" />
+    <PackageReference Include="GlobalHotKey" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.2.8" />
+    <PackageReference Include="Reloaded.Memory" Version="9.4.1" />
+    <PackageReference Include="Reloaded.Memory.Sigscan" Version="3.1.8" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 

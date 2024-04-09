@@ -458,7 +458,6 @@ namespace REviewer.Modules.Utils
             return new Dictionary<string, bool>
             {
                 { "isBiorandMode", reJson["isBiorandMode"] == "true" },
-                { "isNormalMode", reJson["isNormalMode"] == "true"},
                 { "isHealthBarChecked", reJson["isHealthBarChecked"] == "true" },
                 { "isItemBoxChecked", reJson["isItemBoxChecked"] == "true" },
                 { "isChrisInventoryChecked", reJson["isChrisInventoryChecked"] == "true" },
@@ -466,7 +465,10 @@ namespace REviewer.Modules.Utils
                 { "isMinimalistChecked", reJson["isMinimalistChecked"] == "true" },
                 { "isNoSegmentsTimerChecked", reJson["isNoSegmentsTimerChecked"] == "true" },
                 { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" },
-                { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" }
+                { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" },
+                { "OneHPChallenge", reJson["OneHPChallenge"] == "true" },
+                { "NoDamageChallenge", reJson["NoDamageChallenge"] == "true" },
+                { "NoItemBoxChallenge", reJson["NoItemBoxChallenge"] == "true"}
             };
         }
         public static void UpdateConfigFile(string key, string value)

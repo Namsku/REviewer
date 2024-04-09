@@ -8,7 +8,8 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         SizeToContent="Height"
-        Background="#FF282B32">
+        Background="#FF282B32"
+        Closing="Window_Closing">
 
     <Window.Resources>
         <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>

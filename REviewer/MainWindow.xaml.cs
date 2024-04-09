@@ -4,18 +4,24 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Net.Http.Headers;
+using System.Net.Http;
+
 using Newtonsoft.Json;
+
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Timer = System.Threading.Timer;
-using System.Windows.Documents;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using REviewer.Modules.RE.Enemies;
-using System;
+
+using Microsoft.WindowsAPICodePack.Dialogs;
+
+using Reloaded.Memory.Sigscan;
+using Reloaded.Memory.Sigscan.Definitions.Structs;
+
+using Timer = System.Threading.Timer;
 
 namespace REviewer
 {
@@ -44,12 +50,16 @@ namespace REviewer
         public const int BIOHAZARD_3_RB = 4; // Rebirth
         public const int BIOHAZARD_CV_X = 5; // CVX 
 
+        public const string RPCS3 = "rpcs3";
         public const string PCSX2 = "pcsx2";
         public const string PCSX2QT = "pcsx2-qt";
         public const string PCSX264QT = "pcsx2-qtx64";
         public const string PCSX264QTAV = "pcsx2-qtx64-avx2";
         public const string PCSX264WX = "pcsx2x64";
         public const string PCSX264WXAV = "pcsx2x64-avx2";
+        public const string Dolphin = "dolphin";
+
+        private Dolphin.Memory.Access.Dolphin _dolphin;
 
         public IntPtr VirtualMemoryPointer { get; private set; }
         public IntPtr ProductPointer { get; private set; }
@@ -93,43 +103,43 @@ namespace REviewer
             switch (ComboBoxGameSelection.SelectedIndex)
             {
                 case BIOHAZARD_1_MK:
-                    _ui.isNormalMode = false;
                     _ui.isBiorandMode = true;
+                    _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Visible;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_SC:
-                    _ui.isNormalMode = false;
                     _ui.isBiorandMode = true;
+                    _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_PC:
-                    _ui.isNormalMode = true;
                     _ui.isBiorandMode = false;
+                    _ui.ChallengeVisibility = Visibility.Collapsed;
                     _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_PL:
-                    _ui.isNormalMode = true;
                     _ui.isBiorandMode = false;
+                    _ui.ChallengeVisibility = Visibility.Collapsed;
                     _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_RB:
-                    _ui.isNormalMode = false;
                     _ui.isBiorandMode = true;
+                    _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_CV_X:
-                    _ui.isNormalMode = false;
                     _ui.isBiorandMode = true;
+                    _ui.ChallengeVisibility = Visibility.Collapsed;
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
@@ -196,7 +206,6 @@ namespace REviewer
         {
             var config = Library.GetOptions();
             _ui.isBiorandMode = config["isBiorandMode"];
-            _ui.isNormalMode = config["isNormalMode"];
             _ui.isHealthBarChecked = config["isHealthBarChecked"];
             _ui.isItemBoxChecked = config["isItemBoxChecked"];
             _ui.isChrisInventoryChecked = config["isChrisInventoryChecked"];
@@ -205,6 +214,9 @@ namespace REviewer
             _ui.isNoSegmentsTimerChecked = config["isNoSegmentsTimerChecked"];
             _ui.isNoStatsChecked = config["isNoStatsChecked"];
             _ui.isNoKeyItemsChecked = config["isNoKeyItemsChecked"];
+            _ui.OneHPChallenge = config["OneHPChallenge"];
+            _ui.NoDamageChallenge = config["NoDamageChallenge"];
+            _ui.NoItemBoxChallenge = config["NoItemBoxChallenge"];
         }
 
         private void InitializeProcessWatcher()
@@ -295,7 +307,17 @@ namespace REviewer
                         if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
                         {
                             var tmp_process = Process.GetProcessesByName(process_list[i])[0];
-                            if (tmp_process.ProcessName.ToLower().StartsWith(PCSX2))
+                            if (tmp_process.ProcessName.ToLower() == Dolphin)
+                            {
+                                IntPtr pointer = IntPtr.Zero;
+
+                                _dolphin = _dolphin ?? new Dolphin.Memory.Access.Dolphin(tmp_process);
+                                _dolphin.TryGetBaseAddress(out pointer);
+
+                                VirtualMemoryPointer = pointer;
+                                ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x0);
+                            }
+                            else if (tmp_process.ProcessName.ToLower().StartsWith(PCSX2))
                             {
                                 if (tmp_process.ProcessName.ToLower() == PCSX2) // PCSX2 1.6 and earlier
                                 {
@@ -305,19 +327,27 @@ namespace REviewer
                                 else // PCSX2 1.7+
                                 {
                                     // https://forums.pcsx2.net/Thread-PCSX2-1-7-Cheat-Engine-Script-Compatibility
-                                    IntPtr process = NativeWrappers.LoadLibrary(_process.MainModule.FileName);
+                                    IntPtr process = NativeWrappers.LoadLibrary(tmp_process.MainModule.FileName);
                                     IntPtr address = NativeWrappers.GetProcAddress(process, "EEmem");
 
-                                    VirtualMemoryPointer = (IntPtr)_process.ReadValue<long>(address);
+                                    VirtualMemoryPointer = (IntPtr)tmp_process.ReadValue<long>(address);
 
-                                    if (_process.ProcessName.ToLower() == PCSX264WX ||
-                                        _process.ProcessName.ToLower() == PCSX264WXAV)
+                                    if (tmp_process.ProcessName.ToLower() == PCSX264WX ||
+                                        tmp_process.ProcessName.ToLower() == PCSX264WXAV)
                                         ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x000155D0);
                                     else
                                         ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00012610);
 
                                     NativeWrappers.FreeLibrary(process);
                                 }
+                            }
+                            else // RPCS3
+                            {
+                                Scanner scanner = new Scanner(tmp_process, tmp_process.MainModule);
+                                PatternScanResult result = scanner.FindPattern("50 53 33 5F 47 41 4D 45 00 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 30 30");
+                
+                                IntPtr pointer = IntPtr.Add(tmp_process.MainModule.BaseAddress, result.Offset);
+                                ProductPointer = result.Offset != 0 ? IntPtr.Add(pointer, -0xE0) : IntPtr.Zero;
                             }
 
                             // The process is running
@@ -671,7 +701,7 @@ namespace REviewer
             var srtConfig = new Dictionary<string, bool?>
             {
                 ["HealthBar"] = HealthBar.IsChecked,
-                ["Standard"] = !NormalMode.IsChecked,
+                ["Standard"] = BiorandMode.IsChecked,
                 ["ItemBox"] = ShowItemBox.IsChecked,
                 ["ChrisInventory"] = ChrisInventory.IsChecked,
                 ["Sherry"] = Sherry.IsChecked,
@@ -679,6 +709,9 @@ namespace REviewer
                 ["NoStats"] = NoStats.IsChecked,
                 ["NoKeyItems"] = NoKeyItems.IsChecked,
                 ["Minimalist"] = Minimalist.IsChecked,
+                ["OneHP"] = OneHP.IsChecked,
+                ["NoDamage"] = NoDamage.IsChecked,
+                ["NoItemBox"] = NoItemBox.IsChecked
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
@@ -724,6 +757,7 @@ namespace REviewer
 
             var offset = Library.HexToInt(bio.Offsets["EnemyInfos"]);
             var enemyPointer = 0;
+            var enemyArraySize = selectedGame == 0 ? 16 : 32;
 
             bio.Offsets.TryGetValue("EnemyPointer", out var enemyPointerOffset);
             if (enemyPointerOffset != null && enemyPointerOffset != "")
@@ -735,7 +769,7 @@ namespace REviewer
 
             _tracking ??= new ObservableCollection<EnemyTracking>();
 
-            for (var i = 0; i < 32; i++)
+            for (var i = 0; i < enemyArraySize; i++)
             {
                 _tracking.Add(new EnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
             }

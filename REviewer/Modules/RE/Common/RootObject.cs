@@ -4,10 +4,12 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
+using GlobalHotKey;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -66,8 +68,13 @@ namespace REviewer.Modules.RE.Common
         public string? LastRoomName;
         public FileSystemWatcher? Watcher;
         public List<JObject>? SaveDatabase;
-        public Dictionary<string, List<string>>? KeyRooms { get; set; }
+        public MonitorVariables? Monitoring;
 
+        public bool OneHP = false;
+        public bool NoDamage = false;
+        public bool NoItemBox = false;
+
+        public Dictionary<string, List<string>>? KeyRooms { get; set; }
         public Visibility? HealthBarVisibility { get; set; }
         public Visibility? BiorandVisibility { get; set; }
         public Visibility? ItemBoxVisibility { get; set; }
@@ -126,7 +133,7 @@ namespace REviewer.Modules.RE.Common
             {
                 SELECTED_GAME = 400;
                 PartnerVisibility = Visibility.Collapsed;
-                LastItemSeenVisibility = Visibility.Collapsed;
+                // LastItemSeenVisibility = Visibility.Collapsed;
             }
 
             InitMaxInventoryCapacity(bio.Player.Character.Database[0]);
@@ -136,6 +143,7 @@ namespace REviewer.Modules.RE.Common
             GameState = GetVariableData("GameState", bio.Game.State);
             Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
             GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
+            GameRetry = GetVariableData("GameRetry", bio.Game.Retry);
             GameFrame = GetVariableData("GameFrame", bio.Game.Frame);
             GameSave = GetVariableData("GameSave", bio.Game.Save);
             MainMenu = GetVariableData("MainMenu", bio.Game.MainMenu);
@@ -147,6 +155,7 @@ namespace REviewer.Modules.RE.Common
             Stage = GetVariableData("Stage", bio.Player.Stage);
             Room = GetVariableData("Room", bio.Player.Room);
             Cutscene = GetVariableData("Cutscene", bio.Player.Cutscene);
+            LastCutscene = GetVariableData("LastCutscene", bio.Player.LastCutscene);
             LastRoom = GetVariableData("LastRoom", bio.Player.LastRoom);
             Unk002 = GetVariableData("GameUnk001", bio.Player.Unk001);
             Event = GetVariableData("Event", bio.Player.Event);
@@ -209,6 +218,10 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        public void SetMonitoring(MonitorVariables monitor)
+        {
+            Monitoring = monitor;
+        }
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -216,10 +229,6 @@ namespace REviewer.Modules.RE.Common
 
         public void InitUIConfig(Dictionary<string, bool?> config)
         {
-            HealthBarVisibility = GetVisibility(config, "HealthBar");
-            BiorandVisibility = GetVisibility(config, "Standard");
-            ItemBoxVisibility = GetVisibility(config, "ItemBox");
-
             if (config.TryGetValue("ChrisInventory", out bool? chrisInventory))
             {
                 ChrisInventoryHotfix = chrisInventory == true;
@@ -245,7 +254,15 @@ namespace REviewer.Modules.RE.Common
                 }
             }
 
+            OneHP = config.TryGetValue("OneHP", out bool? oneHP) && oneHP == true;
+            NoDamage = config.TryGetValue("NoDamage", out bool? noDamage) && noDamage == true;
+            NoItemBox = config.TryGetValue("NoItemBox", out bool? noItemBox) && noItemBox == true;
+
+            HealthBarVisibility = GetVisibility(config, "HealthBar");
+            BiorandVisibility = GetVisibility(config, "Standard");
+            ItemBoxVisibility = GetVisibility(config, "ItemBox");
             SherryVisibility = GetVisibility(config, "Sherry");
+
             StatsVisibility = GetVisibility(config, "NoStats") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             SegsVisibility = GetVisibility(config, "NoSegTimers") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             KeyItemsVisibility = GetVisibility(config, "NoKeyItems") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
@@ -263,7 +280,14 @@ namespace REviewer.Modules.RE.Common
                 KeyItemsVisibility = Visibility.Collapsed;
             }
         }
-
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F9)
+            {
+                // Do something when F9 is pressed
+                MessageBox.Show("F9 key pressed");
+            }
+        }
         private Visibility GetVisibility(Dictionary<string, bool?> config, string key)
         {
             if (config.TryGetValue(key, out bool? value))

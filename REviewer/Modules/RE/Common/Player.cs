@@ -266,6 +266,20 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private VariableData? _lastCutscene;
+        public VariableData? LastCutscene
+        {
+            get { return _lastCutscene; }
+            set
+            {
+                if (_lastCutscene != value)
+                {
+                    _lastCutscene = value;
+                    OnPropertyChanged(nameof(LastCutscene));
+                }
+            }
+        }
+
         private VariableData? _lastRoom;
         public VariableData? LastRoom
         {
@@ -613,11 +627,16 @@ namespace REviewer.Modules.RE.Common
                     {
                         if (Health.Value != 88 && Character.Value != 3)
                         {
-                            if (SELECTED_GAME == 2)
+                            if (NoDamage && (
+                                !(Health.Value == 140 && Character.Value == 0) ||
+                                !(Health.Value == 96 && Character.Value != 1)
+                                )
+                            )
                             {
-                                // Changing Character Hotfix
-                                if ((GameState.Value & 0xFF000000) == 0x42000000) return;
+                                // Do something
+                                Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
                             }
+
                             Hits += 1;
                         }
                     }
@@ -647,7 +666,22 @@ namespace REviewer.Modules.RE.Common
                         Hits += 1;
                     }
                 }
+                else if (SELECTED_GAME == 400)
+                {
+                    if (Health.Value < OldHealth)
+                    {
+                        Hits += 1;
+                    }
+                    if (Health.Value < 0 && OldHealth >= 0)
+                    {
+                        Deaths += 1;
+                    }
+                }
 
+                if (OneHP && Health.Value > 1)
+                {
+                    Monitoring.WriteVariableData(Health, 1);
+                }
 
                 OldHealth = Health.Value;
                 UpdateHealthColor();

@@ -49,6 +49,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? Stage { get; set; }
         public StandardProperty? Room { get; set; }
         public StandardProperty? LastRoom { get; set; }
+        public StandardProperty? LastCutscene { get; set; }
         public StandardProperty? Cutscene { get; set; }
         public StandardProperty? Unk001 { get; set; }
         public StandardProperty? Event { get; set; }
@@ -61,6 +62,7 @@ namespace REviewer.Modules.RE.Json
     {
         public StandardProperty? State { get; set; }
         public StandardProperty? Timer { get; set; }
+        public StandardProperty? Retry { get; set; }
         public StandardProperty? Save { get; set; }
         public StandardProperty? Frame { get; set; }
         public StandardProperty? Unk001 { get; set; }

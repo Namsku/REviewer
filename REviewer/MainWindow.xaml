@@ -111,8 +111,15 @@
 
                             <GroupBox Header="Mode" Margin="10,0,10,0" Visibility="{Binding ClassicVisibility}">
                                 <StackPanel>
-                                    <RadioButton Name="NormalMode" Content="Normal" HorizontalAlignment="Left" Margin="10,5,0,0" Height="15" IsChecked="{Binding isNormalMode}"/>
-                                    <RadioButton Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>
+                                    <CheckBox Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Challenge" Margin="10,0,10,0" Visibility="{Binding ChallengeVisibility}">
+                                <StackPanel>
+                                    <CheckBox Name="OneHP" Content="1 HP" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding OneHPChallenge}"/>
+                                    <CheckBox Name="NoDamage" Content="No Damage" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding NoDamageChallenge}"/>
+                                    <CheckBox Name="NoItemBox" Content="No Itembox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding NoItemBoxChallenge}"/>
                                 </StackPanel>
                             </GroupBox>
 

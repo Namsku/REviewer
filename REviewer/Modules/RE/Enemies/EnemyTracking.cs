@@ -256,7 +256,6 @@ namespace REviewer.Modules.RE.Enemies
                 {
                     if (EnemySelected.Value == _enemyState.Value)
                     {
-                        //Console.WriteLine("New One");
                         Enemy.BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
                     }
                     else
@@ -356,7 +355,6 @@ namespace REviewer.Modules.RE.Enemies
                         {
                             var hp = Enemy.CurrentHealth;
                             EnemyMaxHP = Enemy.CurrentHealth;
-                            Console.WriteLine($"Updating to {EnemyMaxHP}");
                         }
                     }
 
@@ -437,9 +435,17 @@ namespace REviewer.Modules.RE.Enemies
                 EnemyID = new VariableData(v - 132, 1);
             }
 
-            if (enemyPointer != 0)
+            if (SelectedGame == 1 || SelectedGame == 2)
             {
                 EnemySelected = new VariableData(enemyPointer, 4);
+            } 
+            else
+            {
+                int entryOffset = 0x0580;
+                int slotOffset = 0x039C;
+                int damageOffset = 0x0574;
+                int healthOffset = 0x041C;
+                int modelOffset = 0x008B;
             }
         }
 

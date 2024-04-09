@@ -1,9 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using System.Windows.Input;
+
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
+using GlobalHotKey;
 
 namespace REviewer
 {
@@ -14,7 +17,8 @@ namespace REviewer
         private readonly ItemIDs _itemDatabase;
         private MonitorVariables _monitoring;
         private FontFamily? _pixelBoyFont;
-
+        private HotKeyManager _hotKeyManager;
+        private HotKey _f11;
         public SRT(RootObject gameData, MonitorVariables monitoring, Dictionary<string,bool?> config, string gameName)
         {
             InitializeComponent();
@@ -24,12 +28,13 @@ namespace REviewer
             _monitoring = monitoring;
             _itemDatabase = new ItemIDs(gameName);
 
-
             var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? new List<KeyItem>();
             _game.InitKeyItemsModel(keyItems);
+            _game.SetMonitoring(monitoring);
             _game.InitUIConfig(config);
 
             InitializeFont();
+            InitHotKey();
 
             DataContext = this._game;
             Logger.Instance.Info("Data context is set");
@@ -58,7 +63,26 @@ namespace REviewer
             Logger.Instance.Info($"Font initialized -> {Character.FontFamily}");
         }
 
+        private void InitHotKey()
+        {
+            _hotKeyManager = new HotKeyManager();
+            _hotKeyManager.KeyPressed += OnF11Pressed;
+            _f11 = _hotKeyManager.Register(Key.F11, ModifierKeys.None);
+        }
+
+        private void OnF11Pressed(object sender, GlobalHotKey.KeyPressedEventArgs e)
+        {
+            Console.WriteLine("F11 Pressed");
+            // Do something when F9 is pressed
+            ResetSRT();
+        }
+
         private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            ResetSRT();
+        }
+
+        private void ResetSRT()
         {
             var keyItems = _itemDatabase.GetKeyItems()?.Select(item => new KeyItem((Property)item, -1, "NEW ROOM TO SAVE HERE")).ToList() ?? new List<KeyItem>();
             _game.InitKeyItemsModel(keyItems);
@@ -70,5 +94,11 @@ namespace REviewer
             // Console.WriteLine("Erasing the mess");
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Console.WriteLine("Closing SRT");
+            _hotKeyManager.KeyPressed -= OnF11Pressed;
+            _hotKeyManager.Unregister(_f11);
+        }
     }
 }
