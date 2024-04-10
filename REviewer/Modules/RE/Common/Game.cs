@@ -67,7 +67,50 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+
+        private VariableData? _system;
+        public VariableData? GameSystem
+        {
+            get { return _system; }
+            set
+            {
+                if (_system != value)
+                {
+                    if (_system != null)
+                    {
+                        _system.PropertyChanged -= System_PropertyChanged;
+                    }
+
+                    _system = value;
+
+                    if (value != null)
+                    {
+                        _system.PropertyChanged += System_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(GameSystem));
+                }
+            }
+        }
+
+        private void System_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(VariableData.Value))
+            {
+                Console.WriteLine($"System changed -> {GameSystem.Value:X}");
+                bool itembox = (GameSystem?.Value & 0x00000F00) == 0x200;  
+
+                if (itembox && NoItemBox)
+                {
+                    Monitoring.WriteVariableData(GameSystem, 0);
+                    Monitoring.WriteVariableData(GameState, 0);
+                }
+            }
+        }
+
+                            
+
+    private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -75,22 +118,34 @@ namespace REviewer.Modules.RE.Common
 
                 int state = GameState.Value;
                 bool isDead = false;
+                bool isRetry = false;
 
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
                     PreviousState = state & 0x0F000000;
+                    var item_box = (GameState?.Value & 0x0000FF00) == 0x9000;
+
+                    if (item_box && NoItemBox)
+                    {
+                        Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
+                    }
                 }
-                else if (SELECTED_GAME == 1)
+                else if (SELECTED_GAME == 200)
                 {
                     isDead = Health.Value > 200 && state != 0x00000000;
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
+                    isRetry = GameState.Value == 0 && LastRoom.Value == 0xFF && LastCutscene.Value == 0xFF;
                     isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
                     isNewGame = (isGameDone == true && GameSave.Value == 0);
+                }
+                else if (SELECTED_GAME == 400)
+                {
+                    isDead = Health.Value < 0;
                 }
 
                 // Console.WriteLine($"{Library.ToHexString(state)} - {Library.ToHexString(state & 0x0F000000)} - {(state & 0x0F000000) == 0x1000000} - {Library.ToHexString(PreviousState)} - {PreviousState != 0x1000000}");
@@ -115,6 +170,11 @@ namespace REviewer.Modules.RE.Common
                     FinalInGameTime = 0;
                     isGameDone = false;
                     OnPropertyChanged(nameof(IGTHumanFormat));
+                }
+
+                if (isRetry)
+                {
+                    Resets += 1;
                 }
             }
         }
@@ -153,6 +213,36 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private VariableData? _retry;
+        public VariableData? GameRetry
+        {
+            get { return _retry; }
+            set
+            {
+                if (_retry != null)
+                {
+                    _retry.PropertyChanged -= Retry_PropertyChanged;
+                }
+
+                _retry = value;
+
+                if (_retry != null)
+                {
+                    _retry.PropertyChanged += Retry_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(GameRetry));
+            }
+        }
+
+        private void Retry_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                Resets = GameRetry.Value;
+            }
+        }
+
         private VariableData? _frame;
 
         public VariableData? GameFrame
@@ -183,12 +273,14 @@ namespace REviewer.Modules.RE.Common
             {
                 OnPropertyChanged(nameof(IGTHumanFormat));
 
+                double frames = SELECTED_GAME == 400 ? 60.0 : 30.0;
+
                 if(IGTSegments == null || GameTimer == null) return;
 
                 if (SegmentCount >= 0 && SegmentCount < 4)
                 {
                     var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
-                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / frames).ToString(@"hh\:mm\:ss\.ff");
                     OnPropertyChanged(nameof(IGTSHumanFormat));
                 }
             }
@@ -213,11 +305,11 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 1)
+                else if (SELECTED_GAME == 200)
                 {
                     if (isGameDone)
                     {
@@ -225,13 +317,13 @@ namespace REviewer.Modules.RE.Common
                     }
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 2)
+                else if (SELECTED_GAME == 300)
                 {
                     if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
                     {
                         if (timerRunning)
                         {
-                            Console.WriteLine("Timer stopped");
+                            // Console.WriteLine("Timer stopped");
                             timerRunning = false;
                             _srtTimer.Stop();
                             _saveState = 0;
@@ -247,13 +339,17 @@ namespace REviewer.Modules.RE.Common
                     {
                         if (!timerRunning)
                         {
-                            Console.WriteLine("Timer started");
+                            // Console.WriteLine("Timer started");
                             StartSRTTimer();
                         }
                         _saveState = (_gameSave.Value) / 60.0 * 1000;
 
                         return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
                     }
+                }
+                else if (SELECTED_GAME == 400)
+                {
+                    return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
                 }
 
                 return 0.ToString();
@@ -306,7 +402,14 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                OnPropertyChanged(nameof(IGTHumanFormat));
+                if (SELECTED_GAME == 400)
+                {
+                    Saves = GameSave.Value;
+                } 
+                else 
+                { 
+                    OnPropertyChanged(nameof(IGTHumanFormat));
+                }
             }
         }
 
@@ -342,7 +445,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (SELECTED_GAME == 0)
+                if (SELECTED_GAME == 100)
                 {
                     if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
                     {

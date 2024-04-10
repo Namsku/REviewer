@@ -37,6 +37,7 @@ namespace REviewer.Modules.RE.Json
     {
         public StandardProperty? Character { get; set; }
         public AdvancedProperty? Health { get; set; }
+        public StandardProperty? CharacterMaxHealth { get; set; }
         public StandardProperty? CharacterHealthState { get; set; }
         public StandardProperty? LastItemFound { get; set; }
         public StandardProperty? CarlosLastItemFound { get; set; }
@@ -48,17 +49,21 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? Stage { get; set; }
         public StandardProperty? Room { get; set; }
         public StandardProperty? LastRoom { get; set; }
+        public StandardProperty? LastCutscene { get; set; }
         public StandardProperty? Cutscene { get; set; }
         public StandardProperty? Unk001 { get; set; }
         public StandardProperty? Event { get; set; }
         public StandardProperty? PartnerPointer { get; set; }
         public StandardProperty? HitFlag { get; set; }
+        public StandardProperty? EnemyCount { get; set; }
     }
 
     public class JGame
     {
         public StandardProperty? State { get; set; }
+        public StandardProperty? System { get; set; }
         public StandardProperty? Timer { get; set; }
+        public StandardProperty? Retry { get; set; }
         public StandardProperty? Save { get; set; }
         public StandardProperty? Frame { get; set; }
         public StandardProperty? Unk001 { get; set; }
@@ -80,9 +85,10 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? State { get; set; }
     }
 
-    public class JEnnemy
+    public class JEnemy
     {
-        public StandardProperty? EnnemyInfos { get; set; }
+        public StandardProperty? EnemyInfos { get; set; }
+        public StandardProperty? EnemyPointer { get; set; }
     }
 
     public class Bio
@@ -97,6 +103,6 @@ namespace REviewer.Modules.RE.Json
         public JGame? Game { get; set; }
         public JPosition? Position { get; set; }
         public JRebirth? Rebirth { get; set; }
-        public JEnnemy? Ennemy { get; set; }
+        public JEnemy? Enemy { get; set; }
     }
 }

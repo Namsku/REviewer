@@ -35,6 +35,35 @@ namespace REviewer
             }
         }
 
+        private Visibility _classicVisibility;
+
+        public Visibility ClassicVisibility
+        {
+            get { return _classicVisibility; }
+            set
+            {
+                if (_classicVisibility != value)
+                {
+                    _classicVisibility = value;
+                    OnPropertyChanged(nameof(ClassicVisibility));
+                }
+            }
+        }
+
+        private Visibility _challengeVisibility;
+        public Visibility ChallengeVisibility
+        {
+            get { return _challengeVisibility; }
+            set
+            {
+                if (_challengeVisibility != value)
+                {
+                    _challengeVisibility = value;
+                    OnPropertyChanged(nameof(ChallengeVisibility));
+                }
+            }
+        }
+
         private Visibility _sherry;
         public Visibility Sherry
         {
@@ -59,19 +88,6 @@ namespace REviewer
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private bool _isNormalMode;
-        public bool isNormalMode { 
-            get { return _isNormalMode; }
-            set
-            {
-                if (_isNormalMode != value)
-                {
-                    _isNormalMode = value;
-                    Library.UpdateConfigFile("isNormalMode", _isNormalMode.ToString().ToLower());
-                }
-            }
         }
 
         private bool _isBiorandMode;
@@ -196,6 +212,48 @@ namespace REviewer
                 {
                     _isNoKeyItemsChecked = value;
                     Library.UpdateConfigFile("isNoKeyItemsChecked", _isNoKeyItemsChecked.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _oneHPChallenge;
+        public bool OneHPChallenge
+        {
+            get { return _oneHPChallenge; }
+            set
+            {
+                if (_oneHPChallenge != value)
+                {
+                    _oneHPChallenge = value;
+                    Library.UpdateConfigFile("OneHPChallenge", _oneHPChallenge.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _noDamageChallenge;
+        public bool NoDamageChallenge
+        {
+            get { return _noDamageChallenge; }
+            set
+            {
+                if (_noDamageChallenge != value)
+                {
+                    _noDamageChallenge = value;
+                    Library.UpdateConfigFile("NoDamageChallenge", _noDamageChallenge.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _noItemBoxChallenge;
+        public bool NoItemBoxChallenge
+        {
+            get { return _noItemBoxChallenge; }
+            set
+            {
+                if (_noItemBoxChallenge != value)
+                {
+                    _noItemBoxChallenge = value;
+                    Library.UpdateConfigFile("NoItemBoxChallenge", _noItemBoxChallenge.ToString().ToLower());
                 }
             }
         }

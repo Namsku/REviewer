@@ -8,7 +8,8 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         SizeToContent="Height"
-        Background="#FF282B32">
+        Background="#FF282B32"
+        Closing="Window_Closing">
 
     <Window.Resources>
         <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>
@@ -243,8 +244,16 @@
 
                         <TextBlock Grid.Row="0" Text="Select" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
                         <Image Name="SelectItem" Grid.Row="1" Source="{Binding InventorySlotSelectedImage}" Height="76" Width="88"/>
-                        <TextBlock Grid.Row="2" Text="L.Seen" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
-                        <Image Name="LastItemSeen" Grid.Row="3" Source="{Binding LastItemFoundImage}" Height="76" Width="88"/>
+
+                        <!-- Separate Grid row for LastItemSeen image and text -->
+                        <Grid Grid.Row="2" Visibility="{Binding LastItemSeenVisibility}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="L.Seen" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
+                            <Image Name="LastItemSeen" Grid.Row="1" Source="{Binding LastItemFoundImage}" Height="76" Width="88"/>
+                        </Grid>
                     </Grid>
                 </Grid>
             </StackPanel>

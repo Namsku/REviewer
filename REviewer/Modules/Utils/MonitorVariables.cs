@@ -1,4 +1,5 @@
 ﻿using REviewer.Modules.RE.Common;
+using REviewer.Modules.RE.Enemies;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -21,7 +22,7 @@ namespace REviewer.Modules.Utils
         private volatile int _running = 1;
         private System.Threading.Timer? _monitoringTimer;
         private RootObject? _currentRootObject;
-        private ObservableCollection<EnnemyTracking>? _enemyTracking;
+        private ObservableCollection<EnemyTracking>? _enemyTracking;
 
         private const int MonitoringInterval = 55;
         private const int ByteSize = 1;
@@ -29,7 +30,7 @@ namespace REviewer.Modules.Utils
 
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
-        public MonitorVariables(nint processHandle, string processName)
+        public MonitorVariables(nint processHandle, string processName, IntPtr virtualMemoryPointer , IntPtr productPointer)
         {
             _processHandle = processHandle;
             _processName = processName;
@@ -47,7 +48,7 @@ namespace REviewer.Modules.Utils
             StartMonitoring(rootObject);
         }
 
-        public void Start(ObservableCollection<EnnemyTracking> enemyTrackings)
+        public void Start(ObservableCollection<EnemyTracking> enemyTrackings)
         {
             if (enemyTrackings == null)
             {
@@ -118,6 +119,7 @@ namespace REviewer.Modules.Utils
                    && property.PropertyType != typeof(int)
                    && property.Name != "KeyItemImages"
                    && property.PropertyType != typeof(System.Windows.Media.ImageSource)
+                   && property.PropertyType != typeof(System.Windows.Media.SolidColorBrush)
                    && property.PropertyType != typeof(System.Windows.Media.Brush)
                    && property.PropertyType != typeof(System.Windows.Media.Brushes)
                    && property.PropertyType != typeof(List<string>);
@@ -143,7 +145,7 @@ namespace REviewer.Modules.Utils
 
             lock (_lockObject)
             {
-                if (obj is ObservableCollection<EnnemyTracking> enemyTrackings)
+                if (obj is ObservableCollection<EnemyTracking> enemyTrackings)
                 {
                     foreach (var item in enemyTrackings)
                     {

@@ -1,5 +1,4 @@
 {
-    "isNormalMode": false,
     "isBiorandMode": true,
     "isHealthBarChecked": false,
     "isItemBoxChecked": false,
@@ -8,5 +7,8 @@
     "isMinimalistChecked": false,
     "isNoSegmentsTimerChecked": false,
     "isNoStatsChecked": false,
-    "isNoKeyItemsChecked": false
+    "isNoKeyItemsChecked": false,
+    "OneHPChallenge": false,
+    "NoDamageChallenge": false,
+    "NoItemBoxChallenge": false
 }

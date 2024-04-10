@@ -2,13 +2,13 @@
 using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
-using REviewer.Modules.RE.Common;
+using System.Windows.Media;
 
-namespace REviewer.Modules.RE.Common
+namespace REviewer.Modules.RE.Enemies
 {
-    public class EnnemyTracking : INotifyPropertyChanged
+    public class EnemyTracking : INotifyPropertyChanged
     {
-        Dictionary<byte, string> RE1_Bestiary = new Dictionary<byte, string>
+        public Dictionary<byte, string> RE1_Bestiary = new Dictionary<byte, string>
         {
             { 0, "Zombie" },
             { 1, "Zombie N" },
@@ -52,7 +52,6 @@ namespace REviewer.Modules.RE.Common
             { 49, "Chris" },
             { 50, "Jill" }
         };
-
         public Dictionary<byte, string> RE2_Bestiary = new Dictionary<byte, string>
         {
             {16, "Zombie"},
@@ -112,7 +111,6 @@ namespace REviewer.Modules.RE.Common
             {89, "Claire"},
             {90, "Leon"}
         };
-
         public Dictionary<byte, string> RE3_Bestiary = new Dictionary<byte, string>
         {
             { 16, "Zombie" },
@@ -172,6 +170,42 @@ namespace REviewer.Modules.RE.Common
             { 96, "Nichol." },
             { 103, "Irons" }
         };
+        public Dictionary<byte, string> RECVX_Bestiary = new Dictionary<byte, string>
+        {
+            { 254, "Unknown" },
+            { 255, "None" },
+            { 1, "Zombie" },
+            { 2, "GlupWorm" },
+            { 3, "Spider" },
+            { 4, "Doggo" },
+            { 5, "Hunter" },
+            { 6, "Moth" },
+            { 7, "Bat" },
+            { 9, "B.snatch" },
+            { 12, "Alexia" },
+            { 13, "Alexia B" },
+            { 14, "Alexia C" },
+            { 15, "Nosferatu" },
+            { 17, "Mr.Steve" },
+            { 19, "Tyrant" },
+            { 21, "Albinoid C." },
+            { 22, "Albinoid A." },
+            { 23, "Big Spider" },
+            { 26, "Zombie" },
+            { 29, "Tenticle" },
+            { 30, "Y.Alexia" }
+        };
+
+        public int HP_OFFSET_RE2 = 0x156;
+        public int HP_OFFSET_RE3 = 0xCC;
+
+        public int ID_OFFSET_RE2 = 0x8;
+        public int ID_OFFSET_RE3 = 0x4A;
+
+        public int DEFAULT_PTR_RE2 = 0x098E544;
+        public int DEFAULT_PTR_RE2_PN = 0xAA2964;
+        public int DEFAULT_PTR_RE2_PL = 0xAA28E4;
+        public int DEFAULT_PTR_RE3 = 0x0A62290;
 
         public int SelectedGame;
 
@@ -188,10 +222,11 @@ namespace REviewer.Modules.RE.Common
                 }
             }
         }
+
         private VariableData? _enemyState;
 
         private VariableData? _enemySelected;
-        private VariableData? EnemySelected
+        public VariableData? EnemySelected
         {
             get { return _enemySelected; }
             set
@@ -201,7 +236,8 @@ namespace REviewer.Modules.RE.Common
                     _enemySelected.PropertyChanged -= EnemySelected_PropertyChanged;
                 }
 
-                _enemyHP = value;
+                //Console.WriteLine(value.Value);
+                _enemySelected = value;
 
                 if (_enemySelected != null)
                 {
@@ -216,7 +252,19 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (EnemySelected.Value == _enemyState.Value)
+                    {
+                        Enemy.BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
+                    }
+                    else
+                    {
+                        // Transparent
+                        Enemy.BackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    }
+                    OnPropertyChanged(nameof(Enemy));
+                });
             }
         }
 
@@ -299,21 +347,27 @@ namespace REviewer.Modules.RE.Common
                     {
                         Enemy.MaxHealth = Enemy.CurrentHealth;
 
-                        if(SelectedGame == 2)
+                        if (SelectedGame == 2)
                         {
-                            EnemyMaxHP = ((EnemyHP.Value >> 16) & 0xFFFF);
+                            EnemyMaxHP = EnemyHP.Value >> 16 & 0xFFFF;
                         }
-                        else 
-                        { 
+                        else
+                        {
                             var hp = Enemy.CurrentHealth;
-                            if (hp > 60000 || hp < 2000 || ( hp > 20000 && hp < 21000))
-                                EnemyMaxHP = Enemy.CurrentHealth;
+                            EnemyMaxHP = Enemy.CurrentHealth;
                         }
+                    }
+
+
+
+                    if (Enemy.CurrentHealth > 64000 && EnemyMaxHP < 2000)
+                    {
+                        Enemy.Visibility = Visibility.Collapsed;
                     }
 
                     OnPropertyChanged(nameof(Enemy));
                 }
-                    
+
             }
         }
 
@@ -333,8 +387,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if(SelectedGame == 0)
-                {                    
+                if (SelectedGame == 0)
+                {
                     Enemy.Name = RE1_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
                     if (Enemy.Name == "Unknown")
                     {
@@ -368,24 +422,38 @@ namespace REviewer.Modules.RE.Common
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }  
+        }
 
-        public EnnemyTracking(int v, StandardProperty property, int selectedGame)
+        public EnemyTracking(int v, StandardProperty property, int selectedGame, int enemyPointer)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
             SelectedGame = selectedGame;
 
-            if (SelectedGame == 0) 
-            { 
+            if (SelectedGame == 0)
+            {
                 EnemyID = new VariableData(v - 132, 1);
+            }
+
+            if (SelectedGame == 1 || SelectedGame == 2)
+            {
+                EnemySelected = new VariableData(enemyPointer, 4);
+            } 
+            else
+            {
+                int entryOffset = 0x0580;
+                int slotOffset = 0x039C;
+                int damageOffset = 0x0574;
+                int healthOffset = 0x041C;
+                int modelOffset = 0x008B;
             }
         }
 
         public VariableData? EnemyState
         {
             get { return _enemyState; }
-            set {
+            set
+            {
                 if (_enemyState != value)
                 {
                     if (_enemyState != null)
@@ -415,8 +483,8 @@ namespace REviewer.Modules.RE.Common
             }
 
             Enemy.CurrentHealth = EnemyState.Value >> 24 & 0xFF;
-            Enemy.Flag = (EnemyState.Value >> 16) & 0xFF;
-            Enemy.Pose = (EnemyState.Value >> 8) & 0xFF;
+            Enemy.Flag = EnemyState.Value >> 16 & 0xFF;
+            Enemy.Pose = EnemyState.Value >> 8 & 0xFF;
             Enemy.Id = EnemyState.Value & 0xFF;
 
             if (Enemy.CurrentHealth == 255 && Enemy.Id < 30)
@@ -447,43 +515,55 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SelectedGame == 0)
                 {
-                    Console.WriteLine("FOUND RE1");
                     UpdateEnemy();
+                }
+                else if (SelectedGame == 1 || SelectedGame == 2)
+                {
+                    UpdateEnemyRE2andRE3();
                 }
                 else
                 {
-                    Console.WriteLine("FOUND RE2 and 3");
-                    UpdateEnemyRE2andRE3();
+                    UpdateEnemyCVX();
                 }
             }
+        }
+
+        private void UpdateEnemyCVX()
+        {
+            throw new NotImplementedException();
         }
 
         private void UpdateEnemyRE2andRE3()
         {
             if (_enemyState == null) return;
-            int position_hp = SelectedGame == 1 ? 0x156 : 0xCC;
-            int position_id = SelectedGame == 1 ? 0x8 : 0x4a;
 
-            // Console.WriteLine($"{position_hp} - {position_id} - {Library.ToHexString(_enemyState.Value)}");
+            int positionHp = SelectedGame == 1 ? HP_OFFSET_RE2 : HP_OFFSET_RE3;
+            int positionId = SelectedGame == 1 ? ID_OFFSET_RE2 : ID_OFFSET_RE3;
 
-            if (_enemyState.Value == 0x98E544 || _enemyState.Value == 0x0A62290 )
+            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE2_PN || _enemyState.Value == DEFAULT_PTR_RE2_PL || _enemyState.Value == DEFAULT_PTR_RE3)
             {
-                // Console.WriteLine($"Purging");
-                EnemyHP = null;
-                EnemyID = null;
-                EnemyMaxHP = 0;
-
-                Enemy.Visibility = Visibility.Collapsed;
-            } 
+                PurgeEnemy();
+            }
             else
             {
-                // Console.WriteLine($"New Enemy Detected");
-                EnemyHP = new VariableData(_enemyState.Value + position_hp, 4);
-                EnemyID = new VariableData(_enemyState.Value + position_id, 1);
-                EnemyMaxHP = 0;
-
-                Enemy.Visibility = Visibility.Visible;
+                SetupNewEnemy(positionHp, positionId);
             }
+        }
+
+        private void PurgeEnemy()
+        {
+            EnemyHP = null;
+            EnemyID = null;
+            EnemyMaxHP = 0;
+            Enemy.Visibility = Visibility.Collapsed;
+        }
+
+        private void SetupNewEnemy(int positionHp, int positionId)
+        {
+            EnemyHP = new VariableData(_enemyState.Value + positionHp, 4);
+            EnemyID = new VariableData(_enemyState.Value + positionId, 1);
+            EnemyMaxHP = 0;
+            Enemy.Visibility = Visibility.Visible;
         }
     }
 }

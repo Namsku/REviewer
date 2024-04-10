@@ -1,8 +1,9 @@
 ﻿using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 
-namespace REviewer.Modules.RE.Common
+namespace REviewer.Modules.RE.Enemies
 {
     public class Enemy : INotifyPropertyChanged
     {
@@ -15,6 +16,20 @@ namespace REviewer.Modules.RE.Common
 
         public int OldState;
         public int CurrentState;
+
+        private SolidColorBrush _backgroundColor;
+        public SolidColorBrush BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set
+            {
+                if (_backgroundColor != value)
+                {
+                    _backgroundColor = value;
+                    OnPropertyChanged(nameof(BackgroundColor));
+                }
+            }
+        }
 
         private Visibility _visibility = Visibility.Collapsed;
 
