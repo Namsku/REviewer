@@ -3991,39 +3991,40 @@
       "20C"
     ],
     "Offsets": {
-      "InventoryStart": "0x0A67584",
-      "InventoryEnd": "0x0A675AB",
-      "ItemBoxStart": "0x0A675AC",
-      "ItemBoxEnd": "0xA676AB",
-      "InventorySlotSelected": "0x0A676AC",
+        "InventoryStart": "0x0A67584",
+        "InventoryEnd": "0x0A675AB",
+        "ItemBoxStart": "0x0A675AC",
+        "ItemBoxEnd": "0xA676AB",
+        "InventorySlotSelected": "0x0A676AC",
 
-      "CarlosInventoryStart": "0x0A676C4",
-      "CarlosInventoryEnd": "0x0A676E3",
-      "CarlosItemBoxStart": "0x0A676E4",
-      "CarlosItemBoxEnd": "0x0A677E4",
-      "CarlosInventorySlotSelected": "0x0A677EC",
-      "CarlosLastItemFound": "0x0A5C86B",
+        "CarlosInventoryStart": "0x0A676C4",
+        "CarlosInventoryEnd": "0x0A676E3",
+        "CarlosItemBoxStart": "0x0A676E4",
+        "CarlosItemBoxEnd": "0x0A677E4",
+        "CarlosInventorySlotSelected": "0x0A677EC",
+        "CarlosLastItemFound": "0x0A5C86B",
 
-      "Capacity": "0x0A676AE",
-      "Character": "0x0A673D6",
-      "Stage": "0x0A673C6",
-      "Room": "0x0A673C8",
-      "Cutscene": "0x0A673CA",
-      "LastRoom": "0x0A673CC",
-      "LastCutscene": "0x0A673CE",
-      "LastItemFound": "0x0A5C86B",
-      "CharacterHealthState": "0x0A620E7",
-      "GameState": "0xA61CA0",
-      "GameTimer": "0xA61D64",
-      "GameFrame": "0xA449D4",
-      "GameSave": "0xA67378",
-      "PositionX": "0xA62048",
-      "PositionY": "0xA6204C",
-      "PositionZ": "0xA62050",
-      "CharacterHealth": "0x0A620E0",
-      "EnemyInfos": "0x0A621EC",
-      "PartnerPointer": "0x0A621E8",
-      "EnemyPointer": "0xA62124",
+        "Capacity": "0x0A676AE",
+        "Character": "0x0A673D6",
+        "Stage": "0x0A673C6",
+        "Room": "0x0A673C8",
+        "Cutscene": "0x0A673CA",
+        "LastRoom": "0x0A673CC",
+        "LastCutscene": "0x0A673CE",
+        "LastItemFound": "0x0A5C86B",
+        "CharacterHealthState": "0x0A620E7",
+        "GameState": "0xA61CA0",
+        "GameSystem": "0xA6737C",
+        "GameTimer": "0xA61D64",
+        "GameFrame": "0xA449D4",
+        "GameSave": "0xA67378",
+        "PositionX": "0xA62048",
+        "PositionY": "0xA6204C",
+        "PositionZ": "0xA62050",
+        "CharacterHealth": "0x0A620E0",
+        "EnemyInfos": "0x0A621EC",
+        "PartnerPointer": "0x0A621E8",
+        "EnemyPointer": "0xA62124"
     },
     "Player": {
         "Character": {
@@ -4130,9 +4131,12 @@
       "Timer": {
         "Size": "4"
       },
-      "Save": {
-        "Size": "4"
-      },
+        "Save": {
+            "Size": "4"
+        },
+      "System": {
+            "Size": "4"
+        },
       "Unk001": {
         "Size": "4"
       },

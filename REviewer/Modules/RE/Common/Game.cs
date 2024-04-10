@@ -67,7 +67,50 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+
+        private VariableData? _system;
+        public VariableData? GameSystem
+        {
+            get { return _system; }
+            set
+            {
+                if (_system != value)
+                {
+                    if (_system != null)
+                    {
+                        _system.PropertyChanged -= System_PropertyChanged;
+                    }
+
+                    _system = value;
+
+                    if (value != null)
+                    {
+                        _system.PropertyChanged += System_PropertyChanged;
+                    }
+
+                    OnPropertyChanged(nameof(GameSystem));
+                }
+            }
+        }
+
+        private void System_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(VariableData.Value))
+            {
+                Console.WriteLine($"System changed -> {GameSystem.Value:X}");
+                bool itembox = (GameSystem?.Value & 0x00000F00) == 0x200;  
+
+                if (itembox && NoItemBox)
+                {
+                    Monitoring.WriteVariableData(GameSystem, 0);
+                    Monitoring.WriteVariableData(GameState, 0);
+                }
+            }
+        }
+
+                            
+
+    private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {

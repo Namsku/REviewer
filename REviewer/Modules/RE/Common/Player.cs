@@ -647,6 +647,12 @@ namespace REviewer.Modules.RE.Common
 
                     if (Health.Value < OldHealth)
                     {
+                        if (NoDamage)
+                        {
+                            // Do something
+                            Monitoring.WriteVariableData(GameState, 0);
+                        }
+
                         Hits += 1;
                     }
                     // https://github.com/deserteagle417/RE2-Autosplitter/blob/main/RE2aio.asl
@@ -663,6 +669,13 @@ namespace REviewer.Modules.RE.Common
                 {
                     if (Health.Value < OldHealth)
                     {
+                        if (NoDamage)
+                        {
+                            // Do something
+                            // Monitoring.WriteVariableData(GameSystem, 0);
+                            Monitoring.WriteVariableData(GameState, 0);
+                        }
+
                         Hits += 1;
                     }
                 }
@@ -972,8 +985,30 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_itemboxState != value)
                 {
+                    if (_itemboxState != null)
+                    {
+                        _itemboxState.PropertyChanged -= ItemBoxState_PropertyChanged;
+                    }
+                    
                     _itemboxState = value;
+                    
+                    if(_itemboxState != null)
+                    {
+                        _itemboxState.PropertyChanged += ItemBoxState_PropertyChanged;
+                    }
+                    
                     OnPropertyChanged(nameof(ItemBoxState));
+                }
+            }
+        }
+
+        private void ItemBoxState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (ItemBoxState.Value == 0x01 && NoItemBox)
+                {
+                    Monitoring.WriteVariableData(GameState, 0);
                 }
             }
         }

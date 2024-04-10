@@ -141,6 +141,7 @@ namespace REviewer.Modules.RE.Common
 
             // Game
             GameState = GetVariableData("GameState", bio.Game.State);
+            GameSystem = GetVariableData("GameSystem", bio.Game.System);
             Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
             GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
             GameRetry = GetVariableData("GameRetry", bio.Game.Retry);
@@ -255,6 +256,12 @@ namespace REviewer.Modules.RE.Common
             }
 
             OneHP = config.TryGetValue("OneHP", out bool? oneHP) && oneHP == true;
+
+            if (OneHP)
+            {
+                Monitoring.WriteVariableData(Health, 1);
+            }
+
             NoDamage = config.TryGetValue("NoDamage", out bool? noDamage) && noDamage == true;
             NoItemBox = config.TryGetValue("NoItemBox", out bool? noItemBox) && noItemBox == true;
 

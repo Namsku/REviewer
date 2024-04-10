@@ -61,6 +61,7 @@ namespace REviewer.Modules.RE.Json
     public class JGame
     {
         public StandardProperty? State { get; set; }
+        public StandardProperty? System { get; set; }
         public StandardProperty? Timer { get; set; }
         public StandardProperty? Retry { get; set; }
         public StandardProperty? Save { get; set; }
