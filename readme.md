@@ -43,13 +43,11 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 95% / Testing phase
 - [X] RE3 (Rebirth) - 95% / Testing phase
-- [X] RE3 (CHN/TWN) - 95% / Testing phase
 - [X] CVX (PS2) - 80 % / Testing phase
 
 Possible other port
 
-- RE2 (Platinium -> China) 
-
+- PSX Emulation games
 
 ## Known Bugs
 
