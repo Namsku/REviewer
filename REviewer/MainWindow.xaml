@@ -127,6 +127,7 @@
                                 <StackPanel>
                                     <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isHealthBarChecked}"/>
                                     <CheckBox Name="ShowItemBox" Content="Show ItemBox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isItemBoxChecked}"/>
+                                    <CheckBox Name="DebugMode" Content="Show Debug Menu" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding DebugMode}"/>
                                     <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}" IsChecked="{Binding isChrisInventoryChecked}"/>
                                     <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}" IsChecked="{Binding isSherryChecked}"/>
                                     

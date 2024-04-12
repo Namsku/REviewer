@@ -31,6 +31,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <!-- Menu -->
             <StackPanel Grid.Row="0">
@@ -400,8 +401,81 @@
                 </Grid>
             </StackPanel>
 
+
+            <!-- Debug -->
+            <StackPanel Grid.Row="8" HorizontalAlignment="Stretch" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="- Debug -" Foreground="White" FontSize="45" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Center"/>
+
+                    <!-- Debugs -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" 
+                            Name="CoordsHex" 
+                            Foreground="White" 
+                            Content="Coords Hex" 
+                            Width="160" 
+                            Height="50" 
+                            Margin="5" 
+                            Click="Coords_Hex_Click" 
+                            HorizontalAlignment="Left" 
+                            FontFamily="{StaticResource PixelBoyFont}"
+                            FontSize="30">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border" BorderBrush="White" BorderThickness="2" Margin="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="LightGray" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        
+                        <Button Grid.Column="1" 
+                            Name="Coords" 
+                            Foreground="White" 
+                            Content="Coords Dec" 
+                            Width="160" 
+                            Height="50" 
+                            Margin="5" 
+                            Click="Coords_Dec_Click" 
+                            HorizontalAlignment="Left" 
+                            FontFamily="{StaticResource PixelBoyFont}"
+                            FontSize="30">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border" BorderBrush="White" BorderThickness="2" Margin="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="LightGray" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                       
+                    </Grid>
+                </Grid>
+            </StackPanel>
+
             <!-- Buttons -->
-            <StackPanel Grid.Row="8">
+            <StackPanel Grid.Row="9">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>

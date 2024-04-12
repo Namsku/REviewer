@@ -474,7 +474,8 @@ namespace REviewer.Modules.Utils
                 { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" },
                 { "OneHPChallenge", reJson["OneHPChallenge"] == "true" },
                 { "NoDamageChallenge", reJson["NoDamageChallenge"] == "true" },
-                { "NoItemBoxChallenge", reJson["NoItemBoxChallenge"] == "true"}
+                { "NoItemBoxChallenge", reJson["NoItemBoxChallenge"] == "true"},
+                { "DebugMode", reJson["DebugMode"] == "true" }
             };
         }
         public static void UpdateConfigFile(string key, string value)

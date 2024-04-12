@@ -36,6 +36,17 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(PositionZ));
             }
         }
+
+        private VariableData? _positionR;
+        public VariableData? PositionR
+        {
+            get { return _positionR; }
+            set
+            {
+                _positionR = value;
+                OnPropertyChanged(nameof(PositionR));
+            }
+        }
     }
 
 }

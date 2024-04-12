@@ -10,5 +10,6 @@
     "isNoKeyItemsChecked": false,
     "OneHPChallenge": false,
     "NoDamageChallenge": false,
-    "NoItemBoxChallenge": false
+    "NoItemBoxChallenge": false,
+    "DebugMode": false
 }

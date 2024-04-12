@@ -84,6 +84,7 @@ namespace REviewer.Modules.RE.Common
         public Visibility? SegsVisibility { get; set; }
         public Visibility? KeyItemsVisibility { get; set; }
         public Visibility? LastItemSeenVisibility { get; set; }
+        public Visibility? DebugModeVisibility { get; set; }
 
         private int? _windowWidth;
         public int? WindowWidth
@@ -178,6 +179,7 @@ namespace REviewer.Modules.RE.Common
             PositionX = GetVariableData("PositionX", bio.Position.X);
             PositionY = GetVariableData("PositionY", bio.Position.Y);
             PositionZ = GetVariableData("PositionZ", bio.Position.Z);
+            PositionR = GetVariableData("PositionR", bio.Position.R);
 
             // Rebirth
             // RebirthDebug = GetVariableData("RebirthDebug", bio.Rebirth.Debug);
@@ -269,6 +271,7 @@ namespace REviewer.Modules.RE.Common
             BiorandVisibility = GetVisibility(config, "Standard");
             ItemBoxVisibility = GetVisibility(config, "ItemBox");
             SherryVisibility = GetVisibility(config, "Sherry");
+            DebugModeVisibility = GetVisibility(config, "DebugMode");
 
             StatsVisibility = GetVisibility(config, "NoStats") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             SegsVisibility = GetVisibility(config, "NoSegTimers") == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;

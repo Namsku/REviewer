@@ -257,6 +257,20 @@ namespace REviewer
                 }
             }
         }
+
+        public bool _debugMode;
+        public bool DebugMode
+        {
+            get { return _debugMode; }
+            set
+            {
+                if (_debugMode != value)
+                {
+                    _debugMode = value;
+                    Library.UpdateConfigFile("DebugMode", _debugMode.ToString().ToLower());
+                }
+            }
+        }
     }
 
 }

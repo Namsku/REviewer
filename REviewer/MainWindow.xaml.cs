@@ -217,6 +217,7 @@ namespace REviewer
             _ui.OneHPChallenge = config["OneHPChallenge"];
             _ui.NoDamageChallenge = config["NoDamageChallenge"];
             _ui.NoItemBoxChallenge = config["NoItemBoxChallenge"];
+            _ui.DebugMode = config["DebugMode"];
         }
 
         private void InitializeProcessWatcher()
@@ -711,7 +712,9 @@ namespace REviewer
                 ["Minimalist"] = Minimalist.IsChecked,
                 ["OneHP"] = OneHP.IsChecked,
                 ["NoDamage"] = NoDamage.IsChecked,
-                ["NoItemBox"] = NoItemBox.IsChecked
+                ["NoItemBox"] = NoItemBox.IsChecked,
+                ["DebugMode"] = DebugMode.IsChecked
+
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked

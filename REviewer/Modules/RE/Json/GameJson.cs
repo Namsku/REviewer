@@ -76,6 +76,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? X { get; set; }
         public StandardProperty? Y { get; set; }
         public StandardProperty? Z { get; set; }
+        public StandardProperty? R { get; set; }
     }
 
     public class JRebirth

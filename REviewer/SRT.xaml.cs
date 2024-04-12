@@ -7,6 +7,7 @@ using REviewer.Modules.RE.Common;
 using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using GlobalHotKey;
+using System.Windows.Controls;
 
 namespace REviewer
 {
@@ -93,12 +94,32 @@ namespace REviewer
             _game.InventorySlotSelected.Value = 0;
             // Console.WriteLine("Erasing the mess");
         }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Console.WriteLine("Closing SRT");
             _hotKeyManager.KeyPressed -= OnF11Pressed;
             _hotKeyManager.Unregister(_f11);
+        }
+
+        private void Coords_Hex_Click(object sender, RoutedEventArgs e)
+        {
+            string coords;
+
+            if (_game.SELECTED_GAME != 200)
+            {
+                coords = $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X}";
+            } else
+            {
+                coords = $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X} R:{_game.PositionR.Value:X}";
+            }
+            
+            Clipboard.SetText(coords);
+        }
+
+        private void Coords_Dec_Click(object sender, RoutedEventArgs e)
+        {
+            string coords = $"{_game.PositionX.Value}, {_game.PositionY.Value}, {_game.PositionZ.Value}, {_game.PositionR.Value & 0xFFFF}";
+            Clipboard.SetText(coords);
         }
     }
 }
