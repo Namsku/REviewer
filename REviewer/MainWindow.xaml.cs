@@ -108,6 +108,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Visible;
                     _ui.Sherry = Visibility.Collapsed;
+                    _ui.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_SC:
                     _ui.isBiorandMode = true;
@@ -122,6 +123,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
+                    _ui.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_PL:
                     _ui.isBiorandMode = false;
@@ -129,6 +131,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
+                    _ui.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_RB:
                     _ui.isBiorandMode = true;
@@ -136,6 +139,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
+                    _ui.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_CV_X:
                     _ui.isBiorandMode = true;
@@ -143,6 +147,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
+                    _ui.DebugModeVisibility = Visibility.Collapsed;
                     break;
             }
         }
@@ -218,6 +223,7 @@ namespace REviewer
             _ui.NoDamageChallenge = config["NoDamageChallenge"];
             _ui.NoItemBoxChallenge = config["NoItemBoxChallenge"];
             _ui.DebugMode = config["DebugMode"];
+            _ui.isStaticEnemyTrackerWindow = config["StaticEnemyTrackerWindow"];
         }
 
         private void InitializeProcessWatcher()
@@ -342,6 +348,7 @@ namespace REviewer
                                     NativeWrappers.FreeLibrary(process);
                                 }
                             }
+                            /*
                             else // RPCS3
                             {
                                 Scanner scanner = new Scanner(tmp_process, tmp_process.MainModule);
@@ -350,6 +357,7 @@ namespace REviewer
                                 IntPtr pointer = IntPtr.Add(tmp_process.MainModule.BaseAddress, result.Offset);
                                 ProductPointer = result.Offset != 0 ? IntPtr.Add(pointer, -0xE0) : IntPtr.Zero;
                             }
+                            */
 
                             // The process is running
                             _isProcessRunning = true;
@@ -713,12 +721,17 @@ namespace REviewer
                 ["OneHP"] = OneHP.IsChecked,
                 ["NoDamage"] = NoDamage.IsChecked,
                 ["NoItemBox"] = NoItemBox.IsChecked,
-                ["DebugMode"] = DebugMode.IsChecked
-
+                ["DebugMode"] = DebugMode.IsChecked,
+                ["StaticEnemyTrackerWindow"] = StaticEnemyTrackerWindow.IsChecked
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
             };
+
+            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PC || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PL)
+            {
+                srtConfig["Standard"] = false;
+            }
 
             // Show the config elements in the log
             foreach (var item in srtConfig)

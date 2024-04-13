@@ -25,6 +25,20 @@ namespace REviewer
                 }
             }
         }
+
+        private double _windowHeight;
+        public double WindowHeight
+        {
+            get { return _windowHeight; }
+            set
+            {
+                if (_windowHeight != value)
+                {
+                    _windowHeight = value;
+                    OnPropertyChanged(nameof(WindowHeight));
+                }
+            }
+        }
         public double? WindowScale { get; set; }
         public ObservableCollection<EnemyTracking> Tracking { get; set; }
         public Tracker(ObservableCollection<EnemyTracking> trk, RootObject obj)
@@ -42,8 +56,19 @@ namespace REviewer
 
         private void SetWindowProperties()
         {
-            WindowWidth = _game.WindowWidth == 400 ? 530 : 355;
+            WindowWidth = _game.WindowWidth == 400 ? 450 : 320;
             WindowScale = _game.WindowWidth == 400 ? 1 : 0.7;
+
+            if (_game.StaticEnemyTrackerWindow == true)
+            {
+                WindowHeight = 720;
+            } 
+            else
+            {
+                WindowHeight = double.NaN;
+            }
+
+            Console.WriteLine(_game.StaticEnemyTrackerWindow);
 
             OnPropertyChanged(nameof(WindowWidth)); // Raise PropertyChanged event for WindowWidth
             OnPropertyChanged(nameof(WindowScale)); // Raise PropertyChanged event for WindowScale

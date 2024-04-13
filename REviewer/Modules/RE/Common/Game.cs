@@ -97,7 +97,7 @@ namespace REviewer.Modules.RE.Common
         {
             if(e.PropertyName == nameof(VariableData.Value))
             {
-                Console.WriteLine($"System changed -> {GameSystem.Value:X}");
+                // Console.WriteLine($"System changed -> {GameSystem.Value:X}");
                 bool itembox = (GameSystem?.Value & 0x00000F00) == 0x200;  
 
                 if (itembox && NoItemBox)
@@ -133,7 +133,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == 200)
                 {
-                    isDead = Health.Value > 200 && state != 0x00000000;
+                    isDead = Health.Value > 60000 && state != 0x00000000;
                 }
                 else if (SELECTED_GAME == 300)
                 {

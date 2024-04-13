@@ -586,6 +586,7 @@ namespace REviewer.Modules.RE.Common
                 {
                     CharacterMaxHealth.Value = CharacterMaxHealth.Value & 0xFFFF;
                     MaxHealth = CharacterMaxHealth.Value.ToString();
+                    OnPropertyChanged(nameof(MaxHealth));
                 }
 
             }
@@ -597,7 +598,7 @@ namespace REviewer.Modules.RE.Common
             get { return _health; }
             set
             {
-                Console.WriteLine(Health);
+                // Console.WriteLine(Health);
                 if (_health != value)
                 {
                     if (_health != null)
@@ -644,8 +645,9 @@ namespace REviewer.Modules.RE.Common
                 else if (SELECTED_GAME == 200)
                 {
                     Health.Value = Health.Value & 0xFFFF;
+                    // Console.WriteLine(Health.Value);
 
-                    if (Health.Value < OldHealth)
+                    if (Health.Value < OldHealth && Health.Value != 255)
                     {
                         if (NoDamage)
                         {

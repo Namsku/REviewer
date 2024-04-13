@@ -10,6 +10,20 @@ namespace REviewer.Modules.RE.Common
     public partial class RootObject : INotifyPropertyChanged
     {
         public bool ChrisInventoryHotfix = false;
+        public string Hash
+        {
+            get {
+                // generate a hash of all the values in the inventory
+                string hash = "";
+                for (int i = 0; i < Inventory.Count; i++)
+                {
+                    hash += Inventory[i].Item.Value.ToString();
+                    hash += Inventory[i].Quantity.Value.ToString();
+                }
+                return hash;
+            }
+
+        }
 
         private VariableData? _inventoryCapacity;
         public VariableData? InventoryCapacity
@@ -183,7 +197,7 @@ namespace REviewer.Modules.RE.Common
         {
             var items = IDatabase.GetItems();
 
-            Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
+            // Console.WriteLine($"UpdateInventoryImage -> {index} -> {InventoryCapacitySize} {Inventory[index].Item.Value}");
 
             if (index <= InventoryCapacitySize)
             {

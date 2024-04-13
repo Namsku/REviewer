@@ -209,6 +209,8 @@ namespace REviewer.Modules.RE.Enemies
 
         public int SelectedGame;
 
+        private string _hash;
+
         private Enemy? _enemy;
         public Enemy? Enemy
         {
@@ -358,9 +360,17 @@ namespace REviewer.Modules.RE.Enemies
                         }
                     }
 
+                    if (Enemy.CurrentHealth < 600 && EnemyMaxHP > 27000)
+                    {
+                        EnemyMaxHP = Enemy.CurrentHealth;
+                    }
 
+                    if (Enemy.CurrentHealth > 65000 && EnemyMaxHP < 2000)
+                    {
+                        Enemy.Visibility = Visibility.Collapsed;
+                    }
 
-                    if (Enemy.CurrentHealth > 64000 && EnemyMaxHP < 2000)
+                    if (Enemy.CurrentHealth > 50000 && EnemyMaxHP > 60000)
                     {
                         Enemy.Visibility = Visibility.Collapsed;
                     }

@@ -403,7 +403,7 @@
 
 
             <!-- Debug -->
-            <StackPanel Grid.Row="8" HorizontalAlignment="Stretch" >
+            <StackPanel Grid.Row="8" HorizontalAlignment="Stretch" Visibility="{Binding DebugModeVisibility}" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

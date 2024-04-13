@@ -73,7 +73,7 @@ namespace REviewer
 
         private void OnF11Pressed(object sender, GlobalHotKey.KeyPressedEventArgs e)
         {
-            Console.WriteLine("F11 Pressed");
+            // Console.WriteLine("F11 Pressed");
             // Do something when F9 is pressed
             ResetSRT();
         }
@@ -96,7 +96,7 @@ namespace REviewer
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Console.WriteLine("Closing SRT");
+            // Console.WriteLine("Closing SRT");
             _hotKeyManager.KeyPressed -= OnF11Pressed;
             _hotKeyManager.Unregister(_f11);
         }

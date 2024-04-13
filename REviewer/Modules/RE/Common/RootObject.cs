@@ -73,6 +73,7 @@ namespace REviewer.Modules.RE.Common
         public bool OneHP = false;
         public bool NoDamage = false;
         public bool NoItemBox = false;
+        public bool StaticEnemyTrackerWindow = false;
 
         public Dictionary<string, List<string>>? KeyRooms { get; set; }
         public Visibility? HealthBarVisibility { get; set; }
@@ -85,6 +86,7 @@ namespace REviewer.Modules.RE.Common
         public Visibility? KeyItemsVisibility { get; set; }
         public Visibility? LastItemSeenVisibility { get; set; }
         public Visibility? DebugModeVisibility { get; set; }
+
 
         private int? _windowWidth;
         public int? WindowWidth
@@ -123,7 +125,6 @@ namespace REviewer.Modules.RE.Common
             else if (processName == "bio2 1.10" || processName == "bio2 chn leon" || processName == "bio2 chn claire" || processName == "claire" || processName == "leon")
             {
                 SELECTED_GAME = 200;
-                DebugVisibility = Visibility.Collapsed;
                 HitVisibility = Visibility.Visible;
             }
             else if (processName == "biohazard(r) 3 pc")
@@ -245,8 +246,8 @@ namespace REviewer.Modules.RE.Common
             {
                 if(minimalist == true)
                 {
-                    WindowWidth = 230;
-                    WindowScale = 0.4;
+                    WindowWidth = 320;
+                    WindowScale = 0.47;
                     WindowCenter = 0.2;
                 }
                 else
@@ -266,6 +267,7 @@ namespace REviewer.Modules.RE.Common
 
             NoDamage = config.TryGetValue("NoDamage", out bool? noDamage) && noDamage == true;
             NoItemBox = config.TryGetValue("NoItemBox", out bool? noItemBox) && noItemBox == true;
+            StaticEnemyTrackerWindow = config.TryGetValue("StaticEnemyTrackerWindow", out bool? staticEnemyTrackerWindow) && staticEnemyTrackerWindow == true;
 
             HealthBarVisibility = GetVisibility(config, "HealthBar");
             BiorandVisibility = GetVisibility(config, "Standard");

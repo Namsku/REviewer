@@ -11,5 +11,6 @@
     "OneHPChallenge": false,
     "NoDamageChallenge": false,
     "NoItemBoxChallenge": false,
-    "DebugMode": false
+    "DebugMode": false,
+    "StaticEnemyTrackerWindow": false
 }

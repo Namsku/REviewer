@@ -206,6 +206,7 @@
                             <GroupBox Header="Windows Layout" Margin="0,0,0,0">
                                 <StackPanel>
                                     <CheckBox Name="Minimalist" Content="Minimalist UI (For small resolutions)" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isMinimalistChecked}"/>
+                                    <CheckBox Name="StaticEnemyTrackerWindow" Content="Fixed Enemy Tracker Window" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isStaticEnemyTrackerWindow}"/>
                                     <CheckBox Name="NoStats" Content="No Statistics" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoStatsChecked}"/>
                                     <CheckBox Name="NoSegTimes" Content="No Segment Times" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoSegmentsTimerChecked}"/>
                                     <CheckBox Name="NoKeyItems" Content="No Key Items" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoKeyItemsChecked}"/>

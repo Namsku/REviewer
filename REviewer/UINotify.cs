@@ -78,6 +78,20 @@ namespace REviewer
             }
         }
 
+        public Visibility _debugModeVisibility;
+        public Visibility DebugModeVisibility
+        {
+            get { return _debugModeVisibility; }
+            set
+            {
+                if (_debugModeVisibility != value)
+                {
+                    _debugModeVisibility = value;
+                    OnPropertyChanged(nameof(DebugModeVisibility));
+                }
+            }
+        }
+
         public UINotify(string version)
         {
             Version = version;
@@ -271,6 +285,21 @@ namespace REviewer
                 }
             }
         }
+
+        public bool _staticEnemyTrackerWindow;
+        public bool isStaticEnemyTrackerWindow
+        {
+            get { return _staticEnemyTrackerWindow; }
+            set
+            {
+                if (_staticEnemyTrackerWindow != value)
+                {
+                    _staticEnemyTrackerWindow = value;
+                    Library.UpdateConfigFile("StaticEnemyTrackerWindow", _staticEnemyTrackerWindow.ToString().ToLower());
+                }
+            }
+        }
+
     }
 
 }
