@@ -233,6 +233,7 @@ namespace REviewer.Modules.Utils
             {"Bio2 1.10", "RE2"},
             {"bio2 chn claire", "RE2C"},
             {"BIOHAZARD(R) 3 PC", "RE3" },
+            {"Bio3 CHN/TWN", "RE3C" },
             {"CVX PS2 US", "RECVX" }
         };
 
@@ -275,6 +276,16 @@ namespace REviewer.Modules.Utils
                 { "The Lord of the Necropolis_1_1_0", "RE3" },
                 { "(English)The Lord of the Necropolis_1_1_0", "RE3" },
                 { "Nemesis Scenario", "RE3" },
+
+                { "bio", "RE3C" },
+                { "Bio", "RE3C" },
+                { "bio3", "RE3C" },
+                { "Bio3", "RE3C" },
+                { "bio3_pc", "RE3C" },
+                { "Bio3_PC_Mercenaries","RE3C" },
+                { "KeTu-FE3", "RE3C" },
+                { "Silent Hill P.T", "RE3C" },
+
                 { "CVX PS2 US", "RECVX" },
         };
 
@@ -285,6 +296,7 @@ namespace REviewer.Modules.Utils
             { "bio2 chn claire", new List<string> { "CLAIRE", "claire", "bio2 chn claire" } },
             { "bio2 chn leon", new List<string> {"LEON", "leon", "Irregular1.8", "bio2 chn leon" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3", "The Lord of the Necropolis_1_1_0", "(English)The Lord of the Necropolis_1_1_0", "Nemesis Scenario" } },
+            { "Bio3 CHN/TWN", new List<string> { "bio", "Bio", "bio3", "Bio3", "bio3_pc", "Bio3_PC_Mercenaries", "KeTu-FE3", "Silent Hill P.T" } },
             { "CVX PS2 US", new List<string> { "pcsx2", "pcsx2-qt", "pcsx2-qtx64", "pcsx2-qtx64-avx2", "pcsx2x64", "pcsx2x64-avx2" } }
         };
 
@@ -330,6 +342,15 @@ namespace REviewer.Modules.Utils
             { "The Lord of the Necropolis_1_1_0", "BIOHAZARD(R) 3 PC" },
             { "(English)The Lord of the Necropolis_1_1_0", "BIOHAZARD(R) 3 PC" },
             { "Nemesis Scenario", "BIOHAZARD(R) 3 PC"},
+
+            { "bio", "Bio3 CHN/TWN" },
+            { "Bio", "Bio3 CHN/TWN" },
+            { "Bio3", "Bio3 CHN/TWN" },
+            { "bio3", "Bio3 CHN/TWN" },
+            { "bio3_pc", "Bio3 CHN/TWN" },
+            { "Bio3_PC_Mercenaries", "Bio3 CHN/TWN" },
+            { "KeTu-FE3", "Bio3 CHN/TWN" },
+            { "Silent Hill P.T", "Bio3 CHN/TWN" },
 
             { "bio3", "BIOHAZARD(R) 3 PC" },
             { "Bio3", "BIOHAZARD(R) 3 PC" },

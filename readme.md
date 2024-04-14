@@ -49,6 +49,66 @@ Possible other port
 
 - PSX Emulation games
 
+## Accepted Process Names
+
+### Resident Evil 2 - Source Next
+- bio2
+- Bio2
+- Bio2 1.10
+- bio2 1.10
+- bio2 1.1
+- bio2 v1.1
+- Biohazard 2
+- biohazard 2
+- BIO2The City of Despair
+- Leon And Claier
+- bunny
+- bunny2
+- perro2
+- re2mm
+- Resident Evil 2.5 Dark Legacy
+- RE2MM
+- REVisited
+- toos_ver2_0_0
+- toos(hard)_ver2_0_0
+- UEv3
+
+### Resident Evil 2 - Platinum (CHN) - Claire
+- CLAIRE
+
+### Resident Evil 2 - Platinum (CHN) - Leon
+- leon
+- Irregular1.8
+- Irregular
+- Irregular2
+- Irregular2.0
+
+### Resident Evil 3 - Rebirth/Sourcenext
+- BIOHAZARD(R) 3 PC
+- biohazard(r) 3 pc
+- The Lord of the Necropolis_1_1_0
+- (English)The Lord of the Necropolis_1_1_0
+- Nemesis Scenario
+
+### Resident Evil 3 - CHN/TWN
+- bio
+- Bio
+- Bio3
+- bio3
+- bio3_pc
+- Bio3_PC_Mercenaries
+- KeTu-FE3
+- Silent Hill P.T
+- Other Platforms
+
+### Resident Evil - Code Veronica X - PS2 US
+- pcsx2
+- pcsx2-qt
+- pcsx2-qtx64
+- pcsx2-qtx64-avx2
+- pcsx2x64
+- pcsx2x64-avx2
+
 ## Known Bugs
 
 - Enemy Tracker is not super stable in some cases.

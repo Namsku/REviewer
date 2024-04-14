@@ -48,7 +48,8 @@ namespace REviewer
         public const int BIOHAZARD_2_PC = 2; // RE2 - Platinium - China - Claire
         public const int BIOHAZARD_2_PL = 3; // RE2 - Platinium - China - Leon
         public const int BIOHAZARD_3_RB = 4; // Rebirth
-        public const int BIOHAZARD_CV_X = 5; // CVX 
+        public const int BIOHAZARD_3_CH = 5; // Chinese/Taiwanese
+        public const int BIOHAZARD_CV_X = 6; // CVX 
 
         public const string RPCS3 = "rpcs3";
         public const string PCSX2 = "pcsx2";
@@ -141,6 +142,14 @@ namespace REviewer
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Visible;
                     break;
+                case BIOHAZARD_3_CH:
+                    _ui.isBiorandMode = false;
+                    _ui.ChallengeVisibility = Visibility.Collapsed;
+                    _ui.ClassicVisibility = Visibility.Visible;
+                    _ui.ChrisInventory = Visibility.Collapsed;
+                    _ui.Sherry = Visibility.Collapsed;
+                    _ui.DebugModeVisibility = Visibility.Collapsed;
+                    break;
                 case BIOHAZARD_CV_X:
                     _ui.isBiorandMode = true;
                     _ui.ChallengeVisibility = Visibility.Collapsed;
@@ -181,6 +190,8 @@ namespace REviewer
                     case BIOHAZARD_3_RB:
                         Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
                         break;
+                    case BIOHAZARD_3_CH:
+                        break;  
                     case BIOHAZARD_CV_X:
                         Library.UpdateTextBox(RECVXSavePath, text: savePath, isBold: false);
                         break;

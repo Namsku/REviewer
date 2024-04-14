@@ -37,7 +37,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 300)
+                if (SELECTED_GAME == BIOHAZARD_3)
                 {
                     // Console.WriteLine("Character changed");
                     // Console.WriteLine(Character.Value);
@@ -80,7 +80,7 @@ namespace REviewer.Modules.RE.Common
                 }
             }
             get {
-                if (SELECTED_GAME == 200) return _maxHealth;
+                if (SELECTED_GAME == BIOHAZARD_2) return _maxHealth;
                 if (_character?.Database == null) return "ERR";
                 if (_health?.Database == null) return "0";
 
@@ -175,12 +175,12 @@ namespace REviewer.Modules.RE.Common
 
                     if (_inventorySlotSelected.Value == 0x80) return "./resources/re1/nothing.png";
                     
-                    if (SELECTED_GAME == 100 || SELECTED_GAME == 400)
+                    if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX)
                     {
                         var selected = InventorySlotSelected.Value - 1;
                         id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
                     }
-                    else if (SELECTED_GAME == 200 || SELECTED_GAME == 300)
+                    else if (SELECTED_GAME == BIOHAZARD_2 || SELECTED_GAME == BIOHAZARD_3)
                     {
                         var vvv = Character.Value == 0x8 ? CarlosInventorySlotSelected.Value : InventorySlotSelected.Value;
                         var selected = vvv;
@@ -456,7 +456,7 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
-                    if (SELECTED_GAME == 200)
+                    if (SELECTED_GAME == BIOHAZARD_2)
                     {
                         if (value == 80)
                         {
@@ -521,19 +521,19 @@ namespace REviewer.Modules.RE.Common
 
                 // Console.WriteLine(_characterHealthState.Value);
 
-                if(SELECTED_GAME == 100)
+                if(SELECTED_GAME == BIOHAZARD_1)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
                 } 
-                else if(SELECTED_GAME == 200)
+                else if(SELECTED_GAME == BIOHAZARD_2)
                 {
                     state = (_characterHealthState?.Value != 0x15);
                 }
-                else if (SELECTED_GAME == 300)
+                else if (SELECTED_GAME == BIOHAZARD_3)
                 {
                     state = (_characterHealthState?.Value == 0x04);
                 }
-                else if(SELECTED_GAME == 400)
+                else if(SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     state = (_characterHealthState.Value != 5) && (_characterHealthState.Value != 7);
                 }
@@ -582,7 +582,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 200)
+                if (SELECTED_GAME == BIOHAZARD_2)
                 {
                     CharacterMaxHealth.Value = CharacterMaxHealth.Value & 0xFFFF;
                     MaxHealth = CharacterMaxHealth.Value.ToString();
@@ -718,19 +718,19 @@ namespace REviewer.Modules.RE.Common
 
             Brush[] colors = new Brush[] { CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White };
 
-            if (SELECTED_GAME == 100)
+            if (SELECTED_GAME == BIOHAZARD_1)
             {
                 state = (status & 0x20) != 0 || (status & 0x40) != 0 || (status & 0x04) != 0 || (status & 0x02) != 0;
             }
-            else if (SELECTED_GAME == 200)
+            else if (SELECTED_GAME == BIOHAZARD_2)
             {
                 state = (status == 0x15);
             }
-            else if (SELECTED_GAME == 300)
+            else if (SELECTED_GAME == BIOHAZARD_3)
             {
                 state = (status != 0x04);
             }
-            else if (SELECTED_GAME == 400)
+            else if (SELECTED_GAME == BIOHAZARD_CVX)
             {
                 state = (_characterHealthState.Value == 5) || (_characterHealthState.Value == 7);
             }
@@ -953,8 +953,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                int position_hp = SELECTED_GAME == 200 ? 0x156 : 0xCC;
-                int position_id = SELECTED_GAME == 200 ? 0x8 : 0x4a;
+                int position_hp = SELECTED_GAME == BIOHAZARD_2 ? 0x156 : 0xCC;
+                int position_id = SELECTED_GAME == BIOHAZARD_2 ? 0x8 : 0x4a;
 
                 if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290 || PartnerPointer.Value == 0xAA2964)
                 {

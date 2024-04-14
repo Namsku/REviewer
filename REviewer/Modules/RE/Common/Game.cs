@@ -277,7 +277,7 @@ namespace REviewer.Modules.RE.Common
             {
                 OnPropertyChanged(nameof(IGTHumanFormat));
 
-                double frames = SELECTED_GAME == 400 ? 60.0 : 30.0;
+                double frames = SELECTED_GAME == BIOHAZARD_CVX ? 60.0 : 30.0;
 
                 if(IGTSegments == null || GameTimer == null) return;
 
@@ -309,11 +309,11 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-                if (SELECTED_GAME == 100)
+                if (SELECTED_GAME == BIOHAZARD_1)
                 {
                     return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 200)
+                else if (SELECTED_GAME == BIOHAZARD_2)
                 {
                     if (isGameDone)
                     {
@@ -321,7 +321,7 @@ namespace REviewer.Modules.RE.Common
                     }
                     return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
                 }
-                else if (SELECTED_GAME == 300)
+                else if (SELECTED_GAME == BIOHAZARD_3)
                 {
                     if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
                     {
@@ -351,7 +351,7 @@ namespace REviewer.Modules.RE.Common
                         return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
                     }
                 }
-                else if (SELECTED_GAME == 400)
+                else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
                 }
@@ -406,7 +406,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 400)
+                if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     Saves = GameSave.Value;
                 } 
@@ -449,7 +449,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (SELECTED_GAME == 100)
+                if (SELECTED_GAME == BIOHAZARD_1)
                 {
                     if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
                     {

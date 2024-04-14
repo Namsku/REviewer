@@ -63,11 +63,11 @@ namespace REviewer.Modules.RE.Common
                 int[] _inventoryCapacityArray = new int[] { };
                 int capacity = _inventoryCapacity.Value;
 
-                if (SELECTED_GAME == 100) {
+                if (SELECTED_GAME == BIOHAZARD_1) {
                     capacity = capacity & 3;
                     _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
                 }
-                else if (SELECTED_GAME == 400)
+                else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     InventoryCapacitySize = 11;
                     _inventoryCapacityArray = new int[] { 11, };
@@ -133,7 +133,7 @@ namespace REviewer.Modules.RE.Common
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (SELECTED_GAME == 400 || SELECTED_GAME == 200)
+                if (SELECTED_GAME == BIOHAZARD_CVX || SELECTED_GAME == BIOHAZARD_2)
                 {
                     _inventoryCapacitySize = 11;
                 } 
@@ -218,15 +218,15 @@ namespace REviewer.Modules.RE.Common
                     }
 
 
-                    if (SELECTED_GAME == 100)
+                    if (SELECTED_GAME == BIOHAZARD_1)
                     {
                         isValid = state == 0x8800 || state == 0x8C00;
                     }
-                    else if (SELECTED_GAME == 200)
+                    else if (SELECTED_GAME == BIOHAZARD_2)
                     {
                         isValid = ((state == 0x4000) && (ItemBoxState?.Value != 1));
                     }
-                    else if (SELECTED_GAME == 300)
+                    else if (SELECTED_GAME == BIOHAZARD_3)
                     {
                         state = GameState.Value & 0x0F000000;
                         isValid = state == 0x09000000;
@@ -249,9 +249,9 @@ namespace REviewer.Modules.RE.Common
                 string pourcentage_ammo = "";
                 int[] ammo_prct_array = new int[] { };
 
-                if (SELECTED_GAME == 200)
+                if (SELECTED_GAME == BIOHAZARD_2)
                     ammo_prct_array = new int[] { 14, 15, 16, 23, 27, 28 };
-                else if (SELECTED_GAME == 300)
+                else if (SELECTED_GAME == BIOHAZARD_3)
                     ammo_prct_array = new int[] { 14, 15 };
 
                 if (SELECTED_GAME > 100 && ammo_prct_array.Contains(Inventory[index].Item.Value))

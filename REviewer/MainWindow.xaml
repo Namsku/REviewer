@@ -76,6 +76,7 @@
                                     <ComboBoxItem Content="Resident Evil 2 - Claire - Platinium (China)"/>
                                     <ComboBoxItem Content="Resident Evil 2 - Leon - Platinium (China)"/>
                                     <ComboBoxItem Content="Resident Evil 3 - Rebirth"/>
+                                    <ComboBoxItem Content="Resident Evil 3 - CHN/TWN"/>
                                     <ComboBoxItem Content="Resident Evil CVX - PS2 - US"/>
                                 </ComboBox>
                             </GroupBox>
