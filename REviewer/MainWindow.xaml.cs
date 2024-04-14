@@ -67,8 +67,8 @@ namespace REviewer
         public int ProductLength { get; private set; }
         public bool IsBigEndian { get; private set; }
 
-        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "bio2 chn claire", "bio2 chn leon", "BIOHAZARD(R) 3 PC", "CVX PS2 US" };
-        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE2C", "RE2C", "RE3", "RECVX"};
+        private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "bio2 chn claire", "bio2 chn leon", "BIOHAZARD(R) 3 PC", "Bio3 CHN/TWN", "CVX PS2 US" };
+        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE2C", "RE2C", "RE3", "RE3C", "RECVX"};
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
@@ -407,7 +407,7 @@ namespace REviewer
                     var reJson = Library.GetReviewerConfig();
                     var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
 
-                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL) isSaveFound = true;
+                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH) isSaveFound = true;
 
                     if (_isProcessRunning && isSaveFound)
                     {
@@ -766,6 +766,7 @@ namespace REviewer
                 "bio" or "biohazard" => 396,
                 "bio2 1.10" or "bio2 1.1" or "bio2 chn claire" or "bio2 chn leon" => 4,
                 "biohazard(r) 3 pc" => 4,
+                "bio3 chn/twn" => 4,
                 _ => 0
             };
 
@@ -774,6 +775,7 @@ namespace REviewer
                 "bio" or "biohazard" => 0,
                 "bio2 1.10" or "bio2 1.1" or "bio2 chn claire" or "bio2 chn leon" => 1,
                 "biohazard(r) 3 pc" => 2,
+                "bio3 chn/twn" => 3,
                 _ => 0
             };
 
@@ -784,7 +786,23 @@ namespace REviewer
 
             var offset = Library.HexToInt(bio.Offsets["EnemyInfos"]);
             var enemyPointer = 0;
-            var enemyArraySize = selectedGame == 0 ? 16 : 32;
+            var enemyArraySize = 0;
+
+            switch (selectedGame)
+            {
+                case 0:
+                    enemyArraySize = 16;
+                    break;
+                case 1:
+                    enemyArraySize = 32;
+                    break;
+                case 2:
+                    enemyArraySize = 32;
+                    break;
+                case 3:
+                    enemyArraySize = 41;
+                    break;
+            }
 
             bio.Offsets.TryGetValue("EnemyPointer", out var enemyPointerOffset);
             if (enemyPointerOffset != null && enemyPointerOffset != "")

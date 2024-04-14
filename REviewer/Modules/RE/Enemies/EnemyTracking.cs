@@ -206,6 +206,7 @@ namespace REviewer.Modules.RE.Enemies
         public int DEFAULT_PTR_RE2_PN = 0xAA2964;
         public int DEFAULT_PTR_RE2_PL = 0xAA28E4;
         public int DEFAULT_PTR_RE3 = 0x0A62290;
+        public int DEFAULT_PTR_RE3_CN = 0x0AFFDB0;
 
         public int SelectedGame;
 
@@ -527,7 +528,7 @@ namespace REviewer.Modules.RE.Enemies
                 {
                     UpdateEnemy();
                 }
-                else if (SelectedGame == 1 || SelectedGame == 2)
+                else if (SelectedGame == 1 || SelectedGame == 2 || SelectedGame == 3)
                 {
                     UpdateEnemyRE2andRE3();
                 }

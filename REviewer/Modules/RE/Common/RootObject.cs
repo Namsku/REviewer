@@ -41,6 +41,7 @@ namespace REviewer.Modules.RE.Common
             { "bunny2", 0x07 },
             { "CLAIRE", 0x07 },
             { "LEON", 0x07 },
+            { "Leon", 0x07 },
             { "bio2 chn claire", 0x07 },
             { "bio2 chn leon", 0x07 },
             { "Bio2 chn claire", 0x07 },
@@ -48,6 +49,7 @@ namespace REviewer.Modules.RE.Common
             { "Irregular1.8", 0x07 },
             { "BIOHAZARD(R) 3 PC", 0x05 },
             { "biohazard(r) 3 pc", 0x05 },
+            { "Bio3 CHN/TWN", 0x05 },
             { "CVX PS2 US", 0x09 },
         };
 
@@ -127,7 +129,7 @@ namespace REviewer.Modules.RE.Common
                 SELECTED_GAME = 200;
                 HitVisibility = Visibility.Visible;
             }
-            else if (processName == "biohazard(r) 3 pc")
+            else if (processName == "biohazard(r) 3 pc" || processName == "bio3 chn/twn")
             {
                 SELECTED_GAME = 300;
             }
@@ -198,7 +200,7 @@ namespace REviewer.Modules.RE.Common
             InitStats();
 
             // File Watcher
-            if (processName != "bio2 chn claire" && processName != "bio2 chn leon")
+            if (processName != "bio2 chn claire" && processName != "bio2 chn leon" && processName != "bio3 chn/twn")
             {
                 InitFileWatcher();
             }

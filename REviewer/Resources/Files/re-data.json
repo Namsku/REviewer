@@ -4182,6 +4182,1005 @@
         }
     }
   },
+  "Bio3 CHN/TWN": {
+    "ItemIDs": {
+      "0": {
+        "Name": "Nothing",
+        "Type": "Nothing",
+        "Img": "resources/re1/nothing.png"
+      },
+      "1": {
+        "Name": "CombatKnife",
+        "Type": "Nothing",
+        "Img": "resources/re3/knife.png"
+      },
+      "2": {
+        "Name": "HandgunSigpro",
+        "Type": "Weapon",
+        "Img": "resources/re3/sigpro-sp2009.png"
+      },
+      "3": {
+        "Name": "HandgunBeretta",
+        "Type": "Weapon",
+        "Img": "resources/re3/m92f-custom.png"
+      },
+      "4": {
+        "Name": "ShotgunBenelli",
+        "Type": "Weapon",
+        "Img": "resources/re3/benelli-m3s.png"
+      },
+      "5": {
+        "Name": "MagnumSW",
+        "Type": "Weapon",
+        "Img": "resources/re3/s-and-w-m629c.png"
+      },
+      "6": {
+        "Name": "GrenadeLauncherGrenade",
+        "Type": "Weapon",
+        "Img": "resources/re3/hk-p-grenade-launcher.png"
+      },
+      "7": {
+        "Name": "GrenadeLauncherFlame",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/hk-p-grenade-launcher.png"
+      },
+      "8": {
+        "Name": "GrenadeLauncherAcid",
+        "Type": "Weapon",
+        "Color": "Yellow",
+        "Img": "resources/re3/hk-p-grenade-launcher.png"
+      },
+      "9": {
+        "Name": "GrenadeLauncherFreeze",
+        "Type": "Weapon",
+        "Color": "Blue",
+        "Img": "resources/re3/hk-p-grenade-launcher.png"
+      },
+      "10": {
+        "Name": "RocketLauncher",
+        "Type": "Weapon",
+        "Img": "resources/re3/m66-rocket-launcher.png"
+      },
+      "11": {
+        "Name": "GatlingGun",
+        "Type": "Weapon",
+        "Img": "resources/re3/gatling-gun.png"
+      },
+      "12": {
+        "Name": "MineThrower",
+        "Type": "Weapon",
+        "Img": "resources/re3/mine-thrower.png"
+      },
+      "13": {
+        "Name": "HangunEagle",
+        "Type": "Weapon",
+        "Img": "resources/re3/sti-eagle-60.png"
+      },
+      "14": {
+        "Name": "RifleM4A1Manual",
+        "Type": "Weapon",
+        "Img": "resources/re3/m4a1-assault-rifle.png"
+      },
+      "15": {
+        "Name": "RifleM4A1Auto",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/m4a1-assault-rifle.png"
+      },
+      "16": {
+        "Name": "ShotgunM37",
+        "Type": "Weapon",
+        "Img": "resources/re3/western-custom-m37.png"
+      },
+      "17": {
+        "Name": "HandgunSigproEnhanced",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/sigpro-sp2009.png"
+      },
+      "18": {
+        "Name": "HandgunBerettaEnhanced",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/m92f-custom.png"
+      },
+      "19": {
+        "Name": "ShotgunBenelliEnhanced",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/benelli-m3s.png"
+      },
+      "20": {
+        "Name": "MineThrowerEnhanced",
+        "Type": "Weapon",
+        "Color": "Red",
+        "Img": "resources/re3/mine-thrower.png"
+      },
+      "21": {
+        "Name": "HandgunAmmo",
+        "Type": "Ammo",
+        "Img": "resources/re3/hand-gun-bullets.png"
+      },
+      "22": {
+        "Name": "MagnumAmmo",
+        "Type": "Ammo",
+        "Img": "resources/re3/magnum-bullets.png"
+      },
+      "23": {
+        "Name": "ShotgunAmmo",
+        "Type": "Ammo",
+        "Img": "resources/re3/shotgun-shells.png"
+      },
+      "24": {
+        "Name": "GrenadeRounds",
+        "Type": "Ammo",
+        "Img": "resources/re3/grenade-rounds.png"
+      },
+      "25": {
+        "Name": "FlameRounds",
+        "Type": "Ammo",
+        "Color": "Red",
+        "Img": "resources/re3/flame-rounds.png"
+      },
+      "26": {
+        "Name": "AcidRounds",
+        "Type": "Ammo",
+        "Color": "Yellow",
+        "Img": "resources/re3/acid-rounds.png"
+      },
+      "27": {
+        "Name": "FreezeRounds",
+        "Type": "Ammo",
+        "Color": "Blue",
+        "Img": "resources/re3/freeze-rounds.png"
+      },
+      "28": {
+        "Name": "MineThrowerAmmo",
+        "Type": "Ammo",
+        "Img": "resources/re3/mine-thrower-rounds.png"
+      },
+      "29": {
+        "Name": "RifleAmmo",
+        "Type": "Ammo",
+        "Img": "resources/re3/assault-rifle-bullets.png"
+      },
+      "30": {
+        "Name": "HandgunEnhancedAmmo",
+        "Type": "Ammo",
+        "Color": "Red",
+        "Img": "resources/re3/hand-gun-bullets-enhanced.png"
+      },
+      "31": {
+        "Name": "ShotgunEnhancedAmmo",
+        "Type": "Ammo",
+        "Color": "Red",
+        "Img": "resources/re3/shotgun-shells-enhanced.png"
+      },
+      "32": {
+        "Name": "FirstAidSpray",
+        "Type": "Nothing",
+        "Img": "resources/re3/first-aid-spray.png"
+      },
+      "33": {
+        "Name": "HerbG",
+        "Type": "Nothing",
+        "Img": "resources/re3/green-herb.png"
+      },
+      "34": {
+        "Name": "HerbB",
+        "Type": "Nothing",
+        "Img": "resources/re3/blue-herb.png"
+      },
+      "35": {
+        "Name": "HerbR",
+        "Type": "Nothing",
+        "Img": "resources/re3/red-herb.png"
+      },
+      "36": {
+        "Name": "HerbGG",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-gg.png"
+      },
+      "37": {
+        "Name": "HerbGB",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-gb.png"
+      },
+      "38": {
+        "Name": "HerbGR",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-gr.png"
+      },
+      "39": {
+        "Name": "HerbGGG",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-ggg.png"
+      },
+      "40": {
+        "Name": "HerbGGB",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-ggb.png"
+      },
+      "41": {
+        "Name": "HerbGRB",
+        "Type": "Nothing",
+        "Img": "resources/re3/mixed-herb-grb.png"
+      },
+      "42": {
+        "Name": "FirstAidSprayBox",
+        "Type": "Item",
+        "Img": "resources/re3/first-aid-box.png"
+      },
+      "43": {
+        "Name": "SquareCrank",
+        "Type": "Key Item",
+        "Img": "resources/re3/square-crank.png"
+      },
+      "44": {
+        "Name": "UnknownRedMedal",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "45": {
+        "Name": "UnknownBlueMedal",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "46": {
+        "Name": "UnknownGoldMedal",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "47": {
+        "Name": "JillSTARSCard",
+        "Type": "Key Item",
+        "Img": "resources/re3/stars-card-jill.png"
+      },
+      "48": {
+        "Name": "UnknownOilCanGigaOil",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "49": {
+        "Name": "Battery",
+        "Type": "Key Item",
+        "Img": "resources/re3/battery.png"
+      },
+      "50": {
+        "Name": "Firehook",
+        "Type": "Key Item",
+        "Img": "resources/re3/fire-hook.png"
+      },
+      "51": {
+        "Name": "PowerCable",
+        "Type": "Key Item",
+        "Img": "resources/re3/power-cable.png"
+      },
+      "52": {
+        "Name": "Fuse",
+        "Type": "Key Item",
+        "Img": "resources/re3/fuse.png"
+      },
+      "53": {
+        "Name": "UnknownBrokenFirehose",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "54": {
+        "Name": "OilAdditive",
+        "Type": "Key Item",
+        "Img": "resources/re3/oil-additive.png"
+      },
+      "55": {
+        "Name": "BradVickersCardcase",
+        "Type": "Key Item",
+        "Img": "resources/re3/card-case.png"
+      },
+      "56": {
+        "Name": "BradVickersSTARSCard",
+        "Type": "Key Item",
+        "Img": "resources/re3/stars-card-brad.png"
+      },
+      "57": {
+        "Name": "MachineOil",
+        "Type": "Key Item",
+        "Img": "resources/re3/machine-oil.png"
+      },
+      "58": {
+        "Name": "MixedOil",
+        "Type": "Key Item",
+        "Img": "resources/re3/mixed-oil.png"
+      },
+      "59": {
+        "Name": "UnknownSteelChain",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "60": {
+        "Name": "Wrench",
+        "Type": "Key Item",
+        "Img": "resources/re3/wrench.png"
+      },
+      "61": {
+        "Name": "IronPipe",
+        "Type": "Key Item",
+        "Img": "resources/re3/iron-pipe.png"
+      },
+      "62": {
+        "Name": "UnknownCylinder",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "63": {
+        "Name": "Firehose",
+        "Type": "Key Item",
+        "Img": "resources/re3/fire-hose.png"
+      },
+      "64": {
+        "Name": "TapeRecorder",
+        "Type": "Key Item",
+        "Img": "resources/re3/tape-recorder.png"
+      },
+      "65": {
+        "Name": "LighterOil",
+        "Type": "Key Item",
+        "Img": "resources/re3/lighter-oil.png"
+      },
+      "66": {
+        "Name": "LighterNoOil",
+        "Type": "Key Item",
+        "Img": "resources/re3/empty-lighter.png"
+      },
+      "67": {
+        "Name": "Lighter",
+        "Type": "Key Item",
+        "Img": "resources/re3/lighter.png"
+      },
+      "68": {
+        "Name": "GreenGem",
+        "Type": "Key Item",
+        "Img": "resources/re3/emerald.png"
+      },
+      "69": {
+        "Name": "BlueGem",
+        "Type": "Key Item",
+        "Img": "resources/re3/sapphire.png"
+      },
+      "70": {
+        "Name": "AmberBall",
+        "Type": "Key Item",
+        "Img": "resources/re3/amber-ball.png"
+      },
+      "71": {
+        "Name": "ObsidianBall",
+        "Type": "Key Item",
+        "Img": "resources/re3/obsidian-ball.png"
+      },
+      "72": {
+        "Name": "CrystalBall",
+        "Type": "Key Item",
+        "Img": "resources/re3/crystal-ball.png"
+      },
+      "73": {
+        "Name": "UnknownRemoteControlNoBatteries",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "74": {
+        "Name": "UnknownRemoteControlBatteries",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "75": {
+        "Name": "UnknownAABatteries",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "76": {
+        "Name": "GoldGear",
+        "Type": "Key Item",
+        "Img": "resources/re3/gold-gear.png"
+      },
+      "77": {
+        "Name": "SilverGear",
+        "Type": "Key Item",
+        "Img": "resources/re3/silver-gear.png"
+      },
+      "78": {
+        "Name": "ChronosGear",
+        "Type": "Key Item",
+        "Img": "resources/re3/chronos-gear.png"
+      },
+      "79": {
+        "Name": "BronzeBook",
+        "Type": "Key Item",
+        "Img": "resources/re3/book-of-wisdom.png"
+      },
+      "80": {
+        "Name": "BronzeCompass",
+        "Type": "Key Item",
+        "Img": "resources/re3/future-compass.png"
+      },
+      "81": {
+        "Name": "VaccineMedium",
+        "Type": "Key Item",
+        "Img": "resources/re3/vaccine-medium.png"
+      },
+      "82": {
+        "Name": "VaccineBase",
+        "Type": "Key Item",
+        "Img": "resources/re3/vaccine-base.png"
+      },
+      "83": {
+        "Name": "UnknownSigproSP2009handgun53",
+        "Type": "Weapon",
+        "Img": "resources/re3/unknown.png"
+      },
+      "84": {
+        "Name": "UnknownSigproSP2009handgun54",
+        "Type": "Weapon",
+        "Img": "resources/re3/unknown.png"
+      },
+      "85": {
+        "Name": "Vaccine",
+        "Type": "Key Item",
+        "Img": "resources/re3/vaccine.png"
+      },
+      "86": {
+        "Name": "UnknownSigproSP2009handgun56",
+        "Type": "Weapon",
+        "Img": "resources/re3/unknown.png"
+      },
+      "87": {
+        "Name": "UnknownSigproSP2009handgun57",
+        "Type": "Weapon",
+        "Img": "resources/re3/unknown.png"
+      },
+      "88": {
+        "Name": "MediumBase",
+        "Type": "Item",
+        "Img": "resources/re3/medium-base.png"
+      },
+      "89": {
+        "Name": "EaglePartsA",
+        "Type": "Nothing",
+        "Img": "resources/re3/eagle-parts-a.png"
+      },
+      "90": {
+        "Name": "EaglePartsB",
+        "Type": "Nothing",
+        "Img": "resources/re3/eagle-parts-b.png"
+      },
+      "91": {
+        "Name": "M37PartsA",
+        "Type": "Nothing",
+        "Img": "resources/re3/m37-parts-a.png"
+      },
+      "92": {
+        "Name": "M37PartsB",
+        "Type": "Nothing",
+        "Img": "resources/re3/m37-parts-b.png"
+      },
+      "93": {
+        "Name": "UnknownSigproSP2009handgun5D",
+        "Type": "Nothing",
+        "Img": "resources/re3/unknown.png"
+      },
+      "94": {
+        "Name": "Chronoschain",
+        "Type": "Key Item",
+        "Img": "resources/re3/chronos-chain.png"
+      },
+      "95": {
+        "Name": "Rustedcrank",
+        "Type": "Key Item",
+        "Img": "resources/re3/rust-hex-crank.png"
+      },
+      "96": {
+        "Name": "Cardkey",
+        "Type": "Key Item",
+        "Img": "resources/re3/card-key.png"
+      },
+      "97": {
+        "Name": "GunpowderA",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-a.png"
+      },
+      "98": {
+        "Name": "GunpowderB",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-b.png"
+      },
+      "99": {
+        "Name": "GunpowderC",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-c.png"
+      },
+      "100": {
+        "Name": "GunpowderAA",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-aa.png"
+      },
+      "101": {
+        "Name": "GunpowderBB",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-bb.png"
+      },
+      "102": {
+        "Name": "GunpowderAC",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-ac.png"
+      },
+      "103": {
+        "Name": "GunpowderBC",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-bc.png"
+      },
+      "104": {
+        "Name": "GunpowderCC",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-cc.png"
+      },
+      "105": {
+        "Name": "GunpowderAAA",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-aaa.png"
+      },
+      "106": {
+        "Name": "GunpowderAAB",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-aab.png"
+      },
+      "107": {
+        "Name": "GunpowderBBA",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-bba.png"
+      },
+      "108": {
+        "Name": "GunpowderBBB",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-bbb.png"
+      },
+      "109": {
+        "Name": "GunpowderCCC",
+        "Type": "Nothing",
+        "Img": "resources/re3/gun-powder-ccc.png"
+      },
+      "110": {
+        "Name": "InfiniteBullets",
+        "Type": "Item",
+        "Img": "resources/re3/infinite-bullets.png"
+      },
+      "111": {
+        "Name": "WaterSample",
+        "Type": "Key Item",
+        "Img": "resources/re3/water-sample.png"
+      },
+      "112": {
+        "Name": "SystemDisk",
+        "Type": "Key Item",
+        "Img": "resources/re3/system-disk.png"
+      },
+      "113": {
+        "Name": "DummyKey",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "114": {
+        "Name": "Lockpick",
+        "Type": "Key Item",
+        "Img": "resources/re3/lockpick.png"
+      },
+      "115": {
+        "Name": "WarehouseKeyBackdoor",
+        "Type": "Key Item",
+        "Img": "resources/re3/backdoor-key.png"
+      },
+      "116": {
+        "Name": "SickroomKeyRoom402",
+        "Type": "Key Item",
+        "Img": "resources/re3/sickroom-key.png"
+      },
+      "117": {
+        "Name": "EmblemKeySTARS",
+        "Type": "Key Item",
+        "Img": "resources/re3/stars-key.png"
+      },
+      "118": {
+        "Name": "UnknownKeyringWith4UnknownKeys",
+        "Type": "Nothing",
+        "Img": "resources/re3/unknown.png"
+      },
+      "119": {
+        "Name": "ClockTowerKeyBezel",
+        "Type": "Key Item",
+        "Img": "resources/re3/bezel-key.png"
+      },
+      "120": {
+        "Name": "ClockTowerKeyWinder",
+        "Type": "Key Item",
+        "Img": "resources/re3/winder-key.png"
+      },
+      "121": {
+        "Name": "ChronosKey",
+        "Type": "Key Item",
+        "Img": "resources/re3/chronos-key.png"
+      },
+      "122": {
+        "Name": "UnknownSigproSP2009handgun7A",
+        "Type": "Item",
+        "Img": "resources/re3/unknown.png"
+      },
+      "123": {
+        "Name": "ParkKeyFront",
+        "Type": "Key Item",
+        "Img": "resources/re3/main-gate-key.png"
+      },
+      "124": {
+        "Name": "ParkKeyGraveyard",
+        "Type": "Key Item",
+        "Img": "resources/re3/graveyard-key.png"
+      },
+      "125": {
+        "Name": "ParkKeyRear",
+        "Type": "Key Item",
+        "Img": "resources/re3/rear-gate-key.png"
+      },
+      "126": {
+        "Name": "FacilityKeyNobarcode",
+        "Type": "Key Item",
+        "Img": "resources/re3/facility-key.png"
+      },
+      "127": {
+        "Name": "FacilityKeyBarcode",
+        "Type": "Key Item",
+        "Img": "resources/re3/facility-key-coded.png"
+      },
+      "128": {
+        "Name": "BoutiqueKey",
+        "Type": "Key Item",
+        "Img": "resources/re3/boutique-key.png"
+      },
+      "129": {
+        "Name": "InkRibbon",
+        "Type": "Item",
+        "Img": "resources/re3/ink-ribbon.png"
+      },
+      "130": {
+        "Name": "ReloadingTool",
+        "Type": "Nothing",
+        "Img": "resources/re3/reloading-tool.png"
+      },
+      "131": {
+        "Name": "GameInstructionsA",
+        "Type": "Nothing",
+        "Img": "resources/re3/game-instructions-a.png"
+      },
+      "132": {
+        "Name": "GameInstructionsB",
+        "Type": "Nothing",
+        "Img": "resources/re3/game-instructions-b.png"
+      },
+      "133": {
+        "Name": "GameInstructionsA2",
+        "Type": "Nothing",
+        "Img": "resources/re3/game-instructions-a-item.png"
+      },
+      "134": {
+        "Name": "GameInstructionsB2",
+        "Type": "Nothing",
+        "Img": "resources/re3/game-instructions-b-item.png"
+      },
+      "255": {
+        "Name": "MissingNo",
+        "Type": "Weapon",
+        "Img": "resources/re1/umbrella.png"
+      }
+    },
+    "DupItems": {
+    },
+    "RoomIDs": {
+      "100": "DARIO SAVE",
+      "101": "DARIO",
+      "102": "DARIO ALLEY",
+      "103": "DARIO STREET",
+      "104": "BASEMENT",
+      "105": "BRAD ALLEY",
+      "106": "BOUTIQUE STREET",
+      "107": "BRAD BAR",
+      "108": "BARRICADE",
+      "109": "FIRE ALLEY",
+      "110": "DEAD BRAD",
+      "111": "RPD HALL",
+      "112": "MARVIN",
+      "113": "RPD EVIDENCE",
+      "114": "RPD DARK STAIRS",
+      "115": "RPD ARMS",
+      "116": "RPD CONFERENCE",
+      "117": "RPD DARK",
+      "118": "RPD STATUES",
+      "119": "STARS CORRIDOR",
+      "200": "BUS",
+      "201": "CAR PARK",
+      "202": "CAR PARK OUT",
+      "203": "CONSTRUCTION",
+      "204": "POWER STATION OUT",
+      "205": "SCUM STREET",
+      "206": "SHOPS",
+      "207": "GEMS",
+      "208": "STATUE BOOK",
+      "209": "PARTY",
+      "210": "PRESS HALL",
+      "211": "RESTAURANT",
+      "212": "RESTAURANT BASEMENT",
+      "213": "POWER STATION ZOMBIES",
+      "214": "POWER STATION",
+      "215": "XXX",
+      "216": "SHOP SAVE",
+      "217": "XXX",
+      "218": "FIREHOSE ALLEY",
+      "219": "XXX",
+      "300": "CHAPEL",
+      "301": "PIANO",
+      "302": "SLAP",
+      "303": "CT COURTYARD",
+      "304": "CT HALL",
+      "305": "CT BEDROOM",
+      "306": "CT CHESS",
+      "307": "CT LIBRARY",
+      "308": "CT CHRONOS CORRIDOR",
+      "309": "CT CHRONOS",
+      "400": "HOSPITAL STREET",
+      "401": "PARK SAVE",
+      "402": "HOSPITAL ENTRANCE",
+      "403": "HOSPITAL SAVE",
+      "404": "HOSPITAL STAFF ROOM",
+      "405": "HOSPITAL 4F",
+      "406": "HOSPITAL CABINET",
+      "407": "HOSPITAL WORMS",
+      "408": "HOSPITAL GRENADE",
+      "409": "HOSPITAL B3",
+      "410": "PARK TUNNEL",
+      "411": "PARK GRAVEYARD",
+      "412": "FIREPLACE",
+      "413": "FIREPLACE SAVE",
+      "414": "FIREPLACE SECRET",
+      "415": "GRAVEDIGGER",
+      "500": "FACTORY ENTRANCE",
+      "501": "FACTORY ENTRANCE SAVE",
+      "502": "FACTORY BOILER",
+      "503": "FACTORY TREATMENT",
+      "504": "FACTORY TUNNEL",
+      "505": "FACTORY TUNNEL SAVE",
+      "506": "WATER PUZZLE",
+      "507": "FACTORY TUNNEL POOL",
+      "508": "ACID MO",
+      "509": "ACID NEMMY",
+      "510": "FACTORY BRIDGE",
+      "10A": "RPD STREET",
+      "10B": "PHARMA DOOR",
+      "10C": "FIRE ALLEY SAVE",
+      "10D": "START",
+      "10E": "FIRE ALLEY BACK",
+      "10F": "BOUTIQUE",
+      "11A": "STARS",
+      "11B": "MURPHY",
+      "11C": "MURPHY BACK",
+      "20A": "LONSDALE",
+      "20B": "CABLE CAR STREET",
+      "20C": "CABLE CAR",
+      "20D": "GAS STATION",
+      "20E": "GAS STATION ENTRANCE",
+      "20F": "PRESS",
+      "21A": "LOCKPICK ALLEY",
+      "21B": "CAR PARK SAVE",
+      "30A": "CT UPSTAIRS",
+      "30B": "CT LADDER",
+      "30C": "CLOCKTOWER",
+      "40A": "HOSPITAL SAFE",
+      "40B": "HOSPITAL GAMMAS",
+      "40C": "PARK HUB",
+      "40D": "PARK GEARS",
+      "40E": "PARK BRIDGE",
+      "40F": "PARK EXIT",
+      "50A": "RADAR",
+      "50B": "FINAL BOX",
+      "50C": "END",
+      "50D": "FINAL NEMMY",
+      "50E": "ESCAPE HELICOPTER",
+      "50F": "ESCAPE ELEVATOR"
+    },
+    "KeyRooms": [
+    ],
+    "Offsets": {
+        "InventoryStart": "0xB050A4",
+        "InventoryEnd": "0xB050CC",
+        "ItemBoxStart": "0xB050CD",
+        "ItemBoxEnd": "0xB051CB",
+        "InventorySlotSelected": "0x0A676AC",
+
+        "CarlosInventoryStart": "0",
+        "CarlosInventoryEnd": "0",
+        "CarlosItemBoxStart": "0",
+        "CarlosItemBoxEnd": "0",
+        "CarlosInventorySlotSelected": "0",
+        "CarlosLastItemFound": "0",
+
+        "Capacity": "0xB051CE",
+        "Character": "0xB04EF6",
+        "Stage": "0xB04EED",
+        "Room": "0xB04EE8",
+        "Cutscene": "0xB04EEA",
+        "LastRoom": "0xB04EEC",
+        "LastCutscene": "0xB04EEE",
+        "LastItemFound": "0",
+        "CharacterHealthState": "0xAFFC07",
+        "GameState": "0xAFF7C0",
+        "GameSystem": "0",
+        "GameTimer": "0",
+        "GameFrame": "0",
+        "GameSave": "0",
+        "PositionX": "0",
+        "PositionY": "0",
+        "PositionZ": "0",
+        "CharacterHealth": "0xAFFC00",
+        "EnemyInfos": "0xAFFD08",
+        "PartnerPointer": "0",
+        "EnemyPointer": "0"
+    },
+    "Player": {
+        "Character": {
+            "Size": "1",
+            "Database": {
+                "0": "Jill",
+                "1": "Jill",
+                "2": "Jill",
+                "3": "Jill",
+                "4": "Jill",
+                "5": "Jill",
+                "6": "Jill",
+                "7": "Jill",
+                "8": "Carlos",
+                "9": "Mikhail",
+                "10": "Nicholai",
+                "11": "Brad",
+                "12": "Dario",
+                "13": "???",
+                "14": "Dario",
+                "15": "Tofu"
+            }
+        },
+        "Health": {
+            "Size": "1",
+            "Database": {
+                "0": [ "200", "101", "41", "21", "0" ],
+                "1": [ "200", "101", "41", "21", "0" ],
+                "2": [ "200", "101", "41", "21", "0" ],
+                "3": [ "200", "101", "41", "21", "0" ],
+                "4": [ "200", "101", "41", "21", "0" ],
+                "5": [ "200", "101", "41", "21", "0" ],
+                "6": [ "200", "101", "41", "21", "0" ],
+                "7": [ "200", "101", "41", "21", "0" ],
+                "8": [ "200", "101", "41", "21", "0" ],
+                "9": [ "200", "101", "41", "21", "0" ],
+                "10": [ "200", "101", "41", "21", "0" ],
+                "11": [ "200", "101", "41", "21", "0" ],
+                "12": [ "200", "101", "41", "21", "0" ],
+                "13": [ "200", "101", "41", "21", "0" ],
+                "14": [ "200", "101", "41", "21", "0" ],
+                "15": [ "200", "101", "41", "21", "0" ]
+            }
+        },
+        "CharacterHealthState": {
+            "Size": "1"
+        },
+        "LastItemFound": {
+            "Size": "1"
+        },
+        "CarlosLastItemFound": {
+            "Size": "1"
+        },
+        "LockPick": {
+            "Size": "1"
+        },
+        "InventoryCapacityUsed": {
+            "Size": "1"
+        },
+        "CarlosInventorySlotSelected": {
+            "Size": "1"
+        },
+        "InventorySlotSelected": {
+            "Size": "1"
+        },
+        "Stage": {
+            "Size": "1"
+        },
+        "Room": {
+            "Size": "1"
+        },
+        "LastRoom": {
+            "Size": "1"
+        },
+        "Cutscene": {
+            "Size": "1"
+        },
+        "LastCutscene": {
+            "Size": "1"
+        },
+        "Unk001": {
+            "Size": "1"
+        },
+        "Event": {
+            "Size": "1",
+            "Database": {
+                "0": "Nothing",
+                "1": "Refused Event",
+                "128": "Event #1 - Yes",
+                "129": "Event #2 - No"
+            }
+        },
+        "PartnerPointer": {
+            "Size": "4"
+        }
+    },
+    "Game": {
+      "State": {
+        "Size": "4"
+      },
+      "Frame": {
+        "Size": "4"
+      },
+      "Timer": {
+        "Size": "4"
+      },
+        "Save": {
+            "Size": "4"
+        },
+      "System": {
+            "Size": "4"
+        },
+      "Unk001": {
+        "Size": "4"
+      },
+      "MainMenu": {
+        "Size": "1"
+      },
+      "SaveContent": {
+        "Size": "4"
+      }
+    },
+    "Position": {
+      "X": {
+        "Size": "4"
+      },
+      "Y": {
+        "Size": "4"
+      },
+      "Z": {
+        "Size": "4"
+      }
+    },
+    "Rebirth": {
+      "Debug": {
+        "Size": "1"
+      },
+      "Screen": {
+        "Size": "1"
+      },
+      "State": {
+        "Size": "4"
+      }
+    },
+    "Enemy": {
+        "EnemyInfos": {
+            "Size": "4"
+        },
+        "EnemyPointer": {
+            "Size": "4"
+        }
+    }
+  },
   "CVX PS2 US": {
     "ItemIDs": {
       "0": {
