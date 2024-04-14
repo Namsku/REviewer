@@ -17,6 +17,11 @@ namespace REviewer.Modules.RE.Common
         public bool isNewGame = false;
         public double FinalInGameTime = 0;
 
+        public int BIOHAZARD_1 = 100;
+        public int BIOHAZARD_2 = 200;
+        public int BIOHAZARD_3 = 300;
+        public int BIOHAZARD_CVX = 400;
+
         private double _saveState;
 
         private double _srtTimeHotfix;
@@ -120,7 +125,7 @@ namespace REviewer.Modules.RE.Common
                 bool isDead = false;
                 bool isRetry = false;
 
-                if (SELECTED_GAME == 100)
+                if (SELECTED_GAME == BIOHAZARD_1)
                 {
                     isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
                     PreviousState = state & 0x0F000000;
@@ -131,11 +136,11 @@ namespace REviewer.Modules.RE.Common
                         Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
                     }
                 }
-                else if (SELECTED_GAME == 200)
+                else if (SELECTED_GAME == BIOHAZARD_2)
                 {
-                    isDead = Health.Value > 60000 && state != 0x00000000;
+                    isDead = Health.Value > 1000 && state != 0x00000000 && OldHealth > 65000;
                 }
-                else if (SELECTED_GAME == 300)
+                else if (SELECTED_GAME == BIOHAZARD_3)
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
@@ -143,7 +148,7 @@ namespace REviewer.Modules.RE.Common
                     isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
                     isNewGame = (isGameDone == true && GameSave.Value == 0);
                 }
-                else if (SELECTED_GAME == 400)
+                else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     isDead = Health.Value < 0;
                 }
@@ -156,7 +161,6 @@ namespace REviewer.Modules.RE.Common
                     Deaths += 1;
 
                     OnPropertyChanged(nameof(Deaths));
-                    OnPropertyChanged(nameof(Health));
                 }
 
                 if(isGameDone = true && FinalInGameTime == 0)

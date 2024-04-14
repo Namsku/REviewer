@@ -622,7 +622,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == 100)
+                if (SELECTED_GAME == BIOHAZARD_1)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -642,12 +642,13 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
                 }
-                else if (SELECTED_GAME == 200)
+                else if (SELECTED_GAME == BIOHAZARD_2)
                 {
                     Health.Value = Health.Value & 0xFFFF;
+                    var state = (GameState.Value & 0xF0000000) != 0x40000000;
                     // Console.WriteLine(Health.Value);
 
-                    if (Health.Value < OldHealth && Health.Value != 255)
+                    if (Health.Value < OldHealth && Health.Value != 255 && Health.Value <= 1200)
                     {
                         if (NoDamage)
                         {
@@ -660,14 +661,14 @@ namespace REviewer.Modules.RE.Common
                     // https://github.com/deserteagle417/RE2-Autosplitter/blob/main/RE2aio.asl
                     // Very helpful for this case, thank you dude <3
 
-                    if (LastRoom.Value == 255 && Health.Value == 0 && (GameState.Value & 0x20000) != 0x20000)
+                    if (LastRoom.Value == 255 && Health.Value == 0 && state && (GameState.Value & 0x20000) != 0x20000)
                     {
                         Resets += 1;
                         PartnerVisibility = Visibility.Hidden;
                         OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
-                else if (SELECTED_GAME == 300)
+                else if (SELECTED_GAME == BIOHAZARD_3)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -681,7 +682,7 @@ namespace REviewer.Modules.RE.Common
                         Hits += 1;
                     }
                 }
-                else if (SELECTED_GAME == 400)
+                else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
                     if (Health.Value < OldHealth)
                     {
