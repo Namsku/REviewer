@@ -557,14 +557,10 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                //if (GameFramePointer.Value != 0)
-                //{
-                //    GameFrame = new VariableData(GameFramePointer.Value + 0x5ac, 4);
-                //}
-                //else
-                //{
-                GameFrame = new VariableData(GameFramePointer.Value, 4);
-                //}
+                if (GameFramePointer.Value != 0)
+                {
+                    GameFrame = new VariableData(GameFramePointer.Value + 0x5ac, 4);
+                }
             }
         }
     }

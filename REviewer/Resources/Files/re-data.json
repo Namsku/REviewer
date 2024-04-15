@@ -5020,7 +5020,7 @@
         "GameSystem": "0",
         "GameTimer": "0xB04E98",
         "GameFramePointer": "0x53706C",
-        "GameFrame": "0x53706C",
+        "GameFrame": "0",
         "GameSave": "0xAFF884",
         "PositionX": "0",
         "PositionY": "0",
