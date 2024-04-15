@@ -281,6 +281,7 @@ namespace REviewer.Modules.Utils
                 { "Bio3_PC_Mercenaries","RE3C" },
                 { "KeTu-FE3", "RE3C" },
                 { "Silent Hill P.T", "RE3C" },
+                { "Bio3 CHN/TWN", "RE3C" },
 
                 { "CVX PS2 US", "RECVX" },
         };
@@ -345,6 +346,7 @@ namespace REviewer.Modules.Utils
             { "Bio3_PC_Mercenaries", "Bio3 CHN/TWN" },
             { "KeTu-FE3", "Bio3 CHN/TWN" },
             { "Silent Hill P.T", "Bio3 CHN/TWN" },
+            { "Bio3 CHN/TWN", "Bio3 CHN/TWN" },
 
             { "pcsx2", "CVX PS2 US" },
             { "pcsx2-qt", "CVX PS2 US" },

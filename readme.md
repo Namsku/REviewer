@@ -13,6 +13,8 @@ REviewer is a SRT (Speedrun Tool) designed specifically for the OG (Original) ve
 | RE2 SourceNext      |  PC      | X   | X             | X            | X       | X         | X        | X          | X         |
 | RE2 Platinium (CHN) |  PC      | X   | X             | X            | X       | X         | X        | X          | X         |
 | RE2 SourceNext      |  PC      | X   | X             | X            | X       | X         | X        | X          | X         |
+| RE3 China           |  PC      |     | X             |              | X       | X         | X        | X          | X         |
+| RE3 TWN             |  PC      | X   | X             |              | X       | X         | X        | X          | X         |
 | RE3 Rebirth         |  PC      | X*  | X             | X            | X       | X         | X        | X          |         X |
 | CVX PS2 US          |  PC      | X   |               |              | X       | X         | X        | X          |         X |
 
@@ -43,6 +45,8 @@ REviewer provides a comprehensive set of features to enhance the speedrunning ex
 - [x] RE1 (Mediakit version) - 95% / Testing phase
 - [X] RE2 (SourceNext) - 95% / Testing phase
 - [X] RE3 (Rebirth) - 95% / Testing phase
+- [X] RE3 (TWN) - 80% / Testing phase
+- [X] RE3 (CHN) - 80% / Testing phase
 - [X] CVX (PS2) - 80 % / Testing phase
 
 Possible other port

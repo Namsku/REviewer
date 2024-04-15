@@ -4995,10 +4995,10 @@
     ],
     "Offsets": {
         "InventoryStart": "0xB050A4",
-        "InventoryEnd": "0xB050CC",
-        "ItemBoxStart": "0xB050CD",
+        "InventoryEnd": "0xB050CB",
+        "ItemBoxStart": "0xB050CC",
         "ItemBoxEnd": "0xB051CB",
-        "InventorySlotSelected": "0x0A676AC",
+        "InventorySlotSelected": "0xB051CC",
 
         "CarlosInventoryStart": "0",
         "CarlosInventoryEnd": "0",
@@ -5014,19 +5014,20 @@
         "Cutscene": "0xB04EEA",
         "LastRoom": "0xB04EEC",
         "LastCutscene": "0xB04EEE",
-        "LastItemFound": "0",
+        "LastItemFound": "0xAFA3A7",
         "CharacterHealthState": "0xAFFC07",
         "GameState": "0xAFF7C0",
         "GameSystem": "0",
-        "GameTimer": "0",
-        "GameFrame": "0",
-        "GameSave": "0",
+        "GameTimer": "0xB04E98",
+        "GameFramePointer": "0x53706C",
+        "GameFrame": "0x53706C",
+        "GameSave": "0xAFF884",
         "PositionX": "0",
         "PositionY": "0",
         "PositionZ": "0",
         "CharacterHealth": "0xAFFC00",
-        "EnemyInfos": "0xAFFD08",
-        "PartnerPointer": "0",
+        "EnemyInfos": "0xAFFD0C",
+        "PartnerPointer": "0xAFFD08",
         "EnemyPointer": "0"
     },
     "Player": {
@@ -5128,7 +5129,10 @@
       "State": {
         "Size": "4"
       },
-      "Frame": {
+        "Frame": {
+            "Size": "4"
+        },
+      "FramePointer": {
         "Size": "4"
       },
       "Timer": {

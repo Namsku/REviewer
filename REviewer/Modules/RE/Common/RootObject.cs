@@ -146,6 +146,7 @@ namespace REviewer.Modules.RE.Common
             // Game
             GameState = GetVariableData("GameState", bio.Game.State);
             GameSystem = GetVariableData("GameSystem", bio.Game.System);
+            GameFramePointer = GetVariableData("GameFramePointer", bio.Game.FramePointer);
             Unk001 = GetVariableData("GameUnk001", bio.Game.Unk001);
             GameTimer = GetVariableData("GameTimer", bio.Game.Timer);
             GameRetry = GetVariableData("GameRetry", bio.Game.Retry);

@@ -66,6 +66,7 @@ namespace REviewer.Modules.RE.Json
         public StandardProperty? Retry { get; set; }
         public StandardProperty? Save { get; set; }
         public StandardProperty? Frame { get; set; }
+        public StandardProperty? FramePointer { get; set; }
         public StandardProperty? Unk001 { get; set; }
         public StandardProperty? MainMenu { get; set; }
         public StandardProperty? SaveContent { get; set; }

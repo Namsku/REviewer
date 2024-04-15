@@ -145,7 +145,7 @@ namespace REviewer
                 case BIOHAZARD_3_CH:
                     _ui.isBiorandMode = false;
                     _ui.ChallengeVisibility = Visibility.Collapsed;
-                    _ui.ClassicVisibility = Visibility.Visible;
+                    _ui.ClassicVisibility = Visibility.Collapsed;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Collapsed;
@@ -707,7 +707,7 @@ namespace REviewer
                 throw new ArgumentNullException(nameof(configPath));
             }
 
-            if (!reJson.TryGetValue(game, out _) && game != "RE2C")
+            if (!reJson.TryGetValue(game, out _) && game != "RE2C" && game != "RE3C")
             {
                 MessageBox.Show("The game save path is not set/not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -739,7 +739,7 @@ namespace REviewer
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
             };
 
-            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PC || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PL)
+            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PC || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PL || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_3_CH)
             {
                 srtConfig["Standard"] = false;
             }
@@ -800,7 +800,7 @@ namespace REviewer
                     enemyArraySize = 32;
                     break;
                 case 3:
-                    enemyArraySize = 41;
+                    enemyArraySize = 40;
                     break;
             }
 

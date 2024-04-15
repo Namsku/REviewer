@@ -206,7 +206,7 @@ namespace REviewer.Modules.RE.Enemies
         public int DEFAULT_PTR_RE2_PN = 0xAA2964;
         public int DEFAULT_PTR_RE2_PL = 0xAA28E4;
         public int DEFAULT_PTR_RE3 = 0x0A62290;
-        public int DEFAULT_PTR_RE3_CN = 0x0AFFDB0;
+        public int DEFAULT_PTR_RE3_CN = 0xAFFDB0; // B0 FD AF 00 // 0xAFFDB0
 
         public int SelectedGame;
 
@@ -415,7 +415,7 @@ namespace REviewer.Modules.RE.Enemies
                     }
                     OnPropertyChanged(nameof(Enemy));
                 }
-                else if (SelectedGame == 2)
+                else if (SelectedGame == 2 || SelectedGame == 3)
                 {
                     // Console.WriteLine($"Enemy ID -> {EnemyID.Value}");
                     Enemy.Name = RE3_Bestiary.TryGetValue((byte)EnemyID.Value, out string enemyName) ? enemyName : "Unknown";
@@ -551,7 +551,8 @@ namespace REviewer.Modules.RE.Enemies
             int positionHp = SelectedGame == 1 ? HP_OFFSET_RE2 : HP_OFFSET_RE3;
             int positionId = SelectedGame == 1 ? ID_OFFSET_RE2 : ID_OFFSET_RE3;
 
-            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE2_PN || _enemyState.Value == DEFAULT_PTR_RE2_PL || _enemyState.Value == DEFAULT_PTR_RE3)
+            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE2_PN || _enemyState.Value == DEFAULT_PTR_RE2_PL || 
+                _enemyState.Value == DEFAULT_PTR_RE3 || _enemyState.Value == DEFAULT_PTR_RE3_CN)
             {
                 PurgeEnemy();
             }

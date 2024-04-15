@@ -323,33 +323,12 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == BIOHAZARD_3)
                 {
-                    if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
+                    if(_gameSave.Offset == 0xAFF884)
                     {
-                        if (timerRunning)
-                        {
-                            // Console.WriteLine("Timer stopped");
-                            timerRunning = false;
-                            _srtTimer.Stop();
-                            _saveState = 0;
-                        }
-
-                        if (Cutscene.Value == 2 && Room.Value == 0xE && (Stage.Value % 5) == 4)
-                        {
-                            return TimeSpan.FromMilliseconds(((_gameSave.Value) / 60.0 * 1000)).ToString(@"hh\:mm\:ss\.ff");
-                        }
-                        return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
+                        return IGTimerBioHazard3China();
                     }
-                    else
-                    {
-                        if (!timerRunning)
-                        {
-                            // Console.WriteLine("Timer started");
-                            StartSRTTimer();
-                        }
-                        _saveState = (_gameSave.Value) / 60.0 * 1000;
 
-                        return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
-                    }
+                    return IGTimerBioHazard3Rebirth();
                 }
                 else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
@@ -357,6 +336,49 @@ namespace REviewer.Modules.RE.Common
                 }
 
                 return 0.ToString();
+            }
+        }
+
+        public string IGTimerBioHazard3Rebirth()
+        {
+            if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
+            {
+
+                if (timerRunning)
+                {
+                    timerRunning = false;
+                    _srtTimer.Stop();
+                    _saveState = 0;
+                }
+
+                if (Cutscene.Value == 2 && Room.Value == 0xE && (Stage.Value % 5) == 4)
+                {
+                    return TimeSpan.FromMilliseconds(((_gameSave.Value) / 60.0 * 1000)).ToString(@"hh\:mm\:ss\.ff");
+                }
+                return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
+            }
+            else
+            {
+                if (!timerRunning)
+                {
+                    // Console.WriteLine("Timer started");
+                    StartSRTTimer();
+                }
+                _saveState = (_gameSave.Value) / 60.0 * 1000;
+
+                return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
+            }
+        }
+
+        public string IGTimerBioHazard3China()
+        {
+            if ((GameState.Value & 0x4000) == 0x4000)
+            {
+                return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
+            }
+            else
+            {
+                return TimeSpan.FromSeconds((GameFrame.Value - GameSave.Value + GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
             }
         }
 
@@ -510,6 +532,41 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+        private VariableData? _gameFramePointer;
+        public VariableData? GameFramePointer
+        {
+            get { return _gameFramePointer; }
+            set
+            {
+                if (_gameFramePointer != null)
+                {
+                    _gameFramePointer.PropertyChanged -= GameFramePointer_PropertyChanged;
+                }
+
+                _gameFramePointer = value;
+
+                if (_gameFramePointer != null)
+                {
+                    _gameFramePointer.PropertyChanged += GameFramePointer_PropertyChanged;
+                }
+                OnPropertyChanged(nameof(GameFramePointer));
+            }
+        }   
+
+        private void GameFramePointer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                //if (GameFramePointer.Value != 0)
+                //{
+                //    GameFrame = new VariableData(GameFramePointer.Value + 0x5ac, 4);
+                //}
+                //else
+                //{
+                GameFrame = new VariableData(GameFramePointer.Value, 4);
+                //}
+            }
+        }
     }
 
 }
