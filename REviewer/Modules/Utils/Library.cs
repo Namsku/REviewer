@@ -509,7 +509,8 @@ namespace REviewer.Modules.Utils
                 { "NoDamageChallenge", reJson["NoDamageChallenge"] == "true" },
                 { "NoItemBoxChallenge", reJson["NoItemBoxChallenge"] == "true"},
                 { "DebugMode", reJson["DebugMode"] == "true" },
-                { "StaticEnemyTrackerWindow", reJson["StaticEnemyTrackerWindow"] == "true" }
+                { "StaticEnemyTrackerWindow", reJson["StaticEnemyTrackerWindow"] == "true" },
+                { "Ddraw100", reJson["Ddraw100"] == "true" }
             };
         }
         public static void UpdateConfigFile(string key, string value)

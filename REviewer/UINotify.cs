@@ -92,6 +92,20 @@ namespace REviewer
             }
         }
 
+        private Visibility _dDrawBio3;
+        public Visibility DdrawBio3
+        {
+            get { return _dDrawBio3; }
+            set
+            {
+                if (_dDrawBio3 != value)
+                {
+                    _dDrawBio3 = value;
+                    OnPropertyChanged(nameof(DdrawBio3));
+                }
+            }
+        }
+
         public UINotify(string version)
         {
             Version = version;
@@ -286,7 +300,7 @@ namespace REviewer
             }
         }
 
-        public bool _staticEnemyTrackerWindow;
+        private bool _staticEnemyTrackerWindow;
         public bool isStaticEnemyTrackerWindow
         {
             get { return _staticEnemyTrackerWindow; }
@@ -296,6 +310,20 @@ namespace REviewer
                 {
                     _staticEnemyTrackerWindow = value;
                     Library.UpdateConfigFile("StaticEnemyTrackerWindow", _staticEnemyTrackerWindow.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _isDdrawChecked;
+        public bool isDdrawChecked
+        {
+            get { return _isDdrawChecked; }
+            set
+            {
+                if (_isDdrawChecked != value)
+                {
+                    _isDdrawChecked = value;
+                    Library.UpdateConfigFile("Ddraw100", _isDdrawChecked.ToString().ToLower());
                 }
             }
         }

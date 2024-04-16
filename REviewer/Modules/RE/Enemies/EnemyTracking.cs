@@ -343,6 +343,7 @@ namespace REviewer.Modules.RE.Enemies
             {
                 if (SelectedGame > 0)
                 {
+                    Console.WriteLine($"Enemy HP -> {EnemyHP.Value} - {EnemyState.Value:X}");
                     // Take only the first 2 bytes
                     Enemy.CurrentHealth = EnemyHP.Value & 0xFFFF;
 

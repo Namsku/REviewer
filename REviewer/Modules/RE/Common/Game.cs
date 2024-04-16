@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Printing.IndexedProperties;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using REviewer.Modules.Utils;
 
@@ -15,6 +16,7 @@ namespace REviewer.Modules.RE.Common
 
         public bool isGameDone = false;
         public bool isNewGame = false;
+        public bool isDDraw100 = false;
         public double FinalInGameTime = 0;
 
         public int BIOHAZARD_1 = 100;
@@ -271,6 +273,23 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
+
+        private void Frame_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariableData.Value))
+            {
+                if (SegmentCount >= 0 && SegmentCount < 4)
+                {
+                    var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
+                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0) - baseTime).ToString(@"hh\:mm\:ss\.ff");
+                    OnPropertyChanged(nameof(IGTSHumanFormat));
+                }
+
+                OnPropertyChanged(nameof(IGTHumanFormat));
+            }
+        }
+
+
         private void Timer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
@@ -287,21 +306,6 @@ namespace REviewer.Modules.RE.Common
                     IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((GameTimer.Value - baseTime) / frames).ToString(@"hh\:mm\:ss\.ff");
                     OnPropertyChanged(nameof(IGTSHumanFormat));
                 }
-            }
-        }
-
-        private void Frame_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(VariableData.Value))
-            {
-                if (SegmentCount >= 0 && SegmentCount < 4)
-                {
-                    var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
-                    IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0) - baseTime).ToString(@"hh\:mm\:ss\.ff");
-                    OnPropertyChanged(nameof(IGTSHumanFormat));
-                }
-
-                OnPropertyChanged(nameof(IGTHumanFormat));
             }
         }
 
@@ -341,6 +345,24 @@ namespace REviewer.Modules.RE.Common
 
         public string IGTimerBioHazard3Rebirth()
         {
+            if (isDDraw100 == true)
+            {
+                if ((GameState.Value & 0x4000 & 0x4000) == 0x4000)
+                {
+                    return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                }
+                else
+                {
+                    return TimeSpan.FromSeconds((GameFrame.Value + GameSave.Value - GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                }
+            }
+
+            return IGTRebirthDDraw101();
+        }
+
+        public string IGTRebirthDDraw101()
+        {
+
             if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
             {
 
@@ -372,6 +394,18 @@ namespace REviewer.Modules.RE.Common
 
         public string IGTimerBioHazard3China()
         {
+            if (SELECTED_GAME == BIOHAZARD_3 && _gameSave.Offset == 0xAFF884)
+            {
+                if (GameFrame.Value == 0 && GameFramePointer.Offset == 0x53705C)
+                {
+                    GameFramePointer = new VariableData(0x53706C, 4);
+                }
+                else if (GameFrame.Value == 0 && GameFramePointer.Offset == 0x53706C)
+                {
+                    GameFramePointer = new VariableData(0x53705C, 4);
+                }
+            }
+
             if ((GameState.Value & 0x4000) == 0x4000)
             {
                 return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
@@ -560,7 +594,7 @@ namespace REviewer.Modules.RE.Common
                 if (GameFramePointer.Value != 0)
                 {
                     GameFrame = new VariableData(GameFramePointer.Value + 0x5ac, 4);
-                }
+                } 
             }
         }
     }

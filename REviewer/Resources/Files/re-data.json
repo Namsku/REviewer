@@ -5000,12 +5000,12 @@
         "ItemBoxEnd": "0xB051CB",
         "InventorySlotSelected": "0xB051CC",
 
-        "CarlosInventoryStart": "0",
-        "CarlosInventoryEnd": "0",
-        "CarlosItemBoxStart": "0",
-        "CarlosItemBoxEnd": "0",
-        "CarlosInventorySlotSelected": "0",
-        "CarlosLastItemFound": "0",
+        "CarlosInventoryStart": "0xB051E4",
+        "CarlosInventoryEnd": "0xB0520B",
+        "CarlosItemBoxStart": "0xB0520C",
+        "CarlosItemBoxEnd": "0xB0530A",
+        "CarlosInventorySlotSelected": "0xB0530C",
+        "CarlosLastItemFound": "0xAFA3A7",
 
         "Capacity": "0xB051CE",
         "Character": "0xB04EF6",

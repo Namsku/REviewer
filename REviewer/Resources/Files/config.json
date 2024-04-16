@@ -12,5 +12,6 @@
     "NoDamageChallenge": false,
     "NoItemBoxChallenge": false,
     "DebugMode": false,
-    "StaticEnemyTrackerWindow": false
+    "StaticEnemyTrackerWindow": false,
+    "Ddraw100": false
 }

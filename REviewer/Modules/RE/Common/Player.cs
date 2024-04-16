@@ -2,6 +2,7 @@
 using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Printing.IndexedProperties;
 using System.Windows;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
@@ -531,7 +532,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == BIOHAZARD_3)
                 {
-                    state = (_characterHealthState?.Value == 0x04);
+                    state = (_characterHealthState?.Value == 0x04) || (_characterHealthState?.Value == 0x00);
                 }
                 else if(SELECTED_GAME == BIOHAZARD_CVX)
                 {
@@ -956,7 +957,7 @@ namespace REviewer.Modules.RE.Common
                 int position_hp = SELECTED_GAME == BIOHAZARD_2 ? 0x156 : 0xCC;
                 int position_id = SELECTED_GAME == BIOHAZARD_2 ? 0x8 : 0x4a;
 
-                if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290 || PartnerPointer.Value == 0xAA2964)
+                if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290 || PartnerPointer.Value == 0xAA2964 || PartnerPointer.Value == 0xAFFDB0)
                 {
                     PartnerHP = null;
                     PartnerMaxHP = null;

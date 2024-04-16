@@ -53,7 +53,7 @@ Possible other port
 
 - PSX Emulation games
 
-## Accepted Process Nameso
+## Accepted Process Names
 
 ### Resident Evil 2 - Source Next
 - bio2

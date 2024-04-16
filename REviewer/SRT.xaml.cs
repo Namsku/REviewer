@@ -20,6 +20,7 @@ namespace REviewer
         private FontFamily? _pixelBoyFont;
         private HotKeyManager _hotKeyManager;
         private HotKey _f11;
+        private HotKey _f9;
         public SRT(RootObject gameData, MonitorVariables monitoring, Dictionary<string,bool?> config, string gameName)
         {
             InitializeComponent();
@@ -67,15 +68,27 @@ namespace REviewer
         private void InitHotKey()
         {
             _hotKeyManager = new HotKeyManager();
-            _hotKeyManager.KeyPressed += OnF11Pressed;
+            _hotKeyManager.KeyPressed += OnKeyPressed;
             _f11 = _hotKeyManager.Register(Key.F11, ModifierKeys.None);
+
+            if (_gameName == "Bio3 CHN/TWN")
+            {
+                _f9 = _hotKeyManager.Register(Key.F9, ModifierKeys.None);
+            }
         }
 
-        private void OnF11Pressed(object sender, GlobalHotKey.KeyPressedEventArgs e)
+        private void OnKeyPressed(object? sender, KeyPressedEventArgs ex)
         {
-            // Console.WriteLine("F11 Pressed");
-            // Do something when F9 is pressed
-            ResetSRT();
+            switch(ex.HotKey.Key)
+            {
+                case Key.F11:
+                    ResetSRT();
+                    break;
+                case Key.F9:
+                    ResetGame();
+                    break;
+            }
+
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
@@ -94,10 +107,17 @@ namespace REviewer
             _game.InventorySlotSelected.Value = 0;
             // Console.WriteLine("Erasing the mess");
         }
+
+        private void ResetGame()
+        {
+            _monitoring.WriteVariableData(_game.GameState, 0);
+        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Console.WriteLine("Closing SRT");
-            _hotKeyManager.KeyPressed -= OnF11Pressed;
+            _hotKeyManager.KeyPressed -= OnKeyPressed;
+
+            if(_f9 != null) _hotKeyManager.Unregister(_f9);
             _hotKeyManager.Unregister(_f11);
         }
 

@@ -110,6 +110,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Visible;
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Visible;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_SC:
                     _ui.isBiorandMode = true;
@@ -117,6 +118,7 @@ namespace REviewer
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_PC:
                     _ui.isBiorandMode = false;
@@ -125,6 +127,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     _ui.DebugModeVisibility = Visibility.Visible;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_PL:
                     _ui.isBiorandMode = false;
@@ -133,6 +136,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     _ui.DebugModeVisibility = Visibility.Visible;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_3_RB:
                     _ui.isBiorandMode = true;
@@ -141,6 +145,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Visible;
+                    _ui.DdrawBio3 = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_CH:
                     _ui.isBiorandMode = false;
@@ -149,6 +154,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Collapsed;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_CV_X:
                     _ui.isBiorandMode = true;
@@ -157,6 +163,7 @@ namespace REviewer
                     _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Collapsed;
+                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
             }
         }
@@ -235,6 +242,7 @@ namespace REviewer
             _ui.NoItemBoxChallenge = config["NoItemBoxChallenge"];
             _ui.DebugMode = config["DebugMode"];
             _ui.isStaticEnemyTrackerWindow = config["StaticEnemyTrackerWindow"];
+            _ui.isDdrawChecked = config["Ddraw100"];
         }
 
         private void InitializeProcessWatcher()
@@ -733,7 +741,8 @@ namespace REviewer
                 ["NoDamage"] = NoDamage.IsChecked,
                 ["NoItemBox"] = NoItemBox.IsChecked,
                 ["DebugMode"] = DebugMode.IsChecked,
-                ["StaticEnemyTrackerWindow"] = StaticEnemyTrackerWindow.IsChecked
+                ["StaticEnemyTrackerWindow"] = StaticEnemyTrackerWindow.IsChecked,
+                ["Ddraw100"] = DdrawBio3.IsChecked
 
                 // ["IGTimer"] = IGTimerCheckBox.IsChecked,
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked

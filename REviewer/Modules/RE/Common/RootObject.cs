@@ -271,6 +271,8 @@ namespace REviewer.Modules.RE.Common
             NoDamage = config.TryGetValue("NoDamage", out bool? noDamage) && noDamage == true;
             NoItemBox = config.TryGetValue("NoItemBox", out bool? noItemBox) && noItemBox == true;
             StaticEnemyTrackerWindow = config.TryGetValue("StaticEnemyTrackerWindow", out bool? staticEnemyTrackerWindow) && staticEnemyTrackerWindow == true;
+            isDDraw100 = config.TryGetValue("Ddraw100", out bool? ddraw100) && ddraw100 == true;
+
 
             HealthBarVisibility = GetVisibility(config, "HealthBar");
             BiorandVisibility = GetVisibility(config, "Standard");

@@ -131,7 +131,7 @@
                                     <CheckBox Name="DebugMode" Content="Show Debug Menu" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding DebugMode}"/>
                                     <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}" IsChecked="{Binding isChrisInventoryChecked}"/>
                                     <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}" IsChecked="{Binding isSherryChecked}"/>
-                                    
+                                    <CheckBox Name="DdrawBio3" Content="Using Ddraw.dll 1.0.0" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding DdrawBio3}" IsChecked="{Binding isDdrawChecked}"/>
                                     <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
                                     <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
                                 </StackPanel>
