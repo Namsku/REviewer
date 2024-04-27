@@ -501,7 +501,7 @@ namespace REviewer.Modules.RE.Enemies
 
             if (Enemy.CurrentHealth == 255 && Enemy.Id < 30)
             {
-                Enemy.MaxHealth = 0;
+                Enemy.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -516,7 +516,7 @@ namespace REviewer.Modules.RE.Enemies
                 return;
             }
 
-            // Console.WriteLine($"Enemy: {Enemy.CurrentHealth} - {Enemy.Flag} - {Enemy.Pose} - {Enemy.Id}");
+            Console.WriteLine($"Enemy: {Enemy.CurrentHealth} - {Enemy.Flag} - {Enemy.Pose} - {Enemy.Id}");
 
             OnPropertyChanged(nameof(Enemy));
         }
