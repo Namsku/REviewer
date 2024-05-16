@@ -200,7 +200,6 @@ namespace REviewer
                     case BIOHAZARD_3_CH:
                         break;  
                     case BIOHAZARD_CV_X:
-                        Library.UpdateTextBox(RECVXSavePath, text: savePath, isBold: false);
                         break;
                 }
             }
@@ -415,7 +414,7 @@ namespace REviewer
                     var reJson = Library.GetReviewerConfig();
                     var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
 
-                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH) isSaveFound = true;
+                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH || index == BIOHAZARD_CV_X) isSaveFound = true;
 
                     if (_isProcessRunning && isSaveFound)
                     {
@@ -612,22 +611,6 @@ namespace REviewer
             {
                 RE3SavePath.Text = dialog.FileName;
                 Library.UpdateConfigFile("RE3", dialog.FileName);
-                Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
-
-            }
-        }
-
-        private void RECVXSavePathButton_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new CommonOpenFileDialog
-            {
-                IsFolderPicker = true
-            };
-
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                RECVXSavePath.Text = dialog.FileName;
-                Library.UpdateConfigFile("RECVX", dialog.FileName);
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
 
             }

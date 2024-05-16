@@ -189,21 +189,6 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="Resident Evil - Code Veronica" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RECVXSavePath"/>
-                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RECVXSavePathButton_Click"/>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
                             <GroupBox Header="Windows Layout" Margin="0,0,0,0">
                                 <StackPanel>
                                     <CheckBox Name="Minimalist" Content="Minimalist UI (For small resolutions)" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isMinimalistChecked}"/>

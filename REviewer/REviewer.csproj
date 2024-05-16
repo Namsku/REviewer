@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x86</Platforms>
+    <ApplicationIcon>Resources\Icons\REviewerIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
         <Resource Include="resources/race/*.png" />
 	  <Resource Include="resources/cvx/*.png" />
 	    <Resource Include="resources/fonts/*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Icons\REviewerIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>

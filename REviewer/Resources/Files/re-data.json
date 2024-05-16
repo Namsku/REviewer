@@ -5998,52 +5998,55 @@
         "Difficulty": "0x0043318C"
     },
     "Player": {
-      "Character": {
-        "Size": "1",
-        "Database": {
-          "0": "Claire",
-          "1": "Chris",
-          "2": "Steve",
-          "3": "Wesker"
+        "Character": {
+            "Size": "1",
+            "Database": {
+                "0": "Claire",
+                "1": "Chris",
+                "2": "Steve",
+                "3": "Wesker"
+            }
+        },
+        "Health": {
+            "Size": "4",
+            "Database": {
+                "0": [ "160", "111", "61", "21", "0" ],
+                "1": [ "160", "111", "61", "21", "0" ],
+                "2": [ "160", "111", "61", "21", "0" ],
+                "3": [ "160", "111", "61", "21", "0" ],
+                "4": [ "160", "111", "61", "21", "0" ]
+            }
+        },
+        "CharacterHealthState": {
+            "Size": "1"
+        },
+        "LastItemFound": {
+            "Size": "1"
+        },
+        "InventorySlotSelected": {
+            "Size": "4"
+        },
+        "Stage": {
+            "Size": "1"
+        },
+        "Room": {
+            "Size": "4"
+        },
+        "LastRoom": {
+            "Size": "4"
+        },
+        "LastCutscene": {
+            "Size": "4"
+        },
+        "Cutscene": {
+            "Size": "4"
+        },
+        "PartnerPointer": {
+            "Size": "4"
+        },
+        "EnemyCount": {
+            "Size": "4"
         }
-      },
-      "Health": {
-        "Size": "4",
-        "Database": {
-          "0": [ "160", "111", "61", "21", "0" ],
-          "1": [ "160", "111", "61", "21", "0" ],
-          "2": [ "160", "111", "61", "21", "0" ],
-          "3": [ "160", "111", "61", "21", "0" ],
-          "4": [ "160", "111", "61", "21", "0" ]
-        }
-      },
-      "CharacterHealthState": {
-        "Size": "1"
-      },
-      "LastItemFound": {
-        "Size": "1"
-      },
-      "InventorySlotSelected": {
-        "Size": "4"
-      },
-      "Stage": {
-        "Size": "1"
-      },
-      "Room": {
-        "Size": "4"
-      },
-      "LastRoom": {
-        "Size": "4"
-      },
-      "Cutscene": {
-        "Size": "4"
-      },
-      "PartnerPointer": {
-        "Size": "4"
-      },
-      "EnemyCount": {
-        "Size": "4"
-      }
     },
     "Game": {
       "State": {
