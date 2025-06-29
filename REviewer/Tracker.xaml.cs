@@ -74,7 +74,7 @@ namespace REviewer
                 WindowHeight = double.NaN;
             }
 
-            Console.WriteLine(_game.StaticEnemyTrackerWindow);
+            // Console.WriteLine(_game.StaticEnemyTrackerWindow);
 
             OnPropertyChanged(nameof(WindowWidth)); // Raise PropertyChanged event for WindowWidth
             OnPropertyChanged(nameof(WindowScale)); // Raise PropertyChanged event for WindowScale

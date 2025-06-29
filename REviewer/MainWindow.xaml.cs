@@ -22,6 +22,7 @@ using Reloaded.Memory.Sigscan;
 using Reloaded.Memory.Sigscan.Definitions.Structs;
 
 using Timer = System.Threading.Timer;
+using Newtonsoft.Json.Linq;
 
 namespace REviewer
 {
@@ -42,6 +43,8 @@ namespace REviewer
         private ObservableCollection<EnemyTracking>? _tracking;
         private ItemIDs? _itemIDs;
         private UINotify? _ui;
+
+        private int _value = 24;
 
         public const int BIOHAZARD_1_MK = 0; // Mediakit
         public const int BIOHAZARD_2_SC = 1; // SourceNext
@@ -72,11 +75,12 @@ namespace REviewer
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
-
+        public Config OverlayConfig { get; private set; }
         public SRT? SRT { get; private set; }
         public Tracker? TRK { get; private set; }
 
         private readonly object _lock = new object();
+
 
         public MainWindow()
         {
@@ -101,6 +105,15 @@ namespace REviewer
         {
             _ui ??= new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
 
+            // Reset all visibilities to Collapsed and booleans to false
+            _ui.isBiorandMode = false;
+            _ui.ChallengeVisibility = Visibility.Collapsed;
+            _ui.ClassicVisibility = Visibility.Collapsed;
+            _ui.ChrisInventory = Visibility.Collapsed;
+            _ui.Sherry = Visibility.Collapsed;
+            _ui.DebugModeVisibility = Visibility.Collapsed;
+            _ui.DdrawBio3 = Visibility.Collapsed;
+
             switch (ComboBoxGameSelection.SelectedIndex)
             {
                 case BIOHAZARD_1_MK:
@@ -108,62 +121,32 @@ namespace REviewer
                     _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
                     _ui.ChrisInventory = Visibility.Visible;
-                    _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Visible;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_SC:
                     _ui.isBiorandMode = true;
                     _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_2_PC:
-                    _ui.isBiorandMode = false;
-                    _ui.ChallengeVisibility = Visibility.Collapsed;
-                    _ui.ClassicVisibility = Visibility.Collapsed;
-                    _ui.ChrisInventory = Visibility.Collapsed;
-                    _ui.Sherry = Visibility.Visible;
-                    _ui.DebugModeVisibility = Visibility.Visible;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
-                    break;
                 case BIOHAZARD_2_PL:
-                    _ui.isBiorandMode = false;
-                    _ui.ChallengeVisibility = Visibility.Collapsed;
-                    _ui.ClassicVisibility = Visibility.Collapsed;
-                    _ui.ChrisInventory = Visibility.Collapsed;
                     _ui.Sherry = Visibility.Visible;
                     _ui.DebugModeVisibility = Visibility.Visible;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
                 case BIOHAZARD_3_RB:
                     _ui.isBiorandMode = true;
                     _ui.ChallengeVisibility = Visibility.Visible;
                     _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.ChrisInventory = Visibility.Collapsed;
-                    _ui.Sherry = Visibility.Collapsed;
                     _ui.DebugModeVisibility = Visibility.Visible;
                     _ui.DdrawBio3 = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_CH:
-                    _ui.isBiorandMode = false;
-                    _ui.ChallengeVisibility = Visibility.Collapsed;
-                    _ui.ClassicVisibility = Visibility.Collapsed;
-                    _ui.ChrisInventory = Visibility.Collapsed;
-                    _ui.Sherry = Visibility.Collapsed;
-                    _ui.DebugModeVisibility = Visibility.Collapsed;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
+                    // All remain collapsed/false
                     break;
                 case BIOHAZARD_CV_X:
                     _ui.isBiorandMode = true;
-                    _ui.ChallengeVisibility = Visibility.Collapsed;
                     _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.ChrisInventory = Visibility.Collapsed;
-                    _ui.Sherry = Visibility.Collapsed;
-                    _ui.DebugModeVisibility = Visibility.Collapsed;
-                    _ui.DdrawBio3 = Visibility.Collapsed;
                     break;
             }
         }
@@ -639,10 +622,15 @@ namespace REviewer
 
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        // Console.WriteLine($"Creating SRT and Tracker -> {_processName}");
+                                        // Create SRT window
                                         var srtConfig = GenerateSRTUIConfig();
                                         SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
                                         SRT.Show();
+
+                                        // Create Overlay window
+                                        var overlayConfig = new Config(0, 16, true, false); // Example configuration
+                                        var overlayWindow = new Overlay(_process, overlayConfig, _residentEvilGame);
+                                        overlayWindow.Show();
 
                                         if (_tracking != null)
                                         {
@@ -808,7 +796,7 @@ namespace REviewer
 
             for (var i = 0; i < enemyArraySize; i++)
             {
-                _tracking.Add(new EnemyTracking(offset + (i * size), property, selectedGame, enemyPointer));
+                _tracking.Add(new EnemyTracking(offset + (i * size), property, selectedGame, enemyPointer, _residentEvilGame));
             }
         }
 
@@ -901,6 +889,26 @@ namespace REviewer
             }
         }
 
+        private void IncreaseValue_Click(object sender, RoutedEventArgs e)
+        {
+            if (_value < 72)
+            {
+                _value++;
+                ValueDisplay.Text = _value.ToString();
+            }
+        }
+
+        private void DecreaseValue_Click(object sender, RoutedEventArgs e)
+        {
+            if (_value > 0)
+            {
+                _value--;
+                ValueDisplay.Text = _value.ToString();
+            }
+        }
+
+
     }
 
 }
+

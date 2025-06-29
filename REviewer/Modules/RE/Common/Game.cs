@@ -25,6 +25,7 @@ namespace REviewer.Modules.RE.Common
         public int BIOHAZARD_CVX = 400;
 
         private double _saveState;
+        public int FontSize = 24;
 
         private double _srtTimeHotfix;
         public double SrtTimeHotfix
@@ -37,7 +38,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        private System.Timers.Timer _srtTimer;
+        private System.Timers.Timer? _srtTimer;
         public bool timerRunning = false;
 
         private int _previousState;
@@ -46,7 +47,7 @@ namespace REviewer.Modules.RE.Common
             get { return _previousState; }
             set
             {
-                    _previousState = value;
+                _previousState = value;
             }
         }
 
@@ -56,7 +57,8 @@ namespace REviewer.Modules.RE.Common
             get { return _state; }
             set
             {
-                if (_state != value) { 
+                if (_state != value)
+                {
                     if (_state != null)
                     {
                         _state.PropertyChanged -= GameState_PropertyChanged;
@@ -64,9 +66,9 @@ namespace REviewer.Modules.RE.Common
 
                     _state = value;
 
-                    if(value != null)
+                    if (value != null && _state != null)
                     {
-                        _state.PropertyChanged += GameState_PropertyChanged;
+                        _state.PropertyChanged += GameState_PropertyChanged!;
                     }
 
                     OnPropertyChanged(nameof(GameState));
@@ -90,9 +92,9 @@ namespace REviewer.Modules.RE.Common
 
                     _system = value;
 
-                    if (value != null)
+                    if (value != null && _system != null)
                     {
-                        _system.PropertyChanged += System_PropertyChanged;
+                        _system.PropertyChanged += System_PropertyChanged!;
                     }
 
                     OnPropertyChanged(nameof(GameSystem));
@@ -102,22 +104,24 @@ namespace REviewer.Modules.RE.Common
 
         private void System_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(VariableData.Value))
+            if (e.PropertyName == nameof(VariableData.Value))
             {
-                // Console.WriteLine($"System changed -> {GameSystem.Value:X}");
-                bool itembox = (GameSystem?.Value & 0x00000F00) == 0x200;  
+                // Console.WriteLine($"System changed -> {GameSystem?.Value:X}");
+                bool itembox = (GameSystem?.Value & 0x00000F00) == 0x200;
 
                 if (itembox && NoItemBox)
                 {
-                    Monitoring.WriteVariableData(GameSystem, 0);
-                    Monitoring.WriteVariableData(GameState, 0);
+                    if (GameSystem != null && Monitoring != null)
+                        Monitoring.WriteVariableData(GameSystem, 0);
+                    if (GameState != null && Monitoring != null)
+                        Monitoring.WriteVariableData(GameState, 0);
                 }
             }
         }
 
-                            
 
-    private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+
+        private void GameState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
@@ -135,7 +139,8 @@ namespace REviewer.Modules.RE.Common
 
                     if (item_box && NoItemBox)
                     {
-                        Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
+                        if (GameState != null && Monitoring != null)
+                            Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
                     }
                 }
                 else if (SELECTED_GAME == BIOHAZARD_2)
@@ -146,9 +151,9 @@ namespace REviewer.Modules.RE.Common
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
-                    isRetry = GameState.Value == 0 && LastRoom.Value == 0xFF && LastCutscene.Value == 0xFF;
-                    isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
-                    isNewGame = (isGameDone == true && GameSave.Value == 0);
+                    isRetry = GameState.Value == 0 && LastRoom != null && LastRoom.Value == 0xFF && LastCutscene != null && LastCutscene.Value == 0xFF;
+                    isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && Stage != null && Room != null && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
+                    isNewGame = (isGameDone == true && GameSave != null && GameSave.Value == 0);
                 }
                 else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
@@ -165,13 +170,13 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(Deaths));
                 }
 
-                if(isGameDone = true && FinalInGameTime == 0)
+                if (isGameDone == true && FinalInGameTime == 0 && GameTimer != null)
                 {
                     FinalInGameTime = GameTimer.Value / 60.0;
                     OnPropertyChanged(nameof(IGTHumanFormat));
                 }
 
-                if(isNewGame)
+                if (isNewGame)
                 {
                     FinalInGameTime = 0;
                     isGameDone = false;
@@ -212,7 +217,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (_timer != null)
                 {
-                    _timer.PropertyChanged += Timer_PropertyChanged;
+                    _timer.PropertyChanged += Timer_PropertyChanged!;
                 }
 
                 OnPropertyChanged(nameof(GameTimer));
@@ -234,7 +239,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (_retry != null)
                 {
-                    _retry.PropertyChanged += Retry_PropertyChanged;
+                    _retry.PropertyChanged += Retry_PropertyChanged!;
                 }
 
                 OnPropertyChanged(nameof(GameRetry));
@@ -245,7 +250,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                Resets = GameRetry.Value;
+                if (GameRetry != null)
+                    Resets = GameRetry.Value;
             }
         }
 
@@ -265,7 +271,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (_frame != null)
                 {
-                    _frame.PropertyChanged += Frame_PropertyChanged;
+                    _frame.PropertyChanged += Frame_PropertyChanged!;
                 }
 
                 OnPropertyChanged(nameof(GameFrame));
@@ -278,7 +284,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SegmentCount >= 0 && SegmentCount < 4)
+                if (SegmentCount >= 0 && SegmentCount < 4 && IGTSegments != null && _timer != null && _frame != null && IGTSHumanFormat != null)
                 {
                     var baseTime = IGTSegments[Math.Max(0, SegmentCount - 1)];
                     IGTSHumanFormat[SegmentCount] = TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0) - baseTime).ToString(@"hh\:mm\:ss\.ff");
@@ -298,7 +304,7 @@ namespace REviewer.Modules.RE.Common
 
                 double frames = SELECTED_GAME == BIOHAZARD_CVX ? 60.0 : 30.0;
 
-                if(IGTSegments == null || GameTimer == null) return;
+                if (IGTSegments == null || GameTimer == null || IGTSHumanFormat == null) return;
 
                 if (SegmentCount >= 0 && SegmentCount < 4)
                 {
@@ -315,7 +321,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == BIOHAZARD_1)
                 {
-                    return TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff");
+                    return _timer != null ? TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
                 else if (SELECTED_GAME == BIOHAZARD_2)
                 {
@@ -323,11 +329,11 @@ namespace REviewer.Modules.RE.Common
                     {
                         return TimeSpan.FromSeconds(FinalInGameTime).ToString(@"hh\:mm\:ss\.ff");
                     }
-                    return TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff");
+                    return (_timer != null && _frame != null) ? TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
                 else if (SELECTED_GAME == BIOHAZARD_3)
                 {
-                    if(_gameSave.Offset == 0xAFF884)
+                    if (_gameSave != null && _gameSave.Offset == 0xAFF884)
                     {
                         return IGTimerBioHazard3China();
                     }
@@ -336,7 +342,7 @@ namespace REviewer.Modules.RE.Common
                 }
                 else if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
-                    return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    return GameTimer != null ? TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
 
                 return 0.ToString();
@@ -347,13 +353,16 @@ namespace REviewer.Modules.RE.Common
         {
             if (isDDraw100 == true)
             {
-                if ((GameState.Value & 0x4000 & 0x4000) == 0x4000)
+                if (GameState != null && (GameState.Value & 0x4000 & 0x4000) == 0x4000)
                 {
-                    return TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    return _gameSave != null ? TimeSpan.FromSeconds((_gameSave.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
                 else
                 {
-                    return TimeSpan.FromSeconds((GameFrame.Value + GameSave.Value - GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    if (GameFrame != null && GameSave != null && GameTimer != null)
+                        return TimeSpan.FromSeconds((GameFrame.Value + GameSave.Value - GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                    else
+                        return "0";
                 }
             }
 
@@ -363,17 +372,17 @@ namespace REviewer.Modules.RE.Common
         public string IGTRebirthDDraw101()
         {
 
-            if ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100)
+            if (GameState != null && ((GameState.Value & 0x4000) == 0x4000 || GameState.Value == 0 || GameState.Value == 0x100))
             {
 
-                if (timerRunning)
+                if (timerRunning && _srtTimer != null)
                 {
                     timerRunning = false;
                     _srtTimer.Stop();
                     _saveState = 0;
                 }
 
-                if (Cutscene.Value == 2 && Room.Value == 0xE && (Stage.Value % 5) == 4)
+                if (Cutscene != null && Room != null && Stage != null && Cutscene.Value == 2 && Room.Value == 0xE && (Stage.Value % 5) == 4 && _gameSave != null)
                 {
                     return TimeSpan.FromMilliseconds(((_gameSave.Value) / 60.0 * 1000)).ToString(@"hh\:mm\:ss\.ff");
                 }
@@ -386,7 +395,8 @@ namespace REviewer.Modules.RE.Common
                     // Console.WriteLine("Timer started");
                     StartSRTTimer();
                 }
-                _saveState = (_gameSave.Value) / 60.0 * 1000;
+                if (_gameSave != null)
+                    _saveState = (_gameSave.Value) / 60.0 * 1000;
 
                 return TimeSpan.FromMilliseconds(SrtTimeHotfix + _saveState).ToString(@"hh\:mm\:ss\.ff");
             }
@@ -394,25 +404,28 @@ namespace REviewer.Modules.RE.Common
 
         public string IGTimerBioHazard3China()
         {
-            if (SELECTED_GAME == BIOHAZARD_3 && _gameSave.Offset == 0xAFF884)
+            if (SELECTED_GAME == BIOHAZARD_3 && _gameSave != null && _gameSave.Offset == 0xAFF884)
             {
-                if (GameFrame.Value == 0 && GameFramePointer.Offset == 0x53705C)
+                if (GameFrame != null && GameFrame.Value == 0 && GameFramePointer != null && GameFramePointer.Offset == 0x53705C)
                 {
                     GameFramePointer = new VariableData(0x53706C, 4);
                 }
-                else if (GameFrame.Value == 0 && GameFramePointer.Offset == 0x53706C)
+                else if (GameFrame != null && GameFrame.Value == 0 && GameFramePointer != null && GameFramePointer.Offset == 0x53706C)
                 {
                     GameFramePointer = new VariableData(0x53705C, 4);
                 }
             }
 
-            if ((GameState.Value & 0x4000) == 0x4000)
+            if (GameState != null && (GameState.Value & 0x4000) == 0x4000)
             {
-                return TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                return GameTimer != null ? TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff") : "0";
             }
             else
             {
-                return TimeSpan.FromSeconds((GameFrame.Value - GameSave.Value + GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                if (GameFrame != null && GameSave != null && GameTimer != null)
+                    return TimeSpan.FromSeconds((GameFrame.Value - GameSave.Value + GameTimer.Value) / 60.0).ToString(@"hh\:mm\:ss\.ff");
+                else
+                    return "0";
             }
         }
 
@@ -422,11 +435,11 @@ namespace REviewer.Modules.RE.Common
             SrtTimeHotfix = 0;
 
             _srtTimer = new System.Timers.Timer(20);
-            _srtTimer.Elapsed += TimerElapsed;
+            _srtTimer.Elapsed += TimerElapsed!;
             _srtTimer.Start();
         }
 
-        private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             SrtTimeHotfix += 20;
             OnPropertyChanged(nameof(IGTHumanFormat));
@@ -450,7 +463,7 @@ namespace REviewer.Modules.RE.Common
 
                     if (_gameSave != null)
                     {
-                        _gameSave.PropertyChanged += GameSave_PropertyChanged;
+                        _gameSave.PropertyChanged += GameSave_PropertyChanged!;
                     }
 
                     OnPropertyChanged(nameof(GameSave));
@@ -464,10 +477,11 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == BIOHAZARD_CVX)
                 {
-                    Saves = GameSave.Value;
-                } 
-                else 
-                { 
+                    if (GameSave != null)
+                        Saves = GameSave.Value;
+                }
+                else
+                {
                     OnPropertyChanged(nameof(IGTHumanFormat));
                 }
             }
@@ -491,7 +505,7 @@ namespace REviewer.Modules.RE.Common
 
                     if (_mainMenu != null)
                     {
-                        _mainMenu.PropertyChanged += MainMenu_PropertyChanged;
+                        _mainMenu.PropertyChanged += MainMenu_PropertyChanged!;
                     }
 
                     OnPropertyChanged(nameof(MainMenu));
@@ -507,7 +521,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (SELECTED_GAME == BIOHAZARD_1)
                 {
-                    if (_mainMenu.Value == 1 && Health?.Value <= int.Parse(MaxHealth))
+                    if (_mainMenu != null && _mainMenu.Value == 1 && Health != null && Health.Value <= int.Parse(MaxHealth))
                     {
                         Resets += 1;
                     }
@@ -527,7 +541,7 @@ namespace REviewer.Modules.RE.Common
             get { return _saveContent; }
             set
             {
-                if(_saveContent != null)
+                if (_saveContent != null)
                 {
                     _saveContent.PropertyChanged -= SaveContent_PropertyChanged;
                 }
@@ -536,7 +550,7 @@ namespace REviewer.Modules.RE.Common
 
                 if (_saveContent != null)
                 {
-                    _saveContent.PropertyChanged += SaveContent_PropertyChanged;
+                    _saveContent.PropertyChanged += SaveContent_PropertyChanged!;
                 }
                 OnPropertyChanged(nameof(SaveContent));
             }
@@ -554,12 +568,15 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                uint number = (uint)SaveContent.Value;
-
-                if ((number & 0x0000FFFF) == 0xADDE)
+                if (SaveContent != null)
                 {
-                    uint modified = ReverseBytes(number);
-                    LoadState((int)modified & 0x0000FFFF);
+                    uint number = (uint)SaveContent.Value;
+
+                    if ((number & 0x0000FFFF) == 0xADDE)
+                    {
+                        uint modified = ReverseBytes(number);
+                        LoadState((int)modified & 0x0000FFFF);
+                    }
                 }
 
                 OnPropertyChanged(nameof(SaveContent));
@@ -581,20 +598,20 @@ namespace REviewer.Modules.RE.Common
 
                 if (_gameFramePointer != null)
                 {
-                    _gameFramePointer.PropertyChanged += GameFramePointer_PropertyChanged;
+                    _gameFramePointer.PropertyChanged += GameFramePointer_PropertyChanged!;
                 }
                 OnPropertyChanged(nameof(GameFramePointer));
             }
-        }   
+        }
 
         private void GameFramePointer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (GameFramePointer.Value != 0)
+                if (GameFramePointer != null && GameFramePointer.Value != 0)
                 {
                     GameFrame = new VariableData(GameFramePointer.Value + 0x5ac, 4);
-                } 
+                }
             }
         }
     }

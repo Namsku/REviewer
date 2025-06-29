@@ -198,6 +198,56 @@
                                     <CheckBox Name="NoKeyItems" Content="No Key Items" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoKeyItemsChecked}"/>
                                 </StackPanel>
                             </GroupBox>
+
+                            <GroupBox Header="Overlay" Margin="0,0,0,0">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Position Row -->
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Position" Height="25" VerticalAlignment="Center"/>
+                                        <ComboBox Grid.Row="0" Grid.Column="1" Name="OverlayPosition" Height="22" Width="150" Margin="10,0,0,0">
+                                            <ComboBoxItem Content="Bottom Right" IsSelected="True"/>
+                                            <ComboBoxItem Content="Bottom Left"/>
+                                            <ComboBoxItem Content="Top Right"/>
+                                            <ComboBoxItem Content="Top Left"/>
+                                        </ComboBox>
+
+                                        <!-- Font Size Row -->
+                                        <Label Grid.Row="1"
+                                           Grid.Column="0"
+                                           Content="Font Size"
+                                           Height="25"
+                                           Margin="0,0,0,0"/>
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="10,0,0,0" VerticalAlignment="Center">
+                                            <Button Content="-" Width="25" Height="25" Click="DecreaseValue_Click"/>
+                                            <TextBlock x:Name="ValueDisplay"
+                                               Text="24"
+                                               Width="30"
+                                               Height="25"
+                                               TextAlignment="Center"
+                                               Foreground="White"
+                                               Background="DimGray"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,0,0"/>
+                                            <Button Content="+" Width="25" Height="25" Click="IncreaseValue_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Checkboxes -->
+                                    <CheckBox Name="OverlayHealth" Content="Show Health" Margin="10,0,0,5" IsChecked="{Binding isMinimalistChecked}"/>
+                                    <CheckBox Name="OverlayWeaponUsed" Content="Show Used Weapon" Margin="10,0,0,5" IsChecked="{Binding isStaticEnemyTrackerWindow}"/>
+                                </StackPanel>
+                            </GroupBox>
+
                         </StackPanel>
                     </Grid>
 

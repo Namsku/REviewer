@@ -1,15 +1,19 @@
 ﻿using REviewer.Modules.RE.Json;
+using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Printing.IndexedProperties;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
         private VariableData? _character;
+        public ImageItem PrivateImageItem = new ImageItem();
+        
         public VariableData? Character
         {
             get { return _character; }
@@ -40,17 +44,18 @@ namespace REviewer.Modules.RE.Common
             {
                 if (SELECTED_GAME == BIOHAZARD_3)
                 {
-                    // Console.WriteLine("Character changed");
-                    // Console.WriteLine(Character.Value);
-                    if (Character?.Value == 0x08)
+                    if (_bio != null)
                     {
-                        InitInventory(_bio, true);
-                        InitItemBox(_bio, true);
-                    } 
-                    else
-                    {
-                        InitInventory(_bio);
-                        InitItemBox(_bio);
+                        if (Character?.Value == 0x08)
+                        {
+                            InitInventory(_bio, true);
+                            InitItemBox(_bio, true);
+                        }
+                        else
+                        {
+                            InitInventory(_bio);
+                            InitItemBox(_bio);
+                        }
                     }
                 }
 
@@ -61,7 +66,8 @@ namespace REviewer.Modules.RE.Common
 
         public string? CharacterName
         {
-            get {
+            get
+            {
                 if (_character?.Database == null) return "ERROR";
 
                 var length = ((Dictionary<byte, string>)_character.Database).Count - 1;
@@ -80,7 +86,8 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(CarlosInventorySlotSelected));
                 }
             }
-            get {
+            get
+            {
                 if (SELECTED_GAME == BIOHAZARD_2) return _maxHealth;
                 if (_character?.Database == null) return "ERR";
                 if (_health?.Database == null) return "0";
@@ -120,10 +127,11 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
-                // Console.WriteLine(CarlosInventorySlotSelected.Value);
-                InventorySlotSelected.Value = CarlosInventorySlotSelected.Value;
+                if (InventorySlotSelected != null && CarlosInventorySlotSelected != null)
+                {
+                    InventorySlotSelected.Value = CarlosInventorySlotSelected.Value;
+                }
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
@@ -157,9 +165,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                // Wait 50 ms to avoid flickering
                 await Task.Delay(50);
-                // Console.WriteLine(InventorySlotSelected.Value);
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
             }
         }
@@ -170,27 +176,64 @@ namespace REviewer.Modules.RE.Common
             {
                 var items = IDatabase.GetItems();
 
+                // Console.WriteLine(_inventorySlotSelected.Value);
+
                 if (_inventorySlotSelected != null && IDatabase != null)
                 {
                     byte id = 0;
 
-                    if (_inventorySlotSelected.Value == 0x80) return "./resources/re1/nothing.png";
-                    
-                    if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX)
+                    if (_inventorySlotSelected.Value == 0x80)
                     {
-                        var selected = InventorySlotSelected.Value - 1;
-                        id = InventorySlotSelected?.Value == 0 ? (byte)0 : (byte)Inventory[selected].Item.Value;
-                    }
-                    else if (SELECTED_GAME == BIOHAZARD_2 || SELECTED_GAME == BIOHAZARD_3)
-                    {
-                        var vvv = Character.Value == 0x8 ? CarlosInventorySlotSelected.Value : InventorySlotSelected.Value;
-                        var selected = vvv;
-                        selected = selected < 0 ? 0 : selected;
-                        id = selected == 0xFF || selected == 0x80 ? (byte) 0 : (byte)Inventory[selected].Item.Value;
+                        InventoryImagesSelected = PrivateImageItem;
+                        OnPropertyChanged(nameof(InventoryImagesSelected));
+                        return "./resources/re1/nothing.png";
                     }
 
+                    if ((SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX) && InventorySlotSelected != null && Inventory != null)
+                    {
+                        var selected = InventorySlotSelected.Value - 1;
+
+                        id = InventorySlotSelected.Value == 0 ? (byte)0 :
+                            (selected >= 0 && selected < Inventory.Count && Inventory[selected]?.Item != null)
+                                ? (byte)Inventory[selected].Item.Value : (byte)0;
+
+
+                        if (selected == -1)
+                        {
+                            InventoryImagesSelected = PrivateImageItem;
+                            OnPropertyChanged(nameof(InventoryImagesSelected));
+                        }
+                        else
+                        {
+                            InventoryEquippedOverlay = selected;
+                            InventoryImagesSelected = InventoryImages[selected];
+                        }
+                    }
+                    else if ((SELECTED_GAME == BIOHAZARD_2 || SELECTED_GAME == BIOHAZARD_3) && Character != null && Inventory != null)
+                    {
+                        int? vvv = null;
+                        if (Character.Value == 0x8 && CarlosInventorySlotSelected != null)
+                            vvv = CarlosInventorySlotSelected.Value;
+                        else if (InventorySlotSelected != null)
+                            vvv = InventorySlotSelected.Value;
+
+                        InventoryEquippedOverlay = vvv;
+                        InventoryImagesSelected = InventoryImages[vvv ?? 00];
+                        // Console.WriteLine($"Changing {vvv}");
+
+                        if (vvv != null)
+                        {
+                            var selected = vvv.Value;
+                            selected = selected < 0 ? 0 : selected;
+                            id = (selected == 0xFF || selected == 0x80) ? (byte)0 :
+                                (selected >= 0 && selected < Inventory.Count && Inventory[selected]?.Item != null)
+                                    ? (byte)Inventory[selected].Item.Value : (byte)0;
+                        }
+                    }
                     return items[id].Img;
                 }
+
+                InventoryImagesSelected.TextVisibility = Visibility.Hidden;
                 return "./resources/re1/unknown.png";
             }
         }
@@ -224,7 +267,7 @@ namespace REviewer.Modules.RE.Common
 
                     _room = value;
 
-                    if(Room != null)
+                    if (Room != null)
                     {
                         Room.PropertyChanged += Room_PropertyChanged;
                     }
@@ -238,13 +281,12 @@ namespace REviewer.Modules.RE.Common
         {
             var processName = IDatabase.GetProcessName();
             var max_stage_id = MAX_STAGE_ID[processName ?? "ERR"];
-            // Console.WriteLine($"Stage X:{(Stage.Value)} - Room X:{(Room.Value)} - Last Room X:{(LastRoom.Value)}");
 
             if (e.PropertyName == nameof(VariableData.Value))
             {
                 if (Stage == null || Room == null) return;
 
-                var sss = (((int)Stage.Value % max_stage_id) + 1).ToString() ?? "1";
+                var sss = (((int)Stage.Value % max_stage_id) + 1).ToString();
                 var rrr = ((int)Room.Value).ToString("X2");
                 LastRoomName = FullRoomName ?? "000";
                 FullRoomName = sss + rrr;
@@ -298,7 +340,7 @@ namespace REviewer.Modules.RE.Common
 
         private void UpdateKeyRooms()
         {
-            if(FullRoomName == null || KeyRooms == null) return;
+            if (FullRoomName == null || KeyRooms == null) return;
 
             string fullRoomName = FullRoomName;
             string lastRoomName = LastRoomName ?? fullRoomName;
@@ -307,13 +349,11 @@ namespace REviewer.Modules.RE.Common
             {
                 if (KeyRooms.TryGetValue(roomName, out List<string>? value))
                 {
-                    // Console.WriteLine(roomName);
                     List<string> keyRooms = value;
                     string otherRoomName = roomName == lastRoomName ? fullRoomName : lastRoomName;
 
                     if (!keyRooms.Contains(otherRoomName) && otherRoomName != roomName)
                     {
-
                         keyRooms.Add(otherRoomName);
 
                         if (keyRooms.Count == 2 && lastRoomName != "503")
@@ -328,7 +368,6 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
-                    // Update the list in the dictionary
                     KeyRooms[roomName] = keyRooms;
                 }
             }
@@ -435,9 +474,14 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_lastItemFound != null && IDatabase != null)
                 {
-                    var vvv = Character.Value == 8 ? CarlosLastItemFound?.Value : LastItemFound?.Value;
+                    int? vvv = null;
+                    if (Character != null && Character.Value == 8 && CarlosLastItemFound != null)
+                        vvv = CarlosLastItemFound.Value;
+                    else if (LastItemFound != null)
+                        vvv = LastItemFound.Value;
+
                     byte value = (byte)(LastItemFound?.Value ?? 255);
-                    var state = GameState?.Value & 0xF0000000;
+                    var state = GameState != null ? (GameState.Value & 0xF0000000) : 0;
                     var items = IDatabase.GetItems();
 
                     if (LastItemFound?.Value == 0x31)
@@ -445,13 +489,13 @@ namespace REviewer.Modules.RE.Common
                         UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                     }
 
-                    if (IDatabase.GetPropertyTypeById(value) == "Key Item") // && FullRoomName == null)
+                    if (IDatabase.GetPropertyTypeById(value) == "Key Item")
                     {
-                        var sss = (((int)Stage.Value % 5) + 1).ToString();
-                        var rrr = ((int)Room.Value).ToString("X2");
+                        var sss = (Stage != null ? (((int)Stage.Value % 5) + 1).ToString() : "1");
+                        var rrr = (Room != null ? ((int)Room.Value).ToString("X2") : "00");
                         FullRoomName = sss + rrr;
 
-                        if ((state != 0x8000000 || state != 0x9000000) && value != 61)
+                        if (((state != 0x8000000 && state != 0x9000000)) && value != 61)
                         {
                             UpdateRaceKeyItem(value, FullRoomName, 1);
                         }
@@ -463,8 +507,8 @@ namespace REviewer.Modules.RE.Common
                         {
                             Random random = new Random();
                             List<string> easter_egg = new List<string> { "orca.png", "death2024.png", "namsku.png" };
-                            int randomIndex = random.Next(0, easter_egg.Count); // Generate a random index within the range of the list
-                            return "./resources/re2/" + easter_egg[randomIndex]; // Concatenate the random easter egg with the directory path
+                            int randomIndex = random.Next(0, easter_egg.Count);
+                            return "./resources/re2/" + easter_egg[randomIndex];
                         }
                     }
 
@@ -520,13 +564,11 @@ namespace REviewer.Modules.RE.Common
                 if (Health == null || CharacterHealthState == null) return;
                 bool state = false;
 
-                // Console.WriteLine(_characterHealthState.Value);
-
-                if(SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == BIOHAZARD_1)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
-                } 
-                else if(SELECTED_GAME == BIOHAZARD_2)
+                }
+                else if (SELECTED_GAME == BIOHAZARD_2)
                 {
                     state = (_characterHealthState?.Value != 0x15);
                 }
@@ -534,7 +576,7 @@ namespace REviewer.Modules.RE.Common
                 {
                     state = (_characterHealthState?.Value == 0x04) || (_characterHealthState?.Value == 0x00);
                 }
-                else if(SELECTED_GAME == BIOHAZARD_CVX)
+                else if (SELECTED_GAME == BIOHAZARD_CVX && _characterHealthState != null)
                 {
                     state = (_characterHealthState.Value != 5) && (_characterHealthState.Value != 7);
                 }
@@ -543,13 +585,13 @@ namespace REviewer.Modules.RE.Common
                 {
                     UpdateHealthColor();
                 }
-                else
+                else if (Health != null)
                 {
                     Health.Background = CustomColors.Lavender;
                 }
 
                 OnPropertyChanged(nameof(Health));
-            } 
+            }
         }
 
         public int OldHealth = 0;
@@ -583,13 +625,12 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_2)
+                if (SELECTED_GAME == BIOHAZARD_2 && CharacterMaxHealth != null)
                 {
                     CharacterMaxHealth.Value = CharacterMaxHealth.Value & 0xFFFF;
                     MaxHealth = CharacterMaxHealth.Value.ToString();
                     OnPropertyChanged(nameof(MaxHealth));
                 }
-
             }
         }
 
@@ -599,7 +640,6 @@ namespace REviewer.Modules.RE.Common
             get { return _health; }
             set
             {
-                // Console.WriteLine(Health);
                 if (_health != value)
                 {
                     if (_health != null)
@@ -623,7 +663,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == BIOHAZARD_1 && Health != null && Character != null)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -635,55 +675,49 @@ namespace REviewer.Modules.RE.Common
                                 )
                             )
                             {
-                                // Do something
-                                Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
+                                if (GameState != null)
+                                    Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
                             }
 
                             Hits += 1;
                         }
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_2)
+                else if (SELECTED_GAME == BIOHAZARD_2 && Health != null && GameState != null)
                 {
                     Health.Value = Health.Value & 0xFFFF;
                     var state = (GameState.Value & 0xF0000000) != 0x40000000;
-                    // Console.WriteLine(Health.Value);
 
                     if (Health.Value < OldHealth && Health.Value != 255 && Health.Value <= 1200)
                     {
                         if (NoDamage)
                         {
-                            // Do something
                             Monitoring.WriteVariableData(GameState, 0);
                         }
 
                         Hits += 1;
                     }
-                    // https://github.com/deserteagle417/RE2-Autosplitter/blob/main/RE2aio.asl
-                    // Very helpful for this case, thank you dude <3
 
-                    if (LastRoom.Value == 255 && Health.Value == 0 && state && (GameState.Value & 0x20000) != 0x20000)
+                    if (LastRoom != null && Health.Value == 0 && LastRoom.Value == 255 && state && (GameState.Value & 0x20000) != 0x20000)
                     {
                         Resets += 1;
                         PartnerVisibility = Visibility.Hidden;
                         OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_3)
+                else if (SELECTED_GAME == BIOHAZARD_3 && Health != null && GameState != null)
                 {
                     if (Health.Value < OldHealth)
                     {
                         if (NoDamage)
                         {
-                            // Do something
-                            // Monitoring.WriteVariableData(GameSystem, 0);
                             Monitoring.WriteVariableData(GameState, 0);
                         }
 
                         Hits += 1;
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX)
+                else if (SELECTED_GAME == BIOHAZARD_CVX && Health != null)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -695,12 +729,15 @@ namespace REviewer.Modules.RE.Common
                     }
                 }
 
-                if (OneHP && Health.Value > 1)
+                if (OneHP && Health != null && Health.Value > 1)
                 {
                     Monitoring.WriteVariableData(Health, 1);
                 }
 
-                OldHealth = Health.Value;
+                if (Health != null)
+                {
+                    OldHealth = Health.Value;
+                }
                 UpdateHealthColor();
             }
         }
@@ -731,7 +768,7 @@ namespace REviewer.Modules.RE.Common
             {
                 state = (status != 0x04);
             }
-            else if (SELECTED_GAME == BIOHAZARD_CVX)
+            else if (SELECTED_GAME == BIOHAZARD_CVX && _characterHealthState != null)
             {
                 state = (_characterHealthState.Value == 5) || (_characterHealthState.Value == 7);
             }
@@ -764,14 +801,14 @@ namespace REviewer.Modules.RE.Common
             {
                 if (_lockPick != value)
                 {
-                    if(_lockPick != null)
+                    if (_lockPick != null)
                     {
                         _lockPick.PropertyChanged -= LockPick_PropertyChanged;
                     }
-                    
+
                     _lockPick = value;
-                    
-                    if(_lockPick != null)
+
+                    if (_lockPick != null)
                     {
                         _lockPick.PropertyChanged += LockPick_PropertyChanged;
                     }
@@ -785,7 +822,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (LockPick?.Value == 0x08)
+                if (LockPick != null && LockPick.Value == 0x08)
                 {
                     UpdateRaceKeyItem(0x31, "Internal Room", 2, true);
                 }
@@ -798,15 +835,15 @@ namespace REviewer.Modules.RE.Common
         private VariableData _partnerPose;
 
         public Dictionary<int, string> pose_database = new Dictionary<int, string>
-        {
-            {0, "???"},
-            {1, "Following"},
-            {2, "???"},
-            {3, "Idle"},
-            {4, "Sit Down" },
-            {5, "Stop" },
-            {6, "Sit Up"},
-        };
+            {
+                {0, "???"},
+                {1, "Following"},
+                {2, "???"},
+                {3, "Idle"},
+                {4, "Sit Down" },
+                {5, "Stop" },
+                {6, "Sit Up"},
+            };
 
         public string SherryPose { get; set; }
         public string SherryPicture { get; set; }
@@ -839,9 +876,12 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                pose_database.TryGetValue(PartnerPose.Value, out string pose);
-                SherryPose = pose;
-
+                string pose = "???";
+                if (PartnerPose != null)
+                {
+                    pose_database.TryGetValue(PartnerPose.Value, out pose);
+                }
+                SherryPose = pose ?? "???";
                 if (pose == "Stop")
                 {
                     SherryPicture = "resources/re2/sherry-thug.png";
@@ -857,8 +897,9 @@ namespace REviewer.Modules.RE.Common
         }
 
         private VariableData? _partnerPointer;
-        public VariableData? PartnerPointer {
-            
+        public VariableData? PartnerPointer
+        {
+
             get { return _partnerPointer; }
             set
             {
@@ -916,7 +957,7 @@ namespace REviewer.Modules.RE.Common
                 OnPropertyChanged(nameof(PartnerHPValue));
             }
         }
- 
+
         public int PartnerMaxHPValue { get; set; }
 
         private VariableData _partnerMaxHP;
@@ -925,7 +966,7 @@ namespace REviewer.Modules.RE.Common
             get { return _partnerMaxHP; }
             set
             {
-                if(_partnerMaxHP != null)
+                if (_partnerMaxHP != null)
                 {
                     _partnerMaxHP.PropertyChanged -= PartnerMaxHP_PropertyChanged;
                 }
@@ -952,16 +993,17 @@ namespace REviewer.Modules.RE.Common
 
         private void PartnerPointer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(VariableData.Value))
+            if (e.PropertyName == nameof(VariableData.Value) && PartnerPointer != null)
             {
                 int position_hp = SELECTED_GAME == BIOHAZARD_2 ? 0x156 : 0xCC;
                 int position_id = SELECTED_GAME == BIOHAZARD_2 ? 0x8 : 0x4a;
 
                 if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290 || PartnerPointer.Value == 0xAA2964 || PartnerPointer.Value == 0xAFFDB0)
                 {
-                    PartnerHP = null;
-                    PartnerMaxHP = null;
-                    PartnerPose = null;
+                    // PartnerHP, PartnerMaxHP, PartnerPose are non-nullable, so assign dummy values
+                    PartnerHP = new VariableData(0, 1);
+                    PartnerMaxHP = new VariableData(0, 1);
+                    PartnerPose = new VariableData(0, 1);
                     SherryPose = "No Sherry in this room";
                     SherryPicture = "resources/re2/no-sherry.png";
                     PartnerVisibility = Visibility.Hidden;
@@ -993,14 +1035,14 @@ namespace REviewer.Modules.RE.Common
                     {
                         _itemboxState.PropertyChanged -= ItemBoxState_PropertyChanged;
                     }
-                    
+
                     _itemboxState = value;
-                    
-                    if(_itemboxState != null)
+
+                    if (_itemboxState != null)
                     {
                         _itemboxState.PropertyChanged += ItemBoxState_PropertyChanged;
                     }
-                    
+
                     OnPropertyChanged(nameof(ItemBoxState));
                 }
             }
@@ -1010,7 +1052,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (ItemBoxState.Value == 0x01 && NoItemBox)
+                if (ItemBoxState != null && ItemBoxState.Value == 0x01 && NoItemBox && GameState != null && Monitoring != null)
                 {
                     Monitoring.WriteVariableData(GameState, 0);
                 }
@@ -1031,7 +1073,6 @@ namespace REviewer.Modules.RE.Common
                     }
 
                     _hitFlag = value;
-                    // Console.WriteLine(HitFlag.Value);
 
                     if (_hitFlag != null)
                     {
@@ -1044,7 +1085,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (HitFlag.Value != 0)
+                if (HitFlag != null && HitFlag.Value != 0)
                 {
                     Hits += 1;
                     OnPropertyChanged(nameof(Hits));

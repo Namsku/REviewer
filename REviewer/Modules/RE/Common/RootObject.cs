@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using GlobalHotKey;
+using REviewer.Modules.RE.Enemies;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -31,6 +32,7 @@ namespace REviewer.Modules.RE.Common
             { "Bio2 1.10", 0x07 },
             { "Bio2 1.1", 0x07 },
             { "Bio2 v1.1", 0x07 },
+            { "bio2 1.10 - Supreme Skip", 0x07 },
             { "re2mm", 0x07 },
             { "RE2MM", 0x07 },
             { "REVisited", 0x07 },
@@ -77,6 +79,22 @@ namespace REviewer.Modules.RE.Common
         public bool NoItemBox = false;
         public bool StaticEnemyTrackerWindow = false;
 
+        private Enemy _selectedEnemy = new Enemy();
+        public Enemy SelectedEnemy
+        {
+            get => _selectedEnemy;
+            set
+            {
+                if (_selectedEnemy != value)
+                {
+                    _selectedEnemy = value;
+                    OnPropertyChanged(nameof(SelectedEnemy));
+                }
+            }
+        }
+
+        public Enemy SelectedHiddenEnemy = new Enemy();
+
         public Dictionary<string, List<string>>? KeyRooms { get; set; }
         public Visibility? HealthBarVisibility { get; set; }
         public Visibility? BiorandVisibility { get; set; }
@@ -113,6 +131,14 @@ namespace REviewer.Modules.RE.Common
             _bio = bio;
             _virtualMemoryPointer = virtualMemoryPointer;
             IDatabase = ids;
+
+            PrivateImageItem.Text = "";
+            PrivateImageItem.TextVisibility = Visibility.Hidden;
+
+            SelectedHiddenEnemy.MaxHealth = 0;
+            SelectedHiddenEnemy.CurrentHealth = 0;
+            SelectedHiddenEnemy.Name = "DEBUG";
+            SelectedHiddenEnemy.Visibility = Visibility.Collapsed;
 
             LastItemSeenVisibility = Visibility.Visible;
             PartnerVisibility = Visibility.Visible;
@@ -368,16 +394,16 @@ namespace REviewer.Modules.RE.Common
 
         public void InitFileWatcher()
         {
-            Dictionary<string, string> db = Library.GetGameList();
+            DisposeFileSystemWatcher(); // Ensure previous watcher is disposed
 
-            // Dispose of existing watcher if any
-            DisposeFileSystemWatcher();
-
-            Watcher = new FileSystemWatcher();
-            var processName = IDatabase.GetProcessName();
-            Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");
-            Watcher.Created += SaveFileDetected;
-            Watcher.EnableRaisingEvents = true;
+            if (Watcher == null) // Avoid creating multiple watchers
+            {
+                Watcher = new FileSystemWatcher();
+                var processName = IDatabase.GetProcessName();
+                Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");
+                Watcher.Created += SaveFileDetected;
+                Watcher.EnableRaisingEvents = true;
+            }
         }
 
         private void DisposeFileSystemWatcher()
@@ -393,47 +419,35 @@ namespace REviewer.Modules.RE.Common
 
         private void SaveState()
         {
-            if(KeyItems == null) throw new ArgumentNullException(nameof(KeyItems)); 
+            if (KeyItems == null) throw new ArgumentNullException(nameof(KeyItems));
 
-            JObject jsonObject = new JObject();
+            JObject jsonObject = new JObject
+            {
+                ["GameState"] = GameState?.Value,
+                ["GameTimer"] = GameTimer?.Value,
+                ["MainMenu"] = MainMenu?.Value,
+                ["SaveContent"] = SaveContent?.Value,
+                ["Character"] = Character?.Value,
+                ["InventorySlotSelected"] = InventorySlotSelected?.Value,
+                ["Stage"] = Stage?.Value,
+                ["Room"] = Room?.Value,
+                ["Cutscene"] = Cutscene?.Value,
+                ["LastRoom"] = LastRoom?.Value,
+                ["Unk002"] = Unk002?.Value,
+                ["Event"] = Event?.Value,
+                ["LastItemFound"] = LastItemFound?.Value,
+                ["InventoryCapacityUsed"] = InventoryCapacityUsed?.Value,
+                ["CharacterHealthState"] = CharacterHealthState?.Value,
+                ["CarlosInventorySlotSelected"] = CarlosInventorySlotSelected?.Value,
+                ["Health"] = Health?.Value,
+                ["LockPick"] = LockPick?.Value,
+                ["PositionX"] = PositionX?.Value,
+                ["PositionY"] = PositionY?.Value,
+                ["PositionZ"] = PositionZ?.Value,
+                ["SaveID"] = SaveID
+            };
 
-            jsonObject["GameState"] = GameState?.Value;
-            jsonObject["GameTimer"] = GameTimer?.Value;
-            jsonObject["MainMenu"] = MainMenu?.Value;
-            jsonObject["SaveContent"] = SaveContent?.Value;
-            jsonObject["Character"] = Character?.Value;
-            jsonObject["InventorySlotSelected"] = InventorySlotSelected?.Value;
-            jsonObject["Stage"] = Stage?.Value;
-            jsonObject["Room"] = Room?.Value;
-            jsonObject["Cutscene"] = Cutscene?.Value;
-            jsonObject["LastRoom"] = LastRoom?.Value;
-            jsonObject["Unk002"] = Unk002?.Value;
-            jsonObject["Event"] = Event?.Value;
-            jsonObject["LastItemFound"] = LastItemFound?.Value;
-            jsonObject["InventoryCapacityUsed"] = InventoryCapacityUsed?.Value;
-            jsonObject["CharacterHealthState"] = CharacterHealthState?.Value;
-
-            jsonObject["CarlosInventorySlotSelected"] = CarlosInventorySlotSelected?.Value;
-
-            jsonObject["Health"] = Health?.Value;
-            jsonObject["LockPick"] = LockPick?.Value;
-            jsonObject["PositionX"] = PositionX?.Value;
-            jsonObject["PositionY"] = PositionY?.Value;
-            jsonObject["PositionZ"] = PositionZ?.Value;
-            jsonObject["RebirthDebug"] = RebirthDebug?.Value;
-            jsonObject["RebirthScreen"] = RebirthScreen?.Value;
-            jsonObject["RebirthState"] = RebirthState?.Value;
-            jsonObject["SaveID"] = SaveID;
-
-            jsonObject["Debug"] = Debug;
-            jsonObject["Deaths"] = Deaths;
-            jsonObject["Resets"] = Resets;
-            jsonObject["Saves"] = Saves;
-            jsonObject["Hits"] = Hits;
-
-            jsonObject["SegmentsCount"] = SegmentCount;
-
-            jsonObject["Segments"] = JArray.FromObject(IGTSegments ?? new List<int>() { 0, 0, 0, 0 });
+            // Serialize only necessary data
             jsonObject["KeyItems"] = JArray.FromObject(KeyItems.Select(item => item.State).ToList());
             jsonObject["KeyRooms"] = JObject.FromObject(KeyRooms ?? new Dictionary<string, List<string>>());
 
@@ -532,18 +546,18 @@ namespace REviewer.Modules.RE.Common
 
         private void InitSaveDatabase()
         {
-            SaveDatabase = new List<JObject>(); // Initialize SaveDatabase as a new List<JObject>
+            SaveDatabase = new List<JObject>();
             CurrentSaveID = 0;
 
             var directoryPath = "saves/";
-            var files = System.IO.Directory.GetFiles(directoryPath, "*.json");
+            var files = Directory.EnumerateFiles(directoryPath, "*.json"); // Use EnumerateFiles for better performance
 
             foreach (var file in files)
             {
-                var jsonString = File.ReadAllText(file); // Read the contents of the file
-                var jsonObject = JObject.Parse(jsonString); // Parse the JSON string into a JObject
-                SaveDatabase.Add(jsonObject); // Add the JObject to the SaveDatabase list
-                CurrentSaveID = Math.Max(CurrentSaveID, jsonObject["SaveID"].Value<int>()); // Update the CurrentSaveID based on the SaveID value in the JObject
+                var jsonString = File.ReadAllText(file);
+                var jsonObject = JObject.Parse(jsonString);
+                SaveDatabase.Add(jsonObject);
+                CurrentSaveID = Math.Max(CurrentSaveID, jsonObject["SaveID"].Value<int>());
             }
         }
 
@@ -600,3 +614,4 @@ namespace REviewer.Modules.RE.Common
 
     }
 }
+

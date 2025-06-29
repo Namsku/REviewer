@@ -1,4 +1,5 @@
-﻿using REviewer.Modules.RE.Json;
+﻿using REviewer.Modules.RE.Common;
+using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
 using System.Windows;
@@ -212,6 +213,8 @@ namespace REviewer.Modules.RE.Enemies
 
         private string _hash;
 
+        public RootObject GameObject;
+
         private Enemy? _enemy;
         public Enemy? Enemy
         {
@@ -257,15 +260,26 @@ namespace REviewer.Modules.RE.Enemies
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
+                    // Only set SelectedEnemy if the state matches
                     if (EnemySelected.Value == _enemyState.Value)
                     {
                         Enemy.BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
+                        Console.WriteLine("Enemy Selected -> " + Enemy.Name + "| With Enemy State ->" + _enemyState.Value);
+                        if (GameObject.SelectedEnemy != Enemy)
+                            GameObject.SelectedEnemy = Enemy;
                     }
                     else
                     {
-                        // Transparent
-                        Enemy.BackgroundColor = new SolidColorBrush(Colors.Transparent);
+                        // Only set to hidden if the currently selected enemy is this one
+                        if (GameObject.SelectedEnemy == Enemy)
+                        {
+                            Enemy.BackgroundColor = new SolidColorBrush(Colors.Transparent);
+                            Console.WriteLine("Enemy Removed -> " + Enemy.Name + "| With Enemy State ->" + EnemySelected.Value);
+                            GameObject.SelectedEnemy = GameObject.SelectedHiddenEnemy;
+                        }
                     }
+
+                    OnPropertyChanged(nameof(GameObject.SelectedEnemy));
                     OnPropertyChanged(nameof(Enemy));
                 });
             }
@@ -343,7 +357,7 @@ namespace REviewer.Modules.RE.Enemies
             {
                 if (SelectedGame > 0)
                 {
-                    Console.WriteLine($"Enemy HP -> {EnemyHP.Value} - {EnemyState.Value:X}");
+                    // Console.WriteLine($"Enemy HP -> {EnemyHP.Value} - {EnemyState.Value:X}");
                     // Take only the first 2 bytes
                     Enemy.CurrentHealth = EnemyHP.Value & 0xFFFF;
 
@@ -362,19 +376,44 @@ namespace REviewer.Modules.RE.Enemies
                         }
                     }
 
-                    if (Enemy.CurrentHealth < 600 && EnemyMaxHP > 27000)
+
+                    if (Enemy.Name == "Mr.X")
+                    {
+                        if (EnemyMaxHP >= 20000)
+                        {
+                            EnemyMaxHP = EnemyMaxHP - 20000;
+                            Enemy.MaxHealth = EnemyMaxHP ?? 0;
+                        }
+
+                        if (Enemy.CurrentHealth >= 20000)
+                        {
+                            Enemy.CurrentHealth = Enemy.CurrentHealth - 20000;
+                        }
+                    }
+
+                    if (Enemy.Name == "G4")
+                    {
+                        if (EnemyMaxHP >= 5000)
+                        {
+                            Enemy.MaxHealth = Enemy.CurrentHealth;
+                        }
+                    }
+
+                    if (Enemy.CurrentHealth < 600 && EnemyMaxHP > 8000)
                     {
                         EnemyMaxHP = Enemy.CurrentHealth;
                     }
 
-                    if (Enemy.CurrentHealth > 65000 && EnemyMaxHP < 2000)
+                    if (Enemy.CurrentHealth > 60000 && EnemyMaxHP < 2000)
                     {
-                        Enemy.Visibility = Visibility.Collapsed;
+                        if (!Enemy.Name.StartsWith("G4"))
+                            Enemy.Visibility = Visibility.Collapsed;
                     }
 
                     if (Enemy.CurrentHealth > 50000 && EnemyMaxHP > 60000)
                     {
-                        Enemy.Visibility = Visibility.Collapsed;
+                        if (!Enemy.Name.StartsWith("G4"))
+                            Enemy.Visibility = Visibility.Collapsed;
                     }
 
                     OnPropertyChanged(nameof(Enemy));
@@ -436,11 +475,12 @@ namespace REviewer.Modules.RE.Enemies
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public EnemyTracking(int v, StandardProperty property, int selectedGame, int enemyPointer)
+        public EnemyTracking(int v, StandardProperty property, int selectedGame, int enemyPointer, RootObject game)
         {
             EnemyState = new VariableData(v, property);
             Enemy = new Enemy();
             SelectedGame = selectedGame;
+            GameObject = game;
 
             if (SelectedGame == 0)
             {
@@ -516,9 +556,8 @@ namespace REviewer.Modules.RE.Enemies
                 return;
             }
 
-            Console.WriteLine($"Enemy: {Enemy.CurrentHealth} - {Enemy.Flag} - {Enemy.Pose} - {Enemy.Id}");
-
-            OnPropertyChanged(nameof(Enemy));
+      if (GameObject.SelectedEnemy != Enemy || EnemyState.Value != (EnemySelected?.Value ?? -1))
+                           OnPropertyChanged(nameof(Enemy));
         }
 
         private void EnemyState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
