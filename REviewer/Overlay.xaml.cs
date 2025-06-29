@@ -65,6 +65,13 @@ namespace REviewer
             _positionTimer.Start();
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            // Ensure proper cleanup when the Overlay window is closed
+            _positionTimer?.Stop();
+            Logger.Instance.Info("Overlay window has been closed.");
+        }
+
         private void PositionTimer_Tick(object? sender, EventArgs e)
         {
             if (_targetProcess.HasExited || _targetProcess.MainWindowHandle == IntPtr.Zero)

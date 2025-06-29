@@ -76,6 +76,7 @@ namespace REviewer
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
         public Config OverlayConfig { get; private set; }
+        public Overlay? OVL { get; private set; }
         public SRT? SRT { get; private set; }
         public Tracker? TRK { get; private set; }
 
@@ -466,7 +467,7 @@ namespace REviewer
             ProductPointer = IntPtr.Zero;
             VirtualMemoryPointer = IntPtr.Zero;
 
-            // Stoping the monitoring 
+            // Stop monitoring
             _MVariables?.Stop();
             _MVEnemies?.Stop();
 
@@ -477,17 +478,38 @@ namespace REviewer
             // Updating the TextBlock on the MainWindow
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
             Library.UpdateTextBlock(ProcessTextBlock, text: content, color: CustomColors.Red, isBold: true);
-            
+
+            // Close all active window frames, including Overlay
+            CloseAllWindowFrames();
+
             // Log the event
             Logger.Instance.Info($"Process {_processName} has exited");
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            // Close all active window frames, including Overlay
+            CloseAllWindowFrames();
+
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
 
             Dispose();
+        }
+
+        private void CloseAllWindowFrames()
+        {
+            // Close Overlay window
+            SRT?.Close();
+
+            // Close Tracker window
+            TRK?.Close();
+
+            // Close Overlay window
+            OVL?.Close();
+
+            // Log closure of all windows
+            Logger.Instance.Info("All window frames have been closed.");
         }
 
         public void Dispose()
@@ -501,6 +523,9 @@ namespace REviewer
                 // Dispose other disposable resources
                 _processWatcher?.Dispose();
                 _rootObjectWatcher?.Dispose();
+
+                // Ensure all window frames are closed
+                CloseAllWindowFrames();
             }
             catch (Exception ex)
             {
@@ -629,8 +654,8 @@ namespace REviewer
 
                                         // Create Overlay window
                                         var overlayConfig = new Config(0, 16, true, false); // Example configuration
-                                        var overlayWindow = new Overlay(_process, overlayConfig, _residentEvilGame);
-                                        overlayWindow.Show();
+                                        OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
+                                        OVL.Show();
 
                                         if (_tracking != null)
                                         {
@@ -911,4 +936,3 @@ namespace REviewer
     }
 
 }
-
