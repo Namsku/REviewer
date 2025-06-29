@@ -16,7 +16,7 @@
     <Canvas x:Name="OverlayCanvas">
         <!-- Enemy HP Overlay (bottom left) -->
         <Border x:Name="OverlayEnemyGroup"
-                Padding="0,0,0,4"
+                Padding="0,4,0,4"
                 CornerRadius="2"
                 Visibility="{Binding SelectedEnemy.Visibility}">
             <Grid Width="520">
@@ -56,11 +56,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <!-- Left block: Timer, EquippedValue, Health -->
-                <Border Grid.Column="0"
+                <Border x:Name="TweakedOverlay" Grid.Column="0"
                         BorderBrush="White"
                         BorderThickness="1"
                         Background="#FF282B32"
-                        Margin="0,0,8,-18"
+                        Margin="0,0,8,24"
                         CornerRadius="2"
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -105,7 +105,7 @@
                         CornerRadius="2"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
-                        Margin="0,0,0,8">
+                        Margin="0,8,0,8">
                     <Image Margin="0"
                            Source="{Binding InventoryImagesSelected.Source}" 
                            Width="64" 

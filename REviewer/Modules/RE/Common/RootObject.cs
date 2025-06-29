@@ -32,7 +32,6 @@ namespace REviewer.Modules.RE.Common
             { "Bio2 1.10", 0x07 },
             { "Bio2 1.1", 0x07 },
             { "Bio2 v1.1", 0x07 },
-            { "bio2 1.10 - Supreme Skip", 0x07 },
             { "re2mm", 0x07 },
             { "RE2MM", 0x07 },
             { "REVisited", 0x07 },

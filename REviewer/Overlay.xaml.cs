@@ -63,6 +63,9 @@ namespace REviewer
 
             MakeClickThrough();
             _positionTimer.Start();
+
+            // Update margins based on _cornerPosition
+            UpdateOverlayMargins();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -120,18 +123,14 @@ namespace REviewer
                 double x = _cornerPosition switch
                 {
                     0 => this.Width - OverlayGroup.ActualWidth - margin_x, // bottom right
-                    1 => margin_x,                                        // bottom left
-                    2 => this.Width - OverlayGroup.ActualWidth - margin_x, // top right
-                    3 => margin_x,                                        // top left
+                    1 => this.Width - OverlayGroup.ActualWidth - margin_x, // top right
                     _ => this.Width - OverlayGroup.ActualWidth - margin_x
                 };
 
                 double y = _cornerPosition switch
                 {
                     0 => this.Height - OverlayGroup.ActualHeight - margin_y, // bottom right
-                    1 => this.Height - OverlayGroup.ActualHeight - margin_y, // bottom left
-                    2 => margin_y,                                           // top right
-                    3 => margin_y,                                           // top left
+                    1 => margin_y,                                           // top right
                     _ => this.Height - OverlayGroup.ActualHeight - margin_y
                 };
 
@@ -143,11 +142,38 @@ namespace REviewer
                 double enemyMarginX = 5;
                 double enemyMarginY = 0;
 
-                double enemyX = enemyMarginX; // Always bottom left
-                double enemyY = this.Height - OverlayEnemyGroup.ActualHeight - enemyMarginY;
+                double enemyX, enemyY;
+
+                switch (_cornerPosition)
+                {
+                    case 0: // bottom right
+                        enemyX = enemyMarginX; // bottom left
+                        enemyY = this.Height - OverlayEnemyGroup.ActualHeight - enemyMarginY;
+                        break;
+                    case 1: // top right
+                        enemyX = enemyMarginX; // top left
+                        enemyY = enemyMarginY;
+                        break;
+                    default: // fallback to bottom left
+                        enemyX = enemyMarginX;
+                        enemyY = this.Height - OverlayEnemyGroup.ActualHeight - enemyMarginY;
+                        break;
+                }
 
                 Canvas.SetLeft(OverlayEnemyGroup, enemyX);
                 Canvas.SetTop(OverlayEnemyGroup, enemyY);
+            }
+        }
+
+        private void UpdateOverlayMargins()
+        {
+            if (_cornerPosition == 0)
+            {
+                TweakedOverlay.Margin = new Thickness(0, 0, 8, -24);
+            }
+            else if (_cornerPosition == 1)
+            {
+                TweakedOverlay.Margin = new Thickness(0, 0, 8, 24);
             }
         }
 

@@ -653,7 +653,7 @@ namespace REviewer
                                         SRT.Show();
 
                                         // Create Overlay window
-                                        var overlayConfig = new Config(0, 16, true, false); // Example configuration
+                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, true, false); // Example configuration
                                         OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
                                         OVL.Show();
 
@@ -914,23 +914,6 @@ namespace REviewer
             }
         }
 
-        private void IncreaseValue_Click(object sender, RoutedEventArgs e)
-        {
-            if (_value < 72)
-            {
-                _value++;
-                ValueDisplay.Text = _value.ToString();
-            }
-        }
-
-        private void DecreaseValue_Click(object sender, RoutedEventArgs e)
-        {
-            if (_value > 0)
-            {
-                _value--;
-                ValueDisplay.Text = _value.ToString();
-            }
-        }
 
 
     }
