@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace REviewer
@@ -30,6 +31,8 @@ namespace REviewer
             }
         }
 
+        private double _overlayCanvasScale = 1.0; // Track the current scale of OverlayCanvas
+
         private RootObject? _gameData; // Reference to RootObject
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -50,6 +53,55 @@ namespace REviewer
             _positionTimer.Tick += PositionTimer_Tick;
 
             DataContext = this._gameData;
+
+            // Apply initial scaling from OverlayConfig
+            ApplyScaling();
+        }
+
+        private void ApplyScaling()
+        {
+            double scalingFactor = Math.Clamp(OverlayConfig.scaling / 100.0, 0, 2.0); // Ensure scaling is between 10% and 100%
+            _overlayCanvasScale = scalingFactor;
+
+            // Apply the scale to OverlayCanvas using RenderTransform
+            OverlayGroupScale.ScaleX = _overlayCanvasScale;
+            OverlayGroupScale.ScaleY = _overlayCanvasScale;
+            OverlayEnemyGroupScale.ScaleX = _overlayCanvasScale;
+            OverlayEnemyGroupScale.ScaleY = _overlayCanvasScale;
+
+            // Force the OverlayCanvas to update its layout
+            OverlayCanvas.UpdateLayout();
+        }
+        private void ScaleOverlayCanvas(double scaleChange)
+        {
+            double newScale = _overlayCanvasScale + scaleChange;
+
+            // Ensure the scale does not exceed 100% or go below 10%
+            if (newScale > 1.0)
+            {
+                newScale = 1.0;
+            }
+            else if (newScale < 0.1)
+            {
+                newScale = 0.1;
+            }
+
+            _overlayCanvasScale = newScale;
+
+            // Apply the scale to OverlayCanvas using RenderTransform
+            var transformGroup = (TransformGroup)OverlayCanvas.RenderTransform;
+            var scaleTransform = (ScaleTransform)transformGroup.Children[0];
+            scaleTransform.ScaleX = _overlayCanvasScale;
+            scaleTransform.ScaleY = _overlayCanvasScale;
+
+            // Force the OverlayCanvas to update its layout
+            OverlayCanvas.UpdateLayout();
+            Logger.Instance.Info($"OverlayCanvas scaled to {_overlayCanvasScale}");
+        }
+
+        private void UpdateOverlayCanvasLayout()
+        {
+            OverlayCanvas.UpdateLayout();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -120,18 +172,21 @@ namespace REviewer
                 double margin_x = 5;
                 double margin_y = 0;
 
+                double scaledOverlayWidth = OverlayGroup.ActualWidth * _overlayCanvasScale;
+                double scaledOverlayHeight = OverlayGroup.ActualHeight * _overlayCanvasScale;
+
                 double x = _cornerPosition switch
                 {
-                    0 => this.Width - OverlayGroup.ActualWidth - margin_x, // bottom right
-                    1 => this.Width - OverlayGroup.ActualWidth - margin_x, // top right
-                    _ => this.Width - OverlayGroup.ActualWidth - margin_x
+                    0 => this.Width - scaledOverlayWidth - margin_x,
+                    1 => this.Width - scaledOverlayWidth - margin_x,
+                    _ => this.Width - scaledOverlayWidth - margin_x
                 };
 
                 double y = _cornerPosition switch
                 {
-                    0 => this.Height - OverlayGroup.ActualHeight - margin_y, // bottom right
-                    1 => margin_y,                                           // top right
-                    _ => this.Height - OverlayGroup.ActualHeight - margin_y
+                    0 => this.Height - scaledOverlayHeight - margin_y,
+                    1 => margin_y,
+                    _ => this.Height - scaledOverlayHeight - margin_y
                 };
 
                 Canvas.SetLeft(OverlayGroup, x);
@@ -142,23 +197,16 @@ namespace REviewer
                 double enemyMarginX = 5;
                 double enemyMarginY = 0;
 
-                double enemyX, enemyY;
+                double scaledEnemyWidth = OverlayEnemyGroup.ActualWidth * _overlayCanvasScale;
+                double scaledEnemyHeight = OverlayEnemyGroup.ActualHeight * _overlayCanvasScale;
 
-                switch (_cornerPosition)
+                double enemyX = enemyMarginX;
+                double enemyY = _cornerPosition switch
                 {
-                    case 0: // bottom right
-                        enemyX = enemyMarginX; // bottom left
-                        enemyY = this.Height - OverlayEnemyGroup.ActualHeight - enemyMarginY;
-                        break;
-                    case 1: // top right
-                        enemyX = enemyMarginX; // top left
-                        enemyY = enemyMarginY;
-                        break;
-                    default: // fallback to bottom left
-                        enemyX = enemyMarginX;
-                        enemyY = this.Height - OverlayEnemyGroup.ActualHeight - enemyMarginY;
-                        break;
-                }
+                    0 => this.Height - scaledEnemyHeight - enemyMarginY,
+                    1 => enemyMarginY,
+                    _ => this.Height - scaledEnemyHeight - enemyMarginY
+                };
 
                 Canvas.SetLeft(OverlayEnemyGroup, enemyX);
                 Canvas.SetTop(OverlayEnemyGroup, enemyY);

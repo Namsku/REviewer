@@ -499,16 +499,19 @@ namespace REviewer
 
         private void CloseAllWindowFrames()
         {
-            // Close Overlay window
-            SRT?.Close();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Close Overlay window  
+                SRT?.Close();
 
-            // Close Tracker window
-            TRK?.Close();
+                // Close Tracker window  
+                TRK?.Close();
 
-            // Close Overlay window
-            OVL?.Close();
+                // Close Overlay window  
+                OVL?.Close();
+            });
 
-            // Log closure of all windows
+            // Log closure of all windows  
             Logger.Instance.Info("All window frames have been closed.");
         }
 
@@ -653,7 +656,7 @@ namespace REviewer
                                         SRT.Show();
 
                                         // Create Overlay window
-                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, true, false); // Example configuration
+                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, 100); // Example configuration
                                         OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
                                         OVL.Show();
 

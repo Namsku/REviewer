@@ -10,15 +10,13 @@ namespace REviewer.Modules.RE.Common
     {
         public readonly int _position;
         public readonly int _size;
-        public readonly bool _health;
-        public readonly bool _currentWeapon;
+        public readonly int scaling; // New field for scaling
 
-        public Config(int pos, int size, bool health, bool weapon)
+        public Config(int pos, int size, int scaling)
         {
             _position = pos;
             _size = size;
-            _health = health;
-            _currentWeapon = weapon;
+            this.scaling = scaling; // Initialize scaling
         }
     }
 }

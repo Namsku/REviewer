@@ -248,6 +248,8 @@ namespace REviewer.Modules.Utils
                 { "bio2 1.10", "RE2" },
                 { "bio2 1.1", "RE2" },
                 { "bio2 v1.1", "RE2" },
+                { "bio2 1.10 - Skip", "RE2"},
+                { "bio2 1.10 - Super Skip", "RE2"},
                 { "bio2 1.10 - Supreme Skip", "RE2"},
                 { "perro2", "RE2" },
                 { "CLAIRE", "RE2C" },
@@ -290,7 +292,7 @@ namespace REviewer.Modules.Utils
         public static Dictionary<string, List<string>> _gameVersions = new Dictionary<string, List<string>>
         {
             { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
-            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2 1.10 - Supreme Skip", "bio2", "bio2 v1.1", "Leon And Claier", "BIO2The City of Despair", "bunny", "bunny2" , "perro2", "re2mm", "RE2MM", "REVisited", "Resident Evil 2.5 Dark Legacy", "UEv3", "toos_ver2_0_0", "toos(hard)_ver2_0_0" } },
+            { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2 1.10 - Skip", "bio2 1.10 - Super Skip", "bio2 1.10 - Supreme Skip", "bio2", "bio2 v1.1", "Leon And Claier", "BIO2The City of Despair", "bunny", "bunny2" , "perro2", "re2mm", "RE2MM", "REVisited", "Resident Evil 2.5 Dark Legacy", "UEv3", "toos_ver2_0_0", "toos(hard)_ver2_0_0" } },
             { "bio2 chn claire", new List<string> { "CLAIRE", "claire", "bio2 chn claire" } },
             { "bio2 chn leon", new List<string> {"LEON", "leon", "Irregular1.8", "bio2 chn leon" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3", "The Lord of the Necropolis_1_1_0", "(English)The Lord of the Necropolis_1_1_0", "Nemesis Scenario" } },
@@ -313,6 +315,8 @@ namespace REviewer.Modules.Utils
             { "bio2 v1.1", "Bio2 1.10" },
             { "Biohazard 2", "Bio2 1.10" },
             { "biohazard 2", "Bio2 1.10" },
+            { "bio2 1.10 - Skip", "Bio2 1.10"},
+            { "bio2 1.10 - Super Skip", "Bio2 1.10"},
             { "bio2 1.10 - Supreme Skip", "Bio2 1.10" },
             { "BIO2The City of Despair", "Bio2 1.10" },
             { "Leon And Claier", "Bio2 1.10"},

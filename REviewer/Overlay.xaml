@@ -13,12 +13,15 @@
         <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>
     </Window.Resources>
 
-    <Canvas x:Name="OverlayCanvas">
+    <Canvas x:Name="OverlayCanvas" RenderTransformOrigin="0.5,0.5">
         <!-- Enemy HP Overlay (bottom left) -->
         <Border x:Name="OverlayEnemyGroup"
                 Padding="0,4,0,4"
                 CornerRadius="2"
                 Visibility="{Binding SelectedEnemy.Visibility}">
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="OverlayGroupScale" ScaleX="1" ScaleY="1" />
+            </Border.RenderTransform>
             <Grid Width="520">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -63,6 +66,9 @@
                         Margin="0,0,8,24"
                         CornerRadius="2"
                         VerticalAlignment="Center">
+                    <Border.RenderTransform>
+                        <ScaleTransform x:Name="OverlayEnemyGroupScale" ScaleX="1" ScaleY="1" />
+                    </Border.RenderTransform>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock x:Name="OverlayTimer"
                                    Text="{Binding IGTHumanFormat}"
@@ -117,6 +123,4 @@
             </Grid>
         </Border>
     </Canvas>
-
-
 </Window>
