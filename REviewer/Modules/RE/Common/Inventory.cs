@@ -378,6 +378,15 @@ namespace REviewer.Modules.RE.Common
                     InventoryImagesSelected = InventoryImages[index];
                     OnPropertyChanged(nameof(InventoryEquippedOverlay));
                 }
+
+                // Check if this is the selected slot and update the quantity property if so
+                int selectedIndex = InventorySlotSelected?.Value ?? -999;
+                if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX) selectedIndex -= 1;
+                
+                if (index == selectedIndex)
+                {
+                    OnPropertyChanged(nameof(InventorySlotSelectedQuantity));
+                }
             }
         }
 

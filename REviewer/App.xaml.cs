@@ -14,52 +14,66 @@ namespace REviewer
     {
         public App()
         {
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-            DispatcherUnhandledException += OnDispatcherUnhandledException;
-            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => HandleException(e.ExceptionObject as Exception, "AppDomain.CurrentDomain.UnhandledException");
+            DispatcherUnhandledException += (sender, e) =>
+            {
+                HandleException(e.Exception, "Application.DispatcherUnhandledException");
+                // Optionally set e.Handled = true to prevent app from closing immediately
+            };
+            TaskScheduler.UnobservedTaskException += (sender, e) =>
+            {
+                HandleException(e.Exception, "TaskScheduler.UnobservedTaskException");
+                e.SetObserved();
+            };
         }
 
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            DumpException(e.ExceptionObject as Exception, "AppDomain.CurrentDomain.UnhandledException");
-        }
-
-        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            DumpException(e.Exception, "Application.DispatcherUnhandledException");
-            // Optionally set e.Handled = true to prevent app from closing immediately
-        }
-
-        private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-        {
-            DumpException(e.Exception, "TaskScheduler.UnobservedTaskException");
-            e.SetObserved();
-        }
-
-        private void DumpException(Exception? ex, string source)
+        private void HandleException(Exception? ex, string source)
         {
             try
             {
-                var dumpPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    $"CrashDump_REviewer_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+                // Create logs directory if it doesn't exist
+                var logsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+                Directory.CreateDirectory(logsDir);
 
-                using var sw = new StreamWriter(dumpPath);
-                sw.WriteLine($"[{DateTime.Now}] Exception Source: {source}");
-                sw.WriteLine(ex?.ToString());
+                var dumpPath = Path.Combine(logsDir, "dump.log");
 
-                // Dump MainWindow state if available
-                if (Current?.MainWindow is REviewer.MainWindow mw)
+                using var sw = new StreamWriter(dumpPath, append: true);
+                sw.WriteLine(new string('=', 80));
+                sw.WriteLine($"CRASH REPORT - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                sw.WriteLine(new string('=', 80));
+                sw.WriteLine();
+                sw.WriteLine($"Source: {source}");
+                sw.WriteLine($"Exception Type: {ex?.GetType().FullName}");
+                sw.WriteLine($"Message: {ex?.Message}");
+                sw.WriteLine();
+                sw.WriteLine("--- STACK TRACE ---");
+                sw.WriteLine(ex?.StackTrace);
+                
+                // Log inner exceptions
+                var inner = ex?.InnerException;
+                while (inner != null)
                 {
-                    sw.WriteLine("\n--- MainWindow State ---");
-                    var state = JsonConvert.SerializeObject(mw, Formatting.Indented,
-                        new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                            Error = (sender, args) => { args.ErrorContext.Handled = true; }
-                        });
-                    sw.WriteLine(state);
+                    sw.WriteLine();
+                    sw.WriteLine("--- INNER EXCEPTION ---");
+                    sw.WriteLine($"Type: {inner.GetType().FullName}");
+                    sw.WriteLine($"Message: {inner.Message}");
+                    sw.WriteLine(inner.StackTrace);
+                    inner = inner.InnerException;
                 }
+
+                sw.WriteLine();
+                sw.WriteLine($"OS: {Environment.OSVersion}");
+                sw.WriteLine($".NET Version: {Environment.Version}");
+                sw.WriteLine();
+                sw.WriteLine(new string('=', 80));
+                sw.WriteLine();
+
+                // Show message box to user
+                MessageBox.Show(
+                    $"An unexpected error occurred and has been logged to:\n{dumpPath}\n\nError: {ex?.Message}",
+                    "REviewer - Crash Report",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             catch
             {
@@ -67,5 +81,4 @@ namespace REviewer
             }
         }
     }
-
 }

@@ -91,6 +91,8 @@ namespace REviewer.Modules.RE.Json
     {
         public StandardProperty? EnemyInfos { get; set; }
         public StandardProperty? EnemyPointer { get; set; }
+        public Dictionary<string, string>? Offsets { get; set; }
+        public List<string>? SentinelPointers { get; set; }
     }
 
     public class Bio

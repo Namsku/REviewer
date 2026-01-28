@@ -209,9 +209,16 @@ namespace REviewer.Modules.RE.Enemies
         public int DEFAULT_PTR_RE3 = 0x0A62290;
         public int DEFAULT_PTR_RE3_CN = 0xAFFDB0; // B0 FD AF 00 // 0xAFFDB0
 
+        // Debounce fields for room transitions
+        private DateTime _lastPurgeTime = DateTime.MinValue;
+        private DateTime _lastSetupTime = DateTime.MinValue;
+        private const int PURGE_DEBOUNCE_MS = 150; // Prevent rapid purge/setup cycles
+        private int _lastValidPointer = 0;
+
         public int SelectedGame;
 
-        private string _hash;
+
+
 
         public RootObject GameObject;
 
@@ -556,25 +563,24 @@ namespace REviewer.Modules.RE.Enemies
                 return;
             }
 
-      if (GameObject.SelectedEnemy != Enemy || EnemyState.Value != (EnemySelected?.Value ?? -1))
-                           OnPropertyChanged(nameof(Enemy));
+            if (GameObject.SelectedEnemy != Enemy || EnemyState.Value != (EnemySelected?.Value ?? -1))
+                OnPropertyChanged(nameof(Enemy));
         }
 
         private void EnemyState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
+                // Dispatch to correct update method based on game type
                 if (SelectedGame == 0)
                 {
+                    // RE1: packed format in EnemyState
                     UpdateEnemy();
-                }
-                else if (SelectedGame == 1 || SelectedGame == 2 || SelectedGame == 3)
-                {
-                    UpdateEnemyRE2andRE3();
                 }
                 else
                 {
-                    UpdateEnemyCVX();
+                    // RE2/RE3: pointer-based format
+                    UpdateEnemyRE2andRE3();
                 }
             }
         }
@@ -588,11 +594,31 @@ namespace REviewer.Modules.RE.Enemies
         {
             if (_enemyState == null) return;
 
-            int positionHp = SelectedGame == 1 ? HP_OFFSET_RE2 : HP_OFFSET_RE3;
-            int positionId = SelectedGame == 1 ? ID_OFFSET_RE2 : ID_OFFSET_RE3;
+            // Use hardcoded offsets based on game type (SelectedGame: 1=RE2, 2=RE3JP, 3=RE3CHN)
+            int positionHp, positionId;
+            int[] sentinelValues;
 
-            if (_enemyState.Value == DEFAULT_PTR_RE2 || _enemyState.Value == DEFAULT_PTR_RE2_PN || _enemyState.Value == DEFAULT_PTR_RE2_PL || 
-                _enemyState.Value == DEFAULT_PTR_RE3 || _enemyState.Value == DEFAULT_PTR_RE3_CN)
+            if (SelectedGame == 1) // RE2
+            {
+                positionHp = HP_OFFSET_RE2;  // 0x156
+                positionId = ID_OFFSET_RE2;  // 0x8
+                sentinelValues = new[] { DEFAULT_PTR_RE2, DEFAULT_PTR_RE2_PN, DEFAULT_PTR_RE2_PL, 0 };
+            }
+            else if (SelectedGame == 2 || SelectedGame == 3) // RE3
+            {
+                positionHp = HP_OFFSET_RE3;  // 0xCC
+                positionId = ID_OFFSET_RE3;  // 0x4A
+                sentinelValues = new[] { DEFAULT_PTR_RE3, DEFAULT_PTR_RE3_CN, 0 };
+            }
+            else
+            {
+                return; // Unknown game
+            }
+
+            // Check if current value matches any sentinel pointer (indicating invalid/default state)
+            bool isSentinel = sentinelValues.Contains(_enemyState.Value) || _enemyState.Value == 0;
+
+            if (isSentinel)
             {
                 PurgeEnemy();
             }
@@ -604,18 +630,41 @@ namespace REviewer.Modules.RE.Enemies
 
         private void PurgeEnemy()
         {
+            // Debounce: Don't purge if we just setup an enemy recently
+            if ((DateTime.Now - _lastSetupTime).TotalMilliseconds < PURGE_DEBOUNCE_MS)
+            {
+                return;
+            }
+
+            _lastPurgeTime = DateTime.Now;
             EnemyHP = null;
             EnemyID = null;
             EnemyMaxHP = 0;
-            Enemy.Visibility = Visibility.Collapsed;
+            if (Enemy != null) Enemy.Visibility = Visibility.Collapsed;
         }
 
         private void SetupNewEnemy(int positionHp, int positionId)
         {
+            // Debounce: Don't setup if we just purged recently (room transition)
+            if ((DateTime.Now - _lastPurgeTime).TotalMilliseconds < PURGE_DEBOUNCE_MS)
+            {
+                return;
+            }
+
+            // Don't re-setup if pointing to same enemy
+            if (_enemyState != null && _enemyState.Value == _lastValidPointer && EnemyHP != null)
+            {
+                return;
+            }
+
+            _lastSetupTime = DateTime.Now;
+            _lastValidPointer = _enemyState?.Value ?? 0;
+
             EnemyHP = new VariableData(_enemyState.Value + positionHp, 4);
             EnemyID = new VariableData(_enemyState.Value + positionId, 1);
             EnemyMaxHP = 0;
-            Enemy.Visibility = Visibility.Visible;
+            if (Enemy != null) Enemy.Visibility = Visibility.Visible;
         }
     }
 }
+

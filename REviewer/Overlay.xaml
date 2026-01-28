@@ -8,119 +8,119 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
     <Window.Resources>
-        <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/DarkTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Canvas x:Name="OverlayCanvas" RenderTransformOrigin="0.5,0.5">
-        <!-- Enemy HP Overlay (bottom left) -->
+        <!-- Enemy HP Overlay (positioned opposite to main overlay) -->
         <Border x:Name="OverlayEnemyGroup"
-                Padding="0,4,0,4"
-                CornerRadius="2"
+                Padding="8,6"
+                CornerRadius="3"
+                Background="#E0252526"
+                BorderBrush="#505050"
+                BorderThickness="1"
                 Visibility="{Binding SelectedEnemy.Visibility}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.4" Color="Black"/>
+            </Border.Effect>
             <Border.RenderTransform>
                 <ScaleTransform x:Name="OverlayGroupScale" ScaleX="1" ScaleY="1" />
             </Border.RenderTransform>
-            <Grid Width="520">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" HorizontalAlignment="Left" Width="70" Margin="2,0,0,0">
-                    <TextBlock Name="Name" Text="{Binding SelectedEnemy.Name}" Foreground="White" FontSize="20" FontFamily="{StaticResource PixelBoyFont}" HorizontalAlignment="Left"/>
-                </Grid>
-                <Grid Grid.Column="1" HorizontalAlignment="Left" Width="225" Margin="10,0,0,0">
-                    <Border BorderBrush="White" BorderThickness="1" Width="225" Height="15">
-                        <ProgressBar Name="HealthBar" Value="{Binding SelectedEnemy.CurrentHealth}" Maximum="{Binding SelectedEnemy.MaxHealth}" Foreground="Red" Height="15" Margin="0"/>
-                    </Border>
-                </Grid>
-                <Grid Grid.Column="2" HorizontalAlignment="Right" Margin="5,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Name="CurrentHealth" Text="{Binding SelectedEnemy.CurrentHealth}" Foreground="White" FontSize="20" FontFamily="{StaticResource PixelBoyFont}"/>
-                    <TextBlock Grid.Column="1" Name="HealthDelimited" Text="/" Foreground="White" FontSize="20" FontFamily="{StaticResource PixelBoyFont}" />
-                    <TextBlock Grid.Column="2" Name="MaxHealth" Text="{Binding SelectedEnemy.MaxHealth}" Foreground="White" FontSize="20" FontFamily="{StaticResource PixelBoyFont}"/>
-                </Grid>
-            </Grid>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Name="Name" Text="{Binding SelectedEnemy.Name}" 
+                           Foreground="#E8E8E8" FontSize="16" FontWeight="SemiBold"
+                           FontFamily="{StaticResource PixelBoyFont}" 
+                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <Border Background="#1A1A1A" CornerRadius="2" Padding="2" Margin="0,0,8,0">
+                    <ProgressBar Name="HealthBar" 
+                                 Value="{Binding SelectedEnemy.CurrentHealth}" 
+                                 Maximum="{Binding SelectedEnemy.MaxHealth}" 
+                                 Foreground="#C83232"
+                                 Background="#333333"
+                                 Width="140" Height="10"/>
+                </Border>
+                <TextBlock Name="CurrentHealth" Text="{Binding SelectedEnemy.CurrentHealth}" 
+                           Foreground="#FFFFFF" FontSize="14" FontFamily="{StaticResource PixelBoyFont}"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="/" Foreground="#666666" FontSize="14" FontFamily="{StaticResource PixelBoyFont}"
+                           VerticalAlignment="Center" Margin="3,0"/>
+                <TextBlock Name="MaxHealth" Text="{Binding SelectedEnemy.MaxHealth}" 
+                           Foreground="#888888" FontSize="14" FontFamily="{StaticResource PixelBoyFont}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
         </Border>
 
-        <!-- Main Overlay (bottom right) -->
-        <Border x:Name="OverlayGroup"
-                Padding="0,0,2,0"
-                CornerRadius="2">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <!-- Left block: Timer, EquippedValue, Health -->
-                <Border x:Name="TweakedOverlay" Grid.Column="0"
-                        BorderBrush="White"
+        <!-- Main Overlay Group -->
+        <Border x:Name="OverlayGroup" Padding="0">
+            <StackPanel x:Name="MainOverlayStack" Orientation="Horizontal">
+                <!-- Timer/Stats Bar -->
+                <Border x:Name="TweakedOverlay"
+                        Background="#E0252526"
+                        BorderBrush="#505050"
                         BorderThickness="1"
-                        Background="#FF282B32"
-                        Margin="0,0,8,24"
-                        CornerRadius="2"
-                        VerticalAlignment="Center">
+                        CornerRadius="3"
+                        Padding="10,6"
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Bottom">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.4" Color="Black"/>
+                    </Border.Effect>
                     <Border.RenderTransform>
                         <ScaleTransform x:Name="OverlayEnemyGroupScale" ScaleX="1" ScaleY="1" />
                     </Border.RenderTransform>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock x:Name="OverlayTimer"
                                    Text="{Binding IGTHumanFormat}"
-                                   Width="102" Height="24"
-                                   Foreground="White"
-                                   FontSize="24"
-                                   Background="Transparent"
-                                   Padding="0"
-                                   Margin="8,0,8,0"
+                                   Foreground="#FFFFFF"
+                                   FontSize="20"
+                                   FontWeight="Bold"
                                    FontFamily="{StaticResource PixelBoyFont}"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
                         <TextBlock x:Name="OverlayEquippedValue"
                                    Text="{Binding InventoryImagesSelected.Text}"
-                                   Width="34" Height="24"
-                                   Foreground="DarkCyan"
+                                   Foreground="#4EC9B0"
                                    Visibility="{Binding InventoryImagesSelected.TextVisibility}"
-                                   FontSize="24"
-                                   Background="Transparent"
-                                   Padding="0"
-                                   Margin="0,0,8,0"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
                                    FontFamily="{StaticResource PixelBoyFont}"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
                         <TextBlock x:Name="OverlayHealth"
                                    Text="{Binding Health.Value}"
                                    Foreground="{Binding Health.Background}"
-                                   Width="34" Height="24"
-                                   FontSize="24"
-                                   Background="Transparent"
-                                   Margin="0,0,8,0"
-                                   Padding="0"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
                                    FontFamily="{StaticResource PixelBoyFont}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
-                <!-- Right block: Image -->
-                <Border Grid.Column="1"
-                        BorderBrush="White"
+                <!-- Weapon Icon -->
+                <Border x:Name="WeaponIconBorder"
+                        Background="#E0252526"
+                        BorderBrush="#505050"
                         BorderThickness="1"
-                        Background="#FF282B32"
-                        CornerRadius="2"
-                        VerticalAlignment="Bottom"
-                        HorizontalAlignment="Right"
-                        Margin="0,8,0,8">
-                    <Image Margin="0"
+                        CornerRadius="3"
+                        Padding="6"
+                        VerticalAlignment="Bottom">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.4" Color="Black"/>
+                    </Border.Effect>
+                    <Image x:Name="WeaponIcon"
                            Source="{Binding InventoryImagesSelected.Source}" 
-                           Width="64" 
-                           Height="50" 
+                           Width="50" Height="40" 
                            Opacity="{Binding InventoryImagesSelected.Opacity}"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Right"/>
+                           RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Border>
-            </Grid>
+            </StackPanel>
         </Border>
     </Canvas>
 </Window>

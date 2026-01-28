@@ -13,5 +13,12 @@
     "NoItemBoxChallenge": false,
     "DebugMode": false,
     "StaticEnemyTrackerWindow": false,
-    "Ddraw100": false
+    "Ddraw100": false,
+    "SRT_PositionX": -1,
+    "SRT_PositionY": -1,
+    "SRT_Scale": 1.0,
+    "Tracker_PositionX": -1,
+    "Tracker_PositionY": -1,
+    "StreamerMode": false,
+    "ChromaKeyColor": "#00FF00"
 }

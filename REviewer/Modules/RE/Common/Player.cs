@@ -167,6 +167,45 @@ namespace REviewer.Modules.RE.Common
             {
                 await Task.Delay(50);
                 OnPropertyChanged(nameof(InventorySlotSelectedImage));
+                OnPropertyChanged(nameof(InventorySlotSelectedQuantity));
+            }
+        }
+
+        public string InventorySlotSelectedQuantity
+        {
+            get
+            {
+                if (Inventory == null || InventorySlotSelected == null) return "";
+                
+                int index = InventorySlotSelected.Value;
+                
+                // Handle RE1 weirdness where 0x80 is nothing/equipping?
+                if (index < 0 || index >= Inventory.Count) return "";
+                
+                // For RE1, index 0 might be special or 1-based, need to match Image logic
+                // The Image logic uses: var selected = InventorySlotSelected.Value - 1; for RE1/CVX
+                
+                int selectedIndex = index;
+                if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX)
+                {
+                     selectedIndex = index - 1;
+                }
+                
+                if (selectedIndex >= 0 && selectedIndex < Inventory.Count)
+                {
+                     var qty = Inventory[selectedIndex].Quantity?.Value ?? 0;
+                     var item = Inventory[selectedIndex].Item?.Value ?? 0;
+                     
+                     // Don't show quantity for items that don't satisfy criteria (similar to UpdateTextInventoryImage)
+                     // But user asked for "Counter of what you have on item selected"
+                     // We probably want to show it even if it's 1, or maybe match inventory logic?
+                     // Let's just return the raw quantity for now, or maybe formatted
+                     
+                     // Check if item has infinite ammo or percentage?
+                     return qty.ToString();
+                }
+                
+                return "";
             }
         }
 

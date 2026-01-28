@@ -18,7 +18,23 @@ namespace REviewer
         private readonly Process _targetProcess;
         private readonly DispatcherTimer _positionTimer = new();
         public readonly Config OverlayConfig;
-        public int _cornerPosition;
+        
+        private int _cornerPositionValue;
+        public int _cornerPosition
+        {
+            get => _cornerPositionValue;
+            set
+            {
+                if (_cornerPositionValue != value)
+                {
+                    _cornerPositionValue = value;
+                    if (IsLoaded)
+                    {
+                        UpdateOverlayMargins();
+                    }
+                }
+            }
+        }
 
         private int _overlayFontSize = 16; 
         public int OverlayFontSize
@@ -175,17 +191,22 @@ namespace REviewer
                 double scaledOverlayWidth = OverlayGroup.ActualWidth * _overlayCanvasScale;
                 double scaledOverlayHeight = OverlayGroup.ActualHeight * _overlayCanvasScale;
 
+                // Corner positions: 0=BottomRight, 1=TopRight, 2=TopLeft, 3=BottomLeft
                 double x = _cornerPosition switch
                 {
-                    0 => this.Width - scaledOverlayWidth - margin_x,
-                    1 => this.Width - scaledOverlayWidth - margin_x,
+                    0 => this.Width - scaledOverlayWidth - margin_x,  // Bottom-Right
+                    1 => this.Width - scaledOverlayWidth - margin_x,  // Top-Right
+                    2 => margin_x,                                     // Top-Left
+                    3 => margin_x,                                     // Bottom-Left
                     _ => this.Width - scaledOverlayWidth - margin_x
                 };
 
                 double y = _cornerPosition switch
                 {
-                    0 => this.Height - scaledOverlayHeight - margin_y,
-                    1 => margin_y,
+                    0 => this.Height - scaledOverlayHeight - margin_y, // Bottom-Right
+                    1 => margin_y,                                      // Top-Right
+                    2 => margin_y,                                      // Top-Left
+                    3 => this.Height - scaledOverlayHeight - margin_y, // Bottom-Left
                     _ => this.Height - scaledOverlayHeight - margin_y
                 };
 
@@ -200,11 +221,23 @@ namespace REviewer
                 double scaledEnemyWidth = OverlayEnemyGroup.ActualWidth * _overlayCanvasScale;
                 double scaledEnemyHeight = OverlayEnemyGroup.ActualHeight * _overlayCanvasScale;
 
-                double enemyX = enemyMarginX;
+                // Enemy tracker goes on the OPPOSITE horizontal side of main overlay
+                // Main at right (0,1) -> Enemy at left; Main at left (2,3) -> Enemy at right
+                double enemyX = _cornerPosition switch
+                {
+                    0 => enemyMarginX,                                    // Main Bottom-Right -> Enemy Left
+                    1 => enemyMarginX,                                    // Main Top-Right -> Enemy Left
+                    2 => this.Width - scaledEnemyWidth - enemyMarginX,   // Main Top-Left -> Enemy Right
+                    3 => this.Width - scaledEnemyWidth - enemyMarginX,   // Main Bottom-Left -> Enemy Right
+                    _ => enemyMarginX
+                };
+                // Enemy tracker stays on same vertical side as main overlay
                 double enemyY = _cornerPosition switch
                 {
-                    0 => this.Height - scaledEnemyHeight - enemyMarginY,
-                    1 => enemyMarginY,
+                    0 => this.Height - scaledEnemyHeight - enemyMarginY, // Bottom-Right -> Bottom
+                    1 => enemyMarginY,                                    // Top-Right -> Top
+                    2 => enemyMarginY,                                    // Top-Left -> Top
+                    3 => this.Height - scaledEnemyHeight - enemyMarginY, // Bottom-Left -> Bottom
                     _ => this.Height - scaledEnemyHeight - enemyMarginY
                 };
 
@@ -215,13 +248,51 @@ namespace REviewer
 
         private void UpdateOverlayMargins()
         {
-            if (_cornerPosition == 0)
+            // Corner positions: 0=BottomRight, 1=TopRight, 2=TopLeft, 3=BottomLeft
+            bool isLeft = _cornerPosition == 2 || _cornerPosition == 3;
+            bool isTop = _cornerPosition == 1 || _cornerPosition == 2;
+
+            // Swap order of children for left-side positions (icon first, then bars)
+            if (MainOverlayStack != null && MainOverlayStack.Children.Count >= 2)
             {
-                TweakedOverlay.Margin = new Thickness(0, 0, 8, -24);
+                var timerBar = MainOverlayStack.Children[0];
+                var weaponIcon = MainOverlayStack.Children[1];
+
+                // Check current order and swap if needed
+                bool currentlySwapped = MainOverlayStack.Children[0] == WeaponIconBorder;
+                
+                if (isLeft && !currentlySwapped)
+                {
+                    // Swap: Icon first, then timer bar
+                    MainOverlayStack.Children.Clear();
+                    MainOverlayStack.Children.Add(WeaponIconBorder);
+                    MainOverlayStack.Children.Add(TweakedOverlay);
+                    TweakedOverlay.Margin = new Thickness(6, 0, 0, 0);
+                    WeaponIconBorder.Margin = new Thickness(0);
+                }
+                else if (!isLeft && currentlySwapped)
+                {
+                    // Swap back: Timer bar first, then icon
+                    MainOverlayStack.Children.Clear();
+                    MainOverlayStack.Children.Add(TweakedOverlay);
+                    MainOverlayStack.Children.Add(WeaponIconBorder);
+                    TweakedOverlay.Margin = new Thickness(0, 0, 6, 0);
+                    WeaponIconBorder.Margin = new Thickness(0);
+                }
             }
-            else if (_cornerPosition == 1)
+
+            // Adjust vertical alignment based on top/bottom
+            if (isTop)
             {
-                TweakedOverlay.Margin = new Thickness(0, 0, 8, 24);
+                // Top corners: align timer bar with TOP of weapon icon
+                TweakedOverlay.VerticalAlignment = VerticalAlignment.Top;
+                WeaponIconBorder.VerticalAlignment = VerticalAlignment.Top;
+            }
+            else
+            {
+                // Bottom corners: align timer bar with BOTTOM of weapon icon
+                TweakedOverlay.VerticalAlignment = VerticalAlignment.Bottom;
+                WeaponIconBorder.VerticalAlignment = VerticalAlignment.Bottom;
             }
         }
 

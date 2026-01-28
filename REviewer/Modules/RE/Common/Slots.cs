@@ -13,7 +13,6 @@ namespace REviewer.Modules.RE.Common
         private VariableData? _type;
         private string? _image;
         private int _position;
-        private int _selectedGame;
 
         public VariableData? Item
         {
