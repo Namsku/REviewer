@@ -2,13 +2,20 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x86</Platforms>
-    <ApplicationIcon>Resources\Icons\REviewerIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icons\mascot.ico</ApplicationIcon>
+    <NoWarn>CS8602;CS8604;CS8600;CS8618;CS8625;CS8603;CS8622;CS8629;CS0219;CS0108;NETSDK1138;NU1701</NoWarn>
+    
+    <!-- Single File Publish Settings -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-        <Resource Include="resources/icons/*.png" />
+        <Resource Include="Resources\Icons\*.png" />
 	  <Resource Include="resources/re1/*.png" />
 	  <Resource Include="resources/re2/*.png" />
 	  <Resource Include="resources/re3/*.png" />
@@ -36,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Icons\REviewerIcon.ico" />
+    <Content Include="Resources\Icons\mascot.ico" />
   </ItemGroup>
 
   <ItemGroup>

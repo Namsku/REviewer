@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 
 namespace REviewer
 {
@@ -18,6 +19,13 @@ namespace REviewer
 
         private readonly RootObject _game;
         private double _windowWidth;
+
+        // Docking support
+        private bool _isDocked = false;
+        private SRT? _dockedSRT;
+
+        public bool IsDocked => _isDocked;
+        public SRT? DockedSRT => _dockedSRT;
 
         public double WindowWidth
         {
@@ -47,11 +55,11 @@ namespace REviewer
         }
         public double? WindowScale { get; set; }
         public ObservableCollection<EnemyTracking> Tracking { get; set; }
+
         public Tracker(ObservableCollection<EnemyTracking> trk, RootObject obj)
         {
             _game = obj ?? throw new ArgumentNullException(nameof(obj));
             Tracking = trk ?? throw new ArgumentNullException(nameof(trk));
-
 
             InitializeComponent();
             SubscribeToEvents();
@@ -62,7 +70,7 @@ namespace REviewer
 
         private void SetWindowProperties()
         {
-            WindowWidth = _game.WindowWidth == 400 ? 450 : 320;
+            WindowWidth = _game.WindowWidth == 400 ? 400 : 320;
             WindowScale = _game.WindowWidth == 400 ? 1 : 0.7;
 
             if (_game.StaticEnemyTrackerWindow == true)
@@ -74,11 +82,77 @@ namespace REviewer
                 WindowHeight = double.NaN;
             }
 
-            // Console.WriteLine(_game.StaticEnemyTrackerWindow);
-
-            OnPropertyChanged(nameof(WindowWidth)); // Raise PropertyChanged event for WindowWidth
-            OnPropertyChanged(nameof(WindowScale)); // Raise PropertyChanged event for WindowScale
+            OnPropertyChanged(nameof(WindowWidth));
+            OnPropertyChanged(nameof(WindowScale));
         }
+
+        #region Window Controls
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void DockButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isDocked && _dockedSRT != null)
+            {
+                // Undock
+                _dockedSRT.UndockTracker();
+                UndockFromSRT();
+            }
+            else
+            {
+                var srt = Application.Current.Windows.OfType<SRT>().FirstOrDefault();
+                if (srt != null)
+                {
+                    srt.DockWithTracker(this);
+                    DockWithSRT(srt);
+                }
+            }
+        }
+
+        private void PositionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isDocked && _dockedSRT != null)
+            {
+                _dockedSRT.ToggleTrackerPosition();
+            }
+        }
+
+        public void DockWithSRT(SRT srt)
+        {
+            _dockedSRT = srt;
+            _isDocked = true;
+            UpdateDockButtonVisual();
+        }
+
+        public void UndockFromSRT()
+        {
+            _isDocked = false;
+            _dockedSRT = null;
+            UpdateDockButtonVisual();
+        }
+
+        private void UpdateDockButtonVisual()
+        {
+            if (DockBtn != null)
+            {
+                DockBtn.ToolTip = _isDocked ? "Undock from SRT" : "Dock with SRT";
+            }
+        }
+
+        #endregion
+
+        #region Enemy Tracking
 
         private void SubscribeToEvents()
         {
@@ -125,6 +199,8 @@ namespace REviewer
                 }
             }
         }
+
+        #endregion
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

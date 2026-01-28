@@ -1,28 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
+using REviewer.Modules.RE;
+using REviewer.Modules.RE.Common;
+using REviewer.Modules.RE.Enemies;
+using REviewer.Modules.RE.Json;
+using REviewer.Modules.Utils;
+using REviewer.ViewModels;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Net.Http.Headers;
-using System.Net.Http;
-
-using Newtonsoft.Json;
-
-using REviewer.Modules.RE;
-using REviewer.Modules.RE.Common;
-using REviewer.Modules.RE.Json;
-using REviewer.Modules.Utils;
-using REviewer.Modules.RE.Enemies;
-
-using Microsoft.WindowsAPICodePack.Dialogs;
-
-using Reloaded.Memory.Sigscan;
-using Reloaded.Memory.Sigscan.Definitions.Structs;
-
 using Timer = System.Threading.Timer;
-using Newtonsoft.Json.Linq;
 
 namespace REviewer
 {
@@ -42,9 +35,7 @@ namespace REviewer
         private MonitorVariables? _MVEnemies;
         private ObservableCollection<EnemyTracking>? _tracking;
         private ItemIDs? _itemIDs;
-        private UINotify? _ui;
-
-        private int _value = 24;
+        private MainWindowViewModel _viewModel;
 
         public const int BIOHAZARD_1_MK = 0; // Mediakit
         public const int BIOHAZARD_2_SC = 1; // SourceNext
@@ -71,7 +62,7 @@ namespace REviewer
         public bool IsBigEndian { get; private set; }
 
         private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "bio2 chn claire", "bio2 chn leon", "BIOHAZARD(R) 3 PC", "Bio3 CHN/TWN", "CVX PS2 US" };
-        private static readonly List<string> _gameSelection = new List<string>() {"RE1", "RE2", "RE2C", "RE2C", "RE3", "RE3C", "RECVX"};
+        private static readonly List<string> _gameSelection = new List<string>() { "RE1", "RE2", "RE2C", "RE2C", "RE3", "RE3C", "RECVX" };
 
         public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
         private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
@@ -86,70 +77,90 @@ namespace REviewer
         public MainWindow()
         {
             InitializeComponent();
+
+            // MVVM: Create ViewModel and set as DataContext
+            _viewModel = new MainWindowViewModel();
+            DataContext = _viewModel;
+
             InitializeText();
             InitCheckBoxes();
-            InitializeSavedOptions();
-            
+            // InitializeSavedOptions is now called in MainWindowViewModel constructor
+
             InitializeSaveWatcher();
             InitializeProcessWatcher();
             InitializeRootObjectWatcher();
 
             CheckForNewVersion();
 
-            // Loading Data Context
-            DataContext = this._ui;
-
             Closed += MainWindow_Closed;
         }
 
         private void InitCheckBoxes()
         {
-            _ui ??= new UINotify(ConfigurationManager.AppSettings["Version"] ?? "None");
+            if (_viewModel == null) return;
 
             // Reset all visibilities to Collapsed and booleans to false
-            _ui.isBiorandMode = false;
-            _ui.ChallengeVisibility = Visibility.Collapsed;
-            _ui.ClassicVisibility = Visibility.Collapsed;
-            _ui.ChrisInventory = Visibility.Collapsed;
-            _ui.Sherry = Visibility.Collapsed;
-            _ui.DebugModeVisibility = Visibility.Collapsed;
-            _ui.DdrawBio3 = Visibility.Collapsed;
+            _viewModel.isBiorandMode = false;
+            _viewModel.ChallengeVisibility = Visibility.Collapsed;
+            _viewModel.ClassicVisibility = Visibility.Collapsed;
+            _viewModel.ChrisInventory = Visibility.Collapsed;
+            _viewModel.Sherry = Visibility.Collapsed;
+            _viewModel.DebugModeVisibility = Visibility.Collapsed;
+            _viewModel.DdrawBio3 = Visibility.Collapsed;
 
             switch (ComboBoxGameSelection.SelectedIndex)
             {
                 case BIOHAZARD_1_MK:
-                    _ui.isBiorandMode = true;
-                    _ui.ChallengeVisibility = Visibility.Visible;
-                    _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.ChrisInventory = Visibility.Visible;
-                    _ui.DebugModeVisibility = Visibility.Visible;
+                    _viewModel.isBiorandMode = true;
+                    _viewModel.ChallengeVisibility = Visibility.Visible;
+                    _viewModel.ClassicVisibility = Visibility.Visible;
+                    _viewModel.ChrisInventory = Visibility.Visible;
+                    _viewModel.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_SC:
-                    _ui.isBiorandMode = true;
-                    _ui.ChallengeVisibility = Visibility.Visible;
-                    _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.Sherry = Visibility.Visible;
+                    _viewModel.isBiorandMode = true;
+                    _viewModel.ChallengeVisibility = Visibility.Visible;
+                    _viewModel.ClassicVisibility = Visibility.Visible;
+                    _viewModel.Sherry = Visibility.Visible;
                     break;
                 case BIOHAZARD_2_PC:
                 case BIOHAZARD_2_PL:
-                    _ui.Sherry = Visibility.Visible;
-                    _ui.DebugModeVisibility = Visibility.Visible;
+                    _viewModel.Sherry = Visibility.Visible;
+                    _viewModel.DebugModeVisibility = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_RB:
-                    _ui.isBiorandMode = true;
-                    _ui.ChallengeVisibility = Visibility.Visible;
-                    _ui.ClassicVisibility = Visibility.Visible;
-                    _ui.DebugModeVisibility = Visibility.Visible;
-                    _ui.DdrawBio3 = Visibility.Visible;
+                    _viewModel.isBiorandMode = true;
+                    _viewModel.ChallengeVisibility = Visibility.Visible;
+                    _viewModel.ClassicVisibility = Visibility.Visible;
+                    _viewModel.DebugModeVisibility = Visibility.Visible;
+                    _viewModel.DdrawBio3 = Visibility.Visible;
                     break;
                 case BIOHAZARD_3_CH:
                     // All remain collapsed/false
                     break;
                 case BIOHAZARD_CV_X:
-                    _ui.isBiorandMode = true;
-                    _ui.ClassicVisibility = Visibility.Visible;
+                    _viewModel.isBiorandMode = true;
+                    _viewModel.ClassicVisibility = Visibility.Visible;
                     break;
             }
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
 
         private void UpdateUI(string content, string savePath, int position)
@@ -182,7 +193,7 @@ namespace REviewer
                         Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
                         break;
                     case BIOHAZARD_3_CH:
-                        break;  
+                        break;
                     case BIOHAZARD_CV_X:
                         break;
                 }
@@ -208,25 +219,7 @@ namespace REviewer
             }
         }
 
-        private void InitializeSavedOptions()
-        {
-            var config = Library.GetOptions();
-            _ui.isBiorandMode = config["isBiorandMode"];
-            _ui.isHealthBarChecked = config["isHealthBarChecked"];
-            _ui.isItemBoxChecked = config["isItemBoxChecked"];
-            _ui.isChrisInventoryChecked = config["isChrisInventoryChecked"];
-            _ui.isSherryChecked = config["isSherryChecked"];
-            _ui.isMinimalistChecked = config["isMinimalistChecked"];
-            _ui.isNoSegmentsTimerChecked = config["isNoSegmentsTimerChecked"];
-            _ui.isNoStatsChecked = config["isNoStatsChecked"];
-            _ui.isNoKeyItemsChecked = config["isNoKeyItemsChecked"];
-            _ui.OneHPChallenge = config["OneHPChallenge"];
-            _ui.NoDamageChallenge = config["NoDamageChallenge"];
-            _ui.NoItemBoxChallenge = config["NoItemBoxChallenge"];
-            _ui.DebugMode = config["DebugMode"];
-            _ui.isStaticEnemyTrackerWindow = config["StaticEnemyTrackerWindow"];
-            _ui.isDdrawChecked = config["Ddraw100"];
-        }
+        // InitializeSavedOptions is now handled by MainWindowViewModel
 
         private void InitializeProcessWatcher()
         {
@@ -268,33 +261,7 @@ namespace REviewer
             Library.UpdateTextBlock(Save, text: saveContent, color: saveColor, isBold: true);
         }
 
-        // selecting different window frames
-
-        private void MenuListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            panelMain.Visibility = Visibility.Hidden;
-            panelSettings.Visibility = Visibility.Hidden;
-            panelAbout.Visibility = Visibility.Hidden;
-
-            const int MAIN_PANEL = 1;
-            const int OPTN_PANEL = 2;
-            const int HELP_PANEL = 3;
-
-            var selectedItem = (REviewerMenuItem)menuListView.SelectedItem;
-
-            switch (selectedItem.MenuIndex)
-            {
-                case MAIN_PANEL:
-                    panelMain.Visibility = Visibility.Visible;
-                    break;
-                case OPTN_PANEL:
-                    panelSettings.Visibility = Visibility.Visible;
-                    break;
-                case HELP_PANEL:
-                    panelAbout.Visibility = Visibility.Visible;
-                    break;
-            }
-        }
+        // Navigation is now handled by NavHome_Click, NavSettings_Click, NavAbout_Click in #region Navigation
 
         // Process Watcher
 
@@ -355,7 +322,7 @@ namespace REviewer
                             {
                                 Scanner scanner = new Scanner(tmp_process, tmp_process.MainModule);
                                 PatternScanResult result = scanner.FindPattern("50 53 33 5F 47 41 4D 45 00 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 30 30");
-                
+
                                 IntPtr pointer = IntPtr.Add(tmp_process.MainModule.BaseAddress, result.Offset);
                                 ProductPointer = result.Offset != 0 ? IntPtr.Add(pointer, -0xE0) : IntPtr.Zero;
                             }
@@ -368,9 +335,21 @@ namespace REviewer
                             _process = Process.GetProcessesByName(process_list[i])[0];
                             string md5Hash = Library.GetProcessMD5Hash(_process);
 
-                            // Updating the TextBlock on the MainWindow
+                            // Updating the hidden TextBlocks (for backward compatibility)
                             Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
                             Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+
+                            // Update the new visible Status Monitor elements
+                            // MD5Status now shows the process name instead of MD5 hash
+                            MD5Status.Text = $"[ {process_list[i]} ]";
+                            MD5Status.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
+
+                            ProcessStatus.Text = "[ HOOKED ]";
+                            ProcessStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
+
+                            // Update status bar as well
+                            StatusMD5.Text = $"Process: {process_list[i]}";
+                            StatusProcess.Text = "Status: Hooked";
 
                             // Set the Exited event handler
                             _process.EnableRaisingEvents = true;
@@ -398,7 +377,8 @@ namespace REviewer
                     var reJson = Library.GetReviewerConfig();
                     var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
 
-                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH || index == BIOHAZARD_CV_X) isSaveFound = true;
+                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH || index == BIOHAZARD_CV_X
+                        || index == BIOHAZARD_2_SC || index == BIOHAZARD_3_RB) isSaveFound = true;
 
                     if (_isProcessRunning && isSaveFound)
                     {
@@ -428,7 +408,7 @@ namespace REviewer
                 // Mapping the game data (Room IDs, Item IDs, etc.)
                 GameData gameData = new GameData(_process.ProcessName);
                 _itemIDs = new ItemIDs(_process.ProcessName);
-                _residentEvilGame = gameData.GetGameData(_itemIDs, (int) VirtualMemoryPointer);
+                _residentEvilGame = gameData.GetGameData(_itemIDs, (int)VirtualMemoryPointer);
             }
 
             if (_tracking == null)
@@ -438,7 +418,7 @@ namespace REviewer
 
             if (_MVariables == null)
             {
-                _MVariables = new MonitorVariables((int) _process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
+                _MVariables = new MonitorVariables((int)_process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
             }
             else
             {
@@ -447,7 +427,7 @@ namespace REviewer
 
             if (_MVEnemies == null)
             {
-                _MVEnemies = new MonitorVariables((int) _process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
+                _MVEnemies = new MonitorVariables((int)_process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
             }
             else
             {
@@ -475,9 +455,22 @@ namespace REviewer
 
             var content = "Not Found";
 
-            // Updating the TextBlock on the MainWindow
+            // Updating the hidden TextBlocks (for backward compatibility)
             Library.UpdateTextBlock(MD5, text: content, color: CustomColors.Red, isBold: true);
             Library.UpdateTextBlock(ProcessTextBlock, text: content, color: CustomColors.Red, isBold: true);
+
+            // Update the visible Status Monitor elements on UI thread
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MD5Status.Text = "[ SEARCHING ]";
+                MD5Status.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Warning");
+
+                ProcessStatus.Text = "[ WAITING ]";
+                ProcessStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Warning");
+
+                StatusMD5.Text = "Process: Searching";
+                StatusProcess.Text = "Status: Waiting";
+            });
 
             // Close all active window frames, including Overlay
             CloseAllWindowFrames();
@@ -540,8 +533,10 @@ namespace REviewer
 
         private void ComboBoxGameSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Get the selected item
+            // Guard: Skip during initialization when UI elements aren't ready yet
+            if (!IsLoaded) return;
 
+            // Get the selected item
             int selectedIndex = ((ComboBox)sender).SelectedIndex;
             _processName = _gameList[selectedIndex];
             _isProcessRunning = false;
@@ -554,14 +549,25 @@ namespace REviewer
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
 
-            SRT?.Close();
-            TRK?.Close();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                SRT?.Close();
+                TRK?.Close();
+
+                // Reset visible status monitor elements
+                MD5Status.Text = "[ SEARCHING ]";
+                MD5Status.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Warning");
+
+                ProcessStatus.Text = "[ WAITING ]";
+                ProcessStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Warning");
+
+                StatusMD5.Text = "Process: Searching";
+                StatusProcess.Text = "Status: Waiting";
+            });
 
             _residentEvilGame = null;
             _MVariables = null;
             _tracking = null;
-
-            // Check every second if the process is running
 
             const string content = "Not Found";
             var reJson = Library.GetReviewerConfig();
@@ -575,7 +581,7 @@ namespace REviewer
             _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
             _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
 
-            Logger.Instance.Info($"Selected game: {_processName} -> Disabling old process watcher to the new one");
+            Logger.Instance.Info($"Selected game: {_processName} -> Resetting status and starting new process watcher");
         }
 
         // Events for selecting the Save Path
@@ -650,6 +656,9 @@ namespace REviewer
 
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
+                                        // Close existing windows before creating new ones
+                                        CloseExistingWindows();
+                                        
                                         // Create SRT window
                                         var srtConfig = GenerateSRTUIConfig();
                                         SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
@@ -664,6 +673,10 @@ namespace REviewer
                                         {
                                             TRK = new Tracker(_tracking, _residentEvilGame);
                                             TRK.Show();
+
+                                            // Auto-dock SRT and Tracker by default
+                                            SRT.DockWithTracker(TRK, false);
+                                            TRK.DockWithSRT(SRT);
                                         }
                                     });
                                 }
@@ -680,6 +693,40 @@ namespace REviewer
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Logger.Instance.Error($"Error in Run_Click method: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Closes existing SRT, Overlay, and Tracker windows before creating new ones.
+        /// This prevents duplicate windows when re-running the game.
+        /// </summary>
+        private void CloseExistingWindows()
+        {
+            try
+            {
+                if (SRT != null)
+                {
+                    SRT.Close();
+                    SRT = null;
+                }
+                
+                if (OVL != null)
+                {
+                    OVL.Close();
+                    OVL = null;
+                }
+                
+                if (TRK != null)
+                {
+                    TRK.Close();
+                    TRK = null;
+                }
+                
+                Logger.Instance.Info("Closed existing windows for fresh restart");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Error($"Error closing existing windows: {ex.Message}");
             }
         }
 
@@ -714,7 +761,8 @@ namespace REviewer
                 throw new ArgumentNullException(nameof(configPath));
             }
 
-            if (!reJson.TryGetValue(game, out _) && game != "RE2C" && game != "RE3C")
+            // Bypass check for RE2, RE3, RECVX and their variants
+            if (!reJson.TryGetValue(game, out _) && game != "RE2C" && game != "RE3C" && game != "RE2" && game != "RE3" && game != "RECVX")
             {
                 MessageBox.Show("The game save path is not set/not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -917,6 +965,89 @@ namespace REviewer
             }
         }
 
+        #region Navigation
+
+        private void NavHome_Click(object sender, RoutedEventArgs e)
+        {
+            SetActivePanel("Home");
+        }
+
+        private void NavAbout_Click(object sender, RoutedEventArgs e)
+        {
+            SetActivePanel("About");
+        }
+
+        private void NavDebug_Click(object sender, RoutedEventArgs e)
+        {
+            SetActivePanel("Debug");
+            LoadDebugLogs();
+        }
+
+        private void NavSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SetActivePanel("Settings");
+        }
+
+        private void SetActivePanel(string panelName)
+        {
+            // Hide all panels
+            panelMain.Visibility = Visibility.Collapsed;
+            panelSettings.Visibility = Visibility.Collapsed;
+            panelAbout.Visibility = Visibility.Collapsed;
+            panelDebug.Visibility = Visibility.Collapsed;
+
+            // Reset all button states
+            btnHome.Tag = null;
+            btnAbout.Tag = null;
+            btnDebug.Tag = null;
+            btnSettings.Tag = null;
+
+            // Show selected panel and mark button active
+            switch (panelName)
+            {
+                case "Home":
+                    panelMain.Visibility = Visibility.Visible;
+                    btnHome.Tag = "Active";
+                    break;
+                case "About":
+                    panelAbout.Visibility = Visibility.Visible;
+                    btnAbout.Tag = "Active";
+                    break;
+                case "Debug":
+                    panelDebug.Visibility = Visibility.Visible;
+                    btnDebug.Tag = "Active";
+                    break;
+                case "Settings":
+                    panelSettings.Visibility = Visibility.Visible;
+                    btnSettings.Tag = "Active";
+                    break;
+            }
+        }
+
+        private void LoadDebugLogs()
+        {
+            try
+            {
+                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "reviewer.log");
+                if (File.Exists(logPath))
+                {
+                    // Read last 100 lines to avoid loading too much data
+                    var lines = File.ReadAllLines(logPath);
+                    var lastLines = lines.Length > 100 ? lines.Skip(lines.Length - 100) : lines;
+                    LogOutput.Text = string.Join(Environment.NewLine, lastLines);
+                }
+                else
+                {
+                    LogOutput.Text = "No log file found at: " + logPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogOutput.Text = $"Error loading logs: {ex.Message}";
+            }
+        }
+
+        #endregion
 
 
     }

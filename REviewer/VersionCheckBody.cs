@@ -2,7 +2,6 @@
 {
     public class VersionCheckBody
     {
-        public string tag_name { get; set; }
+        public string? tag_name { get; set; }
     }
-
 }

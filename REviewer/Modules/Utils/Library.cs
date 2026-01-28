@@ -1,5 +1,4 @@
-﻿
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -11,7 +10,6 @@ using REviewer.Modules.RE.Json;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-
 
 namespace REviewer.Modules.Utils
 {
@@ -223,7 +221,7 @@ namespace REviewer.Modules.Utils
             return val;
         }
     }
-    public class Library
+    public static class Library
     {
 
         private static readonly string? _configPath = ConfigurationManager.AppSettings["Config"];
@@ -383,40 +381,19 @@ namespace REviewer.Modules.Utils
             {
                 return gameName;
             }
-            else
-            {
-                throw new KeyNotFoundException($"The process name {processName} does not exist in the dictionary.");
-            }
+
+            throw new KeyNotFoundException($"The process name {processName} does not exist in the dictionary.");
         }
 
         public static void UpdateTextBlock(TextBlock textBlock, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
         {
             textBlock.Dispatcher.Invoke(() =>
             {
-                if (text != null)
-                {
-                    textBlock.Text = text;
-                }
-
-                if (color != null)
-                {
-                    textBlock.Foreground = color;
-                }
-
-                if (isBold != null)
-                {
-                    textBlock.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
-                }
-
-                if (font != null)
-                {
-                    textBlock.FontFamily = new FontFamily(font);
-                }
-
-                if (size != null)
-                {
-                    textBlock.FontSize = size.Value;
-                }
+                if (text != null) textBlock.Text = text;
+                if (color != null) textBlock.Foreground = color;
+                if (isBold != null) textBlock.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
+                if (font != null) textBlock.FontFamily = new FontFamily(font);
+                if (size != null) textBlock.FontSize = size.Value;
             });
         }
 
@@ -424,30 +401,11 @@ namespace REviewer.Modules.Utils
         {
             textBox.Dispatcher.Invoke(() =>
             {
-                if (text != null)
-                {
-                    textBox.Text = text;
-                }
-
-                if (color != null)
-                {
-                    textBox.Foreground = color;
-                }
-
-                if (isBold != null)
-                {
-                    textBox.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
-                }
-
-                if (font != null)
-                {
-                    textBox.FontFamily = new FontFamily(font);
-                }
-
-                if (size != null)
-                {
-                    textBox.FontSize = size.Value;
-                }
+                if (text != null) textBox.Text = text;
+                if (color != null) textBox.Foreground = color;
+                if (isBold != null) textBox.FontWeight = isBold.Value ? FontWeights.Bold : FontWeights.Normal;
+                if (font != null) textBox.FontFamily = new FontFamily(font);
+                if (size != null) textBox.FontSize = size.Value;
             });
         }
 
@@ -502,21 +460,21 @@ namespace REviewer.Modules.Utils
 
             return new Dictionary<string, bool>
             {
-                { "isBiorandMode", reJson["isBiorandMode"] == "true" },
-                { "isHealthBarChecked", reJson["isHealthBarChecked"] == "true" },
-                { "isItemBoxChecked", reJson["isItemBoxChecked"] == "true" },
-                { "isChrisInventoryChecked", reJson["isChrisInventoryChecked"] == "true" },
-                { "isSherryChecked", reJson["isSherryChecked"] == "true" },
-                { "isMinimalistChecked", reJson["isMinimalistChecked"] == "true" },
-                { "isNoSegmentsTimerChecked", reJson["isNoSegmentsTimerChecked"] == "true" },
-                { "isNoStatsChecked", reJson["isNoStatsChecked"] == "true" },
-                { "isNoKeyItemsChecked", reJson["isNoKeyItemsChecked"] == "true" },
-                { "OneHPChallenge", reJson["OneHPChallenge"] == "true" },
-                { "NoDamageChallenge", reJson["NoDamageChallenge"] == "true" },
-                { "NoItemBoxChallenge", reJson["NoItemBoxChallenge"] == "true"},
-                { "DebugMode", reJson["DebugMode"] == "true" },
-                { "StaticEnemyTrackerWindow", reJson["StaticEnemyTrackerWindow"] == "true" },
-                { "Ddraw100", reJson["Ddraw100"] == "true" }
+                { "isBiorandMode", reJson.GetValueOrDefault("isBiorandMode", "") == "true" },
+                { "isHealthBarChecked", reJson.GetValueOrDefault("isHealthBarChecked", "") == "true" },
+                { "isItemBoxChecked", reJson.GetValueOrDefault("isItemBoxChecked", "") == "true" },
+                { "isChrisInventoryChecked", reJson.GetValueOrDefault("isChrisInventoryChecked", "") == "true" },
+                { "isSherryChecked", reJson.GetValueOrDefault("isSherryChecked", "") == "true" },
+                { "isMinimalistChecked", reJson.GetValueOrDefault("isMinimalistChecked", "") == "true" },
+                { "isNoSegmentsTimerChecked", reJson.GetValueOrDefault("isNoSegmentsTimerChecked", "") == "true" },
+                { "isNoStatsChecked", reJson.GetValueOrDefault("isNoStatsChecked", "") == "true" },
+                { "isNoKeyItemsChecked", reJson.GetValueOrDefault("isNoKeyItemsChecked", "") == "true" },
+                { "OneHPChallenge", reJson.GetValueOrDefault("OneHPChallenge", "") == "true" },
+                { "NoDamageChallenge", reJson.GetValueOrDefault("NoDamageChallenge", "") == "true" },
+                { "NoItemBoxChallenge", reJson.GetValueOrDefault("NoItemBoxChallenge", "") == "true"},
+                { "DebugMode", reJson.GetValueOrDefault("DebugMode", "") == "true" },
+                { "StaticEnemyTrackerWindow", reJson.GetValueOrDefault("StaticEnemyTrackerWindow", "") == "true" },
+                { "Ddraw100", reJson.GetValueOrDefault("Ddraw100", "") == "true" }
             };
         }
         public static void UpdateConfigFile(string key, string value)
@@ -526,6 +484,64 @@ namespace REviewer.Modules.Utils
 
             reJson[key] = value;
             File.WriteAllText(configPath, JsonConvert.SerializeObject(reJson, Formatting.Indented));
+        }
+
+        /// <summary>
+        /// Get a setting value from config, with default fallback
+        /// </summary>
+        public static T GetSetting<T>(string key, T defaultValue)
+        {
+            try
+            {
+                var reJson = GetReviewerConfig();
+                if (reJson.TryGetValue(key, out var value))
+                {
+                    if (typeof(T) == typeof(double))
+                        return (T)(object)double.Parse(value);
+                    if (typeof(T) == typeof(int))
+                        return (T)(object)int.Parse(value);
+                    if (typeof(T) == typeof(bool))
+                        return (T)(object)(value.ToLower() == "true");
+                    return (T)(object)value;
+                }
+            }
+            catch { }
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Save window position to config
+        /// </summary>
+        public static void SaveWindowPosition(string windowName, double x, double y)
+        {
+            UpdateConfigFile($"{windowName}_PositionX", x.ToString());
+            UpdateConfigFile($"{windowName}_PositionY", y.ToString());
+        }
+
+        /// <summary>
+        /// Load window position from config
+        /// </summary>
+        public static (double x, double y) LoadWindowPosition(string windowName)
+        {
+            var x = GetSetting($"{windowName}_PositionX", -1.0);
+            var y = GetSetting($"{windowName}_PositionY", -1.0);
+            return (x, y);
+        }
+
+        /// <summary>
+        /// Check if streamer mode is enabled
+        /// </summary>
+        public static bool IsStreamerModeEnabled()
+        {
+            return GetSetting("StreamerMode", false);
+        }
+
+        /// <summary>
+        /// Get chroma key color
+        /// </summary>
+        public static string GetChromaKeyColor()
+        {
+            return GetSetting("ChromaKeyColor", "#00FF00");
         }
 
         private static Dictionary<string, string>? LoadGamePaths()
@@ -596,3 +612,14 @@ namespace REviewer.Modules.Utils
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+

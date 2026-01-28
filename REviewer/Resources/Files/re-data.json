@@ -49,7 +49,6 @@
         "Color": "Yellow",
         "Img": "resources/re1/bazooka.png"
       },
-
       "9": {
         "Name": "Bazooka Flame",
         "Type": "Weapon",
@@ -580,10 +579,34 @@
       "Health": {
         "Size": "1",
         "Database": {
-          "0": [ "140", "106", "71", "36", "0" ],
-          "1": [ "96", "73", "49", "25", "0" ],
-          "2": [ "140", "106", "71", "36", "0" ],
-          "3": [ "88", "67", "45", "23", "0" ]
+          "0": [
+            "140",
+            "106",
+            "71",
+            "36",
+            "0"
+          ],
+          "1": [
+            "96",
+            "73",
+            "49",
+            "25",
+            "0"
+          ],
+          "2": [
+            "140",
+            "106",
+            "71",
+            "36",
+            "0"
+          ],
+          "3": [
+            "88",
+            "67",
+            "45",
+            "23",
+            "0"
+          ]
         }
       },
       "CharacterHealthState": {
@@ -1327,134 +1350,229 @@
       "504"
     ],
     "Offsets": {
-        "InventoryStart": "0x98ED34",
-        "InventoryEnd": "0x98ED5D",
-        "ItemBoxStart": "0x098ED68",
-        "ItemBoxEnd": "0x098EE59",
-        "ItemBoxState": "00691F70",
-        "Capacity": "0x98E9A4",
-        "Character": "0x98EB24",
-        "InventorySlotSelected": "0x691F68",
-        "Stage": "0x098EB14",
-        "Room": "0x98EB16",
-        "Cutscene": "0x98EB18",
-        "LastRoom": "0x98EB1A",
-        "LastCutscene": "0x98EB1C",
-        "LastItemFound": "0x98E529",
-        "CharacterHealthState": "0x98A109",
-        "GameState": "0x989E6C",
-        "GameTimer": "0x680588",
-        "GameFrame": "0x68058C",
-        "PositionX": "0x989F28",
-        "PositionY": "0x989F2C",
-        "PositionZ": "0x989F30",
-        "PositionR": "0x989F66",
-        "CharacterHealth": "0x98A046",
-        "CharacterMaxHealth": "0x98A052",
-        "MainMenu": "0x691B86",
-        "SaveContent": "0x98E7AC",
-        "EnemyInfos": "0x98A114",
-        "PartnerPointer": "0x98A110",
-        "EnemyPointer": "0x98A0A4"
+      "InventoryStart": "0x98ED34",
+      "InventoryEnd": "0x98ED5D",
+      "ItemBoxStart": "0x098ED68",
+      "ItemBoxEnd": "0x098EE59",
+      "ItemBoxState": "00691F70",
+      "Capacity": "0x98E9A4",
+      "Character": "0x98EB24",
+      "InventorySlotSelected": "0x691F68",
+      "Stage": "0x098EB14",
+      "Room": "0x98EB16",
+      "Cutscene": "0x98EB18",
+      "LastRoom": "0x98EB1A",
+      "LastCutscene": "0x98EB1C",
+      "LastItemFound": "0x98E529",
+      "CharacterHealthState": "0x98A109",
+      "GameState": "0x989E6C",
+      "GameTimer": "0x680588",
+      "GameFrame": "0x68058C",
+      "PositionX": "0x989F28",
+      "PositionY": "0x989F2C",
+      "PositionZ": "0x989F30",
+      "PositionR": "0x989F66",
+      "CharacterHealth": "0x98A046",
+      "CharacterMaxHealth": "0x98A052",
+      "MainMenu": "0x691B86",
+      "SaveContent": "0x98E7AC",
+      "EnemyInfos": "0x98A114",
+      "PartnerPointer": "0x98A110",
+      "EnemyPointer": "0x98A0A4"
     },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Leon",
-                "1": "Claire",
-                "2": "Leon",
-                "3": "Claire",
-                "4": "Leon",
-                "5": "Claire",
-                "6": "Leon",
-                "7": "Claire",
-                "8": "Leon",
-                "9": "Claire",
-                "10": "Leon",
-                "11": "Chris",
-                "12": "Hunk",
-                "13": "Tofu",
-                "14": "Ada",
-                "15": "Sherry"
-            }
-        },
-        "Health": {
-            "Size": "4",
-            "Database": {
-                "0": [ "200", "101", "41", "21", "0" ],
-                "1": [ "200", "101", "41", "21", "0" ],
-                "2": [ "200", "101", "41", "21", "0" ],
-                "3": [ "200", "101", "41", "21", "0" ],
-                "4": [ "200", "101", "41", "21", "0" ],
-                "5": [ "200", "101", "41", "21", "0" ],
-                "6": [ "200", "101", "41", "21", "0" ],
-                "7": [ "200", "101", "41", "21", "0" ],
-                "8": [ "200", "101", "41", "21", "0" ],
-                "9": [ "200", "101", "41", "21", "0" ],
-                "10": [ "200", "101", "41", "21", "0" ],
-                "11": [ "200", "101", "41", "21", "0" ],
-                "12": [ "200", "101", "41", "21", "0" ],
-                "13": [ "200", "101", "41", "21", "0" ],
-                "14": [ "200", "101", "41", "21", "0" ],
-                "15": [ "200", "101", "41", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "CharacterMaxHealth": {
-            "Size": "4"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "LockPick": {
-            "Size": "1"
-        },
-        "InventoryCapacityUsed": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "1"
-        },
-        "ItemBoxState": {
-            "Size": "1"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "1"
-        },
-        "LastRoom": {
-            "Size": "1"
-        },
-        "Cutscene": {
-            "Size": "1"
-        },
-        "LastCutscene": {
-            "Size": "1"
-        },
-        "Unk001": {
-            "Size": "1"
-        },
-        "HitFlag": {
-            "Size": "4"
-        },
-        "Event": {
-            "Size": "1",
-            "Database": {
-                "0": "Nothing",
-                "1": "Refused Event",
-                "128": "Event #1 - Yes",
-                "129": "Event #2 - No"
-            }
-        },
-
-        "PartnerPointer": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Leon",
+          "1": "Claire",
+          "2": "Leon",
+          "3": "Claire",
+          "4": "Leon",
+          "5": "Claire",
+          "6": "Leon",
+          "7": "Claire",
+          "8": "Leon",
+          "9": "Claire",
+          "10": "Leon",
+          "11": "Chris",
+          "12": "Hunk",
+          "13": "Tofu",
+          "14": "Ada",
+          "15": "Sherry"
         }
+      },
+      "Health": {
+        "Size": "4",
+        "Database": {
+          "0": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "1": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "2": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "3": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "4": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "5": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "6": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "7": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "8": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "9": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "10": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "11": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "12": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "13": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "14": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "15": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "CharacterMaxHealth": {
+        "Size": "4"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "LockPick": {
+        "Size": "1"
+      },
+      "InventoryCapacityUsed": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "1"
+      },
+      "ItemBoxState": {
+        "Size": "1"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "1"
+      },
+      "LastRoom": {
+        "Size": "1"
+      },
+      "Cutscene": {
+        "Size": "1"
+      },
+      "LastCutscene": {
+        "Size": "1"
+      },
+      "Unk001": {
+        "Size": "1"
+      },
+      "HitFlag": {
+        "Size": "4"
+      },
+      "Event": {
+        "Size": "1",
+        "Database": {
+          "0": "Nothing",
+          "1": "Refused Event",
+          "128": "Event #1 - Yes",
+          "129": "Event #2 - No"
+        }
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
@@ -1477,18 +1595,18 @@
       }
     },
     "Position": {
-        "X": {
-            "Size": "4"
-        },
-        "Y": {
-            "Size": "4"
-        },
-        "Z": {
-            "Size": "4"
-        },
-        "R": {
-            "Size": "4"
-        }
+      "X": {
+        "Size": "4"
+      },
+      "Y": {
+        "Size": "4"
+      },
+      "Z": {
+        "Size": "4"
+      },
+      "R": {
+        "Size": "4"
+      }
     },
     "Rebirth": {
       "Debug": {
@@ -2166,133 +2284,228 @@
       "504"
     ],
     "Offsets": {
-        "InventoryStart": "0xAA3154",
-        "InventoryEnd": "0xAA317E",
-        "ItemBoxStart": "0xAA3180",
-        "ItemBoxEnd": "0xAA327C",
-        "ItemBoxState": "00691F70",
-        "Capacity": "0x0",
-        "Character": "0xAA2F44",
-        "InventorySlotSelected": "0x736388",
-        "Stage": "0xAA2F34",
-        "Room": "0xAA2F36",
-        "Cutscene": "0xAA2F38",
-        "LastRoom": "0xAA2F3A",
-        "LastCutscene": "0xAA2F3C",
-        "LastItemFound": "0xA9946F",
-        "CharacterHealthState": "0xA9E529",
-        "GameState": "0xA9E28C",
-        "GameTimer": "0x72E054",
-        "GameFrame": "0x72E058",
-        "PositionX": "0x0",
-        "PositionY": "0x0",
-        "PositionZ": "0x0",
-        "CharacterHealth": "0xA9E466",
-        "CharacterMaxHealth": "0xA9E472",
-        "MainMenu": "0x0",
-        "SaveContent": "0x0",
-        "EnemyInfos": "0xA9E534",
-        "PartnerPointer": "0xA9E530",
-        "EnemyPointer": "0x9CAE58"
+      "InventoryStart": "0xAA3154",
+      "InventoryEnd": "0xAA317E",
+      "ItemBoxStart": "0xAA3180",
+      "ItemBoxEnd": "0xAA327C",
+      "ItemBoxState": "00691F70",
+      "Capacity": "0x0",
+      "Character": "0xAA2F44",
+      "InventorySlotSelected": "0x736388",
+      "Stage": "0xAA2F34",
+      "Room": "0xAA2F36",
+      "Cutscene": "0xAA2F38",
+      "LastRoom": "0xAA2F3A",
+      "LastCutscene": "0xAA2F3C",
+      "LastItemFound": "0xA9946F",
+      "CharacterHealthState": "0xA9E529",
+      "GameState": "0xA9E28C",
+      "GameTimer": "0x72E054",
+      "GameFrame": "0x72E058",
+      "PositionX": "0x0",
+      "PositionY": "0x0",
+      "PositionZ": "0x0",
+      "CharacterHealth": "0xA9E466",
+      "CharacterMaxHealth": "0xA9E472",
+      "MainMenu": "0x0",
+      "SaveContent": "0x0",
+      "EnemyInfos": "0xA9E534",
+      "PartnerPointer": "0xA9E530",
+      "EnemyPointer": "0x9CAE58"
     },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Leon",
-                "1": "Claire",
-                "2": "Leon",
-                "3": "Claire",
-                "4": "Leon",
-                "5": "Claire",
-                "6": "Leon",
-                "7": "Claire",
-                "8": "Leon",
-                "9": "Claire",
-                "10": "Leon",
-                "11": "Chris",
-                "12": "Hunk",
-                "13": "Tofu",
-                "14": "Ada",
-                "15": "Sherry"
-            }
-        },
-        "Health": {
-            "Size": "4",
-            "Database": {
-                "0": [ "200", "101", "41", "21", "0" ],
-                "1": [ "200", "101", "41", "21", "0" ],
-                "2": [ "200", "101", "41", "21", "0" ],
-                "3": [ "200", "101", "41", "21", "0" ],
-                "4": [ "200", "101", "41", "21", "0" ],
-                "5": [ "200", "101", "41", "21", "0" ],
-                "6": [ "200", "101", "41", "21", "0" ],
-                "7": [ "200", "101", "41", "21", "0" ],
-                "8": [ "200", "101", "41", "21", "0" ],
-                "9": [ "200", "101", "41", "21", "0" ],
-                "10": [ "200", "101", "41", "21", "0" ],
-                "11": [ "200", "101", "41", "21", "0" ],
-                "12": [ "200", "101", "41", "21", "0" ],
-                "13": [ "200", "101", "41", "21", "0" ],
-                "14": [ "200", "101", "41", "21", "0" ],
-                "15": [ "200", "101", "41", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "CharacterMaxHealth": {
-            "Size": "4"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "LockPick": {
-            "Size": "1"
-        },
-        "InventoryCapacityUsed": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "1"
-        },
-        "ItemBoxState": {
-            "Size": "1"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "1"
-        },
-        "LastRoom": {
-            "Size": "1"
-        },
-        "Cutscene": {
-            "Size": "1"
-        },
-        "LastCutscene": {
-            "Size": "1"
-        },
-        "Unk001": {
-            "Size": "1"
-        },
-        "HitFlag": {
-            "Size": "4"
-        },
-        "Event": {
-            "Size": "1",
-            "Database": {
-                "0": "Nothing",
-                "1": "Refused Event",
-                "128": "Event #1 - Yes",
-                "129": "Event #2 - No"
-            }
-        },
-
-        "PartnerPointer": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Leon",
+          "1": "Claire",
+          "2": "Leon",
+          "3": "Claire",
+          "4": "Leon",
+          "5": "Claire",
+          "6": "Leon",
+          "7": "Claire",
+          "8": "Leon",
+          "9": "Claire",
+          "10": "Leon",
+          "11": "Chris",
+          "12": "Hunk",
+          "13": "Tofu",
+          "14": "Ada",
+          "15": "Sherry"
         }
+      },
+      "Health": {
+        "Size": "4",
+        "Database": {
+          "0": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "1": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "2": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "3": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "4": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "5": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "6": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "7": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "8": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "9": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "10": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "11": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "12": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "13": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "14": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "15": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "CharacterMaxHealth": {
+        "Size": "4"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "LockPick": {
+        "Size": "1"
+      },
+      "InventoryCapacityUsed": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "1"
+      },
+      "ItemBoxState": {
+        "Size": "1"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "1"
+      },
+      "LastRoom": {
+        "Size": "1"
+      },
+      "Cutscene": {
+        "Size": "1"
+      },
+      "LastCutscene": {
+        "Size": "1"
+      },
+      "Unk001": {
+        "Size": "1"
+      },
+      "HitFlag": {
+        "Size": "4"
+      },
+      "Event": {
+        "Size": "1",
+        "Database": {
+          "0": "Nothing",
+          "1": "Refused Event",
+          "128": "Event #1 - Yes",
+          "129": "Event #2 - No"
+        }
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
@@ -3030,104 +3243,216 @@
       "PartnerPointer": "0xA9E4B0",
       "EnemyPointer": "0xA9E444"
     },
+    "Enemy": {
+      "EnemyInfos": {
+        "Size": "4"
+      },
+      "EnemyPointer": {
+        "Size": "4"
+      },
+      "Offsets": {
+        "HP": "0x156",
+        "ID": "0x8"
+      },
+      "SentinelPointers": [
+        "0x098E544",
+        "0xAA2964",
+        "0xAA28E4"
+      ]
+    },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Leon",
-                "1": "Claire",
-                "2": "Leon",
-                "3": "Claire",
-                "4": "Leon",
-                "5": "Claire",
-                "6": "Leon",
-                "7": "Claire",
-                "8": "Leon",
-                "9": "Claire",
-                "10": "Leon",
-                "11": "Chris",
-                "12": "Hunk",
-                "13": "Tofu",
-                "14": "Ada",
-                "15": "Sherry"
-            }
-        },
-        "Health": {
-            "Size": "4",
-            "Database": {
-                "0": [ "200", "101", "41", "21", "0" ],
-                "1": [ "200", "101", "41", "21", "0" ],
-                "2": [ "200", "101", "41", "21", "0" ],
-                "3": [ "200", "101", "41", "21", "0" ],
-                "4": [ "200", "101", "41", "21", "0" ],
-                "5": [ "200", "101", "41", "21", "0" ],
-                "6": [ "200", "101", "41", "21", "0" ],
-                "7": [ "200", "101", "41", "21", "0" ],
-                "8": [ "200", "101", "41", "21", "0" ],
-                "9": [ "200", "101", "41", "21", "0" ],
-                "10": [ "200", "101", "41", "21", "0" ],
-                "11": [ "200", "101", "41", "21", "0" ],
-                "12": [ "200", "101", "41", "21", "0" ],
-                "13": [ "200", "101", "41", "21", "0" ],
-                "14": [ "200", "101", "41", "21", "0" ],
-                "15": [ "200", "101", "41", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "CharacterMaxHealth": {
-            "Size": "4"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "LockPick": {
-            "Size": "1"
-        },
-        "InventoryCapacityUsed": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "1"
-        },
-        "ItemBoxState": {
-            "Size": "1"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "1"
-        },
-        "LastRoom": {
-            "Size": "1"
-        },
-        "Cutscene": {
-            "Size": "1"
-        },
-        "LastCutscene": {
-            "Size": "1"
-        },
-        "Unk001": {
-            "Size": "1"
-        },
-        "HitFlag": {
-            "Size": "4"
-        },
-        "Event": {
-            "Size": "1",
-            "Database": {
-                "0": "Nothing",
-                "1": "Refused Event",
-                "128": "Event #1 - Yes",
-                "129": "Event #2 - No"
-            }
-        },
-
-        "PartnerPointer": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Leon",
+          "1": "Claire",
+          "2": "Leon",
+          "3": "Claire",
+          "4": "Leon",
+          "5": "Claire",
+          "6": "Leon",
+          "7": "Claire",
+          "8": "Leon",
+          "9": "Claire",
+          "10": "Leon",
+          "11": "Chris",
+          "12": "Hunk",
+          "13": "Tofu",
+          "14": "Ada",
+          "15": "Sherry"
         }
+      },
+      "Health": {
+        "Size": "4",
+        "Database": {
+          "0": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "1": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "2": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "3": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "4": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "5": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "6": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "7": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "8": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "9": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "10": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "11": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "12": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "13": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "14": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "15": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "CharacterMaxHealth": {
+        "Size": "4"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "LockPick": {
+        "Size": "1"
+      },
+      "InventoryCapacityUsed": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "1"
+      },
+      "ItemBoxState": {
+        "Size": "1"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "1"
+      },
+      "LastRoom": {
+        "Size": "1"
+      },
+      "Cutscene": {
+        "Size": "1"
+      },
+      "LastCutscene": {
+        "Size": "1"
+      },
+      "Unk001": {
+        "Size": "1"
+      },
+      "HitFlag": {
+        "Size": "4"
+      },
+      "Event": {
+        "Size": "1",
+        "Database": {
+          "0": "Nothing",
+          "1": "Refused Event",
+          "128": "Event #1 - Yes",
+          "129": "Event #2 - No"
+        }
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
@@ -3876,8 +4201,7 @@
         "Img": "resources/re1/umbrella.png"
       }
     },
-    "DupItems": {
-    },
+    "DupItems": {},
     "RoomIDs": {
       "100": "DARIO SAVE",
       "101": "DARIO",
@@ -3995,135 +4319,244 @@
       "20C"
     ],
     "Offsets": {
-        "InventoryStart": "0x0A67584",
-        "InventoryEnd": "0x0A675AB",
-        "ItemBoxStart": "0x0A675AC",
-        "ItemBoxEnd": "0xA676AB",
-        "InventorySlotSelected": "0x0A676AC",
-
-        "CarlosInventoryStart": "0x0A676C4",
-        "CarlosInventoryEnd": "0x0A676E3",
-        "CarlosItemBoxStart": "0x0A676E4",
-        "CarlosItemBoxEnd": "0x0A677E4",
-        "CarlosInventorySlotSelected": "0x0A677EC",
-        "CarlosLastItemFound": "0x0A5C86B",
-
-        "Capacity": "0x0A676AE",
-        "Character": "0x0A673D6",
-        "Stage": "0x0A673C6",
-        "Room": "0x0A673C8",
-        "Cutscene": "0x0A673CA",
-        "LastRoom": "0x0A673CC",
-        "LastCutscene": "0x0A673CE",
-        "LastItemFound": "0x0A5C86B",
-        "CharacterHealthState": "0x0A620E7",
-        "GameState": "0xA61CA0",
-        "GameSystem": "0xA6737C",
-        "GameTimer": "0xA61D64",
-        "GameFrame": "0xA449D4",
-        "GameSave": "0xA67378",
-        "PositionX": "0xA62048",
-        "PositionY": "0xA6204C",
-        "PositionZ": "0xA62050",
-        "CharacterHealth": "0x0A620E0",
-        "EnemyInfos": "0x0A621EC",
-        "PartnerPointer": "0x0A621E8",
-        "EnemyPointer": "0xA62124"
+      "InventoryStart": "0x0A67584",
+      "InventoryEnd": "0x0A675AB",
+      "ItemBoxStart": "0x0A675AC",
+      "ItemBoxEnd": "0xA676AB",
+      "InventorySlotSelected": "0x0A676AC",
+      "CarlosInventoryStart": "0x0A676C4",
+      "CarlosInventoryEnd": "0x0A676E3",
+      "CarlosItemBoxStart": "0x0A676E4",
+      "CarlosItemBoxEnd": "0x0A677E4",
+      "CarlosInventorySlotSelected": "0x0A677EC",
+      "CarlosLastItemFound": "0x0A5C86B",
+      "Capacity": "0x0A676AE",
+      "Character": "0x0A673D6",
+      "Stage": "0x0A673C6",
+      "Room": "0x0A673C8",
+      "Cutscene": "0x0A673CA",
+      "LastRoom": "0x0A673CC",
+      "LastCutscene": "0x0A673CE",
+      "LastItemFound": "0x0A5C86B",
+      "CharacterHealthState": "0x0A620E7",
+      "GameState": "0xA61CA0",
+      "GameSystem": "0xA6737C",
+      "GameTimer": "0xA61D64",
+      "GameFrame": "0xA449D4",
+      "GameSave": "0xA67378",
+      "PositionX": "0xA62048",
+      "PositionY": "0xA6204C",
+      "PositionZ": "0xA62050",
+      "CharacterHealth": "0x0A620E0",
+      "EnemyInfos": "0x0A621EC",
+      "PartnerPointer": "0x0A621E8"
+    },
+    "Enemy": {
+      "EnemyInfos": {
+        "Size": "4"
+      },
+      "EnemyPointer": {
+        "Size": "4"
+      },
+      "Offsets": {
+        "HP": "0xCC",
+        "ID": "0x4A"
+      },
+      "SentinelPointers": [
+        "0x0A62290",
+        "0xAFFDB0"
+      ]
     },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Jill",
-                "1": "Jill",
-                "2": "Jill",
-                "3": "Jill",
-                "4": "Jill",
-                "5": "Jill",
-                "6": "Jill",
-                "7": "Jill",
-                "8": "Carlos",
-                "9": "Mikhail",
-                "10": "Nicholai",
-                "11": "Brad",
-                "12": "Dario",
-                "13": "???",
-                "14": "Dario",
-                "15": "Tofu"
-            }
-        },
-        "Health": {
-            "Size": "1",
-            "Database": {
-                "0": [ "200", "101", "41", "21", "0" ],
-                "1": [ "200", "101", "41", "21", "0" ],
-                "2": [ "200", "101", "41", "21", "0" ],
-                "3": [ "200", "101", "41", "21", "0" ],
-                "4": [ "200", "101", "41", "21", "0" ],
-                "5": [ "200", "101", "41", "21", "0" ],
-                "6": [ "200", "101", "41", "21", "0" ],
-                "7": [ "200", "101", "41", "21", "0" ],
-                "8": [ "200", "101", "41", "21", "0" ],
-                "9": [ "200", "101", "41", "21", "0" ],
-                "10": [ "200", "101", "41", "21", "0" ],
-                "11": [ "200", "101", "41", "21", "0" ],
-                "12": [ "200", "101", "41", "21", "0" ],
-                "13": [ "200", "101", "41", "21", "0" ],
-                "14": [ "200", "101", "41", "21", "0" ],
-                "15": [ "200", "101", "41", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "CarlosLastItemFound": {
-            "Size": "1"
-        },
-        "LockPick": {
-            "Size": "1"
-        },
-        "InventoryCapacityUsed": {
-            "Size": "1"
-        },
-        "CarlosInventorySlotSelected": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "1"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "1"
-        },
-        "LastRoom": {
-            "Size": "1"
-        },
-        "Cutscene": {
-            "Size": "1"
-        },
-        "LastCutscene": {
-            "Size": "1"
-        },
-        "Unk001": {
-            "Size": "1"
-        },
-        "Event": {
-            "Size": "1",
-            "Database": {
-                "0": "Nothing",
-                "1": "Refused Event",
-                "128": "Event #1 - Yes",
-                "129": "Event #2 - No"
-            }
-        },
-        "PartnerPointer": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Jill",
+          "1": "Jill",
+          "2": "Jill",
+          "3": "Jill",
+          "4": "Jill",
+          "5": "Jill",
+          "6": "Jill",
+          "7": "Jill",
+          "8": "Carlos",
+          "9": "Mikhail",
+          "10": "Nicholai",
+          "11": "Brad",
+          "12": "Dario",
+          "13": "???",
+          "14": "Dario",
+          "15": "Tofu"
         }
+      },
+      "Health": {
+        "Size": "1",
+        "Database": {
+          "0": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "1": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "2": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "3": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "4": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "5": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "6": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "7": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "8": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "9": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "10": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "11": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "12": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "13": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "14": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "15": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "CarlosLastItemFound": {
+        "Size": "1"
+      },
+      "LockPick": {
+        "Size": "1"
+      },
+      "InventoryCapacityUsed": {
+        "Size": "1"
+      },
+      "CarlosInventorySlotSelected": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "1"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "1"
+      },
+      "LastRoom": {
+        "Size": "1"
+      },
+      "Cutscene": {
+        "Size": "1"
+      },
+      "LastCutscene": {
+        "Size": "1"
+      },
+      "Unk001": {
+        "Size": "1"
+      },
+      "Event": {
+        "Size": "1",
+        "Database": {
+          "0": "Nothing",
+          "1": "Refused Event",
+          "128": "Event #1 - Yes",
+          "129": "Event #2 - No"
+        }
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
@@ -4135,12 +4568,12 @@
       "Timer": {
         "Size": "4"
       },
-        "Save": {
-            "Size": "4"
-        },
+      "Save": {
+        "Size": "4"
+      },
       "System": {
-            "Size": "4"
-        },
+        "Size": "4"
+      },
       "Unk001": {
         "Size": "4"
       },
@@ -4174,12 +4607,12 @@
       }
     },
     "Enemy": {
-        "EnemyInfos": {
-            "Size": "4"
-        },
-        "EnemyPointer": {
-            "Size": "4"
-        }
+      "EnemyInfos": {
+        "Size": "4"
+      },
+      "EnemyPointer": {
+        "Size": "4"
+      }
     }
   },
   "Bio3 CHN/TWN": {
@@ -4878,8 +5311,7 @@
         "Img": "resources/re1/umbrella.png"
       }
     },
-    "DupItems": {
-    },
+    "DupItems": {},
     "RoomIDs": {
       "100": "DARIO SAVE",
       "101": "DARIO",
@@ -4991,159 +5423,267 @@
       "50E": "ESCAPE HELICOPTER",
       "50F": "ESCAPE ELEVATOR"
     },
-    "KeyRooms": [
-    ],
+    "KeyRooms": [],
     "Offsets": {
-        "InventoryStart": "0xB050A4",
-        "InventoryEnd": "0xB050CB",
-        "ItemBoxStart": "0xB050CC",
-        "ItemBoxEnd": "0xB051CB",
-        "InventorySlotSelected": "0xB051CC",
-
-        "CarlosInventoryStart": "0xB051E4",
-        "CarlosInventoryEnd": "0xB0520B",
-        "CarlosItemBoxStart": "0xB0520C",
-        "CarlosItemBoxEnd": "0xB0530A",
-        "CarlosInventorySlotSelected": "0xB0530C",
-        "CarlosLastItemFound": "0xAFA3A7",
-
-        "Capacity": "0xB051CE",
-        "Character": "0xB04EF6",
-        "Stage": "0xB04EED",
-        "Room": "0xB04EE8",
-        "Cutscene": "0xB04EEA",
-        "LastRoom": "0xB04EEC",
-        "LastCutscene": "0xB04EEE",
-        "LastItemFound": "0xAFA3A7",
-        "CharacterHealthState": "0xAFFC07",
-        "GameState": "0xAFF7C0",
-        "GameSystem": "0",
-        "GameTimer": "0xB04E98",
-        "GameFramePointer": "0x53706C",
-        "GameFrame": "0",
-        "GameSave": "0xAFF884",
-        "PositionX": "0",
-        "PositionY": "0",
-        "PositionZ": "0",
-        "CharacterHealth": "0xAFFC00",
-        "EnemyInfos": "0xAFFD0C",
-        "PartnerPointer": "0xAFFD08",
-        "EnemyPointer": "0"
+      "InventoryStart": "0xB050A4",
+      "InventoryEnd": "0xB050CB",
+      "ItemBoxStart": "0xB050CC",
+      "ItemBoxEnd": "0xB051CB",
+      "InventorySlotSelected": "0xB051CC",
+      "CarlosInventoryStart": "0xB051E4",
+      "CarlosInventoryEnd": "0xB0520B",
+      "CarlosItemBoxStart": "0xB0520C",
+      "CarlosItemBoxEnd": "0xB0530A",
+      "CarlosInventorySlotSelected": "0xB0530C",
+      "CarlosLastItemFound": "0xAFA3A7",
+      "Capacity": "0xB051CE",
+      "Character": "0xB04EF6",
+      "Stage": "0xB04EED",
+      "Room": "0xB04EE8",
+      "Cutscene": "0xB04EEA",
+      "LastRoom": "0xB04EEC",
+      "LastCutscene": "0xB04EEE",
+      "LastItemFound": "0xAFA3A7",
+      "CharacterHealthState": "0xAFFC07",
+      "GameState": "0xAFF7C0",
+      "GameSystem": "0",
+      "GameTimer": "0xB04E98",
+      "GameFramePointer": "0x53706C",
+      "GameFrame": "0",
+      "GameSave": "0xAFF884",
+      "PositionX": "0",
+      "PositionY": "0",
+      "PositionZ": "0",
+      "CharacterHealth": "0xAFFC00",
+      "EnemyInfos": "0xAFFD0C",
+      "PartnerPointer": "0xAFFD08"
+    },
+    "Enemy": {
+      "EnemyInfos": {
+        "Size": "4"
+      },
+      "EnemyPointer": {
+        "Size": "4"
+      },
+      "Offsets": {
+        "HP": "0xCC",
+        "ID": "0x4A"
+      },
+      "SentinelPointers": [
+        "0x0A62290",
+        "0xAFFDB0"
+      ]
     },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Jill",
-                "1": "Jill",
-                "2": "Jill",
-                "3": "Jill",
-                "4": "Jill",
-                "5": "Jill",
-                "6": "Jill",
-                "7": "Jill",
-                "8": "Carlos",
-                "9": "Mikhail",
-                "10": "Nicholai",
-                "11": "Brad",
-                "12": "Dario",
-                "13": "???",
-                "14": "Dario",
-                "15": "Tofu"
-            }
-        },
-        "Health": {
-            "Size": "1",
-            "Database": {
-                "0": [ "200", "101", "41", "21", "0" ],
-                "1": [ "200", "101", "41", "21", "0" ],
-                "2": [ "200", "101", "41", "21", "0" ],
-                "3": [ "200", "101", "41", "21", "0" ],
-                "4": [ "200", "101", "41", "21", "0" ],
-                "5": [ "200", "101", "41", "21", "0" ],
-                "6": [ "200", "101", "41", "21", "0" ],
-                "7": [ "200", "101", "41", "21", "0" ],
-                "8": [ "200", "101", "41", "21", "0" ],
-                "9": [ "200", "101", "41", "21", "0" ],
-                "10": [ "200", "101", "41", "21", "0" ],
-                "11": [ "200", "101", "41", "21", "0" ],
-                "12": [ "200", "101", "41", "21", "0" ],
-                "13": [ "200", "101", "41", "21", "0" ],
-                "14": [ "200", "101", "41", "21", "0" ],
-                "15": [ "200", "101", "41", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "CarlosLastItemFound": {
-            "Size": "1"
-        },
-        "LockPick": {
-            "Size": "1"
-        },
-        "InventoryCapacityUsed": {
-            "Size": "1"
-        },
-        "CarlosInventorySlotSelected": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "1"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "1"
-        },
-        "LastRoom": {
-            "Size": "1"
-        },
-        "Cutscene": {
-            "Size": "1"
-        },
-        "LastCutscene": {
-            "Size": "1"
-        },
-        "Unk001": {
-            "Size": "1"
-        },
-        "Event": {
-            "Size": "1",
-            "Database": {
-                "0": "Nothing",
-                "1": "Refused Event",
-                "128": "Event #1 - Yes",
-                "129": "Event #2 - No"
-            }
-        },
-        "PartnerPointer": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Jill",
+          "1": "Jill",
+          "2": "Jill",
+          "3": "Jill",
+          "4": "Jill",
+          "5": "Jill",
+          "6": "Jill",
+          "7": "Jill",
+          "8": "Carlos",
+          "9": "Mikhail",
+          "10": "Nicholai",
+          "11": "Brad",
+          "12": "Dario",
+          "13": "???",
+          "14": "Dario",
+          "15": "Tofu"
         }
+      },
+      "Health": {
+        "Size": "1",
+        "Database": {
+          "0": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "1": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "2": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "3": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "4": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "5": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "6": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "7": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "8": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "9": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "10": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "11": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "12": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "13": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "14": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ],
+          "15": [
+            "200",
+            "101",
+            "41",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "CarlosLastItemFound": {
+        "Size": "1"
+      },
+      "LockPick": {
+        "Size": "1"
+      },
+      "InventoryCapacityUsed": {
+        "Size": "1"
+      },
+      "CarlosInventorySlotSelected": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "1"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "1"
+      },
+      "LastRoom": {
+        "Size": "1"
+      },
+      "Cutscene": {
+        "Size": "1"
+      },
+      "LastCutscene": {
+        "Size": "1"
+      },
+      "Unk001": {
+        "Size": "1"
+      },
+      "Event": {
+        "Size": "1",
+        "Database": {
+          "0": "Nothing",
+          "1": "Refused Event",
+          "128": "Event #1 - Yes",
+          "129": "Event #2 - No"
+        }
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
         "Size": "4"
       },
-        "Frame": {
-            "Size": "4"
-        },
+      "Frame": {
+        "Size": "4"
+      },
       "FramePointer": {
         "Size": "4"
       },
       "Timer": {
         "Size": "4"
       },
-        "Save": {
-            "Size": "4"
-        },
+      "Save": {
+        "Size": "4"
+      },
       "System": {
-            "Size": "4"
-        },
+        "Size": "4"
+      },
       "Unk001": {
         "Size": "4"
       },
@@ -5177,12 +5717,12 @@
       }
     },
     "Enemy": {
-        "EnemyInfos": {
-            "Size": "4"
-        },
-        "EnemyPointer": {
-            "Size": "4"
-        }
+      "EnemyInfos": {
+        "Size": "4"
+      },
+      "EnemyPointer": {
+        "Size": "4"
+      }
     }
   },
   "CVX PS2 US": {
@@ -5966,87 +6506,114 @@
         "Img": "resources/cvx/nothing.png"
       }
     },
-    "DupItems": {
-    },
-    "RoomIDs": {
-    },
-    "KeyRooms": [
-    ],
+    "DupItems": {},
+    "RoomIDs": {},
+    "KeyRooms": [],
     "Offsets": {
-        "InventoryStart": "0x00433374",
-        "InventoryEnd": "0x04333A6",
-        "ItemBoxStart": "0x0433470",
-        "ItemBoxEnd": "0x043366F",
-        "InventorySlotSelected": "0x00433370",
-        "LastItemFound": "0x045D770",
-        "Character": "0x00433184",
-        "Room": "0x004339A0",
-        "Cutscene": "0x004328EC",
-        "LastRoom": "0x004328F0",
-        "LastCutscene": "0x004328F0",
-        "CharacterHealthState": "0x0043236A",
-        "GameTimer": "0x004339A0",
-        "GameRetry": "0x004339AA",
-        "GameSave": "0x00433180",
-        "PositionX": "0x004322F0",
-        "PositionY": "0x004322F4",
-        "PositionZ": "0x004322F8",
-        "Rotation": "0x00432300",
-        "CharacterHealth": "0x004326FC",
-        "EnemyInfos": "0x004062E0",
-        "EnemyCount": "0x012503C8",
-        "Difficulty": "0x0043318C"
+      "InventoryStart": "0x00433374",
+      "InventoryEnd": "0x04333A6",
+      "ItemBoxStart": "0x0433470",
+      "ItemBoxEnd": "0x043366F",
+      "InventorySlotSelected": "0x00433370",
+      "LastItemFound": "0x045D770",
+      "Character": "0x00433184",
+      "Room": "0x004339A0",
+      "Cutscene": "0x004328EC",
+      "LastRoom": "0x004328F0",
+      "LastCutscene": "0x004328F0",
+      "CharacterHealthState": "0x0043236A",
+      "GameTimer": "0x004339A0",
+      "GameRetry": "0x004339AA",
+      "GameSave": "0x00433180",
+      "PositionX": "0x004322F0",
+      "PositionY": "0x004322F4",
+      "PositionZ": "0x004322F8",
+      "Rotation": "0x00432300",
+      "CharacterHealth": "0x004326FC",
+      "EnemyInfos": "0x004062E0",
+      "EnemyCount": "0x012503C8",
+      "Difficulty": "0x0043318C"
     },
     "Player": {
-        "Character": {
-            "Size": "1",
-            "Database": {
-                "0": "Claire",
-                "1": "Chris",
-                "2": "Steve",
-                "3": "Wesker"
-            }
-        },
-        "Health": {
-            "Size": "4",
-            "Database": {
-                "0": [ "160", "111", "61", "21", "0" ],
-                "1": [ "160", "111", "61", "21", "0" ],
-                "2": [ "160", "111", "61", "21", "0" ],
-                "3": [ "160", "111", "61", "21", "0" ],
-                "4": [ "160", "111", "61", "21", "0" ]
-            }
-        },
-        "CharacterHealthState": {
-            "Size": "1"
-        },
-        "LastItemFound": {
-            "Size": "1"
-        },
-        "InventorySlotSelected": {
-            "Size": "4"
-        },
-        "Stage": {
-            "Size": "1"
-        },
-        "Room": {
-            "Size": "4"
-        },
-        "LastRoom": {
-            "Size": "4"
-        },
-        "LastCutscene": {
-            "Size": "4"
-        },
-        "Cutscene": {
-            "Size": "4"
-        },
-        "PartnerPointer": {
-            "Size": "4"
-        },
-        "EnemyCount": {
-            "Size": "4"
+      "Character": {
+        "Size": "1",
+        "Database": {
+          "0": "Claire",
+          "1": "Chris",
+          "2": "Steve",
+          "3": "Wesker"
         }
+      },
+      "Health": {
+        "Size": "4",
+        "Database": {
+          "0": [
+            "160",
+            "111",
+            "61",
+            "21",
+            "0"
+          ],
+          "1": [
+            "160",
+            "111",
+            "61",
+            "21",
+            "0"
+          ],
+          "2": [
+            "160",
+            "111",
+            "61",
+            "21",
+            "0"
+          ],
+          "3": [
+            "160",
+            "111",
+            "61",
+            "21",
+            "0"
+          ],
+          "4": [
+            "160",
+            "111",
+            "61",
+            "21",
+            "0"
+          ]
+        }
+      },
+      "CharacterHealthState": {
+        "Size": "1"
+      },
+      "LastItemFound": {
+        "Size": "1"
+      },
+      "InventorySlotSelected": {
+        "Size": "4"
+      },
+      "Stage": {
+        "Size": "1"
+      },
+      "Room": {
+        "Size": "4"
+      },
+      "LastRoom": {
+        "Size": "4"
+      },
+      "LastCutscene": {
+        "Size": "4"
+      },
+      "Cutscene": {
+        "Size": "4"
+      },
+      "PartnerPointer": {
+        "Size": "4"
+      },
+      "EnemyCount": {
+        "Size": "4"
+      }
     },
     "Game": {
       "State": {
@@ -6055,9 +6622,9 @@
       "Frame": {
         "Size": "4"
       },
-        "Timer": {
-            "Size": "4"
-        },
+      "Timer": {
+        "Size": "4"
+      },
       "Retry": {
         "Size": "4"
       },

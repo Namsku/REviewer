@@ -1,16 +1,15 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using REviewer.Modules.RE.Enemies;
+using REviewer.Modules.RE.Json;
+using REviewer.Modules.Utils;
+using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using REviewer.Modules.RE.Json;
-using REviewer.Modules.Utils;
-using GlobalHotKey;
-using REviewer.Modules.RE.Enemies;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -65,7 +64,7 @@ namespace REviewer.Modules.RE.Common
         public Bio? _bio;
         private int _virtualMemoryPointer;
         public List<KeyItem>? KeyItems;
-        public ItemIDs IDatabase; 
+        public ItemIDs IDatabase;
         public event PropertyChangedEventHandler? PropertyChanged;
         public string? FullRoomName;
         public string? LastRoomName;
@@ -100,7 +99,7 @@ namespace REviewer.Modules.RE.Common
         public Visibility? ItemBoxVisibility { get; set; }
         public Visibility? SherryVisibility { get; set; }
         public Visibility? PartnerVisibility { get; set; }
-        public Visibility? StatsVisibility { get; set; } 
+        public Visibility? StatsVisibility { get; set; }
         public Visibility? SegsVisibility { get; set; }
         public Visibility? KeyItemsVisibility { get; set; }
         public Visibility? LastItemSeenVisibility { get; set; }
@@ -119,9 +118,129 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(WindowWidth));
                 }
             }
-        }        
+        }
         public double? WindowScale { get; set; }
         public double? WindowCenter { get; set; }
+
+        // Streamer Mode properties for OBS chroma key support
+        private bool _streamerMode = false;
+        public bool StreamerMode
+        {
+            get => _streamerMode;
+            set
+            {
+                if (_streamerMode != value)
+                {
+                    _streamerMode = value;
+                    OnPropertyChanged(nameof(StreamerMode));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        private string _chromaKeyColor = "#00FF00";
+        public string ChromaKeyColor
+        {
+            get => _chromaKeyColor;
+            set
+            {
+                if (_chromaKeyColor != value)
+                {
+                    _chromaKeyColor = value;
+                    OnPropertyChanged(nameof(ChromaKeyColor));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        // Transparent Background Mode
+        private bool _transparentMode = false;
+        public bool TransparentMode
+        {
+            get => _transparentMode;
+            set
+            {
+                if (_transparentMode != value)
+                {
+                    _transparentMode = value;
+                    OnPropertyChanged(nameof(TransparentMode));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        // Minimal Item Display Mode (hides empty item box slots)
+        private bool _minimalItemDisplay = false;
+        public bool MinimalItemDisplay
+        {
+            get => _minimalItemDisplay;
+            set
+            {
+                if (_minimalItemDisplay != value)
+                {
+                    _minimalItemDisplay = value;
+                    OnPropertyChanged(nameof(MinimalItemDisplay));
+                    OnPropertyChanged(nameof(ItemSlotBrush));
+                    OnPropertyChanged(nameof(ItemSlotBorderBrush));
+                }
+            }
+        }
+
+        // Computed property for background - returns transparent, chroma key, or default dark
+        public System.Windows.Media.Brush BackgroundBrush
+        {
+            get
+            {
+                // Transparent mode takes priority
+                if (_transparentMode)
+                {
+                    return System.Windows.Media.Brushes.Transparent;
+                }
+                
+                // Streamer/chroma key mode
+                if (_streamerMode)
+                {
+                    try
+                    {
+                        return new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_chromaKeyColor));
+                    }
+                    catch { }
+                }
+                
+                // Default dark background
+                return new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1E1E1E"));
+            }
+        }
+
+        // Computed property for item slot background
+        public System.Windows.Media.Brush ItemSlotBrush
+        {
+            get
+            {
+                if (_minimalItemDisplay)
+                {
+                    return BackgroundBrush; // Match the window background
+                }
+                return new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30"));
+            }
+        }
+
+        // Computed property for item slot border
+        public System.Windows.Media.Brush ItemSlotBorderBrush
+        {
+            get
+            {
+                if (_minimalItemDisplay)
+                {
+                    return System.Windows.Media.Brushes.Transparent;
+                }
+                return new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#3C3C3C"));
+            }
+        }
         public RootObject(Bio bio, ItemIDs ids, int virtualMemoryPointer)
         {
             if (bio.Player?.Character?.Database == null)
@@ -218,7 +337,7 @@ namespace REviewer.Modules.RE.Common
             // ItemBox and Inventory
             InitInventory(bio);
             InitItemBox(bio);
-            
+
             // Timers
             InitTimers();
 
@@ -272,7 +391,7 @@ namespace REviewer.Modules.RE.Common
 
             if (config.TryGetValue("Minimalist", out bool? minimalist))
             {
-                if(minimalist == true)
+                if (minimalist == true)
                 {
                     WindowWidth = 320;
                     WindowScale = 0.47;
@@ -314,7 +433,7 @@ namespace REviewer.Modules.RE.Common
                 StatsVisibility = StatsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
                 SegsVisibility = SegsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
                 KeyItemsVisibility = KeyItemsVisibility == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible;
-            } 
+            }
             else
             {
                 StatsVisibility = Visibility.Collapsed;
@@ -345,10 +464,10 @@ namespace REviewer.Modules.RE.Common
             {
                 MAX_INVENTORY_SIZE = 8;
             }
-            else if(character == "Sherry" || character == "Claire" || character == "Leon" || character == "Ada")
+            else if (character == "Sherry" || character == "Claire" || character == "Leon" || character == "Ada")
             {
                 MAX_INVENTORY_SIZE = 11;
-            } 
+            }
             else
             {
                 MAX_INVENTORY_SIZE = 10;
@@ -397,9 +516,17 @@ namespace REviewer.Modules.RE.Common
 
             if (Watcher == null) // Avoid creating multiple watchers
             {
-                Watcher = new FileSystemWatcher();
                 var processName = IDatabase.GetProcessName();
-                Watcher.Path = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");
+                var savePath = Library.GetSavePath(processName ?? "UNKNOWN GAME PROCESS ERROR");
+
+                if (string.IsNullOrEmpty(savePath) || !Directory.Exists(savePath))
+                {
+                    //Logger.Instance.Warning($"Save path not configured or doesn't exist for {processName}, file watcher disabled");
+                    return;
+                }
+
+                Watcher = new FileSystemWatcher();
+                Watcher.Path = savePath;
                 Watcher.Created += SaveFileDetected;
                 Watcher.EnableRaisingEvents = true;
             }

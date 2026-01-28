@@ -5,246 +5,390 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:REviewer"
         mc:Ignorable="d"
-        Title="{Binding Version, StringFormat='REviewer - {0}'}"
+        Title="REviewer"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
-                SizeToContent="WidthAndHeight">
+        Width="700" Height="700"
+        Background="#1E1E1E"
+        Icon="/Resources/Icons/reviewer_icon_v2.png"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        FontFamily="Segoe UI">
 
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/DarkTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
-            <ListView x:Name="menuListView" 
-                        Grid.Column="0"
-                        HorizontalAlignment="Left" 
-                        Margin="0" 
-                        Padding="0"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                        Background="#D3D3D3"
-                        SelectionChanged="MenuListView_SelectionChanged">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Padding" Value="0"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Image Margin="4"
-                                        Width="32"
-                                        Height="32"
-                                        RenderOptions.BitmapScalingMode="HighQuality"
-                                        Source="{Binding Image}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <local:REviewerMenuItem MenuIndex="1" Image="/resources/icons/main.png" />
-                <local:REviewerMenuItem MenuIndex="2" Image="/resources/icons/settings.png" />
-                <local:REviewerMenuItem MenuIndex="3" Image="/resources/icons/about.png" />
-            </ListView>
+    <Grid>
+        <!-- Main Layout: Activity Bar | Content | -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/> <!-- Title Bar -->
+            <RowDefinition Height="*"/> <!-- Content -->
+            <RowDefinition Height="Auto"/> <!-- Footer -->
+            <RowDefinition Height="24"/> <!-- Status Bar -->
+        </Grid.RowDefinitions>
 
-  
-            <StackPanel Grid.Column="1" Margin="0">
-                <Border x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
-                    <TextBlock><Hyperlink Click="UpdateLink_Click">A new update is available!</Hyperlink></TextBlock>
-                </Border>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" x:Name="versionLabel" />
-                    <StackPanel Grid.Column="2" Margin="0 0" Orientation="Horizontal">
-                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://discord.gg/xxqtuubayy">Discord</Hyperlink></TextBlock>
-                        <TextBlock Margin="0 0 8 0"><Hyperlink Click="Link_Click" NavigateUri="https://github.com/Namsku/REviewer/">GitHub</Hyperlink></TextBlock>
-                    </StackPanel>
-                </Grid>
-                <Grid>
-                    <Grid x:Name="panelMain" Visibility="Visible">
-                        <StackPanel>
-                            <TextBlock Text="Welcome to REviewer!" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <TextBlock Text="This is a tool designed to help with Resident Evil/Biorand" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                            <TextBlock Text="Please select a game from the list below to get started and adjust it with your own needs." HorizontalAlignment="Center" Margin="0,0,0,10"/>
-
-                            <GroupBox Header="Game Selection" Margin="10,0,10,0">
-                                <ComboBox Name="ComboBoxGameSelection" HorizontalAlignment="Left" Margin="10,5,0,5" Height="22" SelectionChanged="ComboBoxGameSelection_SelectionChanged">
-                                    <ComboBoxItem Content="Resident Evil 1 - MediaKit Version" IsSelected="True"/>
-                                    <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
-                                    <ComboBoxItem Content="Resident Evil 2 - Claire - Platinium (China)"/>
-                                    <ComboBoxItem Content="Resident Evil 2 - Leon - Platinium (China)"/>
-                                    <ComboBoxItem Content="Resident Evil 3 - Rebirth"/>
-                                    <ComboBoxItem Content="Resident Evil 3 - CHN/TWN"/>
-                                    <ComboBoxItem Content="Resident Evil CVX - PS2 - US"/>
-                                </ComboBox>
-                            </GroupBox>
-
-                            <GroupBox Header="Status" Margin="10,0,10,0">
-                                <StackPanel>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Content="MD5" HorizontalAlignment="Left" Margin="10,-6,0,0" Height="25" Grid.Column="0"/>
-                                        <TextBlock x:Name="MD5" Text="MD5 Value" HorizontalAlignment="Left" Margin="23,4,0,0" Height="25" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Content="Process" HorizontalAlignment="Left" Margin="10,-15,0,0" Height="25" Grid.Column="0"/>
-                                        <TextBlock Name="ProcessTextBlock" Text="Process Value" HorizontalAlignment="Left" Margin="9,-5,0,0" Height="25" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid Visibility="{Binding ClassicVisibility}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Content="Save" HorizontalAlignment="Left" Margin="10,-14,0,0" Height="25" Grid.Column="0"/>
-                                        <TextBlock Name="Save" Text="Save Value" HorizontalAlignment="left" Margin="24, -4,10,0" Height="25" Grid.Column="1"/>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Mode" Margin="10,0,10,0" Visibility="{Binding ClassicVisibility}">
-                                <StackPanel>
-                                    <CheckBox Name="BiorandMode" Content="Biorand" HorizontalAlignment="Left" Margin="10,5,0,5" Height="15" IsChecked="{Binding isBiorandMode}"/>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Challenge" Margin="10,0,10,0" Visibility="{Binding ChallengeVisibility}">
-                                <StackPanel>
-                                    <CheckBox Name="OneHP" Content="1 HP" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding OneHPChallenge}"/>
-                                    <CheckBox Name="NoDamage" Content="No Damage" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding NoDamageChallenge}"/>
-                                    <CheckBox Name="NoItemBox" Content="No Itembox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding NoItemBoxChallenge}"/>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Options" Margin="10,0,10,0">
-                                <StackPanel>
-                                    <CheckBox Name="HealthBar" Content="Show Health Bar" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isHealthBarChecked}"/>
-                                    <CheckBox Name="ShowItemBox" Content="Show ItemBox" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isItemBoxChecked}"/>
-                                    <CheckBox Name="DebugMode" Content="Show Debug Menu" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding DebugMode}"/>
-                                    <CheckBox Name="ChrisInventory" Content="Max Inventory for Chris (BioRand Fix)" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding ChrisInventory}" IsChecked="{Binding isChrisInventoryChecked}"/>
-                                    <CheckBox Name="Sherry" Content="Alert you if Sherry is not following you" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding Sherry}" IsChecked="{Binding isSherryChecked}"/>
-                                    <CheckBox Name="DdrawBio3" Content="Using Ddraw.dll 1.0.0" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Visibility="{Binding DdrawBio3}" IsChecked="{Binding isDdrawChecked}"/>
-                                    <!-- <CheckBox Content="Show In Game Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="IGTimer_Checked" x:Name="IGTimerCheckBox"/> -->
-                                    <!-- <CheckBox Content="Show Real Timer Only" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" Checked="RealTimer_Checked" x:Name="RealTimerCheckBox"/> -->
-                                </StackPanel>
-                            </GroupBox>
-
-                            <Button Content="Run" HorizontalAlignment="Right" Margin="10,35,10,10" Width="75" Height="25" Click="Run_Click"/>
-                        </StackPanel>
-                    </Grid>
-
-                    <Grid x:Name="panelSettings" Visibility="Hidden">
-                        <StackPanel Margin="10,0,10,0">
-                            <TextBlock Text="Settings" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <GroupBox Header="Resident Evil 1" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <Grid Margin="0,5,0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RE1SavePath"/>
-                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE1SavePathButton_Click"/>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Resident Evil 2" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <Grid Margin="0,5,0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RE2SavePath"/>
-                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE2SavePathButton_Click"/>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Resident Evil 3" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Save Path" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="60"/>
-                                        <TextBox Grid.Column="1" Text="" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" Height="20" Width="360" Name="RE3SavePath"/>
-                                        <Button Grid.Column="2" Content="..." HorizontalAlignment="Right" Margin="10,0,10,0" Width="25" Height="25" Click="RE3SavePathButton_Click"/>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Windows Layout" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <CheckBox Name="Minimalist" Content="Minimalist UI (For small resolutions)" HorizontalAlignment="Left" Margin="10,10,0,5" Height="15" IsChecked="{Binding isMinimalistChecked}"/>
-                                    <CheckBox Name="StaticEnemyTrackerWindow" Content="Fixed Enemy Tracker Window" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isStaticEnemyTrackerWindow}"/>
-                                    <CheckBox Name="NoStats" Content="No Statistics" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoStatsChecked}"/>
-                                    <CheckBox Name="NoSegTimes" Content="No Segment Times" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoSegmentsTimerChecked}"/>
-                                    <CheckBox Name="NoKeyItems" Content="No Key Items" HorizontalAlignment="Left" Margin="10,0,0,5" Height="15" IsChecked="{Binding isNoKeyItemsChecked}"/>
-                                </StackPanel>
-                            </GroupBox>
-
-                            <GroupBox Header="Overlay" Margin="0,0,0,0">
-                                <StackPanel>
-                                    <Grid Margin="0,0,0,10">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Position Row -->
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Position" Height="25" VerticalAlignment="Center"/>
-                                        <ComboBox Grid.Row="0" Grid.Column="1" Name="OverlayPosition" Height="22" Width="150" Margin="10,0,0,0">
-                                            <ComboBoxItem Content="Bottom" IsSelected="True"/>
-                                            <ComboBoxItem Content="Top"/>
-                                        </ComboBox>
-                                    </Grid>
-                                </StackPanel>
-                            </GroupBox>
-
-                        </StackPanel>
-                    </Grid>
-
-                    <Grid x:Name="panelAbout" Visibility="Hidden">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="Developed by: Namsku/Fumi" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <TextBlock Text="Special thanks to:" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <TextBlock Text="IntelOrca" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="Kapdap!" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="SniperWolf" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="NoxxGaming" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="Otamega72" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="Albert_Fn_Wesker" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="DeathNoDamage for breaking my stuff" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="Images" FontSize="16" FontWeight="Bold" Margin="0,10,0,10"/>
-                            <TextBlock Text="HD Packs" FontSize="14" Margin="0,10,0,0"/>
-                            <TextBlock Text="Evil Resources (If any issues, please contact me)" FontSize="14" Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-
+        <!-- ================================================== -->
+        <!-- Activity Bar (Left Sidebar)                        -->
+        <!-- ================================================== -->
+        <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Background="{StaticResource Brush.Background.SideBar}">
+            <StackPanel VerticalAlignment="Top">
+                <!-- Game Library -->
+                <Button x:Name="btnHome" Style="{StaticResource ActivityBarButton}" 
+                        Tag="Active" Click="NavHome_Click" ToolTip="Game Library">
+                    <Path Data="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" 
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          Width="24" Height="24" Stretch="Uniform"/>
+                </Button>
+                
+                <!-- About -->
+                <Button x:Name="btnAbout" Style="{StaticResource ActivityBarButton}" 
+                        Click="NavAbout_Click" ToolTip="About">
+                    <Path Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" 
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          Width="24" Height="24" Stretch="Uniform"/>
+                </Button>
+                
+                <!-- Debug Logs -->
+                <Button x:Name="btnDebug" Style="{StaticResource ActivityBarButton}" 
+                        Click="NavDebug_Click" ToolTip="Debug Logs">
+                    <Path Data="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7H14A7,7 0 0,1 21,14H22A1,1 0 0,1 23,15V18A1,1 0 0,1 22,19H21V20A2,2 0 0,1 19,22H5A2,2 0 0,1 3,20V19H2A1,1 0 0,1 1,18V15A1,1 0 0,1 2,14H3A7,7 0 0,1 10,7H11V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M7.5,13A2.5,2.5 0 0,0 5,15.5A2.5,2.5 0 0,0 7.5,18A2.5,2.5 0 0,0 10,15.5A2.5,2.5 0 0,0 7.5,13M16.5,13A2.5,2.5 0 0,0 14,15.5A2.5,2.5 0 0,0 16.5,18A2.5,2.5 0 0,0 19,15.5A2.5,2.5 0 0,0 16.5,13Z" 
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          Width="24" Height="24" Stretch="Uniform"/>
+                </Button>
+                
+                <!-- Settings -->
+                <Button x:Name="btnSettings" Style="{StaticResource ActivityBarButton}" 
+                        Click="NavSettings_Click" ToolTip="Settings">
+                    <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" 
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          Width="24" Height="24" Stretch="Uniform"/>
+                </Button>
             </StackPanel>
+        </Border>
+
+        <!-- ================================================== -->
+        <!-- Main Content Area                                  -->
+        <!-- ================================================== -->
+        <!-- Title Bar (Custom) -->
+        <Border Grid.Column="1" Grid.Row="0" Background="{StaticResource Brush.Background.Dark}" 
+                BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="0,0,0,1"
+                MouseDown="Window_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Icon/Title -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="REviewer" Style="{StaticResource WindowHeaderTitle}"/>
+                </StackPanel>
+
+                <!-- Window Controls -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Style="{StaticResource DockButton}" Click="MinimizeButton_Click">
+                        <Path Data="M0,8 L8,8" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" Width="10" Height="10"/>
+                    </Button>
+                    <Button Style="{StaticResource DockButton}" Click="CloseButton_Click">
+                        <Path Data="M0,0 L8,8 M8,0 L0,8" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" Width="10" Height="10"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Grid.Row="1" Background="{StaticResource Brush.Background.Dark}">
+            
+            <!-- Home Panel -->
+            <ScrollViewer x:Name="panelMain" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="24,20">
+                    
+                    <!-- Header -->
+                    <TextBlock Text="REviewer" Style="{StaticResource PageTitle}"/>
+                    <TextBlock Text="SRT &amp; Biorand Tool" Foreground="{StaticResource Brush.Text.Secondary}" 
+                               FontSize="13" Margin="0,4,0,24"/>
+
+                    <!-- Game Selection -->
+                    <TextBlock Text="TARGET EXECUTABLE" Style="{StaticResource SectionHeader}"/>
+                    <ComboBox Name="ComboBoxGameSelection" Style="{StaticResource FlatComboBox}" 
+                              ItemContainerStyle="{StaticResource FlatComboBoxItem}"
+                              SelectionChanged="ComboBoxGameSelection_SelectionChanged" Margin="0,0,0,24">
+                        <ComboBoxItem Content="Resident Evil 1 - MediaKit" IsSelected="True"/>
+                        <ComboBoxItem Content="Resident Evil 2 - SourceNext"/>
+                        <ComboBoxItem Content="Resident Evil 2 - Claire (China)"/>
+                        <ComboBoxItem Content="Resident Evil 2 - Leon (China)"/>
+                        <ComboBoxItem Content="Resident Evil 3 - Rebirth"/>
+                        <ComboBoxItem Content="Resident Evil 3 - CHN/TWN"/>
+                        <ComboBoxItem Content="Resident Evil CVX - PS2 US"/>
+                    </ComboBox>
+
+                    <!-- Status Monitor (Terminal Look) -->
+                    <TextBlock Text="STATUS MONITOR" Style="{StaticResource SectionHeader}"/>
+                    <Border Background="{StaticResource Brush.Background.SideBar}" 
+                            BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" 
+                            Padding="16,12" Margin="0,0,0,24">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Process Name" Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Text.Secondary}"/>
+                                <TextBlock x:Name="MD5Status" Grid.Column="1" Text="[ SEARCHING ]" 
+                                           Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Status.Warning}" FontWeight="Bold"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Process Hook" Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Text.Secondary}"/>
+                                <TextBlock x:Name="ProcessStatus" Grid.Column="1" Text="[ WAITING ]" 
+                                           Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Status.Warning}" FontWeight="Bold"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Save Data" Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Text.Secondary}"/>
+                                <TextBlock x:Name="SaveStatus" Grid.Column="1" Text="[ LOADED ]" 
+                                           Style="{StaticResource MonoStatus}" 
+                                           Foreground="{StaticResource Brush.Status.Success}" FontWeight="Bold"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
 
+
+                    <!-- Challenges -->
+                    <TextBlock Text="CHALLENGES" Style="{StaticResource SectionHeader}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                        <ToggleButton x:Name="OneHPToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="1 HP Challenge" IsChecked="{Binding OneHPChallenge}" 
+                                      Margin="0,0,8,0"/>
+                        <ToggleButton x:Name="NoDamageToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="No Damage" IsChecked="{Binding NoDamageChallenge}" 
+                                      Margin="0,0,8,0"/>
+                        <ToggleButton x:Name="NoItemboxToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="No Itembox" IsChecked="{Binding NoItemBoxChallenge}"/>
+                    </StackPanel>
+
+                    <!-- Options -->
+                    <TextBlock Text="OPTIONS" Style="{StaticResource SectionHeader}"/>
+                    <WrapPanel Margin="0,0,0,24">
+                        <ToggleButton x:Name="BiorandToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="Item Tracker" IsChecked="{Binding isBiorandMode}" 
+                                      Margin="0,0,8,8"/>
+                        <ToggleButton x:Name="HealthBarToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="Health Bar" IsChecked="{Binding isHealthBarChecked}" 
+                                      Margin="0,0,8,8"/>
+                        <ToggleButton x:Name="ItemBoxToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="Show ItemBox" IsChecked="{Binding isItemBoxChecked}" 
+                                      Margin="0,0,8,8"/>
+                        <ToggleButton x:Name="DebugToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="Debug Menu" IsChecked="{Binding DebugMode}" 
+                                      Margin="0,0,8,8"/>
+                    </WrapPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Settings Panel -->
+            <ScrollViewer x:Name="panelSettings" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="24,20">
+                    <TextBlock Text="Settings" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
+
+                    <!-- RE1 Save Path -->
+                    <TextBlock Text="RESIDENT EVIL 1 - SAVE PATH" Style="{StaticResource SectionHeader}"/>
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="RE1SavePath" Background="{StaticResource Brush.Background.Input}"
+                                 Foreground="{StaticResource Brush.Text.Primary}" 
+                                 BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                 Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="Browse" Click="RE1SavePathButton_Click"
+                                Background="{StaticResource Brush.Background.Input}" 
+                                Foreground="{StaticResource Brush.Text.Primary}"
+                                BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                Padding="16,8" Cursor="Hand"/>
+                    </Grid>
+
+
+                    <!-- Window Layout -->
+                    <TextBlock Text="WINDOW LAYOUT" Style="{StaticResource SectionHeader}"/>
+                    <WrapPanel>
+                        <ToggleButton Style="{StaticResource ToggleChip}" Content="Minimalist UI" 
+                                      IsChecked="{Binding isMinimalistChecked}" Margin="0,0,8,8"/>
+                        <ToggleButton Style="{StaticResource ToggleChip}" Content="Fixed Enemy Tracker" 
+                                      IsChecked="{Binding isStaticEnemyTrackerWindow}" Margin="0,0,8,8"/>
+                        <ToggleButton Style="{StaticResource ToggleChip}" Content="Hide Statistics" 
+                                      IsChecked="{Binding isNoStatsChecked}" Margin="0,0,8,8"/>
+                        <ToggleButton Style="{StaticResource ToggleChip}" Content="Hide Segment Times" 
+                                      IsChecked="{Binding isNoSegmentsTimerChecked}" Margin="0,0,8,8"/>
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- About Panel -->
+            <ScrollViewer x:Name="panelAbout" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="24,20">
+                    <TextBlock Text="About REviewer" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
+                    
+                    <!-- Developer -->
+                    <TextBlock Text="DEVELOPER" Style="{StaticResource SectionHeader}"/>
+                    <WrapPanel Margin="0,0,0,24">
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Namsku" Foreground="{StaticResource Brush.Text.Primary}" 
+                                       FontSize="13" FontWeight="SemiBold"/>
+                        </Border>
+                    </WrapPanel>
+                    
+                    <!-- Special Thanks -->
+                    <TextBlock Text="SPECIAL THANKS" Style="{StaticResource SectionHeader}"/>
+                    <WrapPanel Margin="0,0,0,24">
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="IntelOrca" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Kapdap!" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="SniperWolf" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Noxx" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Otamega72" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Albert_Fn_Wesker" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="DeathNoDamage" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Biorand Community" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                    </WrapPanel>
+                    
+                    <!-- Resources -->
+                    <TextBlock Text="RESOURCES" Style="{StaticResource SectionHeader}"/>
+                    <WrapPanel Margin="0,0,0,24">
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="HD Packs" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                        <Border Style="{StaticResource StatBadge}">
+                            <TextBlock Text="Evil Resources" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Debug Logs Panel -->
+            <ScrollViewer x:Name="panelDebug" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="24,20">
+                    <TextBlock Text="Debug Logs" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
+                    
+                    <Border Background="{StaticResource Brush.Background.SideBar}" 
+                            BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" 
+                            Padding="16,12">
+                        <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="LogOutput" FontFamily="Cascadia Code, Consolas" FontSize="11"
+                                       Foreground="{StaticResource Brush.Text.Primary}" TextWrapping="Wrap"
+                                       Text="Loading logs..."/>
+                        </ScrollViewer>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
-    </StackPanel>
+
+        <!-- Footer (Run Action) -->
+        <Border Grid.Column="1" Grid.Row="2" Background="{StaticResource Brush.Background.Dark}" 
+                BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="0,1,0,0"
+                Padding="24,16">
+            <Button x:Name="Run" Content="RUN SRT" Style="{StaticResource PrimaryButton}" 
+                    Click="Run_Click" HorizontalAlignment="Stretch" Height="40"/>
+        </Border>
+
+        <!-- ================================================== -->
+        <!-- Status Bar (Bottom)                                -->
+        <!-- ================================================== -->
+        <!-- Status Bar (Bottom) -->
+        <Border Grid.Column="1" Grid.Row="3" 
+                Background="{StaticResource Brush.StatusBar}">
+            <Grid Margin="12,0">
+                <TextBlock Text="Ready" Foreground="White" FontSize="11" VerticalAlignment="Center"
+                           FontFamily="Segoe UI"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusMD5" Text="MD5: Pending" Foreground="White" FontSize="11" 
+                               FontFamily="Cascadia Code, Consolas" Margin="0,0,16,0"/>
+                    <TextBlock x:Name="StatusProcess" Text="Process: Waiting" Foreground="White" FontSize="11" 
+                               FontFamily="Cascadia Code, Consolas"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ================================================== -->
+        <!-- Hidden Compatibility Elements (for code-behind)   -->
+        <!-- ================================================== -->
+        <StackPanel Visibility="Collapsed">
+            <!-- Status TextBlocks -->
+            <TextBlock x:Name="MD5"/>
+            <TextBlock x:Name="ProcessTextBlock"/>
+            <TextBlock x:Name="Save"/>
+            <TextBlock x:Name="versionLabel"/>
+            <Border x:Name="versionBox"/>
+            
+            <!-- Hidden Save Path TextBoxes -->
+            <TextBox x:Name="RE2SavePath"/>
+            <TextBox x:Name="RE3SavePath"/>
+            
+            <!-- CheckBox elements referenced by code-behind -->
+            <CheckBox x:Name="HealthBar" IsChecked="{Binding isHealthBarChecked}"/>
+            <CheckBox x:Name="BiorandMode" IsChecked="{Binding isBiorandMode}"/>
+            <CheckBox x:Name="ShowItemBox" IsChecked="{Binding isItemBoxChecked}"/>
+            <CheckBox x:Name="ChrisInventory" IsChecked="{Binding isChrisInventoryChecked}"/>
+            <CheckBox x:Name="Sherry" IsChecked="{Binding isSherryChecked}"/>
+            <CheckBox x:Name="NoSegTimes" IsChecked="{Binding isNoSegmentsTimerChecked}"/>
+            <CheckBox x:Name="NoStats" IsChecked="{Binding isNoStatsChecked}"/>
+            <CheckBox x:Name="NoKeyItems" IsChecked="{Binding isNoKeyItemsChecked}"/>
+            <CheckBox x:Name="Minimalist" IsChecked="{Binding isMinimalistChecked}"/>
+            <CheckBox x:Name="OneHP" IsChecked="{Binding OneHPChallenge}"/>
+            <CheckBox x:Name="NoDamage" IsChecked="{Binding NoDamageChallenge}"/>
+            <CheckBox x:Name="NoItemBox" IsChecked="{Binding NoItemBoxChallenge}"/>
+            <CheckBox x:Name="DebugMode" IsChecked="{Binding DebugMode}"/>
+            <CheckBox x:Name="StaticEnemyTrackerWindow" IsChecked="{Binding isStaticEnemyTrackerWindow}"/>
+            <CheckBox x:Name="DdrawBio3" IsChecked="{Binding isDdrawChecked}"/>
+            
+            <!-- Overlay Position ComboBox -->
+            <ComboBox x:Name="OverlayPosition">
+                <ComboBoxItem Content="Bottom-Right" IsSelected="True"/>  <!-- Index 0 -->
+                <ComboBoxItem Content="Top-Right"/>                        <!-- Index 1 -->
+                <ComboBoxItem Content="Top-Left"/>                         <!-- Index 2 -->
+                <ComboBoxItem Content="Bottom-Left"/>                      <!-- Index 3 -->
+            </ComboBox>
+        </StackPanel>
+    </Grid>
 </Window>
+
