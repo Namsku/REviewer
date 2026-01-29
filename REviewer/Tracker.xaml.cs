@@ -63,9 +63,27 @@ namespace REviewer
 
             InitializeComponent();
             SubscribeToEvents();
-            SetWindowProperties();
+            SetWindowProperties();            
+            LoadSavedPosition();
 
             DataContext = this;
+            Closing += Window_Closing;
+        }
+
+        private void LoadSavedPosition()
+        {
+            var (x, y) = Library.LoadWindowPosition("TRK");
+            if (x >= 0 && y >= 0)
+            {
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                this.Left = x;
+                this.Top = y;
+            }
+        }
+
+        private void Window_Closing(object? sender, CancelEventArgs e)
+        {
+            Library.SaveWindowPosition("TRK", this.Left, this.Top);
         }
 
         private void SetWindowProperties()

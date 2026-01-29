@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Resources\Icons\mascot.ico</ApplicationIcon>
@@ -20,6 +21,11 @@
 
   <ItemGroup>
     <Resource Include="Resources\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Using Remove="System.Windows.Forms" />
+      <Using Remove="System.Drawing" />
   </ItemGroup>
 
   <ItemGroup>

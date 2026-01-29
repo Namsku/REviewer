@@ -10,7 +10,7 @@ namespace REviewer
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         public App()
         {
@@ -69,11 +69,11 @@ namespace REviewer
                 sw.WriteLine();
 
                 // Show message box to user
-                MessageBox.Show(
+                System.Windows.MessageBox.Show(
                     $"An unexpected error occurred and has been logged to:\n{dumpPath}\n\nError: {ex?.Message}",
                     "REviewer - Crash Report",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
             }
             catch
             {

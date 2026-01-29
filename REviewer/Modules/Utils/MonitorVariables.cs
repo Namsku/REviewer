@@ -122,6 +122,7 @@ namespace REviewer.Modules.Utils
                    && property.PropertyType != typeof(System.Windows.Media.SolidColorBrush)
                    && property.PropertyType != typeof(System.Windows.Media.Brush)
                    && property.PropertyType != typeof(System.Windows.Media.Brushes)
+                   && property.PropertyType != typeof(System.Windows.Media.PointCollection)
                    && property.PropertyType != typeof(List<string>);
         }
 

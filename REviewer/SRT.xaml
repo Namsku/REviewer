@@ -65,52 +65,66 @@
                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
                         <Border Background="{StaticResource Brush.Background.SideBar}" BorderBrush="{StaticResource Brush.Border.Subtle}" 
                                 BorderThickness="1" CornerRadius="4" Padding="12" MinWidth="180">
-                            <StackPanel>
-                                <TextBlock Text="SETTINGS" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,8"/>
-                                
-                                <!-- Streamer Mode Toggle -->
-                                <CheckBox x:Name="StreamerModeCheck" IsChecked="{Binding StreamerMode}" Margin="0,0,0,8"
-                                          Foreground="{StaticResource Brush.Text.Primary}">
-                                    <TextBlock Text="Streamer Mode (Chroma Key)" Foreground="{StaticResource Brush.Text.Primary}"/>
-                                </CheckBox>
-                                
-                                <!-- Chroma Key Color -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                    <TextBlock Text="Chroma Color:" Foreground="{StaticResource Brush.Text.Secondary}" 
-                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox x:Name="ChromaColorCombo" SelectedIndex="0" Width="80"
-                                              SelectionChanged="ChromaColorCombo_SelectionChanged">
-                                        <ComboBoxItem Content="Green" Tag="#00FF00"/>
-                                        <ComboBoxItem Content="Blue" Tag="#0000FF"/>
-                                        <ComboBoxItem Content="Magenta" Tag="#FF00FF"/>
+                            <Grid Margin="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/> <!-- Header -->
+                                    <RowDefinition Height="Auto"/> <!-- Display -->
+                                    <RowDefinition Height="Auto"/> <!-- Widgets -->
+                                    <RowDefinition Height="Auto"/> <!-- Position -->
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="SETTINGS" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,12"/>
+
+                                <!-- DISPLAY SECTION -->
+                                <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                                    <TextBlock Text="DISPLAY" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    
+                                    <CheckBox IsChecked="{Binding StreamerMode}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
+                                        <TextBlock Text="Streamer Mode (Chroma)" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                    </CheckBox>
+
+                                    <Grid Margin="24,0,0,6" IsEnabled="{Binding StreamerMode}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Color:" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <ComboBox x:Name="ChromaColorCombo" SelectedIndex="0" Width="80" SelectionChanged="ChromaColorCombo_SelectionChanged" HorizontalAlignment="Left">
+                                            <ComboBoxItem Content="Green" Tag="#00FF00"/>
+                                            <ComboBoxItem Content="Blue" Tag="#0000FF"/>
+                                            <ComboBoxItem Content="Magenta" Tag="#FF00FF"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <CheckBox IsChecked="{Binding TransparentMode}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
+                                        <TextBlock Text="Transparent Background" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <!-- WIDGETS SECTION -->
+                                <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                                    <TextBlock Text="WIDGETS" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    
+                                    <CheckBox IsChecked="{Binding MinimalItemDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
+                                        <TextBlock Text="Compact Item Box" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                    </CheckBox>
+
+                                    <CheckBox IsChecked="{Binding ECGHealthDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
+                                        <TextBlock Text="ECG Health Monitor" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <!-- OVERLAY SECTION -->
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Text="OVERLAY POSITION" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <ComboBox x:Name="OverlayPositionCombo" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="OverlayPositionCombo_SelectionChanged">
+                                        <ComboBoxItem Content="Bottom Right" Tag="0"/>
+                                        <ComboBoxItem Content="Top Right" Tag="1"/>
+                                        <ComboBoxItem Content="Top Left" Tag="2"/>
+                                        <ComboBoxItem Content="Bottom Left" Tag="3"/>
                                     </ComboBox>
                                 </StackPanel>
-                                
-                                <!-- Overlay Position -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                    <TextBlock Text="Overlay:" Foreground="{StaticResource Brush.Text.Secondary}" 
-                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox x:Name="OverlayPositionCombo" SelectedIndex="0" Width="100"
-                                              SelectionChanged="OverlayPositionCombo_SelectionChanged">
-                                        <ComboBoxItem Content="Bot-Right" Tag="0"/>
-                                        <ComboBoxItem Content="Top-Right" Tag="1"/>
-                                        <ComboBoxItem Content="Top-Left" Tag="2"/>
-                                        <ComboBoxItem Content="Bot-Left" Tag="3"/>
-                                    </ComboBox>
-                                </StackPanel>
-                                
-                                <!-- Transparent Mode Toggle -->
-                                <CheckBox x:Name="TransparentModeCheck" IsChecked="{Binding TransparentMode}" Margin="0,0,0,8"
-                                          Foreground="{StaticResource Brush.Text.Primary}">
-                                    <TextBlock Text="Transparent Background" Foreground="{StaticResource Brush.Text.Primary}"/>
-                                </CheckBox>
-                                
-                                <!-- Minimal Item Display Toggle -->
-                                <CheckBox x:Name="MinimalItemCheck" IsChecked="{Binding MinimalItemDisplay}" Margin="0,0,0,0"
-                                          Foreground="{StaticResource Brush.Text.Primary}">
-                                    <TextBlock Text="Hide Item Boxes" Foreground="{StaticResource Brush.Text.Primary}"/>
-                                </CheckBox>
-                            </StackPanel>
+                            </Grid>
                         </Border>
                     </Popup>
                     
@@ -144,6 +158,7 @@
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                         <TextBlock Text="IGT" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,2"/>
                         <TextBlock Name="IGTimer" Text="{Binding IGTHumanFormat}" 
+                                   Foreground="{Binding TimerColorBrush}"
                                    Style="{StaticResource TimerDisplay}"/>
                     </StackPanel>
 
@@ -165,6 +180,7 @@
                     <Border Grid.Column="2" Style="{StaticResource CharacterBadge}" 
                             VerticalAlignment="Center">
                         <StackPanel>
+                            <!-- Heart Icon Removed -->
                             <TextBlock Text="HP" FontSize="10" 
                                        Foreground="{StaticResource Brush.Text.Secondary}" 
                                        HorizontalAlignment="Center"/>
@@ -198,8 +214,8 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Player Health Bar -->
-                    <Grid Grid.Row="0">
+                <!-- Player Health Bar (Standard) -->
+                    <Grid Grid.Row="0" Visibility="{Binding StandardHealthVisibility}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="80"/>
@@ -212,6 +228,106 @@
                                    VerticalAlignment="Center" HorizontalAlignment="Right">
                             <Run Text="{Binding Health.Value}"/><Run Text="/"/><Run Text="{Binding MaxHealth}"/>
                         </TextBlock>
+                    </Grid>
+
+                    <!-- Player Health Monitor (ECG Style) -->
+                    <Grid Grid.Row="0" Visibility="{Binding ECGHealthVisibility}" Height="80" Margin="0,0,0,8">
+                         <Border Background="#000000" BorderBrush="#333333" BorderThickness="2" CornerRadius="4" ClipToBounds="True">
+                                <Grid>
+                                    <Grid.Resources>
+                                        <!-- Grid Lines -->
+                                        <DrawingBrush x:Key="GridBrush" TileMode="Tile" Viewport="0,0,20,20" ViewportUnits="Absolute">
+                                            <DrawingBrush.Drawing>
+                                                <GeometryDrawing>
+                                                    <GeometryDrawing.Pen>
+                                                        <Pen Brush="#1A1A1A" Thickness="1"/>
+                                                    </GeometryDrawing.Pen>
+                                                    <GeometryDrawing.Geometry>
+                                                        <GeometryGroup>
+                                                            <LineGeometry StartPoint="0,0" EndPoint="0,20"/>
+                                                            <LineGeometry StartPoint="0,0" EndPoint="20,0"/>
+                                                        </GeometryGroup>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Grid.Resources>
+                                    <Rectangle Fill="{StaticResource GridBrush}"/>
+
+                                    <!-- Pulse Line (Dynamic Points with Sweep Effect) -->
+                                    <Canvas>
+                                        <Polyline Points="{Binding ECGPoints}"
+                                                  Stroke="{Binding Health.Background}" StrokeThickness="3"
+                                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  VerticalAlignment="Center">
+                                            <Polyline.Effect>
+                                                <DropShadowEffect Color="{Binding Health.Background.Color}" BlurRadius="15" ShadowDepth="0" Opacity="0.9"/>
+                                            </Polyline.Effect>
+                                            <Polyline.OpacityMask>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop x:Name="MaskStart" Color="Black" Offset="0"/>
+                                                    <GradientStop x:Name="MaskGapStart" Color="Black" Offset="0.1"/>
+                                                    <GradientStop x:Name="MaskGapEnd" Color="Transparent" Offset="0.11"/>
+                                                    <GradientStop x:Name="MaskEnd" Color="Transparent" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Polyline.OpacityMask>
+                                            <Polyline.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard RepeatBehavior="Forever" SpeedRatio="{Binding PulseSpeed}">
+                                                            <DoubleAnimation Storyboard.TargetName="MaskStart" Storyboard.TargetProperty="Offset" From="-0.1" To="1.0" Duration="0:0:4"/>
+                                                            <DoubleAnimation Storyboard.TargetName="MaskGapStart" Storyboard.TargetProperty="Offset" From="0.0" To="1.1" Duration="0:0:4"/>
+                                                            <DoubleAnimation Storyboard.TargetName="MaskGapEnd" Storyboard.TargetProperty="Offset" From="0.01" To="1.11" Duration="0:0:4"/>
+                                                            <DoubleAnimation Storyboard.TargetName="MaskEnd" Storyboard.TargetProperty="Offset" From="0.1" To="1.2" Duration="0:0:4"/>
+                                                            
+                                                            <!-- Sync Sweep Line -->
+                                                            <DoubleAnimation Storyboard.TargetName="SweepLine" Storyboard.TargetProperty="(Canvas.Left)" From="0" To="400" Duration="0:0:4"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Polyline.Triggers>
+                                        </Polyline>
+
+                                        <!-- Vertical Sweep Line (Bright Tip) -->
+                                        <Rectangle x:Name="SweepLine" Width="2" Height="80" Fill="White" Opacity="0.8">
+                                            <Rectangle.Effect>
+                                                <BlurEffect Radius="4"/>
+                                            </Rectangle.Effect>
+                                        </Rectangle>
+                                    </Canvas>
+                                    
+                                     <!-- Scanline / Vignette -->
+                                    <Rectangle IsHitTestVisible="False">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="#FF000000" Offset="0"/>
+                                                <GradientStop Color="#00000000" Offset="0.1"/>
+                                                <GradientStop Color="#00000000" Offset="0.9"/>
+                                                <GradientStop Color="#FF000000" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <Rectangle IsHitTestVisible="False" Opacity="0.3">
+                                        <Rectangle.Fill>
+                                            <RadialGradientBrush>
+                                                <GradientStop Color="Transparent" Offset="0.8"/>
+                                                <GradientStop Color="Black" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+
+                                    <!-- Digital Readout -->
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,12,0">
+                                        <TextBlock Text="ECG // MONITOR" FontSize="9" Foreground="#666666" HorizontalAlignment="Right" FontFamily="Consolas"/>
+                                        <TextBlock Text="{Binding Health.Value}" Foreground="{Binding Health.Background}" 
+                                                   FontFamily="Consolas" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect Color="{Binding Health.Background.Color}" BlurRadius="5" ShadowDepth="0"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                        </Border>
                     </Grid>
 
                     <!-- Partner Health Bar -->
@@ -359,11 +475,10 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Style="{StaticResource ItemSlot}">
+                                <Border Style="{StaticResource ItemSlot}" Visibility="{Binding Visibility}">
                                     <Image Source="{Binding Source}" 
                                            Width="{Binding Width}" Height="{Binding Height}" 
-                                           Opacity="{Binding Opacity}" 
-                                           Visibility="{Binding Visibility}"/>
+                                           Opacity="{Binding Opacity}"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

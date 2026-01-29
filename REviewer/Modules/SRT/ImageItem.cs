@@ -39,9 +39,9 @@ namespace REviewer.Modules.SRT
             }
         }
 
-        private Brush? _background;
+        private System.Windows.Media.Brush? _background;
 
-        public Brush? Background
+        public System.Windows.Media.Brush? Background
         {
             get
             {
@@ -96,9 +96,9 @@ namespace REviewer.Modules.SRT
             }
         }
 
-        private Brush? _color;
+        private System.Windows.Media.Brush? _color;
 
-        public Brush? Color
+        public System.Windows.Media.Brush? Color
         {
             get
             {

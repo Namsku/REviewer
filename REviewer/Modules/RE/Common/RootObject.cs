@@ -8,8 +8,10 @@ using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -186,7 +188,136 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        // Computed property for background - returns transparent, chroma key, or default dark
+        // Pulse Speed for Heartbeat Animation
+        private double _pulseSpeed = 1.0;
+        public double PulseSpeed
+        {
+            get => _pulseSpeed;
+            set
+            {
+                if (_pulseSpeed != value)
+                {
+                    _pulseSpeed = value;
+                    OnPropertyChanged(nameof(PulseSpeed));
+                }
+            }
+        }
+
+        // ECG Health Display Mode
+        private bool _ecgHealthDisplay = false;
+        public bool ECGHealthDisplay
+        {
+            get => _ecgHealthDisplay;
+            set
+            {
+                if (_ecgHealthDisplay != value)
+                {
+                    _ecgHealthDisplay = value;
+                    OnPropertyChanged(nameof(ECGHealthDisplay));
+                    OnPropertyChanged(nameof(StandardHealthVisibility));
+                    OnPropertyChanged(nameof(ECGHealthVisibility));
+                }
+            }
+        }
+        
+        // Helper visibility properties
+        public Visibility StandardHealthVisibility => !_ecgHealthDisplay ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ECGHealthVisibility => _ecgHealthDisplay ? Visibility.Visible : Visibility.Collapsed;
+
+        // Custom Background Properties
+        private string? _customBackgroundPath;
+        public string? CustomBackgroundPath
+        {
+            get => _customBackgroundPath;
+            set
+            {
+                if (_customBackgroundPath != value)
+                {
+                    _customBackgroundPath = value;
+                    OnPropertyChanged(nameof(CustomBackgroundPath));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        private string? _customBackgroundColor;
+        public string? CustomBackgroundColor
+        {
+            get => _customBackgroundColor;
+            set
+            {
+                if (_customBackgroundColor != value)
+                {
+                    _customBackgroundColor = value;
+                    OnPropertyChanged(nameof(CustomBackgroundColor));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        private double _customBackgroundOpacity = 1.0;
+        public double CustomBackgroundOpacity
+        {
+            get => _customBackgroundOpacity;
+            set
+            {
+                if (_customBackgroundOpacity != value)
+                {
+                    _customBackgroundOpacity = value;
+                    OnPropertyChanged(nameof(CustomBackgroundOpacity));
+                    OnPropertyChanged(nameof(BackgroundBrush));
+                }
+            }
+        }
+
+        private string? _timerColor;
+        public string? TimerColor
+        {
+            get => _timerColor;
+            set
+            {
+                if (_timerColor != value)
+                {
+                    _timerColor = value;
+                    OnPropertyChanged(nameof(TimerColor));
+                    OnPropertyChanged(nameof(TimerColorBrush));
+                }
+            }
+        }
+        
+        public System.Windows.Media.Brush TimerColorBrush
+        {
+             get
+             {
+                 if (!string.IsNullOrEmpty(_timerColor))
+                 {
+                     try
+                     {
+                         var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_timerColor);
+                         return new System.Windows.Media.SolidColorBrush(color);
+                     }
+                     catch { }
+                 }
+                 // Default Cyan/Teal
+                 return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255)); 
+             }
+        }
+
+        private System.Windows.Media.PointCollection _ecgPoints = new System.Windows.Media.PointCollection();
+        public System.Windows.Media.PointCollection ECGPoints
+        {
+            get => _ecgPoints;
+            set
+            {
+                if (_ecgPoints != value)
+                {
+                    _ecgPoints = value;
+                    OnPropertyChanged(nameof(ECGPoints));
+                }
+            }
+        }
+
+        // Computed property for background - returns transparent, chroma key, custom, or default dark
         public System.Windows.Media.Brush BackgroundBrush
         {
             get
@@ -204,6 +335,44 @@ namespace REviewer.Modules.RE.Common
                     {
                         return new System.Windows.Media.SolidColorBrush(
                             (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_chromaKeyColor));
+                    }
+                    catch { }
+                }
+
+                // Custom Background Image
+                if (!string.IsNullOrEmpty(_customBackgroundPath) && File.Exists(_customBackgroundPath))
+                {
+                    try
+                    {
+                        var img = new System.Windows.Media.Imaging.BitmapImage();
+                        img.BeginInit();
+                        img.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                        img.UriSource = new Uri(_customBackgroundPath, UriKind.Absolute);
+                        img.EndInit();
+                        img.Freeze();
+
+                        var brush = new System.Windows.Media.ImageBrush(img);
+                        brush.Opacity = _customBackgroundOpacity;
+                        brush.Stretch = System.Windows.Media.Stretch.UniformToFill;
+                        brush.TileMode = System.Windows.Media.TileMode.None;
+                        brush.AlignmentX = System.Windows.Media.AlignmentX.Center;
+                        brush.AlignmentY = System.Windows.Media.AlignmentY.Center;
+                        brush.Freeze();
+                        return brush;
+                    }
+                    catch { }
+                }
+
+                // Custom Background Color
+                if (!string.IsNullOrEmpty(_customBackgroundColor))
+                {
+                    try
+                    {
+                        var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_customBackgroundColor);
+                        var brush = new System.Windows.Media.SolidColorBrush(color);
+                        brush.Opacity = _customBackgroundOpacity;
+                        brush.Freeze();
+                        return brush;
                     }
                     catch { }
                 }
@@ -338,6 +507,9 @@ namespace REviewer.Modules.RE.Common
             InitInventory(bio);
             InitItemBox(bio);
 
+            // Initialize ECG Pattern
+            UpdateECGPattern(0);
+
             // Timers
             InitTimers();
 
@@ -441,7 +613,7 @@ namespace REviewer.Modules.RE.Common
                 KeyItemsVisibility = Visibility.Collapsed;
             }
         }
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.F9)
             {

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Input;
 
 using REviewer.Modules.RE;
@@ -52,6 +53,9 @@ namespace REviewer
             
             // Subscribe to location changes for docking
             this.LocationChanged += SRT_LocationChanged;
+
+            SetupPulseAnimation();
+            _game.PropertyChanged += OnGamePropertyChanged;
         }
 
         private void LoadSavedPosition()
@@ -89,6 +93,79 @@ namespace REviewer
                     break;
             }
         }
+
+        #region Pulse Animation
+
+        private Storyboard? _pulseStoryboard;
+
+        private void SetupPulseAnimation()
+        {
+            // Create Storyboard in code
+            var scaleX = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 1.2,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+            var scaleY = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 1.2,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+
+            Storyboard.SetTargetName(scaleX, "HeartIcon");
+            Storyboard.SetTargetProperty(scaleX, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
+            Storyboard.SetTargetName(scaleY, "HeartIcon");
+            Storyboard.SetTargetProperty(scaleY, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
+
+            _pulseStoryboard = new Storyboard();
+            _pulseStoryboard.Children.Add(scaleX);
+            _pulseStoryboard.Children.Add(scaleY);
+
+            this.Loaded += (s, e) => { 
+                try {
+                    _pulseStoryboard.Begin(this, true); 
+                    UpdatePulseSpeed();
+                } catch {}
+            };
+        }
+
+        private void OnGamePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(RootObject.PulseSpeed))
+            {
+                UpdatePulseSpeed();
+            }
+        }
+
+        private void UpdatePulseSpeed()
+        {
+            if (_pulseStoryboard == null) return;
+            
+            Application.Current.Dispatcher.Invoke(() => {
+                double speed = _game.PulseSpeed;
+                if (speed <= 0)
+                {
+                    _pulseStoryboard.Pause(this);
+                }
+                else
+                {
+                    if (_pulseStoryboard.GetIsPaused(this)) _pulseStoryboard.Resume(this);
+                    
+                    // Set SpeedRatio (Inverse of Duration Factor)
+                    // Speed 1.0 = Default (1s cycle)
+                    // Speed 0.35 = Fast (Wait, 1.0/0.35 = 2.8x speed)
+                    _pulseStoryboard.SetSpeedRatio(this, 1.0 / speed);
+                }
+            });
+        }
+
+        #endregion
 
         #region Window Controls
 

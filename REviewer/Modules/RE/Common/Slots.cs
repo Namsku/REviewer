@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Printing.IndexedProperties;
 using System.Windows.Media;
 using REviewer.Modules.Utils;
@@ -14,14 +15,51 @@ namespace REviewer.Modules.RE.Common
         private string? _image;
         private int _position;
 
+        private System.Windows.Visibility _visibility = System.Windows.Visibility.Visible;
+        public System.Windows.Visibility Visibility
+        {
+            get => _visibility;
+            set
+            {
+                if (_visibility != value)
+                {
+                    _visibility = value;
+                    OnPropertyChanged(nameof(Visibility));
+                }
+            }
+        }
+
         public VariableData? Item
         {
             get { return _item; }
             set
             {
+                if (_item != null) _item.PropertyChanged -= Item_PropertyChanged;
                 _item = value;
+                if (_item != null) _item.PropertyChanged += Item_PropertyChanged;
+                UpdateVisibility();
                 //Console.WriteLine(_item.Value);
                 OnPropertyChanged(nameof(Item));
+            }
+        }
+
+        private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value")
+            {
+                UpdateVisibility();
+            }
+        }
+
+        private void UpdateVisibility()
+        {
+            if (_item != null && _item.Value == 0)
+            {
+                Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                Visibility = System.Windows.Visibility.Visible;
             }
         }
 

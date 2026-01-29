@@ -22,6 +22,67 @@ namespace REviewer.ViewModels
         private Dictionary<string, string> _gameList;
         private string _selectedGameKey;
 
+        // Aesthetics & Themes
+        private string? _customBackgroundPath;
+        public string? CustomBackgroundPath
+        {
+            get => _customBackgroundPath;
+            set
+            {
+                if (_customBackgroundPath != value)
+                {
+                    _customBackgroundPath = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("CustomBackgroundPath", value ?? "");
+                }
+            }
+        }
+
+        private string? _customBackgroundColor;
+        public string? CustomBackgroundColor
+        {
+            get => _customBackgroundColor;
+            set
+            {
+                if (_customBackgroundColor != value)
+                {
+                    _customBackgroundColor = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("CustomBackgroundColor", value ?? "");
+                }
+            }
+        }
+
+        private string? _timerColor;
+        public string? TimerColor
+        {
+            get => _timerColor;
+            set
+            {
+                if (_timerColor != value)
+                {
+                    _timerColor = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("TimerColor", value ?? "");
+                }
+            }
+        }
+
+        private double _customBackgroundOpacity = 1.0;
+        public double CustomBackgroundOpacity
+        {
+            get => _customBackgroundOpacity;
+            set
+            {
+                if (_customBackgroundOpacity != value)
+                {
+                    _customBackgroundOpacity = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("CustomBackgroundOpacity", value.ToString());
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainWindowViewModel()
@@ -35,6 +96,12 @@ namespace REviewer.ViewModels
             
             // Load persisted UI options
             InitializeSavedOptions();
+
+            // Load Aesthetics
+            _customBackgroundPath = Library.GetSetting("CustomBackgroundPath", "");
+            _customBackgroundColor = Library.GetSetting("CustomBackgroundColor", "");
+            _customBackgroundOpacity = Library.GetSetting("CustomBackgroundOpacity", 1.0);
+            _timerColor = Library.GetSetting("TimerColor", "");
 
             _processWatcher.OnProcessFound += OnProcessFound;
             _processWatcher.OnProcessExited += OnProcessExited;

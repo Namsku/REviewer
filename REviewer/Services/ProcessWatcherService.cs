@@ -9,7 +9,7 @@ namespace REviewer.Services
 {
     public class ProcessWatcherService : IDisposable
     {
-        private Timer? _timer;
+        private System.Threading.Timer? _timer;
         private Process? _process;
         private bool _isProcessRunning;
         private string _gameKey;
@@ -36,7 +36,7 @@ namespace REviewer.Services
 
         public void Start()
         {
-            _timer = new Timer(ScanForProcess, null, 0, 1000);
+            _timer = new System.Threading.Timer(ScanForProcess, null, 0, 1000);
         }
 
         public void Stop()

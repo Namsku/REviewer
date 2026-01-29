@@ -7,6 +7,7 @@ using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
 using REviewer.ViewModels;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -27,8 +28,8 @@ namespace REviewer
         private bool _isProcessRunning = false;
         private bool _isMappingDone = false;
 
-        private Timer? _processWatcher;
-        private Timer? _rootObjectWatcher;
+        private System.Threading.Timer? _processWatcher;
+        private System.Threading.Timer? _rootObjectWatcher;
 
         private RootObject? _residentEvilGame;
         private MonitorVariables? _MVariables;
@@ -64,8 +65,25 @@ namespace REviewer
         private static readonly List<string> _gameList = new List<string>() { "Bio", "bio2 1.10", "bio2 chn claire", "bio2 chn leon", "BIOHAZARD(R) 3 PC", "Bio3 CHN/TWN", "CVX PS2 US" };
         private static readonly List<string> _gameSelection = new List<string>() { "RE1", "RE2", "RE2C", "RE2C", "RE3", "RE3C", "RECVX" };
 
-        public static string Version => ConfigurationManager.AppSettings["Version"] ?? "None";
-        private static Version CurrentVersion = System.Version.Parse(Version.Split('-')[0].Replace("v", ""));
+        public static string Version => ConfigurationManager.AppSettings["Version"] ?? "1.0.1";
+        private static System.Version CurrentVersion = GetCurrentVersion();
+
+        private static System.Version GetCurrentVersion()
+        {
+            try
+            {
+                var v = Version;
+                // Try finding the first numeric part (e.g. from "dev-1.0.1-alpha" -> "1.0.1")
+                var match = System.Text.RegularExpressions.Regex.Match(v, @"\d+(\.\d+)*");
+                if (match.Success && System.Version.TryParse(match.Value, out var parsed))
+                    return parsed;
+                return new System.Version(1, 0, 0);
+            }
+            catch
+            {
+                return new System.Version(1, 0, 0);
+            }
+        }
         public Config OverlayConfig { get; private set; }
         public Overlay? OVL { get; private set; }
         public SRT? SRT { get; private set; }
@@ -78,13 +96,23 @@ namespace REviewer
         {
             InitializeComponent();
 
+            // Load Saved Position
+            var (x, y) = Library.LoadWindowPosition("Main");
+            if (x >= 0 && y >= 0)
+            {
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Left = x;
+                Top = y;
+            }
+
             // MVVM: Create ViewModel and set as DataContext
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
             InitializeText();
             InitCheckBoxes();
-            // InitializeSavedOptions is now called in MainWindowViewModel constructor
+            // Subscribe to ViewModel changes for aesthetics
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             InitializeSaveWatcher();
             InitializeProcessWatcher();
@@ -280,6 +308,12 @@ namespace REviewer
                         // https://github.com/kapdap/re-cvx-srt-provider/
                         // Kapdap you da real mvp
                         // <3
+
+                        // Auto-detect game if not running
+                        // Aggressive auto-detection removed per user request
+                        // The user should be able to manually select a game even if another one is running.
+                        // We will rely on manual selection or initial auto-detection only.
+
                         if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
                         {
                             var tmp_process = Process.GetProcessesByName(process_list[i])[0];
@@ -409,6 +443,14 @@ namespace REviewer
                 GameData gameData = new GameData(_process.ProcessName);
                 _itemIDs = new ItemIDs(_process.ProcessName);
                 _residentEvilGame = gameData.GetGameData(_itemIDs, (int)VirtualMemoryPointer);
+
+                // Initialize Aesthetics from ViewModel
+                if (_residentEvilGame != null)
+                {
+                    _residentEvilGame.CustomBackgroundPath = _viewModel.CustomBackgroundPath;
+                    _residentEvilGame.CustomBackgroundColor = _viewModel.CustomBackgroundColor;
+                    _residentEvilGame.CustomBackgroundOpacity = _viewModel.CustomBackgroundOpacity;
+                }
             }
 
             if (_tracking == null)
@@ -451,7 +493,7 @@ namespace REviewer
             _MVariables?.Stop();
             _MVEnemies?.Stop();
 
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
+            _rootObjectWatcher = new System.Threading.Timer(RootObjectWatcherCallback, null, 0, 100);
 
             var content = "Not Found";
 
@@ -481,6 +523,9 @@ namespace REviewer
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            // Save Position
+            Library.SaveWindowPosition("Main", Left, Top);
+
             // Close all active window frames, including Overlay
             CloseAllWindowFrames();
 
@@ -578,8 +623,8 @@ namespace REviewer
             UpdateUI(content, saveREPath, selectedIndex);
             InitCheckBoxes();
 
-            _processWatcher = new Timer(ProcessWatcherCallback, null, 0, 1000);
-            _rootObjectWatcher = new Timer(RootObjectWatcherCallback, null, 0, 100);
+            _processWatcher = new System.Threading.Timer(ProcessWatcherCallback, null, 0, 1000);
+            _rootObjectWatcher = new System.Threading.Timer(RootObjectWatcherCallback, null, 0, 100);
 
             Logger.Instance.Info($"Selected game: {_processName} -> Resetting status and starting new process watcher");
         }
@@ -658,7 +703,7 @@ namespace REviewer
                                     {
                                         // Close existing windows before creating new ones
                                         CloseExistingWindows();
-                                        
+
                                         // Create SRT window
                                         var srtConfig = GenerateSRTUIConfig();
                                         SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
@@ -709,19 +754,19 @@ namespace REviewer
                     SRT.Close();
                     SRT = null;
                 }
-                
+
                 if (OVL != null)
                 {
                     OVL.Close();
                     OVL = null;
                 }
-                
+
                 if (TRK != null)
                 {
                     TRK.Close();
                     TRK = null;
                 }
-                
+
                 Logger.Instance.Info("Closed existing windows for fresh restart");
             }
             catch (Exception ex)
@@ -1049,6 +1094,72 @@ namespace REviewer
 
         #endregion
 
+
+        #region Aesthetics & Themes Handlers
+
+        private void BrowseBackground_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = false,
+                Filters = { new CommonFileDialogFilter("Images", "*.png;*.jpg;*.jpeg;*.bmp") }
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                _viewModel.CustomBackgroundPath = dialog.FileName;
+            }
+        }
+
+        private void PickColor_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.ColorDialog())
+            {
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var c = dialog.Color;
+                    var hex = $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+                    _viewModel.CustomBackgroundColor = hex;
+                }
+            }
+        }
+
+        private void PickTimerColor_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.ColorDialog())
+            {
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var c = dialog.Color;
+                    var hex = $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+                    _viewModel.TimerColor = hex;
+                }
+            }
+        }
+
+        private void ResetTimerColor_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.TimerColor = null; // Will trigger default in getter/converter or null in VM
+        }
+
+        private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (_residentEvilGame == null) return;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.CustomBackgroundPath))
+                _residentEvilGame.CustomBackgroundPath = _viewModel.CustomBackgroundPath;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.CustomBackgroundColor))
+                _residentEvilGame.CustomBackgroundColor = _viewModel.CustomBackgroundColor;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.CustomBackgroundOpacity))
+                _residentEvilGame.CustomBackgroundOpacity = _viewModel.CustomBackgroundOpacity;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.TimerColor))
+                _residentEvilGame.TimerColor = _viewModel.TimerColor;
+        }
+
+        #endregion
 
     }
 

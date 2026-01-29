@@ -214,6 +214,77 @@
             <ScrollViewer x:Name="panelSettings" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="24,20">
                     <TextBlock Text="Settings" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
+                    
+                    <!-- AESTHETICS & THEMES -->
+                    <TextBlock Text="AESTHETICS &amp; THEMES" Style="{StaticResource SectionHeader}"/>
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock Text="Window Background" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding CustomBackgroundPath, Mode=TwoWay}" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,8,0"/>
+                            <Button Content="Browse..." Click="BrowseBackground_Click"
+                                    Background="{StaticResource Brush.Background.Input}" 
+                                    Foreground="{StaticResource Brush.Text.Primary}"
+                                    BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                    Padding="16,8" Cursor="Hand" Grid.Column="1"/>
+                        </Grid>
+                        
+                         <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                             <TextBox Text="{Binding CustomBackgroundColor, Mode=TwoWay}" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,8,0"
+                                     ToolTip="Hex Color (e.g. #FF0000)"/>
+                            <Button Content="Select Color" Click="PickColor_Click" 
+                                    Background="{StaticResource Brush.Background.Input}" 
+                                    Foreground="{StaticResource Brush.Text.Primary}"
+                                    BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                    Padding="16,8" Cursor="Hand" Grid.Column="1" ToolTip="Color Picker"/>
+                        </Grid>
+
+                        <TextBlock Text="Background Opacity" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,4,0,4"/>
+                        <Slider Value="{Binding CustomBackgroundOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01"/>
+                    </StackPanel>
+
+                    <TextBlock Text="TIMER APPEARANCE" Style="{StaticResource SectionHeader}"/>
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock Text="Timer Font Color" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                        <Grid>
+                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                             <TextBox Text="{Binding TimerColor, Mode=TwoWay}" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,8,0"
+                                     ToolTip="Hex Color"/>
+                            <Button Content="Default" Click="ResetTimerColor_Click"
+                                    Background="{StaticResource Brush.Background.Input}" 
+                                    Foreground="{StaticResource Brush.Text.Primary}"
+                                    BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                    Padding="16,8" Cursor="Hand" Grid.Column="1" Margin="0,0,8,0"/>
+                             <Button Content="Select Color" Click="PickTimerColor_Click"
+                                    Background="{StaticResource Brush.Background.Input}" 
+                                    Foreground="{StaticResource Brush.Text.Primary}"
+                                    BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                    Padding="16,8" Cursor="Hand" Grid.Column="2"/>
+                        </Grid>
+                    </StackPanel>
 
                     <!-- RE1 Save Path -->
                     <TextBlock Text="RESIDENT EVIL 1 - SAVE PATH" Style="{StaticResource SectionHeader}"/>

@@ -7,6 +7,7 @@ using System.Printing.IndexedProperties;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Text;
 namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
@@ -814,12 +815,16 @@ namespace REviewer.Modules.RE.Common
 
             if (state)
             {
+                // If special state (poison/dead?), keep current pulse or handle specifically
+                // For now, if health is 0, stop pulse
+                if (_health?.Value == 0) PulseSpeed = 0;
                 return;
             }
 
             if (_health?.Value >= health_table[0])
             {
                 _health.Background = CustomColors.Default;
+                PulseSpeed = 0.5;
                 return;
             }
 
@@ -828,8 +833,85 @@ namespace REviewer.Modules.RE.Common
                 if (health_table[i] > _health?.Value && _health.Value >= health_table[i + 1])
                 {
                     _health.Background = colors[i + 1];
+
+                    // Scale Pulse Speed (SpeedRatio)
+                    // Fine (Green) -> Slow (Low Ratio)
+                    // Danger (Red) -> Fast (High Ratio)
+                    switch (i)
+                    {
+                        case 0: PulseSpeed = 0.5; break;  // Fine
+                        case 1: PulseSpeed = 1.0; break;  // Caution
+                        case 2: PulseSpeed = 2.0; break;  // Danger
+                        case 3: PulseSpeed = 4.0; break;  // Critical
+                        default: PulseSpeed = 4.0; break;
+                    }
+                }
+
+                // Update ECG Pattern based on state
+                UpdateECGPattern(i);
+            }
+        }
+
+        private void UpdateECGPattern(int state)
+        {
+            // state: 0=Fine(Green), 1=Caution(Yellow), 2=Danger(Orange), 3=Critical(Red)
+            
+            // Generate a full-width waveform (approx 600px)
+            // We want it to look like a real ECG trace.
+            int width = 600;
+            StringBuilder sb = new StringBuilder();
+            
+            double x = 0;
+            double baseline = 40;
+            
+            // Determine HR based on state
+            // Fine: ~60 BPM (1 pulse per 150px)
+            // Caution: ~90 BPM (1 pulse per 100px)
+            // Danger: ~120 BPM (1 pulse per 75px)
+            // Critical: ~160 BPM (1 pulse per 50px)
+            int spacing = state switch
+            {
+                0 => 150,
+                1 => 100,
+                2 => 75,
+                3 => 55,
+                _ => 150
+            };
+
+            while (x < width)
+            {
+                // Baseline
+                sb.Append($"{x},{baseline} ");
+                
+                // Realistic P-QRS-T complex
+                // P Wave (small hump)
+                sb.Append($"{x + 5},{baseline - 2} {x + 10},{baseline - 4} {x + 15},{baseline - 2} {x + 20},{baseline} ");
+                
+                // QRS Complex (sharp spike)
+                sb.Append($"{x + 23},{baseline} {x + 25},{baseline + 5} {x + 28},{baseline - 25} {x + 31},{baseline + 10} {x + 33},{baseline} ");
+                
+                // T Wave (medium hump)
+                sb.Append($"{x + 45},{baseline} {x + 52},{baseline - 6} {x + 60},{baseline - 8} {x + 68},{baseline - 6} {x + 75},{baseline} ");
+                
+                x += spacing;
+
+                // For Danger/Critical, add some random "noise" or instability
+                if (state >= 2)
+                {
+                    baseline = 40 + (new Random().Next(-2, 3));
                 }
             }
+            
+            // Ensure last point is at width
+            sb.Append($"{width},40");
+
+            try
+            {
+                var collection = System.Windows.Media.PointCollection.Parse(sb.ToString());
+                collection.Freeze();
+                ECGPoints = collection;
+            }
+            catch {}
         }
 
         private VariableData? _lockPick;

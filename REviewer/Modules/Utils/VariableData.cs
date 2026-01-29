@@ -9,15 +9,15 @@ namespace REviewer.Modules.Utils
         private int _value;
         private double _height;
         private double _width;
-        private Brush? _background;
-        private FontFamily? _fontFamily;
+        private System.Windows.Media.Brush? _background;
+        private System.Windows.Media.FontFamily? _fontFamily;
 
         public object? Database { get; set; }
         public bool IsUpdated { get; set; } = false;
         public object LockObject { get; set; } = new();
         public int Offset { get; set; }
         public int Size { get; set; }
-        public Brush? Background {
+        public System.Windows.Media.Brush? Background {
             get { return _background; } 
             set
             {
@@ -68,7 +68,7 @@ namespace REviewer.Modules.Utils
             }
         }
 
-        public FontFamily? FontFamily
+        public System.Windows.Media.FontFamily? FontFamily
         {
             get { return _fontFamily; }
             set

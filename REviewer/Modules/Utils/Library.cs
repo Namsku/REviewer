@@ -397,7 +397,7 @@ namespace REviewer.Modules.Utils
             });
         }
 
-        public static void UpdateTextBox(TextBox textBox, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
+        public static void UpdateTextBox(System.Windows.Controls.TextBox textBox, string? text = null, SolidColorBrush? color = null, bool? isBold = null, string? font = null, double? size = null)
         {
             textBox.Dispatcher.Invoke(() =>
             {
