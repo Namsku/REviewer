@@ -1,4 +1,4 @@
-# REviewer v1.1.0 Release
+# REviewer v1.1.2 Release
 
 **Release Date:** January 31, 2026
 
@@ -37,6 +37,8 @@ v1.1.0 marks a significant transition in the project's architecture, moving towa
 
 ## 🐛 Bug Fixes
 - **Version Parsing:** Fixed a critical startup crash caused by parsing non-numeric version strings (e.g., `dev-1.1.0-alpha`).
+- **Save/Load State:** Fixed a major logic bug where SRT stats (Deaths, Resets, Segments) were not being persisted or restored correctly. Counters now revert properly when reloading older saves.
+- **Directory Crash:** Fixed `DirectoryNotFoundException` on startup by ensuring the `saves/` folder is automatically created if missing.
 - **Service Decoupling:** Fixed circular dependencies that caused intermittent initialization failures.
 - **Window Cleanup:** Improved the reliability of window closing when restarting the game tracking.
 

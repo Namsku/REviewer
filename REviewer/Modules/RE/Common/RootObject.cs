@@ -775,7 +775,11 @@ namespace REviewer.Modules.RE.Common
         public static void GenerateJsonSave(JObject objectData)
         {
             var directoryPath = "saves/";
-            // Make an exact copy of the object
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
 
             string jsonString = objectData.ToString();
 
@@ -885,6 +889,13 @@ namespace REviewer.Modules.RE.Common
             CurrentSaveID = 0;
 
             var directoryPath = "saves/";
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                return;
+            }
+
             var files = Directory.EnumerateFiles(directoryPath, "*.json"); // Use EnumerateFiles for better performance
 
             foreach (var file in files)
