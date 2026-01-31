@@ -86,7 +86,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="90"/>
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Enemy Name -->

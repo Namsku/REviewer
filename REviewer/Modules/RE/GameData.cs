@@ -11,7 +11,7 @@ namespace REviewer.Modules.RE
 
     public class GameData
     {
-        private int _virtualMemoryPointer { get; set; }
+        private nint _virtualMemoryPointer { get; set; }
         private Dictionary<string, Bio>? _data { get; set; }
         private string? _gameName { get; set; }
 
@@ -25,7 +25,7 @@ namespace REviewer.Modules.RE
             _gameName = CorrectProcessName[gameName];
         }
 
-        public RootObject GetGameData(ItemIDs ids, int virtualMemoryPointer)
+        public RootObject GetGameData(ItemIDs ids, nint virtualMemoryPointer)
         {
             if (_data == null || _gameName == null)
             {

@@ -10,7 +10,7 @@ namespace REviewer.Services.Inventory
         System.Collections.Generic.List<Modules.RE.Common.Slot>? Inventory { get; }
         System.Collections.ObjectModel.ObservableCollection<Modules.SRT.ImageItem>? InventoryImages { get; }
         
-        void Initialize(object bioObj, IntPtr virtualMemoryPointer, int selectedGame, Modules.RE.ItemIDs itemIds, bool carlos = false);
+        void Initialize(object bioObj, nint virtualMemoryPointer, int selectedGame, Modules.RE.ItemIDs itemIds, bool carlos = false);
         void RefreshInventory();
 
         bool IsItemBoxOpen { get; }

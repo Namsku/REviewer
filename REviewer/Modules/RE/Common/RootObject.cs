@@ -72,7 +72,7 @@ namespace REviewer.Modules.RE.Common
         public int SaveID;
         public int CurrentSaveID;
         public Bio? _bio;
-        private int _virtualMemoryPointer;
+        private nint _virtualMemoryPointer;
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase;
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -418,7 +418,7 @@ namespace REviewer.Modules.RE.Common
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#3C3C3C"));
             }
         }
-        public RootObject(Bio bio, ItemIDs ids, int virtualMemoryPointer)
+        public RootObject(Bio bio, ItemIDs ids, nint virtualMemoryPointer)
         {
             if (bio.Player?.Character?.Database == null)
                 throw new ArgumentNullException(nameof(bio));

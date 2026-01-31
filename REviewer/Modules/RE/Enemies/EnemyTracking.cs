@@ -492,12 +492,18 @@ namespace REviewer.Modules.RE.Enemies
             if (SelectedGame == 0)
             {
                 EnemyID = new VariableData(v - 132, 1);
+
+                // Register EnemyID for RE1 so it gets memory updates
+                if (GameObject?.Monitoring != null)
+                {
+                    GameObject.Monitoring.RegisterVariable($"EnemyID_{GetHashCode()}", EnemyID);
+                }
             }
 
             if (SelectedGame == 1 || SelectedGame == 2)
             {
                 EnemySelected = new VariableData(enemyPointer, 4);
-            } 
+            }
             else
             {
                 int entryOffset = 0x0580;
@@ -637,10 +643,29 @@ namespace REviewer.Modules.RE.Enemies
             }
 
             _lastPurgeTime = DateTime.Now;
+            _lastValidPointer = 0; // Reset so next valid pointer triggers setup
+
+            // Unregister from MemoryMonitor before nulling
+            if (EnemyHP != null && GameObject?.Monitoring != null)
+            {
+                GameObject.Monitoring.UnregisterVariable($"EnemyHP_{GetHashCode()}");
+            }
+            if (EnemyID != null && GameObject?.Monitoring != null)
+            {
+                GameObject.Monitoring.UnregisterVariable($"EnemyID_{GetHashCode()}");
+            }
+
             EnemyHP = null;
             EnemyID = null;
             EnemyMaxHP = 0;
-            if (Enemy != null) Enemy.Visibility = Visibility.Collapsed;
+
+            if (Enemy != null)
+            {
+                Enemy.Visibility = Visibility.Collapsed;
+                Enemy.CurrentHealth = 0;
+                Enemy.MaxHealth = 0;
+                Enemy.Name = "";
+            }
         }
 
         private void SetupNewEnemy(int positionHp, int positionId)
@@ -660,10 +685,32 @@ namespace REviewer.Modules.RE.Enemies
             _lastSetupTime = DateTime.Now;
             _lastValidPointer = _enemyState?.Value ?? 0;
 
+            // Unregister old variables before creating new ones
+            if (EnemyHP != null && GameObject?.Monitoring != null)
+            {
+                GameObject.Monitoring.UnregisterVariable($"EnemyHP_{GetHashCode()}");
+            }
+            if (EnemyID != null && GameObject?.Monitoring != null)
+            {
+                GameObject.Monitoring.UnregisterVariable($"EnemyID_{GetHashCode()}");
+            }
+
             EnemyHP = new VariableData(_enemyState.Value + positionHp, 4);
             EnemyID = new VariableData(_enemyState.Value + positionId, 1);
-            EnemyMaxHP = 0;
-            if (Enemy != null) Enemy.Visibility = Visibility.Visible;
+            EnemyMaxHP = 0; // Reset max HP for new enemy
+
+            // Register new variables with the memory monitor
+            if (GameObject?.Monitoring != null)
+            {
+                GameObject.Monitoring.RegisterVariable($"EnemyHP_{GetHashCode()}", EnemyHP);
+                GameObject.Monitoring.RegisterVariable($"EnemyID_{GetHashCode()}", EnemyID);
+            }
+
+            if (Enemy != null)
+            {
+                Enemy.Visibility = Visibility.Visible;
+                Enemy.MaxHealth = 0; // Force re-calculation of max health
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace REviewer.Modules.RE.Common
         private VariableData? _quantity;
         private VariableData? _type;
         private string? _image;
-        private int _position;
+        private nint _position;
 
         private System.Windows.Visibility _visibility = System.Windows.Visibility.Visible;
         public System.Windows.Visibility Visibility
@@ -84,7 +84,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        public int Position
+        public nint Position
         {
             get { return _position; }
             set
@@ -118,13 +118,13 @@ namespace REviewer.Modules.RE.Common
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static List<Slot> GenerateSlots(int startOffset, int endOffset, int game)
+        public static List<Slot> GenerateSlots(nint startOffset, nint endOffset, int game)
         {
             List<Slot> slots = new List<Slot>();
 
-            int inc = ((endOffset - startOffset) / 2) > 10 ? 4 : 2;
+            int inc = (int)((endOffset - startOffset) / 2) > 10 ? 4 : 2;
 
-            for (int i = startOffset; i < endOffset; i += inc)
+            for (nint i = startOffset; i < endOffset; i += inc)
             {
                 if (game < 400)
                 {
@@ -133,7 +133,7 @@ namespace REviewer.Modules.RE.Common
                         Item = new VariableData(i, 1),
                         Quantity = new VariableData(i + 1, 1),
                         Type = inc > 2 ? new VariableData(i + 2, 1) : null,
-                        Position = (int)i
+                        Position = i
                     });
                 }
                 else
@@ -144,10 +144,10 @@ namespace REviewer.Modules.RE.Common
                         Item = new VariableData(i + 2, 1),
                         Quantity = new VariableData(i, 1),
                         Type = inc > 2 ? new VariableData(i + 3, 1) : null,
-                        Position = (int)i,
+                        Position = i,
                         
                     });
-        }
+                }
             }
 
             return slots;

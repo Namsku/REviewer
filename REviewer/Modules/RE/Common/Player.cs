@@ -1,21 +1,17 @@
-﻿using REviewer.Modules.RE.Json;
+﻿using REviewer.Core.Constants;
 using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Printing.IndexedProperties;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using System.Text;
-using REviewer.Core.Constants;
+using System.Windows;
+using System.Windows.Media;
 namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
     {
         private VariableData? _character;
         public ImageItem PrivateImageItem = new ImageItem();
-        
+
         public VariableData? Character
         {
             get { return _character; }
@@ -178,35 +174,35 @@ namespace REviewer.Modules.RE.Common
             get
             {
                 if (Inventory == null || InventorySlotSelected == null) return "";
-                
+
                 int index = InventorySlotSelected.Value;
-                
+
                 // Handle RE1 weirdness where 0x80 is nothing/equipping?
                 if (index < 0 || index >= Inventory.Count) return "";
-                
+
                 // For RE1, index 0 might be special or 1-based, need to match Image logic
                 // The Image logic uses: var selected = InventorySlotSelected.Value - 1; for RE1/CVX
-                
+
                 int selectedIndex = index;
                 if (SELECTED_GAME == GameConstants.BIOHAZARD_1 || SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
-                     selectedIndex = index - 1;
+                    selectedIndex = index - 1;
                 }
-                
+
                 if (selectedIndex >= 0 && selectedIndex < Inventory.Count)
                 {
-                     var qty = Inventory[selectedIndex].Quantity?.Value ?? 0;
-                     var item = Inventory[selectedIndex].Item?.Value ?? 0;
-                     
-                     // Don't show quantity for items that don't satisfy criteria (similar to UpdateTextInventoryImage)
-                     // But user asked for "Counter of what you have on item selected"
-                     // We probably want to show it even if it's 1, or maybe match inventory logic?
-                     // Let's just return the raw quantity for now, or maybe formatted
-                     
-                     // Check if item has infinite ammo or percentage?
-                     return qty.ToString();
+                    var qty = Inventory[selectedIndex].Quantity?.Value ?? 0;
+                    var item = Inventory[selectedIndex].Item?.Value ?? 0;
+
+                    // Don't show quantity for items that don't satisfy criteria (similar to UpdateTextInventoryImage)
+                    // But user asked for "Counter of what you have on item selected"
+                    // We probably want to show it even if it's 1, or maybe match inventory logic?
+                    // Let's just return the raw quantity for now, or maybe formatted
+
+                    // Check if item has infinite ammo or percentage?
+                    return qty.ToString();
                 }
-                
+
                 return "";
             }
         }
@@ -244,7 +240,7 @@ namespace REviewer.Modules.RE.Common
                             InventoryImagesSelected = PrivateImageItem;
                             OnPropertyChanged(nameof(InventoryImagesSelected));
                         }
-                        else
+                        else if (selected >= 0 && selected < InventoryImages.Count)
                         {
                             InventoryEquippedOverlay = selected;
                             InventoryImagesSelected = InventoryImages[selected];
@@ -258,20 +254,29 @@ namespace REviewer.Modules.RE.Common
                         else if (InventorySlotSelected != null)
                             vvv = InventorySlotSelected.Value;
 
-                        InventoryEquippedOverlay = vvv;
-                        InventoryImagesSelected = InventoryImages[vvv ?? 00];
-                        // Console.WriteLine($"Changing {vvv}");
-
-                        if (vvv != null)
+                        // Guard against invalid index (0xFF = nothing selected, or out of range)
+                        if (vvv == null || vvv < 0 || vvv >= InventoryImages?.Count || vvv == 0xFF || vvv == 0x80)
                         {
-                            var selected = vvv.Value;
-                            selected = selected < 0 ? 0 : selected;
-                            id = (selected == 0xFF || selected == 0x80) ? (byte)0 :
-                                (selected >= 0 && selected < Inventory.Count && Inventory[selected]?.Item != null)
-                                    ? (byte)Inventory[selected].Item.Value : (byte)0;
+                            InventoryEquippedOverlay = null;
+                            InventoryImagesSelected = PrivateImageItem;
+                            OnPropertyChanged(nameof(InventoryImagesSelected));
+                            return "./resources/re1/nothing.png";
                         }
+
+                        InventoryEquippedOverlay = vvv;
+                        InventoryImagesSelected = InventoryImages[vvv.Value];
+
+                        var selected = vvv.Value;
+                        selected = selected < 0 ? 0 : selected;
+                        id = (selected >= 0 && selected < Inventory.Count && Inventory[selected]?.Item != null)
+                                ? (byte)Inventory[selected].Item.Value : (byte)0;
                     }
-                    return items[id].Img;
+
+                    if (items.TryGetValue(id, out var itemProperty))
+                    {
+                        return itemProperty.Img;
+                    }
+                    return "./resources/re1/nothing.png";
                 }
 
                 InventoryImagesSelected.TextVisibility = Visibility.Hidden;
@@ -856,15 +861,15 @@ namespace REviewer.Modules.RE.Common
         private void UpdateECGPattern(int state)
         {
             // state: 0=Fine(Green), 1=Caution(Yellow), 2=Danger(Orange), 3=Critical(Red)
-            
+
             // Generate a full-width waveform (approx 600px)
             // We want it to look like a real ECG trace.
             int width = 600;
             StringBuilder sb = new StringBuilder();
-            
+
             double x = 0;
             double baseline = 40;
-            
+
             // Determine HR based on state
             // Fine: ~60 BPM (1 pulse per 150px)
             // Caution: ~90 BPM (1 pulse per 100px)
@@ -883,17 +888,17 @@ namespace REviewer.Modules.RE.Common
             {
                 // Baseline
                 sb.Append($"{x},{baseline} ");
-                
+
                 // Realistic P-QRS-T complex
                 // P Wave (small hump)
                 sb.Append($"{x + 5},{baseline - 2} {x + 10},{baseline - 4} {x + 15},{baseline - 2} {x + 20},{baseline} ");
-                
+
                 // QRS Complex (sharp spike)
                 sb.Append($"{x + 23},{baseline} {x + 25},{baseline + 5} {x + 28},{baseline - 25} {x + 31},{baseline + 10} {x + 33},{baseline} ");
-                
+
                 // T Wave (medium hump)
                 sb.Append($"{x + 45},{baseline} {x + 52},{baseline - 6} {x + 60},{baseline - 8} {x + 68},{baseline - 6} {x + 75},{baseline} ");
-                
+
                 x += spacing;
 
                 // For Danger/Critical, add some random "noise" or instability
@@ -902,7 +907,7 @@ namespace REviewer.Modules.RE.Common
                     baseline = 40 + (new Random().Next(-2, 3));
                 }
             }
-            
+
             // Ensure last point is at width
             sb.Append($"{width},40");
 
@@ -912,7 +917,7 @@ namespace REviewer.Modules.RE.Common
                 collection.Freeze();
                 ECGPoints = collection;
             }
-            catch {}
+            catch { }
         }
 
         private VariableData? _lockPick;

@@ -25,7 +25,7 @@ namespace REviewer.Services.Game
         void UpdateState(int state, int? health, int? room, int? stage, int? cutscene, int? lastRoom, int? lastCutscene, long? gameSave);
         void UpdateCharacter(int characterId, int characterState, int maxHealth);
         void Initialize(Modules.RE.Json.Bio bio);
-        void InitMonitoring(IntPtr virtualMemoryPointer); // New method for setting up VariableData
+        void InitMonitoring(nint virtualMemoryPointer); // New method for setting up VariableData
         event EventHandler MonitoringInitialized;
 
         // Monitoring Data (VariableData)

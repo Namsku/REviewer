@@ -1,10 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
+﻿using REviewer.Core.Constants;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
-using REviewer.Core.Constants;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -280,9 +280,9 @@ namespace REviewer.Modules.RE.Common
             if (Inventory != null && index < Inventory.Count && InventoryImages != null && index < InventoryImages.Count)
             {
                 var item = Inventory[index].Item;
-                if (item != null && index <= InventoryCapacitySize && items != null && items.Count > (byte)item.Value)
+                if (item != null && index <= InventoryCapacitySize && items != null && items.TryGetValue((byte)item.Value, out var itemProperty))
                 {
-                    InventoryImages[index].Source = items[(byte)item.Value].Img;
+                    InventoryImages[index].Source = itemProperty.Img;
 
                     var item_id = item?.Value ?? 255;
 
@@ -383,7 +383,7 @@ namespace REviewer.Modules.RE.Common
                 // Check if this is the selected slot and update the quantity property if so
                 int selectedIndex = InventorySlotSelected?.Value ?? -999;
                 if (SELECTED_GAME == GameConstants.BIOHAZARD_1 || SELECTED_GAME == GameConstants.BIOHAZARD_CVX) selectedIndex -= 1;
-                
+
                 if (index == selectedIndex)
                 {
                     OnPropertyChanged(nameof(InventorySlotSelectedQuantity));
