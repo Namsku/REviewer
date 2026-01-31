@@ -1,10 +1,17 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using REviewer.Core.Configuration; // Added
+using REviewer.Core.Constants;
+using REviewer.Core.Memory;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
 using REviewer.Modules.RE.Enemies;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.Utils;
+using REviewer.Services.Game;
+using REviewer.Services.Inventory;
+using REviewer.Services.Race;
+using REviewer.Services.Timer;
 using REviewer.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -32,30 +39,19 @@ namespace REviewer
         private System.Threading.Timer? _rootObjectWatcher;
 
         private RootObject? _residentEvilGame;
-        private MonitorVariables? _MVariables;
-        private MonitorVariables? _MVEnemies;
         private ObservableCollection<EnemyTracking>? _tracking;
         private ItemIDs? _itemIDs;
         private MainWindowViewModel _viewModel;
+        private RaceClient? _raceClient;
 
-        public const int BIOHAZARD_1_MK = 0; // Mediakit
-        public const int BIOHAZARD_2_SC = 1; // SourceNext
-        public const int BIOHAZARD_2_PC = 2; // RE2 - Platinium - China - Claire
-        public const int BIOHAZARD_2_PL = 3; // RE2 - Platinium - China - Leon
-        public const int BIOHAZARD_3_RB = 4; // Rebirth
-        public const int BIOHAZARD_3_CH = 5; // Chinese/Taiwanese
-        public const int BIOHAZARD_CV_X = 6; // CVX 
+        // New Services and ViewModel
+        private IGameStateService? _gameStateService;
+        private ITimerService? _timerService;
+        private IInventoryService? _inventoryService;
+        private SRTViewModel? _srtViewModel;
+        private IMemoryMonitor? _memoryMonitor;
 
-        public const string RPCS3 = "rpcs3";
-        public const string PCSX2 = "pcsx2";
-        public const string PCSX2QT = "pcsx2-qt";
-        public const string PCSX264QT = "pcsx2-qtx64";
-        public const string PCSX264QTAV = "pcsx2-qtx64-avx2";
-        public const string PCSX264WX = "pcsx2x64";
-        public const string PCSX264WXAV = "pcsx2x64-avx2";
-        public const string Dolphin = "dolphin";
-
-        private Dolphin.Memory.Access.Dolphin _dolphin;
+        public Dolphin.Memory.Access.Dolphin _dolphin;
 
         public IntPtr VirtualMemoryPointer { get; private set; }
         public IntPtr ProductPointer { get; private set; }
@@ -90,10 +86,24 @@ namespace REviewer
         public Tracker? TRK { get; private set; }
 
         private readonly object _lock = new object();
+        private static readonly HttpClient _httpClient = new HttpClient();
 
 
-        public MainWindow()
+        public MainWindow(
+            IGameStateService gameStateService,
+            ITimerService timerService,
+            IInventoryService inventoryService,
+            SRTViewModel srtViewModel,
+            IMemoryMonitor memoryMonitor,
+            MainWindowViewModel viewModel)
         {
+            _gameStateService = gameStateService;
+            _timerService = timerService;
+            _inventoryService = inventoryService;
+            _srtViewModel = srtViewModel;
+            _memoryMonitor = memoryMonitor;
+            _viewModel = viewModel;
+
             InitializeComponent();
 
             // Load Saved Position
@@ -105,8 +115,7 @@ namespace REviewer
                 Top = y;
             }
 
-            // MVVM: Create ViewModel and set as DataContext
-            _viewModel = new MainWindowViewModel();
+            // MVVM: Set DataContext
             DataContext = _viewModel;
 
             InitializeText();
@@ -138,35 +147,35 @@ namespace REviewer
 
             switch (ComboBoxGameSelection.SelectedIndex)
             {
-                case BIOHAZARD_1_MK:
+                case GameConstants.BIOHAZARD_1_MK:
                     _viewModel.isBiorandMode = true;
                     _viewModel.ChallengeVisibility = Visibility.Visible;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     _viewModel.ChrisInventory = Visibility.Visible;
                     _viewModel.DebugModeVisibility = Visibility.Visible;
                     break;
-                case BIOHAZARD_2_SC:
+                case GameConstants.BIOHAZARD_2_SC:
                     _viewModel.isBiorandMode = true;
                     _viewModel.ChallengeVisibility = Visibility.Visible;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     _viewModel.Sherry = Visibility.Visible;
                     break;
-                case BIOHAZARD_2_PC:
-                case BIOHAZARD_2_PL:
+                case GameConstants.BIOHAZARD_2_PC:
+                case GameConstants.BIOHAZARD_2_PL:
                     _viewModel.Sherry = Visibility.Visible;
                     _viewModel.DebugModeVisibility = Visibility.Visible;
                     break;
-                case BIOHAZARD_3_RB:
+                case GameConstants.BIOHAZARD_3_RB:
                     _viewModel.isBiorandMode = true;
                     _viewModel.ChallengeVisibility = Visibility.Visible;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     _viewModel.DebugModeVisibility = Visibility.Visible;
                     _viewModel.DdrawBio3 = Visibility.Visible;
                     break;
-                case BIOHAZARD_3_CH:
+                case GameConstants.BIOHAZARD_3_CH:
                     // All remain collapsed/false
                     break;
-                case BIOHAZARD_CV_X:
+                case GameConstants.BIOHAZARD_CV_X:
                     _viewModel.isBiorandMode = true;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     break;
@@ -207,22 +216,22 @@ namespace REviewer
 
                 switch (position)
                 {
-                    case BIOHAZARD_1_MK:
+                    case GameConstants.BIOHAZARD_1_MK:
                         Library.UpdateTextBox(RE1SavePath, text: savePath, isBold: false);
                         break;
-                    case BIOHAZARD_2_SC:
+                    case GameConstants.BIOHAZARD_2_SC:
                         Library.UpdateTextBox(RE2SavePath, text: savePath, isBold: false);
                         break;
-                    case BIOHAZARD_2_PC:
+                    case GameConstants.BIOHAZARD_2_PC:
                         break;
-                    case BIOHAZARD_2_PL:
+                    case GameConstants.BIOHAZARD_2_PL:
                         break;
-                    case BIOHAZARD_3_RB:
+                    case GameConstants.BIOHAZARD_3_RB:
                         Library.UpdateTextBox(RE3SavePath, text: savePath, isBold: false);
                         break;
-                    case BIOHAZARD_3_CH:
+                    case GameConstants.BIOHAZARD_3_CH:
                         break;
-                    case BIOHAZARD_CV_X:
+                    case GameConstants.BIOHAZARD_CV_X:
                         break;
                 }
             }
@@ -271,7 +280,7 @@ namespace REviewer
         {
             var index = ComboBoxGameSelection.SelectedIndex;
 
-            if (index == BIOHAZARD_2_PC)
+            if (index == GameConstants.BIOHAZARD_2_PC)
             {
                 Library.UpdateTextBlock(Save, text: "Found", color: CustomColors.Green, isBold: true);
                 return;
@@ -317,7 +326,7 @@ namespace REviewer
                         if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
                         {
                             var tmp_process = Process.GetProcessesByName(process_list[i])[0];
-                            if (tmp_process.ProcessName.ToLower() == Dolphin)
+                            if (tmp_process.ProcessName.ToLower() == GameConstants.DOLPHIN)
                             {
                                 IntPtr pointer = IntPtr.Zero;
 
@@ -327,9 +336,9 @@ namespace REviewer
                                 VirtualMemoryPointer = pointer;
                                 ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x0);
                             }
-                            else if (tmp_process.ProcessName.ToLower().StartsWith(PCSX2))
+                            else if (tmp_process.ProcessName.ToLower().StartsWith(GameConstants.PCSX2))
                             {
-                                if (tmp_process.ProcessName.ToLower() == PCSX2) // PCSX2 1.6 and earlier
+                                if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX2) // PCSX2 1.6 and earlier
                                 {
                                     VirtualMemoryPointer = new IntPtr(0x20000000);
                                     ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00015B90);
@@ -342,8 +351,8 @@ namespace REviewer
 
                                     VirtualMemoryPointer = (IntPtr)tmp_process.ReadValue<long>(address);
 
-                                    if (tmp_process.ProcessName.ToLower() == PCSX264WX ||
-                                        tmp_process.ProcessName.ToLower() == PCSX264WXAV)
+                                    if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WX ||
+                                        tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WXAV)
                                         ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x000155D0);
                                     else
                                         ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00012610);
@@ -411,8 +420,8 @@ namespace REviewer
                     var reJson = Library.GetReviewerConfig();
                     var isSaveFound = reJson.TryGetValue(_gameSelection[selectedIndex], out _);
 
-                    if (index == BIOHAZARD_2_PC || index == BIOHAZARD_2_PL || index == BIOHAZARD_3_CH || index == BIOHAZARD_CV_X
-                        || index == BIOHAZARD_2_SC || index == BIOHAZARD_3_RB) isSaveFound = true;
+                    if (index == GameConstants.BIOHAZARD_2_PC || index == GameConstants.BIOHAZARD_2_PL || index == GameConstants.BIOHAZARD_3_CH || index == GameConstants.BIOHAZARD_CV_X
+                        || index == GameConstants.BIOHAZARD_2_SC || index == GameConstants.BIOHAZARD_3_RB) isSaveFound = true;
 
                     if (_isProcessRunning && isSaveFound)
                     {
@@ -458,26 +467,32 @@ namespace REviewer
                 InitEnemies(_processName ?? "UNKNOWN GAME");
             }
 
-            if (_MVariables == null)
-            {
-                _MVariables = new MonitorVariables((int)_process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
-            }
-            else
-            {
-                _MVariables.UpdateProcessHandle(_process.Handle);
-            }
+            // Update Memory Monitor with process info
+            _memoryMonitor?.UpdateProcessHandle(_process.Handle, _process.ProcessName);
 
-            if (_MVEnemies == null)
-            {
-                _MVEnemies = new MonitorVariables((int)_process.Handle, _process.ProcessName, VirtualMemoryPointer, ProductPointer);
-            }
-            else
-            {
-                _MVEnemies.UpdateProcessHandle(_process.Handle);
-            }
+            // Register objects for monitoring
+            if (_residentEvilGame != null) _memoryMonitor?.Register(_residentEvilGame);
+            if (_tracking != null) _memoryMonitor?.Register(_tracking);
 
-            _MVariables.Start(_residentEvilGame);
-            _MVEnemies.Start(_tracking ?? new());
+            _memoryMonitor?.Start();
+
+            // Initialize Services and ViewModel
+            if (_itemIDs != null && _residentEvilGame != null && _residentEvilGame.Bio != null)
+            {
+                // Services are already injected via constructor
+
+                // Initialize Services
+                _gameStateService?.Initialize(_residentEvilGame.Bio); // Requires Bio object (Module.RE.Json.Bio)
+                // _timerService doesn't need explicit init beyond default constructor, logic is in UpdateTimer
+                _inventoryService?.Initialize(_residentEvilGame.Bio, VirtualMemoryPointer, Library.GetGameId(_processName ?? ""), _itemIDs);
+
+                // Start Monitoring GameStateService
+                _gameStateService?.InitMonitoring(VirtualMemoryPointer);
+                if (_gameStateService != null) _memoryMonitor?.Register(_gameStateService);
+
+                // Set Game ID in GameStateService
+                _gameStateService?.SetGame(Library.GetGameId(_processName ?? ""));
+            }
         }
 
         private void Process_Exited(object? sender, EventArgs e)
@@ -490,8 +505,7 @@ namespace REviewer
             VirtualMemoryPointer = IntPtr.Zero;
 
             // Stop monitoring
-            _MVariables?.Stop();
-            _MVEnemies?.Stop();
+            _memoryMonitor?.Stop();
 
             _rootObjectWatcher = new System.Threading.Timer(RootObjectWatcherCallback, null, 0, 100);
 
@@ -548,6 +562,8 @@ namespace REviewer
                 // Close Overlay window  
                 OVL?.Close();
             });
+
+            _raceClient?.Stop();
 
             // Log closure of all windows  
             Logger.Instance.Info("All window frames have been closed.");
@@ -611,7 +627,6 @@ namespace REviewer
             });
 
             _residentEvilGame = null;
-            _MVariables = null;
             _tracking = null;
 
             const string content = "Not Found";
@@ -693,9 +708,9 @@ namespace REviewer
                             {
                                 try
                                 {
-                                    if (_residentEvilGame == null || _MVariables == null || _processName == null)
+                                    if (_residentEvilGame == null || _memoryMonitor == null || _processName == null)
                                     {
-                                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_MVariables} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        MessageBox.Show($"The game data is not initialized! Please be sure everything is detected! {_residentEvilGame} {_memoryMonitor} {_processName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                         return;
                                     }
 
@@ -706,11 +721,19 @@ namespace REviewer
 
                                         // Create SRT window
                                         var srtConfig = GenerateSRTUIConfig();
-                                        SRT = new SRT(_residentEvilGame, _MVariables, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR");
+                                        if (_srtViewModel == null) throw new Exception("SRT ViewModel is not initialized!");
+
+                                        // Wire up RootObject to ViewModel
+                                        _srtViewModel.SetGameData(_residentEvilGame);
+
+                                        // Update ViewModel Configuration
+                                        _srtViewModel.UpdateConfiguration(srtConfig, _viewModel);
+
+                                        SRT = new SRT(_residentEvilGame, _memoryMonitor!, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR", _srtViewModel);
                                         SRT.Show();
 
                                         // Create Overlay window
-                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, 100); // Example configuration
+                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
                                         OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
                                         OVL.Show();
 
@@ -840,7 +863,7 @@ namespace REviewer
                 // ["RealTimer"] = RealTimerCheckBox.IsChecked
             };
 
-            if (ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PC || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_2_PL || ComboBoxGameSelection.SelectedIndex == BIOHAZARD_3_CH)
+            if (ComboBoxGameSelection.SelectedIndex == GameConstants.BIOHAZARD_2_PC || ComboBoxGameSelection.SelectedIndex == GameConstants.BIOHAZARD_2_PL || ComboBoxGameSelection.SelectedIndex == GameConstants.BIOHAZARD_3_CH)
             {
                 srtConfig["Standard"] = false;
             }
@@ -945,9 +968,9 @@ namespace REviewer
         {
             try
             {
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
-                var response = await client.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
+                _httpClient.DefaultRequestHeaders.UserAgent.Clear();
+                _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("REviewer", CurrentVersion.ToString()));
+                var response = await _httpClient.GetAsync("https://api.github.com/repos/namsku/reviewer/releases/latest");
                 // Logger.Instance.Debug(response.ToString());
                 if (response.IsSuccessStatusCode)
                 {
@@ -1010,6 +1033,23 @@ namespace REviewer
             }
         }
 
+        private void SupportKoFi_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "https://ko-fi.com/namsku#checkoutModal",
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Debug($"An error occurred while opening the Ko-fi link: {ex.Message}");
+            }
+        }
+
         #region Navigation
 
         private void NavHome_Click(object sender, RoutedEventArgs e)
@@ -1033,6 +1073,11 @@ namespace REviewer
             SetActivePanel("Settings");
         }
 
+        private void NavRace_Click(object sender, RoutedEventArgs e)
+        {
+            SetActivePanel("Race");
+        }
+
         private void SetActivePanel(string panelName)
         {
             // Hide all panels
@@ -1040,12 +1085,14 @@ namespace REviewer
             panelSettings.Visibility = Visibility.Collapsed;
             panelAbout.Visibility = Visibility.Collapsed;
             panelDebug.Visibility = Visibility.Collapsed;
+            panelRace.Visibility = Visibility.Collapsed;
 
             // Reset all button states
             btnHome.Tag = null;
             btnAbout.Tag = null;
             btnDebug.Tag = null;
             btnSettings.Tag = null;
+            btnRace.Tag = null;
 
             // Show selected panel and mark button active
             switch (panelName)
@@ -1065,6 +1112,10 @@ namespace REviewer
                 case "Settings":
                     panelSettings.Visibility = Visibility.Visible;
                     btnSettings.Tag = "Active";
+                    break;
+                case "Race":
+                    panelRace.Visibility = Visibility.Visible;
+                    btnRace.Tag = "Active";
                     break;
             }
         }
@@ -1090,6 +1141,78 @@ namespace REviewer
             {
                 LogOutput.Text = $"Error loading logs: {ex.Message}";
             }
+        }
+
+        private async void ConnectRace_Click(object sender, RoutedEventArgs e)
+        {
+            if (_residentEvilGame == null)
+            {
+                MessageBox.Show("Please hook the game first before connecting to a race.", "Game Not Found", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Disable button to prevent double clicks
+            btnConnectRace.IsEnabled = false;
+
+            if (_raceClient == null)
+            {
+                _raceClient = new RaceClient(_residentEvilGame);
+
+                // Wire up events
+                _raceClient.OnLog += (msg) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RaceLogBox.Items.Insert(0, $"[{DateTime.Now:HH:mm:ss}] {msg}");
+                    });
+                };
+
+                _raceClient.OnConnectionStatusChanged += (isConnected) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (isConnected)
+                        {
+                            RaceConnectionStatus.Text = "Connected";
+                            RaceConnectionStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
+                            btnConnectRace.Visibility = Visibility.Collapsed;
+                            btnDisconnectRace.Visibility = Visibility.Visible;
+                            StatusProcess.Text = $"Status: Racing";
+                        }
+                        else
+                        {
+                            RaceConnectionStatus.Text = "Disconnected";
+                            RaceConnectionStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Error");
+                            btnConnectRace.Visibility = Visibility.Visible;
+                            btnDisconnectRace.Visibility = Visibility.Collapsed;
+                            btnConnectRace.IsEnabled = true;
+                            StatusProcess.Text = "Status: Hooked";
+                        }
+                    });
+                };
+            }
+
+            string url = RaceServerUrl.Text;
+            if (!int.TryParse(RaceServerPort.Text, out int port)) port = 5006;
+            string roomId = RaceRoomId.Text;
+            string password = RacePassword.Password;
+            string runnerId = RaceRunnerColor.SelectedIndex == 0 ? "blue" : "red";
+            string gameName = ComboBoxGameSelection.Text;
+
+            try
+            {
+                await Task.Run(() => _raceClient.Start(url, port, roomId, password, runnerId, gameName));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to connect to race: {ex.Message}", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                btnConnectRace.IsEnabled = true;
+            }
+        }
+
+        private void DisconnectRace_Click(object sender, RoutedEventArgs e)
+        {
+            _raceClient?.Disconnect();
         }
 
         #endregion
@@ -1157,6 +1280,15 @@ namespace REviewer
 
             if (e.PropertyName == nameof(MainWindowViewModel.TimerColor))
                 _residentEvilGame.TimerColor = _viewModel.TimerColor;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.OverlayScale))
+            {
+                if (OVL != null)
+                {
+                    OVL.OverlayConfig.scaling = (int)(_viewModel.OverlayScale * 100);
+                    OVL.ApplyScaling();
+                }
+            }
         }
 
         #endregion

@@ -27,12 +27,13 @@
                 Background="#E0252526"
                 BorderBrush="#505050"
                 BorderThickness="1"
+                RenderTransformOrigin="0,0"
                 Visibility="{Binding SelectedEnemy.Visibility}">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.4" Color="Black"/>
             </Border.Effect>
             <Border.RenderTransform>
-                <ScaleTransform x:Name="OverlayGroupScale" ScaleX="1" ScaleY="1" />
+                <ScaleTransform x:Name="OverlayEnemyGroupScale" ScaleX="1" ScaleY="1" />
             </Border.RenderTransform>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Name="Name" Text="{Binding SelectedEnemy.Name}" 
@@ -59,7 +60,10 @@
         </Border>
 
         <!-- Main Overlay Group -->
-        <Border x:Name="OverlayGroup" Padding="0">
+        <Border x:Name="OverlayGroup" Padding="0" RenderTransformOrigin="0,0">
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="MainOverlayGroupScale" ScaleX="1" ScaleY="1" />
+            </Border.RenderTransform>
             <StackPanel x:Name="MainOverlayStack" Orientation="Horizontal">
                 <!-- Timer/Stats Bar -->
                 <Border x:Name="TweakedOverlay"
@@ -73,9 +77,6 @@
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.4" Color="Black"/>
                     </Border.Effect>
-                    <Border.RenderTransform>
-                        <ScaleTransform x:Name="OverlayEnemyGroupScale" ScaleX="1" ScaleY="1" />
-                    </Border.RenderTransform>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock x:Name="OverlayTimer"
                                    Text="{Binding IGTHumanFormat}"

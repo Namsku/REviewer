@@ -1,9 +1,18 @@
-﻿using Newtonsoft.Json;
-using System.Configuration;
-using System.Data;
+﻿using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using REviewer.Core.Memory;
+using REviewer.Services;
+using REviewer.Services.Game;
+using REviewer.Services.Processes;
+using REviewer.Services.Configuration;
+using REviewer.Services.Timer;
+using REviewer.Services.Inventory;
+using REviewer.Services.Challenge;
+using REviewer.Services.Save;
+using REviewer.Services.Enemy;
+using REviewer.ViewModels;
 
 namespace REviewer
 {
@@ -12,19 +21,50 @@ namespace REviewer
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        public static IServiceProvider? ServiceProvider { get; private set; }
+
         public App()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => HandleException(e.ExceptionObject as Exception, "AppDomain.CurrentDomain.UnhandledException");
-            DispatcherUnhandledException += (sender, e) =>
-            {
-                HandleException(e.Exception, "Application.DispatcherUnhandledException");
-                // Optionally set e.Handled = true to prevent app from closing immediately
-            };
-            TaskScheduler.UnobservedTaskException += (sender, e) =>
-            {
-                HandleException(e.Exception, "TaskScheduler.UnobservedTaskException");
-                e.SetObserved();
-            };
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+            // Set up Exception Handling e.g.
+            this.DispatcherUnhandledException += (s, e) => HandleException(e.Exception, "Dispatcher");
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => HandleException(e.ExceptionObject as Exception, "AppDomain");
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            // Core
+            services.AddSingleton<IMemoryMonitor, MemoryMonitor>();
+
+            // Services
+            services.AddSingleton<IGameStateService, GameStateService>();
+            services.AddSingleton<ITimerService, TimerService>();
+            services.AddSingleton<IInventoryService, InventoryService>();
+            services.AddSingleton<IChallengeService, ChallengeService>();
+            services.AddSingleton<ISaveService, SaveService>();
+            services.AddSingleton<IEnemyTrackingService, EnemyTrackingService>();
+            services.AddSingleton<GameMemoryService>();
+            services.AddSingleton<ProcessWatcherService>();
+            services.AddSingleton<ConfigurationService>();
+
+            // ViewModels
+            services.AddTransient<MainWindowViewModel>();
+            services.AddTransient<SRTViewModel>();
+            services.AddTransient<TrackerViewModel>();
+            services.AddTransient<OverlayViewModel>();
+            
+            // Windows
+            services.AddSingleton<MainWindow>();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var mainWindow = ServiceProvider?.GetRequiredService<MainWindow>();
+            mainWindow?.Show();
         }
 
         private void HandleException(Exception? ex, string source)

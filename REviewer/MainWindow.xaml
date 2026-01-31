@@ -65,6 +65,14 @@
                           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
                           Width="24" Height="24" Stretch="Uniform"/>
                 </Button>
+
+                <!-- Race -->
+                <Button x:Name="btnRace" Style="{StaticResource ActivityBarButton}" 
+                        Click="NavRace_Click" ToolTip="Race Mode">
+                    <Path Data="M13.49,5.42C13.41,5.07 13.07,4.82 12.71,4.9L10.3,5.44C9.73,5.57 9.32,6.05 9.32,6.64V9.17L7.64,10.85C7.25,11.24 7.25,11.88 7.64,12.27L8.29,12.92C8.68,13.31 9.32,13.31 9.71,12.92L11.39,11.24H14.15L15.83,12.92C16.22,13.31 16.86,13.31 17.25,12.92L17.9,12.27C18.29,11.88 18.29,11.24 17.9,10.85L16.22,9.17V6.64C16.22,6.05 15.81,5.57 15.24,5.44L12.83,4.9L13.49,5.42M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2" 
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          Width="24" Height="24" Stretch="Uniform"/>
+                </Button>
                 
                 <!-- Settings -->
                 <Button x:Name="btnSettings" Style="{StaticResource ActivityBarButton}" 
@@ -258,6 +266,17 @@
                         <Slider Value="{Binding CustomBackgroundOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01"/>
                     </StackPanel>
 
+                    <TextBlock Text="OVERLAY APPEARANCE" Style="{StaticResource SectionHeader}"/>
+                    <StackPanel Margin="0,0,0,24">
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Text Scale" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                            <TextBlock Text="{Binding OverlayScale, StringFormat=x{0:F2}}" Foreground="{StaticResource Brush.Text.Primary}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Slider Value="{Binding OverlayScale, Mode=TwoWay}" 
+                                Minimum="1" Maximum="3" 
+                                TickFrequency="0.25" IsSnapToTickEnabled="True"/>
+                    </StackPanel>
+
                     <TextBlock Text="TIMER APPEARANCE" Style="{StaticResource SectionHeader}"/>
                     <StackPanel Margin="0,0,0,24">
                         <TextBlock Text="Timer Font Color" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
@@ -373,6 +392,50 @@
                             <TextBlock Text="Evil Resources" Foreground="{StaticResource Brush.Text.Primary}" FontSize="12"/>
                         </Border>
                     </WrapPanel>
+
+                    <!-- Support Me -->
+                    <TextBlock Text="SUPPORT THE PROJECT" Style="{StaticResource SectionHeader}"/>
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock Text="If you enjoy using REviewer and want to support its development, consider buying me a coffee! Your support helps keep the project alive and updated." 
+                                   Foreground="{StaticResource Brush.Text.Secondary}" TextWrapping="Wrap" Margin="0,0,0,12" FontSize="13"/>
+                        
+                        <Button Click="SupportKoFi_Click" Cursor="Hand" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="#FF5E5B" CornerRadius="8" Padding="16,10" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Path Data="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734c4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-1.235-3.652-3.635-3.652-3.635s1.314-1.838 3.041-1.637c1.08.125 1.512.654 1.512.654s.43-.545 1.49-1.027c.66-.3 3.32-.276 2.038 1.736zm5.895 2.589c-.611 1.705-2.002 2.378-3.921 2.383-1.025.002-1.396-.453-1.396-.453l.421-3.605s3.837-.899 4.896 1.675z"
+                                                  Fill="White" Height="20" Stretch="Uniform" Margin="0,0,12,0"/>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Support on Ko-fi" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="One-time donation" Foreground="#FFEEEE" FontSize="11"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal"/>
+                                                <VisualState x:Name="MouseOver">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.9" Duration="0:0:0.1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Pressed">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.8" Duration="0:0:0"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Disabled">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
 
@@ -391,6 +454,108 @@
                         </ScrollViewer>
                     </Border>
                 </StackPanel>
+            </ScrollViewer>
+
+            <!-- Race Panel -->
+            <ScrollViewer x:Name="panelRace" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <!-- Content (Disabled) -->
+                    <StackPanel Margin="24,20" IsEnabled="False" Opacity="0.5">
+                        <TextBlock Text="Race Mode" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
+                        
+                        <TextBlock Text="SERVER CONFIGURATION" Style="{StaticResource SectionHeader}"/>
+                        <StackPanel Margin="0,0,0,24">
+                            <TextBlock Text="Server URL" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                            <TextBox x:Name="RaceServerUrl" Text="127.0.0.1" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,0,12"/>
+                            
+                            <TextBlock Text="Port (UDP)" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                            <TextBox x:Name="RaceServerPort" Text="5006" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,0,12"/>
+
+                            <!-- Connection Status -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                 <TextBlock Text="Status: " Foreground="{StaticResource Brush.Text.Secondary}"/>
+                                 <TextBlock x:Name="RaceConnectionStatus" Text="Disconnected" Foreground="Red" FontWeight="Bold"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="ROOM CONFIGURATION" Style="{StaticResource SectionHeader}"/>
+                        <StackPanel Margin="0,0,0,24">
+                            <TextBlock Text="Room ID" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                            <TextBox x:Name="RaceRoomId" Text="default" 
+                                     Background="{StaticResource Brush.Background.Input}"
+                                     Foreground="{StaticResource Brush.Text.Primary}" 
+                                     BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                     Padding="10,8" FontFamily="Consolas" FontSize="12" Margin="0,0,0,12"/>
+                            
+                            <TextBlock Text="Password" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                            <PasswordBox x:Name="RacePassword" PasswordChar="*" 
+                                         Background="{StaticResource Brush.Background.Input}"
+                                         Foreground="{StaticResource Brush.Text.Primary}" 
+                                         BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1"
+                                         Padding="10,8" Margin="0,0,0,12"/>
+
+                            <TextBlock Text="Runner Color" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,4"/>
+                            <ComboBox x:Name="RaceRunnerColor" Style="{StaticResource FlatComboBox}" 
+                                      ItemContainerStyle="{StaticResource FlatComboBoxItem}" Margin="0,0,0,12">
+                                <ComboBoxItem Content="Blue (Runner A)" IsSelected="True"/>
+                                <ComboBoxItem Content="Red (Runner B)"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <Grid Margin="0,12,0,12">
+                            <Button x:Name="btnConnectRace" Content="CONNECT TO RACE" Style="{StaticResource PrimaryButton}" 
+                                    Click="ConnectRace_Click" Height="40" Visibility="Visible"/>
+                            <Button x:Name="btnDisconnectRace" Content="DISCONNECT" Click="DisconnectRace_Click" 
+                                    Height="40" Visibility="Collapsed"
+                                    Background="#B00020" Foreground="White" BorderThickness="0">
+                                 <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#D32F2F"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+
+                        <TextBlock Text="RACE LOG" Style="{StaticResource SectionHeader}"/>
+                        <ListBox x:Name="RaceLogBox" Height="150" Background="{StaticResource Brush.Background.Input}" 
+                                 Foreground="{StaticResource Brush.Text.Primary}" BorderBrush="{StaticResource Brush.Border.Subtle}"
+                                 BorderThickness="1" FontFamily="Consolas" FontSize="11" />
+                    </StackPanel>
+                    
+                    <!-- Overlay -->
+                    <Border Background="#CC000000" IsHitTestVisible="True">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Data="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A6,6 0 0,1 12,2A6,6 0 0,1 6,8V10H4A2,2 0 0,0 2,12V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V12A2,2 0 0,0 20,10H18V8M16,8V10H8V8A4,4 0 0,1 12,4A4,4 0 0,1 16,8Z"
+                                  Fill="{StaticResource Brush.Status.Warning}" Width="48" Height="48" Stretch="Uniform" Margin="0,0,0,16"/>
+                            <TextBlock Text="WORK IN PROGRESS" Foreground="{StaticResource Brush.Status.Warning}" 
+                                       FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                             <TextBlock Text="This feature is currently under active development." 
+                                       Foreground="{StaticResource Brush.Text.Secondary}" 
+                                       FontSize="14" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </ScrollViewer>
         </Grid>
 

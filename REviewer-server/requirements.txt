@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pydantic
+websockets
+python-dotenv
+jinja2

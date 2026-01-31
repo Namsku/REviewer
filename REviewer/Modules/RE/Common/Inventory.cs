@@ -4,6 +4,7 @@ using System.Windows;
 using REviewer.Modules.RE.Json;
 using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
+using REviewer.Core.Constants;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -108,12 +109,12 @@ namespace REviewer.Modules.RE.Common
                 int[] _inventoryCapacityArray = new int[] { };
                 int capacity = _inventoryCapacity.Value;
 
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                 {
                     capacity = capacity & 3;
                     _inventoryCapacityArray = new int[] { 6, 8, 8, 6 };
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
                     InventoryCapacitySize = 11;
                     _inventoryCapacityArray = new int[] { 11, };
@@ -185,7 +186,7 @@ namespace REviewer.Modules.RE.Common
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (SELECTED_GAME == BIOHAZARD_CVX || SELECTED_GAME == BIOHAZARD_2)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX || SELECTED_GAME == GameConstants.BIOHAZARD_2)
                 {
                     _inventoryCapacitySize = 11;
                 }
@@ -298,15 +299,15 @@ namespace REviewer.Modules.RE.Common
                             isValid = false;
                         }
 
-                        if (SELECTED_GAME == BIOHAZARD_1)
+                        if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                         {
                             isValid = state == 0x8800 || state == 0x8C00;
                         }
-                        else if (SELECTED_GAME == BIOHAZARD_2)
+                        else if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                         {
                             isValid = ((state == 0x4000) && (ItemBoxState?.Value != 1));
                         }
-                        else if (SELECTED_GAME == BIOHAZARD_3)
+                        else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                         {
                             if (GameState != null)
                                 state = GameState.Value & 0x0F000000;
@@ -331,9 +332,9 @@ namespace REviewer.Modules.RE.Common
                 string pourcentage_ammo = "";
                 int[] ammo_prct_array = new int[] { };
 
-                if (SELECTED_GAME == BIOHAZARD_2)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                     ammo_prct_array = new int[] { 14, 15, 16, 23, 27, 28 };
-                else if (SELECTED_GAME == BIOHAZARD_3)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                     ammo_prct_array = new int[] { 14, 15 };
 
                 var item = Inventory[index].Item;
@@ -381,7 +382,7 @@ namespace REviewer.Modules.RE.Common
 
                 // Check if this is the selected slot and update the quantity property if so
                 int selectedIndex = InventorySlotSelected?.Value ?? -999;
-                if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX) selectedIndex -= 1;
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1 || SELECTED_GAME == GameConstants.BIOHAZARD_CVX) selectedIndex -= 1;
                 
                 if (index == selectedIndex)
                 {

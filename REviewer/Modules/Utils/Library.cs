@@ -10,6 +10,7 @@ using REviewer.Modules.RE.Json;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using REviewer.Core.Constants;
 
 namespace REviewer.Modules.Utils
 {
@@ -610,6 +611,20 @@ namespace REviewer.Modules.Utils
             return Regex.Replace(hex, ".{2}", "$0 ");
         }
 
+        public static int GetGameId(string processName)
+        {
+            var game = GetGameName(processName);
+            return game switch
+            {
+                "RE1" => GameConstants.BIOHAZARD_1,
+                "RE2" => GameConstants.BIOHAZARD_2,
+                "RE2C" => GameConstants.BIOHAZARD_2,
+                "RE3" => GameConstants.BIOHAZARD_3,
+                "RE3C" => GameConstants.BIOHAZARD_3,
+                "RECVX" => GameConstants.BIOHAZARD_CVX,
+                _ => 0
+            };
+        }
     }
 }
 

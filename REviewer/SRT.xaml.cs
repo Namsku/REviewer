@@ -1,14 +1,15 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Input;
-
+﻿using GlobalHotKey;
 using REviewer.Modules.RE;
 using REviewer.Modules.RE.Common;
-using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
-using GlobalHotKey;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
+using REviewer.Services.Game;
+using REviewer.Services.Timer;
+using REviewer.Services.Inventory;
+using REviewer.Core.Memory;
 
 namespace REviewer
 {
@@ -17,11 +18,11 @@ namespace REviewer
         private readonly string _gameName;
         private readonly RootObject _game;
         private readonly ItemIDs _itemDatabase;
-        private MonitorVariables _monitoring;
+        private IMemoryMonitor _monitoring;
         private HotKeyManager? _hotKeyManager;
         private HotKey? _f11;
         private HotKey? _f9;
-        
+
         // Docking support
         private bool _isDocked = false;
         private Tracker? _dockedTracker;
@@ -31,7 +32,7 @@ namespace REviewer
         public Tracker? DockedTracker => _dockedTracker;
         public bool IsTrackerAbove => _isTrackerAbove;
 
-        public SRT(RootObject gameData, MonitorVariables monitoring, Dictionary<string,bool?> config, string gameName)
+        public SRT(RootObject gameData, IMemoryMonitor monitoring, Dictionary<string, bool?> config, string gameName, ViewModels.SRTViewModel viewModel)
         {
             InitializeComponent();
 
@@ -48,13 +49,22 @@ namespace REviewer
             InitHotKey();
             LoadSavedPosition();
 
-            DataContext = this._game;
-            Logger.Instance.Info("Data context is set");
-            
+            DataContext = viewModel;
+            Logger.Instance.Info("Data context is set to SRTViewModel");
+
             // Subscribe to location changes for docking
             this.LocationChanged += SRT_LocationChanged;
 
-            SetupPulseAnimation();
+            this.Loaded += (s, e) =>
+            {
+                _pulseStoryboard = (Storyboard)this.FindResource("ECGSweepStoryboard");
+                if (_pulseStoryboard != null)
+                {
+                    _pulseStoryboard.Begin(this, true);
+                    UpdatePulseSpeed();
+                }
+            };
+
             _game.PropertyChanged += OnGamePropertyChanged;
         }
 
@@ -83,7 +93,7 @@ namespace REviewer
 
         private void OnKeyPressed(object? sender, KeyPressedEventArgs ex)
         {
-            switch(ex.HotKey.Key)
+            switch (ex.HotKey.Key)
             {
                 case Key.F11:
                     ResetSRT();
@@ -98,43 +108,6 @@ namespace REviewer
 
         private Storyboard? _pulseStoryboard;
 
-        private void SetupPulseAnimation()
-        {
-            // Create Storyboard in code
-            var scaleX = new DoubleAnimation
-            {
-                From = 1.0,
-                To = 1.2,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            var scaleY = new DoubleAnimation
-            {
-                From = 1.0,
-                To = 1.2,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-
-            Storyboard.SetTargetName(scaleX, "HeartIcon");
-            Storyboard.SetTargetProperty(scaleX, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
-            Storyboard.SetTargetName(scaleY, "HeartIcon");
-            Storyboard.SetTargetProperty(scaleY, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
-
-            _pulseStoryboard = new Storyboard();
-            _pulseStoryboard.Children.Add(scaleX);
-            _pulseStoryboard.Children.Add(scaleY);
-
-            this.Loaded += (s, e) => { 
-                try {
-                    _pulseStoryboard.Begin(this, true); 
-                    UpdatePulseSpeed();
-                } catch {}
-            };
-        }
-
         private void OnGamePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(RootObject.PulseSpeed))
@@ -146,8 +119,9 @@ namespace REviewer
         private void UpdatePulseSpeed()
         {
             if (_pulseStoryboard == null) return;
-            
-            Application.Current.Dispatcher.Invoke(() => {
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 double speed = _game.PulseSpeed;
                 if (speed <= 0)
                 {
@@ -156,7 +130,7 @@ namespace REviewer
                 else
                 {
                     if (_pulseStoryboard.GetIsPaused(this)) _pulseStoryboard.Resume(this);
-                    
+
                     // Set SpeedRatio (Inverse of Duration Factor)
                     // Speed 1.0 = Default (1s cycle)
                     // Speed 0.35 = Fast (Wait, 1.0/0.35 = 2.8x speed)
@@ -191,21 +165,16 @@ namespace REviewer
         {
             if (_isDocked && _dockedTracker != null)
             {
-                // Undock
+                var tracker = _dockedTracker;  // Store reference before clearing
                 UndockTracker();
-                // We should also tell the tracker to undock
-                // But typically if we undock, we just clear our ref. 
-                // However, reciprocal undocking is better.
+                tracker.UndockFromSRT();  // Notify the tracker
             }
             else
             {
-                // Dock - find or create tracker and dock it
                 var tracker = Application.Current.Windows.OfType<Tracker>().FirstOrDefault();
-                
                 if (tracker != null)
                 {
                     DockWithTracker(tracker, _isTrackerAbove);
-                    // Also tell the tracker it is docked with us
                     tracker.DockWithSRT(this);
                 }
             }
@@ -243,7 +212,7 @@ namespace REviewer
 
         private void PositionDockedTracker()
         {
-            if (_dockedTracker == null) return;
+            if (_dockedTracker == null || !_dockedTracker.IsLoaded) return;
 
             if (_isTrackerAbove)
             {
@@ -293,34 +262,38 @@ namespace REviewer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Save window position
+            _game.PropertyChanged -= OnGamePropertyChanged;  // Add this
+
             Library.SaveWindowPosition("SRT", this.Left, this.Top);
 
             _hotKeyManager.KeyPressed -= OnKeyPressed;
 
-            if(_f9 != null) _hotKeyManager.Unregister(_f9);
-            _hotKeyManager.Unregister(_f11);
-            
-            // Undock if docked
+            if (_f9 != null) _hotKeyManager.Unregister(_f9);
+            if (_f11 != null) _hotKeyManager.Unregister(_f11);  // Added null check
+
+            _hotKeyManager?.Dispose();  // Add disposal
+
             if (_isDocked && _dockedTracker != null)
             {
+                _dockedTracker.UndockFromSRT();  // Notify tracker properly
                 UndockTracker();
             }
         }
 
         private void Coords_Hex_Click(object sender, RoutedEventArgs e)
         {
-            string coords;
+            try
+            {
+                string coords = _game.SELECTED_GAME != 200
+                    ? $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X}"
+                    : $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X} R:{_game.PositionR.Value:X}";
 
-            if (_game.SELECTED_GAME != 200)
-            {
-                coords = $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X}";
-            } else
-            {
-                coords = $"X: {_game.PositionX.Value:X} Y: {_game.PositionY.Value:X} Z: {_game.PositionZ.Value:X} R:{_game.PositionR.Value:X}";
+                Clipboard.SetText(coords);
             }
-            
-            Clipboard.SetText(coords);
+            catch (System.Runtime.InteropServices.ExternalException)
+            {
+                // Clipboard is in use by another process - silently fail or notify user
+            }
         }
 
         private void Coords_Dec_Click(object sender, RoutedEventArgs e)
@@ -332,7 +305,7 @@ namespace REviewer
         private void ChromaColorCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_game == null) return; // Guard during initialization
-            
+
             if (sender is ComboBox combo && combo.SelectedItem is ComboBoxItem item && item.Tag is string color)
             {
                 _game.ChromaKeyColor = color;
@@ -352,7 +325,7 @@ namespace REviewer
                     {
                         overlay._cornerPosition = position;
                     }
-                    
+
                     Library.UpdateConfigFile("OverlayPosition", positionStr);
                 }
             }

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REviewer Race Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        :root {
+            --srt-bg: #1e1e1e;
+            --srt-sidebar: #252526;
+            --srt-border: #333333;
+            --srt-accent: #4ec9b0;
+            --srt-text-primary: #cccccc;
+            --srt-text-secondary: #969696;
+            --srt-text-white: #ffffff;
+            --srt-item-bg: #252526;
+        }
+
+        body {
+            background-color: var(--srt-bg);
+            color: var(--srt-text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            border: 1px solid var(--srt-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mono {
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #2d2d30;
+            /* VS Code TitleBar */
+            border-bottom: 1px solid var(--srt-border);
+            padding: 0 16px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-item {
+            padding: 8px 12px;
+            color: var(--srt-text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--srt-text-white);
+        }
+
+        .nav-item.active {
+            color: var(--srt-text-white);
+            border-bottom-color: var(--srt-accent);
+        }
+
+        /* Forms */
+        .form-input {
+            width: 100%;
+            background-color: #3c3c3c;
+            border: 1px solid var(--srt-border);
+            color: white;
+            padding: 8px;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 4px;
+        }
+
+        .form-input:focus {
+            outline: 1px solid var(--srt-accent);
+        }
+
+        .btn-primary {
+            background-color: var(--srt-accent);
+            color: #1e1e1e;
+            font-weight: bold;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* Dashboard specific */
+        .stat-card {
+            background-color: var(--srt-sidebar);
+            border: 1px solid var(--srt-border);
+            padding: 20px;
+        }
+
+        /* Existing SRT Styles */
+        .section-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--srt-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--srt-border);
+            margin-left: 10px;
+        }
+
+        .srt-panel {
+            background-color: var(--srt-bg);
+            border: 1px solid var(--srt-border);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .badge {
+            background: linear-gradient(to bottom, #3c3c3c, #2d2d30);
+            border-bottom: 2px solid var(--srt-accent);
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .hp-value {
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .item-slot {
+            width: 64px;
+            height: 48px;
+            background-color: var(--srt-sidebar);
+            border: 1px solid var(--srt-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .item-slot img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+
+        .qty-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px black;
+            font-family: 'Cascadia Code', monospace;
+        }
+
+        .health-bar-bg {
+            height: 12px;
+            background-color: #3c3c3c;
+            border: 1px solid var(--srt-border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .shared-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 4px;
+        }
+
+        .shared-item {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background-color: var(--srt-sidebar);
+            border: 1px solid var(--srt-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .shared-item.found-blue {
+            border-color: #3b82f6;
+            box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .shared-item.found-red {
+            border-color: #ef4444;
+            box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .shared-item.found-both {
+            border-image: linear-gradient(to right, #3b82f6 50%, #ef4444 50%) 1;
+        }
+
+        .split-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+
+        .color-blue {
+            color: #3b82f6;
+        }
+
+        .color-red {
+            color: #ef4444;
+        }
+
+        .color-accent {
+            color: var(--srt-accent);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--srt-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--srt-border);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body x-data="app()" x-init="init()" class="text-sm">
+
+    <!-- Navigation -->
+    <nav>
+        <div class="flex items-center space-x-6">
+            <h1 class="text-lg font-bold tracking-tighter color-accent mr-4">RE:VIEWER // HUB</h1>
+            <div class="nav-item" :class="activeTab === 'hub' && 'active'" @click="switchTab('hub')">DASHBOARD</div>
+            <div class="nav-item" :class="activeTab === 'create' && 'active'" @click="switchTab('create')">CREATE
+                CHANNEL</div>
+            <div class="nav-item" :class="activeTab === 'race' && 'active'" @click="enterRaceMode()" x-show="roomId">
+                ACTIVE RACE <span class="text-[10px] bg-red-500 text-white px-1 rounded ml-1">LIVE</span>
+            </div>
+            <button x-show="activeTab === 'race' && roomId" @click="disconnect()"
+                class="ml-4 px-3 py-1 bg-stone-800 hover:bg-stone-700 text-xs text-stone-300 rounded border border-stone-600 transition-colors">
+                DISCONNECT
+            </button>
+            <button x-show="activeTab === 'race' && roomId" @click="finishRace()"
+                class="ml-2 px-3 py-1 bg-stone-700 hover:bg-stone-600 text-xs text-white rounded border border-stone-600 transition-colors">
+                FINISH RACE
+            </button>
+        </div>
+        <div class="flex items-center space-x-4 text-xs text-stone-400">
+            <template x-if="activeTab === 'race'">
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 rounded-full"
+                        :class="wsConnected ? 'bg-[#4ec9b0]' : 'bg-red-500 animate-pulse'"></div>
+                    <span x-text="wsConnected ? 'CONNECTED' : 'DISCONNECTED'"></span>
+                </div>
+            </template>
+            <span>v1.0.4-TCP</span>
+        </div>
+    </nav>
+
+    <!-- CONTENT: HUB -->
+    <div x-show="activeTab === 'hub'" class="p-8 max-w-6xl mx-auto w-full overflow-y-auto">
+        <h2 class="text-2xl font-light mb-6 text-white">System Status</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="stat-card">
+                <div class="text-xs text-stone-400 uppercase tracking-wider mb-2">Total Races Tracked</div>
+                <div class="text-4xl text-white font-mono" x-text="stats.total_races || 0"></div>
+            </div>
+            <div class="stat-card border-l-4 border-l-blue-500">
+                <div class="text-xs text-stone-400 uppercase tracking-wider mb-2">Active Sessions</div>
+                <div class="text-4xl text-white font-mono" x-text="stats.active_sessions || 0"></div>
+            </div>
+            <div class="stat-card border-l-4 border-l-[#4ec9b0]">
+                <div class="text-xs text-stone-400 uppercase tracking-wider mb-2">Most Popular Game</div>
+                <div class="text-xl text-white mt-2" x-text="stats.most_popular_game || 'N/A'"></div>
+            </div>
+        </div>
+
+        <!-- ACTIVE RACES -->
+        <div class="mb-12" x-show="activeRooms.length > 0">
+            <h2 class="text-2xl font-light text-white mb-4">Live Races</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <template x-for="room in activeRooms">
+                    <div class="stat-card hover:bg-[#252529] cursor-pointer transition-colors group border-l-4 border-l-red-500"
+                        @click="joinRoom(room.room_id)">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-white group-hover:text-[#4ec9b0]" x-text="room.room_id"></h3>
+                            <span class="text-[10px] bg-red-900 text-red-100 px-2 py-0.5 rounded">LIVE</span>
+                        </div>
+                        <div class="text-sm text-stone-400 mb-2" x-text="room.game"></div>
+                        <div class="flex justify-between text-xs text-stone-500">
+                            <span x-text="room.runner_names.blue + ' vs ' + room.runner_names.red"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- HISTORY -->
+        <h2 class="text-2xl font-light text-white mb-4">Race History</h2>
+        <div class="srt-panel p-0 overflow-hidden">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-[#252526] text-stone-400 text-xs uppercase">
+                    <tr>
+                        <th class="p-3 font-semibold">Date</th>
+                        <th class="p-3 font-semibold">Game</th>
+                        <th class="p-3 font-semibold">Room Code</th>
+                        <th class="p-3 font-semibold">Runners</th>
+                        <th class="p-3 font-semibold">Winner</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#333]">
+                    <template x-for="rec in history">
+                        <tr class="hover:bg-[#252529]">
+                            <td class="p-3 text-stone-400 mono" x-text="formatDate(rec.timestamp)"></td>
+                            <td class="p-3 text-white" x-text="rec.game"></td>
+                            <td class="p-3 mono text-[#4ec9b0]" x-text="rec.room_id"></td>
+                            <td class="p-3 text-stone-300">
+                                <span class="text-blue-400" x-text="rec.runner_names.blue"></span> vs
+                                <span class="text-red-400" x-text="rec.runner_names.red"></span>
+                            </td>
+                            <td class="p-3 text-yellow-500">
+                                <!-- Simple winner logic: whoever has more key items? Or just unknown for now -->
+                                <!-- For simplicity, showing 'Completed' -->
+                                <span>Finished</span>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr x-show="history.length === 0">
+                        <td colspan="5" class="p-6 text-center text-stone-500">No race history found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CONTENT: CREATE CHANNEL -->
+    <div x-show="activeTab === 'create'" class="p-8 max-w-2xl mx-auto w-full">
+        <h2 class="text-2xl font-light mb-8 text-white">Create Race Channel</h2>
+
+        <div class="stat-card space-y-6">
+            <div>
+                <label class="text-xs text-stone-400 uppercase font-bold">Room ID</label>
+                <input type="text" x-model="form.room_id" class="form-input" placeholder="e.g. my-awesome-race">
+                <p class="text-[10px] text-stone-500 mt-1">Unique identifier for this race session.</p>
+            </div>
+
+            <div>
+                <label class="text-xs text-stone-400 uppercase font-bold">Password (Optional)</label>
+                <input type="password" x-model="form.password" class="form-input">
+            </div>
+
+            <!-- Game Selection Removed - Auto Detected -->
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs text-blue-400 uppercase font-bold">Runner A (Blue)</label>
+                    <input type="text" x-model="form.blue_name"
+                        class="form-input border-blue-900 focus:outline-blue-500">
+                </div>
+                <div>
+                    <label class="text-xs text-red-400 uppercase font-bold">Runner B (Red)</label>
+                    <input type="text" x-model="form.red_name" class="form-input border-red-900 focus:outline-red-500">
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-800">
+                <button class="btn-primary w-full" @click="createRoom()">CREATE CHANNEL & START MONITORING</button>
+            </div>
+
+            <p x-show="createError" x-text="createError" class="text-red-500 text-center text-xs mt-2"></p>
+        </div>
+    </div>
+
+    <!-- CONTENT: RACING DASHBOARD -->
+    <div x-show="activeTab === 'race'" class="flex-1 flex gap-4 overflow-hidden p-4 h-[calc(100vh-48px)]">
+        <!-- RUNNER A (BLUE) -->
+        <section class="max-w-[300px] flex flex-col gap-4">
+            <div class="srt-panel relative h-full">
+                <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <div class="section-header" x-text="runnerNames.blue"></div>
+                        <div class="text-[10px] mono text-blue-400">STATUS: CONNECTED</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="badge border-blue-500 px-2 py-1">
+                        <div class="text-[8px] text-srt-text-secondary uppercase">HP</div>
+                        <div class="text-xl font-bold mono text-blue-100" x-text="runners.blue?.health || 0"></div>
+                    </div>
+                    <div class="health-bar-bg flex-1 h-8">
+                        <div class="health-bar-fill"
+                            :class="getHealthColor(null, runners.blue?.health, runners.blue?.max_health)"
+                            :style="'width: ' + ((runners.blue?.health / runners.blue?.max_health) * 100 || 0) + '%'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">Inventory</div>
+                <div class="grid grid-cols-4 gap-1 mb-4">
+                    <template x-for="i in (runners.blue?.max_inventory_slots || 8)">
+                        <div class="item-slot w-12 h-12">
+                            <template x-if="runners.blue?.inventory[i-1]">
+                                <div class="w-full h-full flex items-center justify-center p-1 relative">
+                                    <img :src="getImgUrl(runners.blue.inventory[i-1].img)"
+                                        class="max-w-full max-h-full">
+                                    <span class="qty-badge" x-show="runners.blue.inventory[i-1].quantity > 1"
+                                        x-text="runners.blue.inventory[i-1].quantity"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="section-header">Item Box</div>
+                <div class="grid grid-cols-5 gap-1 opacity-50">
+                    <template x-for="i in 10">
+                        <div class="item-slot w-10 h-10">
+                            <template x-if="runners.blue?.itembox[i-1]">
+                                <div class="w-full h-full flex items-center justify-center p-1">
+                                    <img :src="getImgUrl(runners.blue.itembox[i-1].img)" class="max-w-full max-h-full">
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <!-- SHARED KEY ITEMS (CENTER) -->
+        <section class="flex-1 flex flex-col gap-4 min-w-[320px]">
+            <div class="srt-panel flex-1 bg-srt-sidebar/30">
+                <div class="text-center mb-6">
+                    <div class="section-header justify-center after:hidden">Shared Key Items</div>
+                    <div class="w-full h-[2px] bg-gradient-to-r from-blue-500 via-srt-border to-red-500 rounded-full">
+                    </div>
+
+                    <!-- Game Switcher UI -->
+                    <div class="mt-2 text-center relative pointer-events-auto" x-data="{ open: false }">
+                        <div class="inline-flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-srt-sidebar transition-colors"
+                            @click="detectedGames.length > 1 ? open = !open : null"
+                            :class="detectedGames.length > 1 ? 'cursor-pointer' : 'cursor-default'">
+                            <span class="text-[10px] text-stone-500 uppercase tracking-widest font-bold"
+                                x-text="gameName"></span>
+                            <template x-if="detectedGames.length > 1">
+                                <span class="text-[8px] text-stone-600">▼</span>
+                            </template>
+                        </div>
+
+                        <!-- Dropdown -->
+                        <div x-show="open" @click.outside="open = false"
+                            class="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-[#252526] border border-srt-border shadow-xl z-50 rounded overflow-hidden"
+                            x-transition>
+                            <div class="text-[10px] text-stone-500 p-2 border-b border-srt-border bg-[#1e1e1e]">SWITCH
+                                GAME</div>
+                            <template x-for="g in detectedGames">
+                                <div class="p-2 text-xs text-stone-300 hover:bg-[#333] cursor-pointer"
+                                    :class="g === gameName ? 'bg-[#333] text-white font-bold' : ''" x-text="g"
+                                    @click="switchGame(g); open = false">
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto">
+                    <div class="shared-grid">
+                        <template x-for="item in sharedKeyItems">
+                            <div class="shared-item"
+                                :class="item.blue && item.red ? 'found-both' : (item.blue ? 'found-blue' : (item.red ? 'found-red' : ''))"
+                                :title="item.name">
+                                <img :src="getImgUrl(item.img)"
+                                    :class="!item.blue && !item.red ? 'grayscale opacity-10' : ''">
+
+                                <template x-if="item.blue && item.red">
+                                    <div class="split-bar bg-gradient-to-r from-blue-500 to-red-500"></div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-srt-border text-[9px] text-center text-srt-text-secondary mono">
+                    SYNC_VERSION: 1.0.4-TCP // PORT: 5006
+                </div>
+            </div>
+        </section>
+
+        <!-- RUNNER B (RED) -->
+        <section class="max-w-[300px] flex flex-col gap-4">
+            <div class="srt-panel relative h-full">
+                <div class="absolute top-0 right-0 w-1 h-full bg-red-500"></div>
+                <div class="flex justify-between items-start mb-2">
+                    <div class="order-1 text-right w-full pr-2">
+                        <div class="section-header justify-end after:hidden before:flex-1 before:h-[1px] before:bg-srt-border before:mr-2"
+                            x-text="runnerNames.red"></div>
+                        <div class="text-[10px] mono text-red-400">STATUS: CONNECTED</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 mb-4 flex-row-reverse">
+                    <div class="badge border-red-500 px-2 py-1">
+                        <div class="text-[8px] text-srt-text-secondary uppercase">HP</div>
+                        <div class="text-xl font-bold mono text-red-100" x-text="runners.red?.health || 0"></div>
+                    </div>
+                    <div class="health-bar-bg flex-1 h-8">
+                        <div class="health-bar-fill"
+                            :class="getHealthColor(null, runners.red?.health, runners.red?.max_health)"
+                            :style="'width: ' + ((runners.red?.health / runners.red?.max_health) * 100 || 0) + '%'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">Inventory</div>
+                <div class="grid grid-cols-4 gap-1 mb-4">
+                    <template x-for="i in (runners.red?.max_inventory_slots || 8)">
+                        <div class="item-slot w-12 h-12">
+                            <template x-if="runners.red?.inventory[i-1]">
+                                <div class="w-full h-full flex items-center justify-center p-1 relative">
+                                    <img :src="getImgUrl(runners.red.inventory[i-1].img)" class="max-w-full max-h-full">
+                                    <span class="qty-badge" x-show="runners.red.inventory[i-1].quantity > 1"
+                                        x-text="runners.red.inventory[i-1].quantity"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="section-header">Item Box</div>
+                <div class="grid grid-cols-5 gap-1 opacity-50">
+                    <template x-for="i in 10">
+                        <div class="item-slot w-10 h-10">
+                            <template x-if="runners.red?.itembox[i-1]">
+                                <div class="w-full h-full flex items-center justify-center p-1">
+                                    <img :src="getImgUrl(runners.red.itembox[i-1].img)" class="max-w-full max-h-full">
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function app() {
+            return {
+                activeTab: 'hub',
+                roomId: '',
+                wsConnected: false,
+                gameName: '',
+                runnerNames: { blue: 'Runner A (Blue)', red: 'Runner B (Red)' },
+                runners: { blue: null, red: null },
+                sharedKeyItems: [],
+                games: [],
+                detectedGames: [],
+                stats: {},
+                activeRooms: [],
+                history: [],
+                form: {
+                    room_id: '',
+                    password: '',
+                    game: 'Unknown',
+                    blue_name: 'Runner A',
+                    red_name: 'Runner B'
+                },
+                createError: '',
+
+                async init() {
+                    // Check URL params
+                    const params = new URLSearchParams(window.location.search);
+                    const room = params.get('room');
+
+                    if (room) {
+                        this.roomId = room;
+                        this.activeTab = 'race';
+                        this.connect();
+                    } else {
+                        // Load data for Hub
+                        await Promise.all([
+                            this.fetchGames(),
+                            this.fetchStats(),
+                            this.fetchActiveRooms(),
+                            this.fetchHistory()
+                        ]);
+                    }
+                },
+
+                switchTab(tab) {
+                    this.activeTab = tab;
+                    if (tab === 'hub') {
+                        this.fetchStats();
+                        this.fetchActiveRooms();
+                        this.fetchHistory();
+                    }
+                    if (tab === 'create' && this.games.length === 0) {
+                        this.fetchGames();
+                    }
+                },
+
+                enterRaceMode() {
+                    if (this.roomId) {
+                        this.activeTab = 'race';
+                    }
+                },
+
+                joinRoom(id) {
+                    window.location.href = `/?room=${id}`;
+                },
+
+                async switchGame(game) {
+                    if (game === this.gameName) return;
+                    if (!confirm(`Switch shared tracking to ${game}? This will reset the shared item grid.`)) return;
+
+                    try {
+                        const res = await fetch(`/api/rooms/${this.roomId}/game`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ game: game })
+                        });
+                        const data = await res.json();
+                        if (data.status !== 'ok') {
+                            alert("Error switching game: " + data.message);
+                        }
+                    } catch (e) {
+                        console.error("Failed to switch game", e);
+                        alert("Network error while switching game.");
+                    }
+                },
+
+                getHealthColor(img, current, max) {
+                    if (!max || max === 0) return 'bg-gray-500';
+                    const pct = (current / max) * 100;
+                    if (pct >= 50) return 'bg-[#4c6]'; // Fine
+                    if (pct >= 20) return 'bg-[#fa0]'; // Caution
+                    return 'bg-[#f00]'; // Danger
+                },
+
+                disconnect() {
+                    if (this.socket) {
+                        this.socket.close();
+                        this.socket = null;
+                    }
+                    this.wsConnected = false;
+                    this.activeTab = 'hub';
+                    this.roomId = '';
+                    window.history.pushState({}, document.title, "/");
+                },
+
+                async finishRace() {
+                    if (!confirm("Are you sure you want to finish and archive this race?")) return;
+
+                    try {
+                        const res = await fetch(`/api/rooms/${this.roomId}/archive`, { method: 'POST' });
+                        const data = await res.json();
+                        if (data.status === 'ok') {
+                            alert("Race finished and archived!");
+                            this.roomId = '';
+                            this.switchTab('hub');
+                            // Remove query param
+                            window.history.pushState({}, document.title, "/");
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    } catch (e) { console.error(e); }
+                },
+
+                formatDate(ts) {
+                    return new Date(ts * 1000).toLocaleString();
+                },
+
+                async fetchStats() {
+                    try {
+                        const res = await fetch('/api/stats');
+                        this.stats = await res.json();
+                    } catch (e) { console.error(e); }
+                },
+
+                async fetchActiveRooms() {
+                    try {
+                        const res = await fetch('/api/rooms');
+                        this.activeRooms = await res.json();
+                    } catch (e) { console.error(e); }
+                },
+
+                async fetchHistory() {
+                    try {
+                        const res = await fetch('/api/history');
+                        this.history = await res.json();
+                    } catch (e) { console.error(e); }
+                },
+
+                async fetchGames() {
+                    try {
+                        const res = await fetch('/api/games');
+                        this.games = await res.json();
+                    } catch (e) {
+                        console.error("Failed to fetch games", e);
+                    }
+                },
+
+                async createRoom() {
+                    this.createError = '';
+                    if (!this.form.room_id) {
+                        this.createError = 'Room ID is required.';
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch('/api/rooms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.form)
+                        });
+                        const data = await res.json();
+
+                        if (data.status === 'ok') {
+                            // Room created! Go to race mode
+                            window.location.href = `/?room=${this.form.room_id}`;
+                        } else {
+                            this.createError = data.message;
+                        }
+                    } catch (e) {
+                        this.createError = 'Network error: ' + e.message;
+                    }
+                },
+
+                connect() {
+                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    const wsUrl = `${protocol}//${window.location.host}/ws/${this.roomId}`;
+
+                    const ws = new WebSocket(wsUrl);
+                    ws.onopen = () => this.wsConnected = true;
+                    ws.onclose = () => {
+                        this.wsConnected = false;
+                        setTimeout(() => this.connect(), 5000); // Reconnect
+                    };
+                    ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        this.gameName = data.game;
+                        if (data.runner_names) {
+                            this.runnerNames = data.runner_names;
+                        }
+                        this.runners = data.runners;
+                        this.sharedKeyItems = data.shared_key_items;
+                        this.detectedGames = data.detected_games || [];
+                    };
+                },
+
+                getImgUrl(path) {
+                    if (!path) return '';
+                    return path;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

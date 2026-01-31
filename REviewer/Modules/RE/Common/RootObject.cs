@@ -11,6 +11,12 @@ using System.Text;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using REviewer.Core.Memory;
+using REviewer.Services.Game;
+using REviewer.Services.Timer;
+using REviewer.Services.Inventory;
+using REviewer.Core.Constants;
+using REviewer.Core.Configuration;
 using System.Windows.Media;
 
 namespace REviewer.Modules.RE.Common
@@ -21,6 +27,8 @@ namespace REviewer.Modules.RE.Common
         {
             public List<string>? KeyRooms { get; set; }
         }
+
+        public Bio Bio { get; set; }
 
         public Dictionary<string, int> MAX_STAGE_ID = new Dictionary<string, int>
         {
@@ -72,7 +80,7 @@ namespace REviewer.Modules.RE.Common
         public string? LastRoomName;
         public FileSystemWatcher? Watcher;
         public List<JObject>? SaveDatabase;
-        public MonitorVariables? Monitoring;
+        public IMemoryMonitor? Monitoring;
 
         public bool OneHP = false;
         public bool NoDamage = false;
@@ -517,10 +525,10 @@ namespace REviewer.Modules.RE.Common
             InitStats();
 
             // File Watcher
-            if (processName != "bio2 chn claire" && processName != "bio2 chn leon" && processName != "bio3 chn/twn")
-            {
-                InitFileWatcher();
-            }
+            // if (processName != "bio2 chn claire" && processName != "bio2 chn leon" && processName != "bio3 chn/twn")
+            // {
+            //    InitFileWatcher();
+            // }
 
             // Init Save Database
             InitSaveDatabase();
@@ -541,7 +549,7 @@ namespace REviewer.Modules.RE.Common
             }
         }
 
-        public void SetMonitoring(MonitorVariables monitor)
+        public void SetMonitoring(IMemoryMonitor monitor)
         {
             Monitoring = monitor;
         }

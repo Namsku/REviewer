@@ -1,0 +1,29 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.pdb
+
+# Python
+.venv/
+__pycache__/
+
+# Logs and Temp
+*.log
+*.txt
+build_*.txt
+rebuild_*.txt
+
+# Configuration
+config.json
+settings.json
+Resources/Files/DO NO MODIFY ANYTHING HERE
+
+# IDEs
+.idea/
+.vscode/

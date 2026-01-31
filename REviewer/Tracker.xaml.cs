@@ -1,4 +1,5 @@
 ﻿using REviewer.Modules.RE.Common;
+using REviewer.Core.Constants;
 using REviewer.Modules.RE.Enemies;
 using REviewer.Modules.Utils;
 using System;
@@ -12,10 +13,6 @@ namespace REviewer
     public partial class Tracker : Window, INotifyPropertyChanged
     {
 
-        public int BIOHAZARD_1 = 100;
-        public int BIOHAZARD_2 = 200;
-        public int BIOHAZARD_3 = 300;
-        public int BIOHAZARD_CVX = 400;
 
         private readonly RootObject _game;
         private double _windowWidth;
@@ -175,11 +172,11 @@ namespace REviewer
         private void SubscribeToEvents()
         {
             if (_game.GameState == null || _game.LastRoom == null) return;
-            if (_game.SELECTED_GAME == BIOHAZARD_1)
+            if (_game.SELECTED_GAME == GameConstants.BIOHAZARD_1)
             {
                 _game.GameState.PropertyChanged += GameState_PropertyChanged;
             }
-            else if (_game.SELECTED_GAME == BIOHAZARD_2 || _game.SELECTED_GAME == BIOHAZARD_3)
+            else if (_game.SELECTED_GAME == GameConstants.BIOHAZARD_2 || _game.SELECTED_GAME == GameConstants.BIOHAZARD_3)
             {
                 _game.LastRoom.PropertyChanged += LastRoom_PropertyChanged;
             }

@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using REviewer.Core.Configuration;
 
 namespace REviewer
 {
@@ -74,45 +75,25 @@ namespace REviewer
             ApplyScaling();
         }
 
-        private void ApplyScaling()
+        public void ApplyScaling()
         {
-            double scalingFactor = Math.Clamp(OverlayConfig.scaling / 100.0, 0, 2.0); // Ensure scaling is between 10% and 100%
+            double scalingFactor = Math.Clamp(OverlayConfig.scaling / 100.0, 1.0, 3.0);
             _overlayCanvasScale = scalingFactor;
 
             // Apply the scale to OverlayCanvas using RenderTransform
-            OverlayGroupScale.ScaleX = _overlayCanvasScale;
-            OverlayGroupScale.ScaleY = _overlayCanvasScale;
-            OverlayEnemyGroupScale.ScaleX = _overlayCanvasScale;
-            OverlayEnemyGroupScale.ScaleY = _overlayCanvasScale;
-
-            // Force the OverlayCanvas to update its layout
-            OverlayCanvas.UpdateLayout();
-        }
-        private void ScaleOverlayCanvas(double scaleChange)
-        {
-            double newScale = _overlayCanvasScale + scaleChange;
-
-            // Ensure the scale does not exceed 100% or go below 10%
-            if (newScale > 1.0)
+            if (MainOverlayGroupScale != null)
             {
-                newScale = 1.0;
+                MainOverlayGroupScale.ScaleX = _overlayCanvasScale;
+                MainOverlayGroupScale.ScaleY = _overlayCanvasScale;
             }
-            else if (newScale < 0.1)
+            if (OverlayEnemyGroupScale != null)
             {
-                newScale = 0.1;
+                OverlayEnemyGroupScale.ScaleX = _overlayCanvasScale;
+                OverlayEnemyGroupScale.ScaleY = _overlayCanvasScale;
             }
 
-            _overlayCanvasScale = newScale;
-
-            // Apply the scale to OverlayCanvas using RenderTransform
-            var transformGroup = (TransformGroup)OverlayCanvas.RenderTransform;
-            var scaleTransform = (ScaleTransform)transformGroup.Children[0];
-            scaleTransform.ScaleX = _overlayCanvasScale;
-            scaleTransform.ScaleY = _overlayCanvasScale;
-
             // Force the OverlayCanvas to update its layout
-            OverlayCanvas.UpdateLayout();
-            Logger.Instance.Info($"OverlayCanvas scaled to {_overlayCanvasScale}");
+            OverlayCanvas?.UpdateLayout();
         }
 
         private void UpdateOverlayCanvasLayout()

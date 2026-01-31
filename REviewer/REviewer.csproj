@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+    <Version>1.1.0-alpha</Version>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,6 +10,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x86</Platforms>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <ApplicationIcon>Resources\Icons\mascot.ico</ApplicationIcon>
     <NoWarn>CS8602;CS8604;CS8600;CS8618;CS8625;CS8603;CS8622;CS8629;CS0219;CS0108;NETSDK1138;NU1701</NoWarn>
     
@@ -30,6 +32,7 @@
   <ItemGroup>
     <PackageReference Include="Dolphin.Memory.Access" Version="1.0.3" />
     <PackageReference Include="GlobalHotKey" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="Reloaded.Memory" Version="9.4.1" />

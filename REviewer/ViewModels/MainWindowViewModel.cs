@@ -7,6 +7,12 @@ using System.Windows.Media;
 using System.Windows;
 using REviewer.Modules.Utils;
 using REviewer.Services;
+using REviewer.Services.Game;
+using REviewer.Services.Timer;
+using REviewer.Services.Inventory;
+using REviewer.Services.Configuration;
+using REviewer.Services.Processes;
+using REviewer.Core.Memory;
 
 namespace REviewer.ViewModels
 {
@@ -68,6 +74,21 @@ namespace REviewer.ViewModels
             }
         }
 
+        private double _overlayScale = 1.0;
+        public double OverlayScale
+        {
+            get => _overlayScale;
+            set
+            {
+                if (_overlayScale != value)
+                {
+                    _overlayScale = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("OverlayScale", value.ToString("F2"));
+                }
+            }
+        }
+
         private double _customBackgroundOpacity = 1.0;
         public double CustomBackgroundOpacity
         {
@@ -78,18 +99,18 @@ namespace REviewer.ViewModels
                 {
                     _customBackgroundOpacity = value;
                     OnPropertyChanged();
-                    Library.UpdateConfigFile("CustomBackgroundOpacity", value.ToString());
+                    Library.UpdateConfigFile("CustomBackgroundOpacity", value.ToString("F2"));
                 }
             }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(ProcessWatcherService processWatcher, ConfigurationService configService, GameMemoryService gameMemory)
         {
-            _processWatcher = new ProcessWatcherService();
-            _configService = new ConfigurationService();
-            _gameMemory = new GameMemoryService();
+            _processWatcher = processWatcher;
+            _configService = configService;
+            _gameMemory = gameMemory;
 
             _gameList = _configService.GetGameList();
             _selectedGameKey = string.Empty;
@@ -101,6 +122,7 @@ namespace REviewer.ViewModels
             _customBackgroundPath = Library.GetSetting("CustomBackgroundPath", "");
             _customBackgroundColor = Library.GetSetting("CustomBackgroundColor", "");
             _customBackgroundOpacity = Library.GetSetting("CustomBackgroundOpacity", 1.0);
+            _overlayScale = Library.GetSetting("OverlayScale", 1.0);
             _timerColor = Library.GetSetting("TimerColor", "");
 
             _processWatcher.OnProcessFound += OnProcessFound;

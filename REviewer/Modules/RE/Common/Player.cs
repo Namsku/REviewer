@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Text;
+using REviewer.Core.Constants;
 namespace REviewer.Modules.RE.Common
 {
     public partial class RootObject : INotifyPropertyChanged
@@ -43,7 +44,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_3)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                 {
                     if (_bio != null)
                     {
@@ -89,7 +90,7 @@ namespace REviewer.Modules.RE.Common
             }
             get
             {
-                if (SELECTED_GAME == BIOHAZARD_2) return _maxHealth;
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_2) return _maxHealth;
                 if (_character?.Database == null) return "ERR";
                 if (_health?.Database == null) return "0";
 
@@ -187,7 +188,7 @@ namespace REviewer.Modules.RE.Common
                 // The Image logic uses: var selected = InventorySlotSelected.Value - 1; for RE1/CVX
                 
                 int selectedIndex = index;
-                if (SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1 || SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
                      selectedIndex = index - 1;
                 }
@@ -229,7 +230,7 @@ namespace REviewer.Modules.RE.Common
                         return "./resources/re1/nothing.png";
                     }
 
-                    if ((SELECTED_GAME == BIOHAZARD_1 || SELECTED_GAME == BIOHAZARD_CVX) && InventorySlotSelected != null && Inventory != null)
+                    if ((SELECTED_GAME == GameConstants.BIOHAZARD_1 || SELECTED_GAME == GameConstants.BIOHAZARD_CVX) && InventorySlotSelected != null && Inventory != null)
                     {
                         var selected = InventorySlotSelected.Value - 1;
 
@@ -249,7 +250,7 @@ namespace REviewer.Modules.RE.Common
                             InventoryImagesSelected = InventoryImages[selected];
                         }
                     }
-                    else if ((SELECTED_GAME == BIOHAZARD_2 || SELECTED_GAME == BIOHAZARD_3) && Character != null && Inventory != null)
+                    else if ((SELECTED_GAME == GameConstants.BIOHAZARD_2 || SELECTED_GAME == GameConstants.BIOHAZARD_3) && Character != null && Inventory != null)
                     {
                         int? vvv = null;
                         if (Character.Value == 0x8 && CarlosInventorySlotSelected != null)
@@ -541,7 +542,7 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
 
-                    if (SELECTED_GAME == BIOHAZARD_2)
+                    if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                     {
                         if (value == 80)
                         {
@@ -604,19 +605,19 @@ namespace REviewer.Modules.RE.Common
                 if (Health == null || CharacterHealthState == null) return;
                 bool state = false;
 
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                 {
                     state = (_characterHealthState?.Value & 0x40) == 0 && (_characterHealthState?.Value & 0x20) == 0 && (_characterHealthState?.Value & 0x04) == 0 && (_characterHealthState?.Value & 0x02) == 0;
                 }
-                else if (SELECTED_GAME == BIOHAZARD_2)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                 {
                     state = (_characterHealthState?.Value != 0x15);
                 }
-                else if (SELECTED_GAME == BIOHAZARD_3)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                 {
                     state = (_characterHealthState?.Value == 0x04) || (_characterHealthState?.Value == 0x00);
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX && _characterHealthState != null)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX && _characterHealthState != null)
                 {
                     state = (_characterHealthState.Value != 5) && (_characterHealthState.Value != 7);
                 }
@@ -665,7 +666,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_2 && CharacterMaxHealth != null)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_2 && CharacterMaxHealth != null)
                 {
                     CharacterMaxHealth.Value = CharacterMaxHealth.Value & 0xFFFF;
                     MaxHealth = CharacterMaxHealth.Value.ToString();
@@ -703,7 +704,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_1 && Health != null && Character != null)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1 && Health != null && Character != null)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -723,7 +724,7 @@ namespace REviewer.Modules.RE.Common
                         }
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_2 && Health != null && GameState != null)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_2 && Health != null && GameState != null)
                 {
                     Health.Value = Health.Value & 0xFFFF;
                     var state = (GameState.Value & 0xF0000000) != 0x40000000;
@@ -745,7 +746,7 @@ namespace REviewer.Modules.RE.Common
                         OnPropertyChanged(nameof(PartnerVisibility));
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_3 && Health != null && GameState != null)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_3 && Health != null && GameState != null)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -757,7 +758,7 @@ namespace REviewer.Modules.RE.Common
                         Hits += 1;
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX && Health != null)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX && Health != null)
                 {
                     if (Health.Value < OldHealth)
                     {
@@ -796,19 +797,19 @@ namespace REviewer.Modules.RE.Common
 
             Brush[] colors = new Brush[] { CustomColors.Blue, CustomColors.Default, CustomColors.Yellow, CustomColors.Orange, CustomColors.Red, CustomColors.White };
 
-            if (SELECTED_GAME == BIOHAZARD_1)
+            if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
             {
                 state = (status & 0x20) != 0 || (status & 0x40) != 0 || (status & 0x04) != 0 || (status & 0x02) != 0;
             }
-            else if (SELECTED_GAME == BIOHAZARD_2)
+            else if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
             {
                 state = (status == 0x15);
             }
-            else if (SELECTED_GAME == BIOHAZARD_3)
+            else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
             {
                 state = (status != 0x04);
             }
-            else if (SELECTED_GAME == BIOHAZARD_CVX && _characterHealthState != null)
+            else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX && _characterHealthState != null)
             {
                 state = (_characterHealthState.Value == 5) || (_characterHealthState.Value == 7);
             }
@@ -873,8 +874,8 @@ namespace REviewer.Modules.RE.Common
             {
                 0 => 150,
                 1 => 100,
-                2 => 75,
-                3 => 55,
+                2 => 85,
+                3 => 75,
                 _ => 150
             };
 
@@ -1116,8 +1117,8 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value) && PartnerPointer != null)
             {
-                int position_hp = SELECTED_GAME == BIOHAZARD_2 ? 0x156 : 0xCC;
-                int position_id = SELECTED_GAME == BIOHAZARD_2 ? 0x8 : 0x4a;
+                int position_hp = SELECTED_GAME == GameConstants.BIOHAZARD_2 ? 0x156 : 0xCC;
+                int position_id = SELECTED_GAME == GameConstants.BIOHAZARD_2 ? 0x8 : 0x4a;
 
                 if (PartnerPointer.Value == 0x98E544 || PartnerPointer.Value == 0x0A62290 || PartnerPointer.Value == 0xAA2964 || PartnerPointer.Value == 0xAFFDB0)
                 {

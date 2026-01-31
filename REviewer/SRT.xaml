@@ -20,6 +20,14 @@
                 <ResourceDictionary Source="Styles/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <FontFamily x:Key="PixelBoyFont">./resources/fonts/#Pixeboy</FontFamily>
+
+            <Storyboard x:Key="ECGSweepStoryboard" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetName="MaskStart" Storyboard.TargetProperty="Offset" From="-0.1" To="1.0" Duration="0:0:4"/>
+                <DoubleAnimation Storyboard.TargetName="MaskGapStart" Storyboard.TargetProperty="Offset" From="0.0" To="1.1" Duration="0:0:4"/>
+                <DoubleAnimation Storyboard.TargetName="MaskGapEnd" Storyboard.TargetProperty="Offset" From="0.01" To="1.11" Duration="0:0:4"/>
+                <DoubleAnimation Storyboard.TargetName="MaskEnd" Storyboard.TargetProperty="Offset" From="0.1" To="1.2" Duration="0:0:4"/>
+                <DoubleAnimation Storyboard.TargetName="SweepLine" Storyboard.TargetProperty="(Canvas.Left)" From="0" To="400" Duration="0:0:4"/>
+            </Storyboard>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -226,7 +234,7 @@
                                      Style="{StaticResource HealthBarModern}" Margin="0,0,8,0"/>
                         <TextBlock Grid.Column="1" Style="{StaticResource MonoStatus}" 
                                    VerticalAlignment="Center" HorizontalAlignment="Right">
-                            <Run Text="{Binding Health.Value}"/><Run Text="/"/><Run Text="{Binding MaxHealth}"/>
+                            <Run Text="{Binding Health.Value, Mode=OneWay}"/><Run Text="/"/><Run Text="{Binding MaxHealth, Mode=OneWay}"/>
                         </TextBlock>
                     </Grid>
 
@@ -271,21 +279,6 @@
                                                     <GradientStop x:Name="MaskEnd" Color="Transparent" Offset="1"/>
                                                 </LinearGradientBrush>
                                             </Polyline.OpacityMask>
-                                            <Polyline.Triggers>
-                                                <EventTrigger RoutedEvent="Loaded">
-                                                    <BeginStoryboard>
-                                                        <Storyboard RepeatBehavior="Forever" SpeedRatio="{Binding PulseSpeed}">
-                                                            <DoubleAnimation Storyboard.TargetName="MaskStart" Storyboard.TargetProperty="Offset" From="-0.1" To="1.0" Duration="0:0:4"/>
-                                                            <DoubleAnimation Storyboard.TargetName="MaskGapStart" Storyboard.TargetProperty="Offset" From="0.0" To="1.1" Duration="0:0:4"/>
-                                                            <DoubleAnimation Storyboard.TargetName="MaskGapEnd" Storyboard.TargetProperty="Offset" From="0.01" To="1.11" Duration="0:0:4"/>
-                                                            <DoubleAnimation Storyboard.TargetName="MaskEnd" Storyboard.TargetProperty="Offset" From="0.1" To="1.2" Duration="0:0:4"/>
-                                                            
-                                                            <!-- Sync Sweep Line -->
-                                                            <DoubleAnimation Storyboard.TargetName="SweepLine" Storyboard.TargetProperty="(Canvas.Left)" From="0" To="400" Duration="0:0:4"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </EventTrigger>
-                                            </Polyline.Triggers>
                                         </Polyline>
 
                                         <!-- Vertical Sweep Line (Bright Tip) -->
@@ -296,18 +289,18 @@
                                         </Rectangle>
                                     </Canvas>
                                     
-                                     <!-- Scanline / Vignette -->
+                                    <!-- Scanline / Vignette -->
                                     <Rectangle IsHitTestVisible="False">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                <GradientStop Color="#FF000000" Offset="0"/>
+                                                <GradientStop Color="#00000000" Offset="0"/>
                                                 <GradientStop Color="#00000000" Offset="0.1"/>
                                                 <GradientStop Color="#00000000" Offset="0.9"/>
-                                                <GradientStop Color="#FF000000" Offset="1"/>
+                                                <GradientStop Color="#00000000" Offset="1"/>
                                             </LinearGradientBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <Rectangle IsHitTestVisible="False" Opacity="0.3">
+                                    <Rectangle IsHitTestVisible="False" Opacity="0.1">
                                         <Rectangle.Fill>
                                             <RadialGradientBrush>
                                                 <GradientStop Color="Transparent" Offset="0.8"/>
@@ -342,12 +335,12 @@
                                    VerticalAlignment="Center" Margin="0,0,8,0"
                                    Foreground="{StaticResource Brush.Text.Secondary}"/>
                         <ProgressBar Grid.Column="1" Name="PartnerHealthBar" 
-                                     Value="{Binding PartnerHPValue}" Maximum="{Binding PartnerMaxHPValue}"
+                                     Value="{Binding PartnerHPValue, Mode=OneWay}" Maximum="{Binding PartnerMaxHPValue, Mode=OneWay}"
                                      Style="{StaticResource HealthBarModern}" 
                                      Foreground="{StaticResource Brush.Status.Success}" Margin="0,0,8,0"/>
                         <TextBlock Grid.Column="2" Style="{StaticResource MonoStatus}" 
                                    VerticalAlignment="Center" HorizontalAlignment="Right">
-                            <Run Text="{Binding PartnerHPValue}"/><Run Text="/"/><Run Text="{Binding PartnerMaxHPValue}"/>
+                            <Run Text="{Binding PartnerHPValue, Mode=OneWay}"/><Run Text="/"/><Run Text="{Binding PartnerMaxHPValue, Mode=OneWay}"/>
                         </TextBlock>
                     </Grid>
                 </Grid>

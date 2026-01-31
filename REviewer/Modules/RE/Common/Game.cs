@@ -3,6 +3,7 @@ using System.Printing.IndexedProperties;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using REviewer.Modules.Utils;
+using REviewer.Core.Constants;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -19,10 +20,7 @@ namespace REviewer.Modules.RE.Common
         public bool isDDraw100 = false;
         public double FinalInGameTime = 0;
 
-        public int BIOHAZARD_1 = 100;
-        public int BIOHAZARD_2 = 200;
-        public int BIOHAZARD_3 = 300;
-        public int BIOHAZARD_CVX = 400;
+
 
         private double _saveState;
         public int FontSize = 24;
@@ -131,7 +129,7 @@ namespace REviewer.Modules.RE.Common
                 bool isDead = false;
                 bool isRetry = false;
 
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                 {
                     isDead = (state & 0x0F000000) == 0x1000000 && PreviousState != 0x1000000;
                     PreviousState = state & 0x0F000000;
@@ -143,11 +141,11 @@ namespace REviewer.Modules.RE.Common
                             Monitoring.WriteVariableData(GameState, (int)((long)(GameState.Value & 0xF0FFFFFF) + 0x01000000));
                     }
                 }
-                else if (SELECTED_GAME == BIOHAZARD_2)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                 {
                     isDead = Health.Value > 1000 && state != 0x00000000 && OldHealth > 65000;
                 }
-                else if (SELECTED_GAME == BIOHAZARD_3)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                 {
                     long vvv = GameState.Value & 0xFF000000;
                     isDead = Health.Value > 200 && (vvv == 0xA8000000 || vvv == 0x88000000);
@@ -155,7 +153,7 @@ namespace REviewer.Modules.RE.Common
                     isGameDone = ((GameState.Value & 0x00000F00) == 0x200 && Stage != null && Room != null && ((Stage.Value == 6 && Room.Value == 0) || (Stage.Value == 6 && Room.Value == 3)));
                     isNewGame = (isGameDone == true && GameSave != null && GameSave.Value == 0);
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
                     isDead = Health.Value < 0;
                 }
@@ -302,7 +300,7 @@ namespace REviewer.Modules.RE.Common
             {
                 OnPropertyChanged(nameof(IGTHumanFormat));
 
-                double frames = SELECTED_GAME == BIOHAZARD_CVX ? 60.0 : 30.0;
+                double frames = SELECTED_GAME == GameConstants.BIOHAZARD_CVX ? 60.0 : 30.0;
 
                 if (IGTSegments == null || GameTimer == null || IGTSHumanFormat == null) return;
 
@@ -319,11 +317,11 @@ namespace REviewer.Modules.RE.Common
         {
             get
             {
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                 {
                     return _timer != null ? TimeSpan.FromSeconds(_timer.Value / 30.0).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
-                else if (SELECTED_GAME == BIOHAZARD_2)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_2)
                 {
                     if (isGameDone)
                     {
@@ -331,7 +329,7 @@ namespace REviewer.Modules.RE.Common
                     }
                     return (_timer != null && _frame != null) ? TimeSpan.FromSeconds((double)(_timer.Value) + (_frame.Value / 60.0)).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
-                else if (SELECTED_GAME == BIOHAZARD_3)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_3)
                 {
                     if (_gameSave != null && _gameSave.Offset == 0xAFF884)
                     {
@@ -340,7 +338,7 @@ namespace REviewer.Modules.RE.Common
 
                     return IGTimerBioHazard3Rebirth();
                 }
-                else if (SELECTED_GAME == BIOHAZARD_CVX)
+                else if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
                     return GameTimer != null ? TimeSpan.FromSeconds(GameTimer.Value / 60.0).ToString(@"hh\:mm\:ss\.ff") : "0";
                 }
@@ -404,7 +402,7 @@ namespace REviewer.Modules.RE.Common
 
         public string IGTimerBioHazard3China()
         {
-            if (SELECTED_GAME == BIOHAZARD_3 && _gameSave != null && _gameSave.Offset == 0xAFF884)
+            if (SELECTED_GAME == GameConstants.BIOHAZARD_3 && _gameSave != null && _gameSave.Offset == 0xAFF884)
             {
                 if (GameFrame != null && GameFrame.Value == 0 && GameFramePointer != null && GameFramePointer.Offset == 0x53705C)
                 {
@@ -475,7 +473,7 @@ namespace REviewer.Modules.RE.Common
         {
             if (e.PropertyName == nameof(VariableData.Value))
             {
-                if (SELECTED_GAME == BIOHAZARD_CVX)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_CVX)
                 {
                     if (GameSave != null)
                         Saves = GameSave.Value;
@@ -519,7 +517,7 @@ namespace REviewer.Modules.RE.Common
             {
                 if (MaxHealth == null) return;
 
-                if (SELECTED_GAME == BIOHAZARD_1)
+                if (SELECTED_GAME == GameConstants.BIOHAZARD_1)
                 {
                     if (_mainMenu != null && _mainMenu.Value == 1 && Health != null && Health.Value <= int.Parse(MaxHealth))
                     {
