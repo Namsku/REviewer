@@ -750,7 +750,19 @@ namespace REviewer.Modules.RE.Common
                 ["PositionX"] = PositionX?.Value,
                 ["PositionY"] = PositionY?.Value,
                 ["PositionZ"] = PositionZ?.Value,
-                ["SaveID"] = SaveID
+                ["SaveID"] = SaveID,
+
+                // SRT Specific Stats
+                ["Deaths"] = Deaths,
+                ["Resets"] = Resets,
+                ["Saves"] = Saves,
+                ["Kills"] = Kills,
+                ["Shots"] = Shots,
+                ["Hits"] = Hits,
+                ["RoomsVisited"] = RoomsVisited,
+                ["Debug"] = Debug,
+                ["SegmentCount"] = SegmentCount,
+                ["Segments"] = JArray.FromObject(IGTSegments ?? new List<int>())
             };
 
             // Serialize only necessary data
@@ -763,7 +775,11 @@ namespace REviewer.Modules.RE.Common
         public static void GenerateJsonSave(JObject objectData)
         {
             var directoryPath = "saves/";
-            // Make an exact copy of the object
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
 
             string jsonString = objectData.ToString();
 
@@ -829,25 +845,42 @@ namespace REviewer.Modules.RE.Common
             if (save == null) return;
             if (IGTSegments == null) return;
 
-            for (int i = 0; i < 4; i++)
+            // Restore Segments
+            var savedSegments = save["Segments"]?.ToObject<List<int>>();
+            if (savedSegments != null)
             {
-                IGTSegments[i] = Math.Max((int)IGTSegments[i], save["Segments"]?[i]?.Value<int>() ?? 0);
+                for (int i = 0; i < Math.Min(IGTSegments.Count, savedSegments.Count); i++)
+                {
+                    IGTSegments[i] = savedSegments[i];
+                }
             }
 
-            SegmentCount = save["SegmentsCount"]?.Value<int>() ?? 0;
+            SegmentCount = save["SegmentCount"]?.Value<int>() ?? save["SegmentsCount"]?.Value<int>() ?? 0;
 
-            Debug = Math.Max(Debug, save["Debug"]?.Value<int>() ?? 0);
-            Deaths = Math.Max(Deaths, save["Deaths"]?.Value<int>() ?? 0);
-            Resets = Math.Max(Resets, save["Resets"]?.Value<int>() ?? 0);
-            Saves = Math.Max(Saves, save["Saves"]?.Value<int>() ?? 0);
+            // Restore Stats (Direct assignment to allow state reversion)
+            Debug = save["Debug"]?.Value<int>() ?? 0;
+            Deaths = save["Deaths"]?.Value<int>() ?? 0;
+            Resets = save["Resets"]?.Value<int>() ?? 0;
+            Saves = save["Saves"]?.Value<int>() ?? 0;
+            Kills = save["Kills"]?.Value<int>() ?? 0;
+            Shots = save["Shots"]?.Value<int>() ?? 0;
+            Hits = save["Hits"]?.Value<int>() ?? 0;
+            RoomsVisited = save["RoomsVisited"]?.Value<int>() ?? 0;
 
             KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
 
-            for (int i = 0; i < KeyItems?.Count; i++)
+            if (KeyItems != null)
             {
-                KeyItems[i].State = save["KeyItems"]?[i]?.Value<int>() ?? 0;
-                UpdatePictureKeyItemState(i);
+                for (int i = 0; i < KeyItems.Count; i++)
+                {
+                    KeyItems[i].State = save["KeyItems"]?[i]?.Value<int>() ?? 0;
+                    UpdatePictureKeyItemState(i);
+                }
             }
+
+            // Force UI update for human readable formats
+            OnPropertyChanged(nameof(IGTSHumanFormat));
+            OnPropertyChanged(nameof(IGTHumanFormat));
         }
 
         private void InitSaveDatabase()
@@ -856,6 +889,13 @@ namespace REviewer.Modules.RE.Common
             CurrentSaveID = 0;
 
             var directoryPath = "saves/";
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                return;
+            }
+
             var files = Directory.EnumerateFiles(directoryPath, "*.json"); // Use EnumerateFiles for better performance
 
             foreach (var file in files)
