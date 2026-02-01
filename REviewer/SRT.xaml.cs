@@ -48,6 +48,7 @@ namespace REviewer
 
             InitHotKey();
             LoadSavedPosition();
+            LoadSavedOverlayPosition();
 
             DataContext = viewModel;
             Logger.Instance.Info("Data context is set to SRTViewModel");
@@ -76,6 +77,16 @@ namespace REviewer
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
                 this.Left = x;
                 this.Top = y;
+            }
+        }
+
+        private void LoadSavedOverlayPosition()
+        {
+            // Load saved overlay position from config
+            var savedPosition = Library.GetSetting("OverlayPosition", 0);
+            if (savedPosition >= 0 && savedPosition < OverlayPositionCombo.Items.Count)
+            {
+                OverlayPositionCombo.SelectedIndex = savedPosition;
             }
         }
 

@@ -194,7 +194,13 @@ namespace REviewer.ViewModels
         public bool MinimalItemDisplay
         {
             get => _minimalItemDisplay;
-            set => SetField(ref _minimalItemDisplay, value);
+            set
+            {
+                if (SetField(ref _minimalItemDisplay, value) && _gameData != null)
+                {
+                    _gameData.MinimalItemDisplay = value;
+                }
+            }
         }
 
         private bool _ecgHealthDisplay = false;

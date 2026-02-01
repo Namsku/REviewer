@@ -120,6 +120,7 @@ namespace REviewer
 
             InitializeText();
             InitCheckBoxes();
+            InitializeOverlayPosition();
             // Subscribe to ViewModel changes for aesthetics
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -179,6 +180,16 @@ namespace REviewer
                     _viewModel.isBiorandMode = true;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     break;
+            }
+        }
+
+        private void InitializeOverlayPosition()
+        {
+            // Load saved overlay position from config
+            var savedPosition = Library.GetSetting("OverlayPosition", 0);
+            if (savedPosition >= 0 && savedPosition < OverlayPosition.Items.Count)
+            {
+                OverlayPosition.SelectedIndex = savedPosition;
             }
         }
 
@@ -1117,6 +1128,7 @@ namespace REviewer
             // Reset all button states
             btnHome.Tag = null;
             btnAbout.Tag = null;
+            btnDebug.Tag = null;
             btnDebug.Tag = null;
             btnSettings.Tag = null;
             btnRace.Tag = null;

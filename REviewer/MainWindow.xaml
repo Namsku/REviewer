@@ -619,7 +619,7 @@
             
             <!-- Overlay Position ComboBox -->
             <ComboBox x:Name="OverlayPosition">
-                <ComboBoxItem Content="Bottom-Right" IsSelected="True"/>  <!-- Index 0 -->
+                <ComboBoxItem Content="Bottom-Right"/>  <!-- Index 0 -->
                 <ComboBoxItem Content="Top-Right"/>                        <!-- Index 1 -->
                 <ComboBoxItem Content="Top-Left"/>                         <!-- Index 2 -->
                 <ComboBoxItem Content="Bottom-Left"/>                      <!-- Index 3 -->

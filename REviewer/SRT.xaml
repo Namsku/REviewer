@@ -114,7 +114,7 @@
                                     <TextBlock Text="WIDGETS" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
                                     
                                     <CheckBox IsChecked="{Binding MinimalItemDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
-                                        <TextBlock Text="Compact Item Box" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                        <TextBlock Text="Hide Item Slot Boxes" Foreground="{StaticResource Brush.Text.Primary}"/>
                                     </CheckBox>
 
                                     <CheckBox IsChecked="{Binding ECGHealthDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
@@ -125,7 +125,7 @@
                                 <!-- OVERLAY SECTION -->
                                 <StackPanel Grid.Row="3">
                                     <TextBlock Text="OVERLAY POSITION" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
-                                    <ComboBox x:Name="OverlayPositionCombo" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="OverlayPositionCombo_SelectionChanged">
+                                    <ComboBox x:Name="OverlayPositionCombo" HorizontalAlignment="Stretch" SelectionChanged="OverlayPositionCombo_SelectionChanged">
                                         <ComboBoxItem Content="Bottom Right" Tag="0"/>
                                         <ComboBoxItem Content="Top Right" Tag="1"/>
                                         <ComboBoxItem Content="Top Left" Tag="2"/>
