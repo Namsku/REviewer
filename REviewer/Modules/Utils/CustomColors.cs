@@ -13,5 +13,18 @@ namespace REviewer.Modules.Utils
         public static readonly SolidColorBrush Green = new (Color.FromArgb(0xFF, 54, 150, 45));
         public static readonly SolidColorBrush Black = new (Color.FromArgb(0xFF, 0, 0, 0));
         public static readonly SolidColorBrush Default = new (Color.FromArgb(0xFF, 159, 185, 118));
+
+        static CustomColors()
+        {
+            Blue.Freeze();
+            Lavender.Freeze();
+            Yellow.Freeze();
+            Orange.Freeze();
+            Red.Freeze();
+            White.Freeze();
+            Green.Freeze();
+            Black.Freeze();
+            Default.Freeze();
+        }
     }
 }

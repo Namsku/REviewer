@@ -192,6 +192,14 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(MinimalItemDisplay));
                     OnPropertyChanged(nameof(ItemSlotBrush));
                     OnPropertyChanged(nameof(ItemSlotBorderBrush));
+
+                    if (KeyItems != null)
+                    {
+                        for (int i = 0; i < KeyItems.Count; i++)
+                        {
+                            UpdatePictureKeyItemState(i);
+                        }
+                    }
                 }
             }
         }
@@ -302,12 +310,16 @@ namespace REviewer.Modules.RE.Common
                      try
                      {
                          var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_timerColor);
-                         return new System.Windows.Media.SolidColorBrush(color);
+                         var brush = new System.Windows.Media.SolidColorBrush(color);
+                         brush.Freeze();
+                         return brush;
                      }
                      catch { }
                  }
                  // Default Cyan/Teal
-                 return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255)); 
+                 var defaultBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255));
+                 defaultBrush.Freeze();
+                 return defaultBrush;
              }
         }
 
@@ -341,8 +353,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     try
                     {
-                        return new System.Windows.Media.SolidColorBrush(
+                        var brush = new System.Windows.Media.SolidColorBrush(
                             (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_chromaKeyColor));
+                        brush.Freeze();
+                        return brush;
                     }
                     catch { }
                 }
@@ -386,8 +400,10 @@ namespace REviewer.Modules.RE.Common
                 }
                 
                 // Default dark background
-                return new System.Windows.Media.SolidColorBrush(
+                var darkBrush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1E1E1E"));
+                darkBrush.Freeze();
+                return darkBrush;
             }
         }
 
@@ -400,8 +416,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     return BackgroundBrush; // Match the window background
                 }
-                return new System.Windows.Media.SolidColorBrush(
+                var brush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30"));
+                brush.Freeze();
+                return brush;
             }
         }
 
@@ -414,8 +432,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     return System.Windows.Media.Brushes.Transparent;
                 }
-                return new System.Windows.Media.SolidColorBrush(
+                var brush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#3C3C3C"));
+                brush.Freeze();
+                return brush;
             }
         }
         public RootObject(Bio bio, ItemIDs ids, nint virtualMemoryPointer)

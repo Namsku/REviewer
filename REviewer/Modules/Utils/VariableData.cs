@@ -25,7 +25,20 @@ namespace REviewer.Modules.Utils
                 {
                     _background = value;
                     OnPropertyChanged(nameof(Background));
+                    OnPropertyChanged(nameof(BackgroundColor));
                 }
+            }
+        }
+
+        public System.Windows.Media.Color BackgroundColor
+        {
+            get
+            {
+                if (_background is SolidColorBrush scb)
+                {
+                    return scb.Color;
+                }
+                return Colors.Transparent;
             }
         }
 

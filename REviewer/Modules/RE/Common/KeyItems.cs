@@ -35,6 +35,39 @@ namespace REviewer.Modules.RE.Common
             KeyItems[value].Room = room;
         }
 
+        
+        private bool _isLegacyItemHighlightEnabled;
+        public bool IsLegacyItemHighlightEnabled
+        {
+            get => _isLegacyItemHighlightEnabled;
+            set
+            {
+                if (_isLegacyItemHighlightEnabled != value)
+                {
+                    _isLegacyItemHighlightEnabled = value;
+                    OnPropertyChanged(nameof(IsLegacyItemHighlightEnabled));
+                    
+                    if (KeyItems != null)
+                    {
+                        for (int i = 0; i < KeyItems.Count; i++)
+                        {
+                            UpdatePictureKeyItemState(i);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(string hex)
+        {
+            var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+            brush.Freeze();
+            return brush;
+        }
+
+        private static readonly SolidColorBrush LegacyOrange = CreateFrozenBrush("#E69F00");
+        private static readonly SolidColorBrush LegacyGreen = CreateFrozenBrush("#4EC9B0");
+
         private void UpdatePictureKeyItemState(int value)
         {
             if (KeyItems == null) return;
@@ -48,14 +81,14 @@ namespace REviewer.Modules.RE.Common
             };
             KeyItemImages[value].Opacity = opacity;
 
-            var background = state switch
-            {
-                -1 => Brushes.Transparent,
-                0 => Brushes.Transparent,
-                1 => CustomColors.Orange,
-                2 => CustomColors.Green,
-                _ => Brushes.Transparent // Default case
-            };
+            var background = IsLegacyItemHighlightEnabled ?
+                state switch
+                {
+                    1 => LegacyOrange,
+                    2 => LegacyGreen,
+                    _ => ItemSlotBrush
+                } : ItemSlotBrush;
+                
             KeyItemImages[value].Background = background;
         }
 
@@ -110,7 +143,7 @@ namespace REviewer.Modules.RE.Common
                     Width = 70,
                     Height = 64,
                     Opacity = 0.15,
-                    Background = Brushes.Transparent
+                    Background = ItemSlotBrush
                 });
             }
         }

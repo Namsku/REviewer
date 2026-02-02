@@ -270,8 +270,10 @@ namespace REviewer.Modules.RE.Enemies
                     // Only set SelectedEnemy if the state matches
                     if (EnemySelected.Value == _enemyState.Value)
                     {
-                        Enemy.BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
-                        Console.WriteLine("Enemy Selected -> " + Enemy.Name + "| With Enemy State ->" + _enemyState.Value);
+                        var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#880015"));
+                        selectedBrush.Freeze();
+                        Enemy.BackgroundColor = selectedBrush;
+                        // Console.WriteLine("Enemy Selected -> " + Enemy.Name + "| With Enemy State ->" + _enemyState.Value);
                         if (GameObject.SelectedEnemy != Enemy)
                             GameObject.SelectedEnemy = Enemy;
                     }
@@ -280,8 +282,10 @@ namespace REviewer.Modules.RE.Enemies
                         // Only set to hidden if the currently selected enemy is this one
                         if (GameObject.SelectedEnemy == Enemy)
                         {
-                            Enemy.BackgroundColor = new SolidColorBrush(Colors.Transparent);
-                            Console.WriteLine("Enemy Removed -> " + Enemy.Name + "| With Enemy State ->" + EnemySelected.Value);
+                            var transparentBrush = new SolidColorBrush(Colors.Transparent);
+                            transparentBrush.Freeze();
+                            Enemy.BackgroundColor = transparentBrush;
+                            // Console.WriteLine("Enemy Removed -> " + Enemy.Name + "| With Enemy State ->" + EnemySelected.Value);
                             GameObject.SelectedEnemy = GameObject.SelectedHiddenEnemy;
                         }
                     }

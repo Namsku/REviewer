@@ -764,16 +764,19 @@ namespace REviewer
                                         // Wire up RootObject to ViewModel
                                         _srtViewModel.SetGameData(_residentEvilGame);
 
-                                        // Update ViewModel Configuration
+                                        // Update ViewModel  Configuration
                                         _srtViewModel.UpdateConfiguration(srtConfig, _viewModel);
 
                                         SRT = new SRT(_residentEvilGame, _memoryMonitor!, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR", _srtViewModel);
                                         SRT.Show();
 
-                                        // Create Overlay window
-                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
-                                        OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
-                                        OVL.Show();
+                                        // Create Overlay window if enabled
+                                        if (_viewModel.IsOverlayEnabled)
+                                        {
+                                            var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
+                                            OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
+                                            OVL.Show();
+                                        }
 
                                         if (_tracking != null)
                                         {
@@ -1328,6 +1331,27 @@ namespace REviewer
                     OVL.ApplyScaling();
                 }
             }
+
+            if (e.PropertyName == nameof(MainWindowViewModel.IsOverlayEnabled))
+            {
+                if (_viewModel.IsOverlayEnabled)
+                {
+                    if (OVL == null && _process != null && _residentEvilGame != null)
+                    {
+                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
+                        OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
+                        OVL.Show();
+                    }
+                }
+                else
+                {
+                    if (OVL != null)
+                    {
+                        OVL.Close();
+                        OVL = null;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -1335,3 +1359,4 @@ namespace REviewer
     }
 
 }
+
