@@ -47,6 +47,11 @@ foreach ($arch in $archs) {
     
     Copy-Item ".\REviewer\Resources\Files\re-data.json" -Destination $dataDir -Force
     Copy-Item ".\REviewer\Resources\Files\config.json" -Destination $dataDir -Force
+
+    # Copy Resources folder (images)
+    $resDir = "$publishDir\resources"
+    if (-not (Test-Path $resDir)) { New-Item -ItemType Directory -Path $resDir | Out-Null }
+    Copy-Item ".\REviewer\Resources\*" -Destination $resDir -Recurse -Force
     
     # Remove logs/pdb
     if (Test-Path "$publishDir\logs") { Remove-Item "$publishDir\logs" -Recurse -Force }
@@ -63,7 +68,8 @@ foreach ($arch in $archs) {
         "$publishDir\REviewer.dll.config",
         "$publishDir\NLog.config",
         "$publishDir\data",
-        "$publishDir\saves"
+        "$publishDir\saves",
+        "$publishDir\resources"
     )
     
     Compress-Archive -LiteralPath $compressionItems -DestinationPath $zipPath -Force

@@ -4,6 +4,7 @@ using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 
 namespace REviewer.Modules.RE.Common
@@ -226,7 +227,7 @@ namespace REviewer.Modules.RE.Common
                         string? imgSource = null;
                         if (item != null && items != null && items.Count > (byte)item.Value)
                         {
-                            imgSource = items[(byte)item.Value].Img;
+                            imgSource = GetFullPath(items[(byte)item.Value].Img);
                         }
 
                         InventoryImages.Add(new ImageItem
@@ -266,7 +267,7 @@ namespace REviewer.Modules.RE.Common
                 var type = Inventory[index].Type;
                 if (type != null && type.Value == 2 && InventoryImages != null && index < InventoryImages.Count)
                 {
-                    InventoryImages[index].Source = "resources/re2/reserved.png";
+                    InventoryImages[index].Source = GetFullPath("resources/re2/reserved.png");
                     InventoryImages[index].TextVisibility = Visibility.Collapsed;
                     OnPropertyChanged(nameof(InventoryImages));
                 }
@@ -282,7 +283,7 @@ namespace REviewer.Modules.RE.Common
                 var item = Inventory[index].Item;
                 if (item != null && index <= InventoryCapacitySize && items != null && items.TryGetValue((byte)item.Value, out var itemProperty))
                 {
-                    InventoryImages[index].Source = itemProperty.Img;
+                    InventoryImages[index].Source = GetFullPath(itemProperty.Img);
 
                     var item_id = item?.Value ?? 255;
 
@@ -350,7 +351,7 @@ namespace REviewer.Modules.RE.Common
 
                 // Update the ImageItem at the given index in the InventoryImages list
 
-                if (InventoryImages[index].Source == "resources/re2/reserved.png")
+                if (InventoryImages[index].Source == GetFullPath("resources/re2/reserved.png"))
                 {
                     InventoryImages[index].TextVisibility = Visibility.Hidden;
                 }
@@ -406,6 +407,22 @@ namespace REviewer.Modules.RE.Common
                     quantity.PropertyChanged -= (sender, e) => UpdateTextInventoryImage(index);
                 if (type != null) type.PropertyChanged -= (sender, e) => UpdateType(index);
             }
+        }
+
+        private string? GetFullPath(string? relativePath)
+        {
+            if (string.IsNullOrEmpty(relativePath)) return null;
+
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var fullPath = Path.Combine(baseDir, relativePath);
+
+            if (!File.Exists(fullPath))
+            {
+                Logger.Instance.Warn($"Inventory Image file not found: {fullPath}");
+                return null;
+            }
+
+            return fullPath;
         }
 
     }

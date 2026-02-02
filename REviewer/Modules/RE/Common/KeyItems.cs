@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Media;
-using REviewer.Modules.SRT;
+﻿using REviewer.Modules.SRT;
 using REviewer.Modules.Utils;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Windows.Media;
 
 namespace REviewer.Modules.RE.Common
 {
@@ -35,7 +36,7 @@ namespace REviewer.Modules.RE.Common
             KeyItems[value].Room = room;
         }
 
-        
+
         private bool _isLegacyItemHighlightEnabled;
         public bool IsLegacyItemHighlightEnabled
         {
@@ -46,7 +47,7 @@ namespace REviewer.Modules.RE.Common
                 {
                     _isLegacyItemHighlightEnabled = value;
                     OnPropertyChanged(nameof(IsLegacyItemHighlightEnabled));
-                    
+
                     if (KeyItems != null)
                     {
                         for (int i = 0; i < KeyItems.Count; i++)
@@ -88,7 +89,7 @@ namespace REviewer.Modules.RE.Common
                     2 => LegacyGreen,
                     _ => ItemSlotBrush
                 } : ItemSlotBrush;
-                
+
             KeyItemImages[value].Background = background;
         }
 
@@ -132,14 +133,24 @@ namespace REviewer.Modules.RE.Common
 
             Logger.Instance.Info("Creating/Generating KeyItems Images");
 
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
             foreach (var keyItem in keyItems)
             {
                 if (keyItem.Data == null)
                     throw new ArgumentNullException($"The key item data is null");
 
+                var imgPath = keyItem.Data.Img;
+                var fullPath = Path.Combine(baseDir, imgPath);
+
+                if (!File.Exists(fullPath))
+                {
+                    Logger.Instance.Warn($"Image file not found: {fullPath}");
+                }
+
                 KeyItemImages.Add(new ImageItem
                 {
-                    Source = keyItem.Data.Img,
+                    Source = fullPath,
                     Width = 70,
                     Height = 64,
                     Opacity = 0.15,
