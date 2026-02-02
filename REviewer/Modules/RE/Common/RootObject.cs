@@ -72,7 +72,7 @@ namespace REviewer.Modules.RE.Common
         public int SaveID;
         public int CurrentSaveID;
         public Bio? _bio;
-        private int _virtualMemoryPointer;
+        private nint _virtualMemoryPointer;
         public List<KeyItem>? KeyItems;
         public ItemIDs IDatabase;
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -192,6 +192,14 @@ namespace REviewer.Modules.RE.Common
                     OnPropertyChanged(nameof(MinimalItemDisplay));
                     OnPropertyChanged(nameof(ItemSlotBrush));
                     OnPropertyChanged(nameof(ItemSlotBorderBrush));
+
+                    if (KeyItems != null)
+                    {
+                        for (int i = 0; i < KeyItems.Count; i++)
+                        {
+                            UpdatePictureKeyItemState(i);
+                        }
+                    }
                 }
             }
         }
@@ -302,12 +310,16 @@ namespace REviewer.Modules.RE.Common
                      try
                      {
                          var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_timerColor);
-                         return new System.Windows.Media.SolidColorBrush(color);
+                         var brush = new System.Windows.Media.SolidColorBrush(color);
+                         brush.Freeze();
+                         return brush;
                      }
                      catch { }
                  }
                  // Default Cyan/Teal
-                 return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255)); 
+                 var defaultBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255));
+                 defaultBrush.Freeze();
+                 return defaultBrush;
              }
         }
 
@@ -341,8 +353,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     try
                     {
-                        return new System.Windows.Media.SolidColorBrush(
+                        var brush = new System.Windows.Media.SolidColorBrush(
                             (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_chromaKeyColor));
+                        brush.Freeze();
+                        return brush;
                     }
                     catch { }
                 }
@@ -386,8 +400,10 @@ namespace REviewer.Modules.RE.Common
                 }
                 
                 // Default dark background
-                return new System.Windows.Media.SolidColorBrush(
+                var darkBrush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1E1E1E"));
+                darkBrush.Freeze();
+                return darkBrush;
             }
         }
 
@@ -400,8 +416,10 @@ namespace REviewer.Modules.RE.Common
                 {
                     return BackgroundBrush; // Match the window background
                 }
-                return new System.Windows.Media.SolidColorBrush(
+                var brush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30"));
+                brush.Freeze();
+                return brush;
             }
         }
 
@@ -414,11 +432,13 @@ namespace REviewer.Modules.RE.Common
                 {
                     return System.Windows.Media.Brushes.Transparent;
                 }
-                return new System.Windows.Media.SolidColorBrush(
+                var brush = new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#3C3C3C"));
+                brush.Freeze();
+                return brush;
             }
         }
-        public RootObject(Bio bio, ItemIDs ids, int virtualMemoryPointer)
+        public RootObject(Bio bio, ItemIDs ids, nint virtualMemoryPointer)
         {
             if (bio.Player?.Character?.Database == null)
                 throw new ArgumentNullException(nameof(bio));
@@ -750,7 +770,19 @@ namespace REviewer.Modules.RE.Common
                 ["PositionX"] = PositionX?.Value,
                 ["PositionY"] = PositionY?.Value,
                 ["PositionZ"] = PositionZ?.Value,
-                ["SaveID"] = SaveID
+                ["SaveID"] = SaveID,
+
+                // SRT Specific Stats
+                ["Deaths"] = Deaths,
+                ["Resets"] = Resets,
+                ["Saves"] = Saves,
+                ["Kills"] = Kills,
+                ["Shots"] = Shots,
+                ["Hits"] = Hits,
+                ["RoomsVisited"] = RoomsVisited,
+                ["Debug"] = Debug,
+                ["SegmentCount"] = SegmentCount,
+                ["Segments"] = JArray.FromObject(IGTSegments ?? new List<int>())
             };
 
             // Serialize only necessary data
@@ -763,7 +795,11 @@ namespace REviewer.Modules.RE.Common
         public static void GenerateJsonSave(JObject objectData)
         {
             var directoryPath = "saves/";
-            // Make an exact copy of the object
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
 
             string jsonString = objectData.ToString();
 
@@ -829,25 +865,42 @@ namespace REviewer.Modules.RE.Common
             if (save == null) return;
             if (IGTSegments == null) return;
 
-            for (int i = 0; i < 4; i++)
+            // Restore Segments
+            var savedSegments = save["Segments"]?.ToObject<List<int>>();
+            if (savedSegments != null)
             {
-                IGTSegments[i] = Math.Max((int)IGTSegments[i], save["Segments"]?[i]?.Value<int>() ?? 0);
+                for (int i = 0; i < Math.Min(IGTSegments.Count, savedSegments.Count); i++)
+                {
+                    IGTSegments[i] = savedSegments[i];
+                }
             }
 
-            SegmentCount = save["SegmentsCount"]?.Value<int>() ?? 0;
+            SegmentCount = save["SegmentCount"]?.Value<int>() ?? save["SegmentsCount"]?.Value<int>() ?? 0;
 
-            Debug = Math.Max(Debug, save["Debug"]?.Value<int>() ?? 0);
-            Deaths = Math.Max(Deaths, save["Deaths"]?.Value<int>() ?? 0);
-            Resets = Math.Max(Resets, save["Resets"]?.Value<int>() ?? 0);
-            Saves = Math.Max(Saves, save["Saves"]?.Value<int>() ?? 0);
+            // Restore Stats (Direct assignment to allow state reversion)
+            Debug = save["Debug"]?.Value<int>() ?? 0;
+            Deaths = save["Deaths"]?.Value<int>() ?? 0;
+            Resets = save["Resets"]?.Value<int>() ?? 0;
+            Saves = save["Saves"]?.Value<int>() ?? 0;
+            Kills = save["Kills"]?.Value<int>() ?? 0;
+            Shots = save["Shots"]?.Value<int>() ?? 0;
+            Hits = save["Hits"]?.Value<int>() ?? 0;
+            RoomsVisited = save["RoomsVisited"]?.Value<int>() ?? 0;
 
             KeyRooms = save["KeyRooms"]?.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
 
-            for (int i = 0; i < KeyItems?.Count; i++)
+            if (KeyItems != null)
             {
-                KeyItems[i].State = save["KeyItems"]?[i]?.Value<int>() ?? 0;
-                UpdatePictureKeyItemState(i);
+                for (int i = 0; i < KeyItems.Count; i++)
+                {
+                    KeyItems[i].State = save["KeyItems"]?[i]?.Value<int>() ?? 0;
+                    UpdatePictureKeyItemState(i);
+                }
             }
+
+            // Force UI update for human readable formats
+            OnPropertyChanged(nameof(IGTSHumanFormat));
+            OnPropertyChanged(nameof(IGTHumanFormat));
         }
 
         private void InitSaveDatabase()
@@ -856,6 +909,13 @@ namespace REviewer.Modules.RE.Common
             CurrentSaveID = 0;
 
             var directoryPath = "saves/";
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                return;
+            }
+
             var files = Directory.EnumerateFiles(directoryPath, "*.json"); // Use EnumerateFiles for better performance
 
             foreach (var file in files)

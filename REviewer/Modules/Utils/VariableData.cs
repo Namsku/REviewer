@@ -15,7 +15,7 @@ namespace REviewer.Modules.Utils
         public object? Database { get; set; }
         public bool IsUpdated { get; set; } = false;
         public object LockObject { get; set; } = new();
-        public int Offset { get; set; }
+        public nint Offset { get; set; }
         public int Size { get; set; }
         public System.Windows.Media.Brush? Background {
             get { return _background; } 
@@ -25,7 +25,20 @@ namespace REviewer.Modules.Utils
                 {
                     _background = value;
                     OnPropertyChanged(nameof(Background));
+                    OnPropertyChanged(nameof(BackgroundColor));
                 }
+            }
+        }
+
+        public System.Windows.Media.Color BackgroundColor
+        {
+            get
+            {
+                if (_background is SolidColorBrush scb)
+                {
+                    return scb.Color;
+                }
+                return Colors.Transparent;
             }
         }
 
@@ -88,21 +101,21 @@ namespace REviewer.Modules.Utils
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public VariableData(int offset, int size)
+        public VariableData(nint offset, int size)
         {
             Offset = offset;
             Size = size;
             Database = null;
         }
 
-        public VariableData(int offset, StandardProperty property)
+        public VariableData(nint offset, StandardProperty property)
         {
             Offset = offset;
             Size = (int)property.Size;
             Database = (Dictionary<byte, string>?) property.Database;
         }
 
-        public VariableData(int offset, AdvancedProperty property)
+        public VariableData(nint offset, AdvancedProperty property)
         {
             Offset = offset;
             Size = (int)property.Size;

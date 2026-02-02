@@ -120,6 +120,7 @@ namespace REviewer
 
             InitializeText();
             InitCheckBoxes();
+            InitializeOverlayPosition();
             // Subscribe to ViewModel changes for aesthetics
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -179,6 +180,16 @@ namespace REviewer
                     _viewModel.isBiorandMode = true;
                     _viewModel.ClassicVisibility = Visibility.Visible;
                     break;
+            }
+        }
+
+        private void InitializeOverlayPosition()
+        {
+            // Load saved overlay position from config
+            var savedPosition = Library.GetSetting("OverlayPosition", 0);
+            if (savedPosition >= 0 && savedPosition < OverlayPosition.Items.Count)
+            {
+                OverlayPosition.SelectedIndex = savedPosition;
             }
         }
 
@@ -434,64 +445,80 @@ namespace REviewer
 
         private void MappingGameVariables()
         {
-            if (_isMappingDone)
+            try
             {
-                return; // Mapping already done, no need to do it again
-            }
-
-            _isMappingDone = true;
-
-            if (_process == null)
-            {
-                throw new ArgumentNullException(nameof(_process));
-            }
-
-            if (_residentEvilGame == null)
-            {
-                // Mapping the game data (Room IDs, Item IDs, etc.)
-                GameData gameData = new GameData(_process.ProcessName);
-                _itemIDs = new ItemIDs(_process.ProcessName);
-                _residentEvilGame = gameData.GetGameData(_itemIDs, (int)VirtualMemoryPointer);
-
-                // Initialize Aesthetics from ViewModel
-                if (_residentEvilGame != null)
+                if (_isMappingDone)
                 {
-                    _residentEvilGame.CustomBackgroundPath = _viewModel.CustomBackgroundPath;
-                    _residentEvilGame.CustomBackgroundColor = _viewModel.CustomBackgroundColor;
-                    _residentEvilGame.CustomBackgroundOpacity = _viewModel.CustomBackgroundOpacity;
+                    return; // Mapping already done, no need to do it again
+                }
+
+                _isMappingDone = true;
+
+                if (_process == null)
+                {
+                    throw new ArgumentNullException(nameof(_process));
+                }
+
+                if (_residentEvilGame == null)
+                {
+                    // Mapping the game data (Room IDs, Item IDs, etc.)
+                    GameData gameData = new GameData(_process.ProcessName);
+                    _itemIDs = new ItemIDs(_process.ProcessName);
+                    _residentEvilGame = gameData.GetGameData(_itemIDs, VirtualMemoryPointer);
+
+                    // Initialize Aesthetics from ViewModel
+                    if (_residentEvilGame != null)
+                    {
+                        _residentEvilGame.CustomBackgroundPath = _viewModel.CustomBackgroundPath;
+                        _residentEvilGame.CustomBackgroundColor = _viewModel.CustomBackgroundColor;
+                        _residentEvilGame.CustomBackgroundOpacity = _viewModel.CustomBackgroundOpacity;
+                    }
+                }
+
+                // Update Memory Monitor with process info
+                _memoryMonitor?.UpdateProcessHandle(_process.Handle, _process.ProcessName);
+
+                // *** FIX: Set monitoring reference BEFORE creating EnemyTracking objects ***
+                if (_residentEvilGame != null && _memoryMonitor != null)
+                {
+                    _residentEvilGame.SetMonitoring(_memoryMonitor);
+                }
+
+                // *** FIX: Initialize enemies AFTER SetMonitoring so they can register variables ***
+                if (_tracking == null)
+                {
+                    InitEnemies(_processName ?? "UNKNOWN GAME");
+                }
+
+                // Register objects for monitoring
+                if (_residentEvilGame != null) _memoryMonitor?.Register(_residentEvilGame);
+                if (_tracking != null) _memoryMonitor?.Register(_tracking);
+
+                _memoryMonitor?.Start();
+
+                // Initialize Services and ViewModel
+                if (_itemIDs != null && _residentEvilGame != null && _residentEvilGame.Bio != null)
+                {
+                    // Services are already injected via constructor
+
+                    // Initialize Services
+                    _gameStateService?.Initialize(_residentEvilGame.Bio); // Requires Bio object (Module.RE.Json.Bio)
+                    // _timerService doesn't need explicit init beyond default constructor, logic is in UpdateTimer
+                    _inventoryService?.Initialize(_residentEvilGame.Bio, VirtualMemoryPointer, Library.GetGameId(_processName ?? ""), _itemIDs);
+
+                    // Start Monitoring GameStateService
+                    _gameStateService?.InitMonitoring(VirtualMemoryPointer);
+                    if (_gameStateService != null) _memoryMonitor?.Register(_gameStateService);
+
+                    // Set Game ID in GameStateService
+                    _gameStateService?.SetGame(Library.GetGameId(_processName ?? ""));
                 }
             }
-
-            if (_tracking == null)
+            catch (Exception ex)
             {
-                InitEnemies(_processName ?? "UNKNOWN GAME");
-            }
-
-            // Update Memory Monitor with process info
-            _memoryMonitor?.UpdateProcessHandle(_process.Handle, _process.ProcessName);
-
-            // Register objects for monitoring
-            if (_residentEvilGame != null) _memoryMonitor?.Register(_residentEvilGame);
-            if (_tracking != null) _memoryMonitor?.Register(_tracking);
-
-            _memoryMonitor?.Start();
-
-            // Initialize Services and ViewModel
-            if (_itemIDs != null && _residentEvilGame != null && _residentEvilGame.Bio != null)
-            {
-                // Services are already injected via constructor
-
-                // Initialize Services
-                _gameStateService?.Initialize(_residentEvilGame.Bio); // Requires Bio object (Module.RE.Json.Bio)
-                // _timerService doesn't need explicit init beyond default constructor, logic is in UpdateTimer
-                _inventoryService?.Initialize(_residentEvilGame.Bio, VirtualMemoryPointer, Library.GetGameId(_processName ?? ""), _itemIDs);
-
-                // Start Monitoring GameStateService
-                _gameStateService?.InitMonitoring(VirtualMemoryPointer);
-                if (_gameStateService != null) _memoryMonitor?.Register(_gameStateService);
-
-                // Set Game ID in GameStateService
-                _gameStateService?.SetGame(Library.GetGameId(_processName ?? ""));
+                _isMappingDone = false; // Allow retry if it failed
+                Logger.Instance.Error($"Critical error in MappingGameVariables: {ex}");
+                MessageBox.Show($"Failed to initialize game data: {ex.Message}", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -610,6 +637,17 @@ namespace REviewer
             _processWatcher?.Dispose();
             _rootObjectWatcher?.Dispose();
 
+            // *** FIX: Stop and clear memory monitor when switching games ***
+            _memoryMonitor?.Stop();
+            if (_residentEvilGame != null)
+            {
+                _memoryMonitor?.Unregister(_residentEvilGame);
+            }
+            if (_tracking != null)
+            {
+                _memoryMonitor?.Unregister(_tracking);
+            }
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 SRT?.Close();
@@ -726,16 +764,19 @@ namespace REviewer
                                         // Wire up RootObject to ViewModel
                                         _srtViewModel.SetGameData(_residentEvilGame);
 
-                                        // Update ViewModel Configuration
+                                        // Update ViewModel  Configuration
                                         _srtViewModel.UpdateConfiguration(srtConfig, _viewModel);
 
                                         SRT = new SRT(_residentEvilGame, _memoryMonitor!, srtConfig, _processName ?? "UNKNOWN GAME PROCESS ERROR", _srtViewModel);
                                         SRT.Show();
 
-                                        // Create Overlay window
-                                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
-                                        OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
-                                        OVL.Show();
+                                        // Create Overlay window if enabled
+                                        if (_viewModel.IsOverlayEnabled)
+                                        {
+                                            var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
+                                            OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
+                                            OVL.Show();
+                                        }
 
                                         if (_tracking != null)
                                         {
@@ -1091,6 +1132,7 @@ namespace REviewer
             btnHome.Tag = null;
             btnAbout.Tag = null;
             btnDebug.Tag = null;
+            btnDebug.Tag = null;
             btnSettings.Tag = null;
             btnRace.Tag = null;
 
@@ -1289,6 +1331,27 @@ namespace REviewer
                     OVL.ApplyScaling();
                 }
             }
+
+            if (e.PropertyName == nameof(MainWindowViewModel.IsOverlayEnabled))
+            {
+                if (_viewModel.IsOverlayEnabled)
+                {
+                    if (OVL == null && _process != null && _residentEvilGame != null)
+                    {
+                        var overlayConfig = new Config(OverlayPosition.SelectedIndex, 16, (int)(_viewModel.OverlayScale * 100));
+                        OVL = new Overlay(_process, overlayConfig, _residentEvilGame);
+                        OVL.Show();
+                    }
+                }
+                else
+                {
+                    if (OVL != null)
+                    {
+                        OVL.Close();
+                        OVL = null;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -1296,3 +1359,4 @@ namespace REviewer
     }
 
 }
+

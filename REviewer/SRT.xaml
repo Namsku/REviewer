@@ -52,7 +52,7 @@
             </Grid.RowDefinitions>
 
             <!-- Header Bar -->
-            <Border Grid.Row="0" Style="{StaticResource WindowHeaderBar}" Background="{Binding BackgroundBrush}">
+            <Border Grid.Row="0" Style="{StaticResource WindowHeaderBar}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -114,18 +114,31 @@
                                     <TextBlock Text="WIDGETS" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
                                     
                                     <CheckBox IsChecked="{Binding MinimalItemDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
-                                        <TextBlock Text="Compact Item Box" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                        <TextBlock Text="Hide Item Slot Boxes" Foreground="{StaticResource Brush.Text.Primary}"/>
                                     </CheckBox>
 
                                     <CheckBox IsChecked="{Binding ECGHealthDisplay}" Margin="0,0,0,6" Foreground="{StaticResource Brush.Text.Primary}">
                                         <TextBlock Text="ECG Health Monitor" Foreground="{StaticResource Brush.Text.Primary}"/>
                                     </CheckBox>
+
+                                    <CheckBox IsChecked="{Binding LegacyItemHighlight}" Margin="0,0,0,12" Foreground="{StaticResource Brush.Text.Primary}">
+                                        <TextBlock Text="Classic Item Colors" Foreground="{StaticResource Brush.Text.Primary}"/>
+                                    </CheckBox>
+
+                                    <!-- Background Stretch -->
+                                    <TextBlock Text="BACKGROUND STRETCH" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,6,0,6"/>
+                                    <ComboBox SelectedIndex="{Binding CustomBackgroundStretch}" Margin="0,0,0,12" Style="{StaticResource FlatComboBox}">
+                                        <ComboBoxItem Content="Untouched (None)"/>
+                                        <ComboBoxItem Content="Stretch (Fill)"/>
+                                        <ComboBoxItem Content="Adjusted (Uniform)"/>
+                                        <ComboBoxItem Content="Adjusted (Uniform To Fill)"/>
+                                    </ComboBox>
                                 </StackPanel>
 
                                 <!-- OVERLAY SECTION -->
                                 <StackPanel Grid.Row="3">
                                     <TextBlock Text="OVERLAY POSITION" Foreground="{StaticResource Brush.Text.Secondary}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
-                                    <ComboBox x:Name="OverlayPositionCombo" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="OverlayPositionCombo_SelectionChanged">
+                                    <ComboBox x:Name="OverlayPositionCombo" HorizontalAlignment="Stretch" SelectionChanged="OverlayPositionCombo_SelectionChanged">
                                         <ComboBoxItem Content="Bottom Right" Tag="0"/>
                                         <ComboBoxItem Content="Top Right" Tag="1"/>
                                         <ComboBoxItem Content="Top Left" Tag="2"/>
@@ -153,7 +166,7 @@
             </Border>
 
             <!-- Timer + Character + HP Section -->
-            <Border Grid.Row="1" Background="{Binding BackgroundBrush}" Padding="16,12">
+            <Border Grid.Row="1" Background="{x:Null}" Padding="16,12">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -214,7 +227,7 @@
             </Border>
 
             <!-- Health Bar Section -->
-            <Border Grid.Row="2" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="2" Background="{x:Null}" 
                     Padding="16,0,16,12" Visibility="{Binding HealthBarVisibility}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -269,7 +282,7 @@
                                                   StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                                   VerticalAlignment="Center">
                                             <Polyline.Effect>
-                                                <DropShadowEffect Color="{Binding Health.Background.Color}" BlurRadius="15" ShadowDepth="0" Opacity="0.9"/>
+                                                <DropShadowEffect Color="{Binding Health.BackgroundColor}" BlurRadius="15" ShadowDepth="0" Opacity="0.9"/>
                                             </Polyline.Effect>
                                             <Polyline.OpacityMask>
                                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -315,7 +328,7 @@
                                         <TextBlock Text="{Binding Health.Value}" Foreground="{Binding Health.Background}" 
                                                    FontFamily="Consolas" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right">
                                             <TextBlock.Effect>
-                                                <DropShadowEffect Color="{Binding Health.Background.Color}" BlurRadius="5" ShadowDepth="0"/>
+                                                <DropShadowEffect Color="{Binding Health.BackgroundColor}" BlurRadius="5" ShadowDepth="0"/>
                                             </TextBlock.Effect>
                                         </TextBlock>
                                     </StackPanel>
@@ -347,7 +360,7 @@
             </Border>
 
             <!-- Sherry Section -->
-            <Border Grid.Row="3" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="3" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding SherryVisibility}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -364,7 +377,7 @@
             </Border>
 
             <!-- Key Items Section -->
-            <Border Grid.Row="4" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="4" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding KeyItemsVisibility}">
                 <StackPanel>
                     <TextBlock Text="KEY ITEMS" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,6"/>
@@ -377,7 +390,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource ItemSlot}"
-                                        Background="{Binding DataContext.ItemSlotBrush, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Background="{Binding Background}"
                                         BorderBrush="{Binding DataContext.ItemSlotBorderBrush, RelativeSource={RelativeSource AncestorType=Window}}">
                                     <Image Source="{Binding Source}" 
                                            Width="48" Height="42" 
@@ -390,7 +403,7 @@
             </Border>
 
             <!-- Inventory Section -->
-            <Border Grid.Row="5" Background="{Binding BackgroundBrush}" Padding="16,8">
+            <Border Grid.Row="5" Background="{x:Null}" Padding="16,8">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -456,7 +469,7 @@
             </Border>
 
             <!-- Item Box Section -->
-            <Border Grid.Row="6" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="6" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding ItemBoxVisibility}">
                 <StackPanel>
                     <TextBlock Text="ITEM BOX" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,6"/>
@@ -480,7 +493,7 @@
             </Border>
 
             <!-- Stats Section -->
-            <Border Grid.Row="7" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="7" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding StatsVisibility}">
                 <StackPanel>
                     <TextBlock Text="STATISTICS" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,6"/>
@@ -526,7 +539,7 @@
             </Border>
 
             <!-- Segment Timers -->
-            <Border Grid.Row="8" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="8" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding SegsVisibility}">
                 <StackPanel>
                     <TextBlock Text="SEGMENTS" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,6"/>
@@ -564,7 +577,7 @@
             </Border>
 
             <!-- Debug Section -->
-            <Border Grid.Row="9" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="9" Background="{x:Null}" 
                     Padding="16,8" Visibility="{Binding DebugModeVisibility}">
                 <StackPanel>
                     <TextBlock Text="DEBUG" Style="{StaticResource SRTSectionHeader}" Margin="0,0,0,6"/>
@@ -580,7 +593,7 @@
             </Border>
 
             <!-- Action Buttons -->
-            <Border Grid.Row="10" Background="{Binding BackgroundBrush}" 
+            <Border Grid.Row="10" Background="{x:Null}" 
                     Padding="16,8" BorderBrush="{StaticResource Brush.Border.Subtle}" 
                     BorderThickness="0,1,0,0">
                 <StackPanel Orientation="Horizontal">

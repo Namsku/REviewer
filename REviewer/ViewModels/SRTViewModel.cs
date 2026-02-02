@@ -1,4 +1,5 @@
 using REviewer.Modules.RE.Common;
+using REviewer.Modules.Utils;
 using REviewer.Services.Game;
 using REviewer.Services.Inventory;
 using REviewer.Services.Timer;
@@ -177,9 +178,29 @@ namespace REviewer.ViewModels
         private string? _customBackgroundPath;
         private string? _customBackgroundColor;
         private double _customBackgroundOpacity = 1.0;
+        private int _customBackgroundStretch = 3;
 
-        private System.Windows.Media.Brush _backgroundBrush = new System.Windows.Media.SolidColorBrush(
-            System.Windows.Media.Color.FromRgb(0x1E, 0x1E, 0x1E)); // Default dark background #1E1E1E
+        public int CustomBackgroundStretch
+        {
+            get => _customBackgroundStretch;
+            set
+            {
+                if (SetField(ref _customBackgroundStretch, value))
+                {
+                    UpdateBackgroundBrush();
+                    Library.UpdateConfigFile("CustomBackgroundStretch", value.ToString());
+                }
+            }
+        }
+
+        private System.Windows.Media.Brush _backgroundBrush = CreateDefaultBackgroundBrush();
+        private static System.Windows.Media.Brush CreateDefaultBackgroundBrush()
+        {
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x1E, 0x1E, 0x1E));
+            brush.Freeze();
+            return brush;
+        }
+
         public System.Windows.Media.Brush BackgroundBrush
         {
             get => _backgroundBrush;
@@ -194,7 +215,13 @@ namespace REviewer.ViewModels
         public bool MinimalItemDisplay
         {
             get => _minimalItemDisplay;
-            set => SetField(ref _minimalItemDisplay, value);
+            set
+            {
+                if (SetField(ref _minimalItemDisplay, value) && _gameData != null)
+                {
+                    _gameData.MinimalItemDisplay = value;
+                }
+            }
         }
 
         private bool _ecgHealthDisplay = false;
@@ -206,6 +233,19 @@ namespace REviewer.ViewModels
                 if (SetField(ref _ecgHealthDisplay, value) && _gameData != null)
                 {
                     _gameData.ECGHealthDisplay = value;
+                }
+            }
+        }
+
+        private bool _legacyItemHighlight = false;
+        public bool LegacyItemHighlight
+        {
+            get => _legacyItemHighlight;
+            set
+            {
+                if (SetField(ref _legacyItemHighlight, value) && _gameData != null)
+                {
+                    _gameData.IsLegacyItemHighlightEnabled = value;
                 }
             }
         }
@@ -224,8 +264,10 @@ namespace REviewer.ViewModels
             {
                 try
                 {
-                    BackgroundBrush = new System.Windows.Media.SolidColorBrush(
+                    var brush = new System.Windows.Media.SolidColorBrush(
                         (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_chromaKeyColor));
+                    brush.Freeze();
+                    BackgroundBrush = brush;
                     return;
                 }
                 catch { }
@@ -245,7 +287,7 @@ namespace REviewer.ViewModels
 
                     var brush = new System.Windows.Media.ImageBrush(img);
                     brush.Opacity = _customBackgroundOpacity;
-                    brush.Stretch = System.Windows.Media.Stretch.UniformToFill;
+                    brush.Stretch = (System.Windows.Media.Stretch)_customBackgroundStretch;
                     brush.TileMode = System.Windows.Media.TileMode.None;
                     brush.AlignmentX = System.Windows.Media.AlignmentX.Center;
                     brush.AlignmentY = System.Windows.Media.AlignmentY.Center;
@@ -262,15 +304,16 @@ namespace REviewer.ViewModels
                 try
                 {
                     var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_customBackgroundColor);
-                    BackgroundBrush = new System.Windows.Media.SolidColorBrush(color);
+                    var brush = new System.Windows.Media.SolidColorBrush(color);
+                    brush.Freeze();
+                    BackgroundBrush = brush;
                     return;
                 }
                 catch { }
             }
 
             // Default dark background
-            BackgroundBrush = new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0x1E, 0x1E, 0x1E));
+            BackgroundBrush = CreateDefaultBackgroundBrush();
         }
 
         public SRTViewModel(IGameStateService gameStateService, ITimerService timerService, IInventoryService inventoryService)
@@ -395,7 +438,10 @@ namespace REviewer.ViewModels
             _customBackgroundPath = mainVM.CustomBackgroundPath;
             _customBackgroundColor = mainVM.CustomBackgroundColor;
             _customBackgroundOpacity = mainVM.CustomBackgroundOpacity;
-
+            _customBackgroundStretch = mainVM.CustomBackgroundStretch;
+ 
+            LegacyItemHighlight = mainVM.IsLegacyItemHighlightEnabled;
+ 
             // Update background brush based on current settings
             UpdateBackgroundBrush();
 

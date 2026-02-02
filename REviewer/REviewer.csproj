@@ -41,13 +41,25 @@
   </ItemGroup>
 
   <ItemGroup>
-        <Resource Include="Resources\Icons\*.png" />
-	  <Resource Include="resources/re1/*.png" />
-	  <Resource Include="resources/re2/*.png" />
-	  <Resource Include="resources/re3/*.png" />
-        <Resource Include="resources/race/*.png" />
-	  <Resource Include="resources/cvx/*.png" />
-	    <Resource Include="resources/fonts/*" />
+    <Resource Include="Resources\Icons\*.png" />
+	  <Content Include="resources/re1/*.png">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+	  <Content Include="resources/re2/*.png">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+	  <Content Include="resources/re3/*.png">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+        <Content Include="resources/race/*.png">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+	  <Content Include="resources/cvx/*.png">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+	    <Content Include="resources/fonts/*">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -63,6 +75,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Server\" />
+  </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="mkdir &quot;$(TargetDir)data&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)saves&quot; 2&gt; nul&#xD;&#xA;mkdir &quot;$(TargetDir)logs&quot; 2&gt; nul&#xD;&#xA;&#xD;&#xA;del /Q &quot;$(TargetDir)logs\*&quot;&#xA;&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\re-data.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;if not exist &quot;$(TargetDir)data\config.json&quot; xcopy &quot;$(ProjectDir)Resources\Files\config.json&quot; &quot;$(TargetDir)data&quot; /Y&#xD;&#xA;copy &quot;$(ProjectDir)Resources\Files\DO NO MODIFY ANYTHING HERE&quot; &quot;$(TargetDir)saves&quot; /Y" />

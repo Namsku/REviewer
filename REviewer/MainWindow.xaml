@@ -10,7 +10,7 @@
         ResizeMode="CanMinimize"
         Width="700" Height="700"
         Background="#1E1E1E"
-        Icon="/Resources/Icons/reviewer_icon_v2.png"
+        Icon="pack://application:,,,/Resources/Icons/reviewer_icon_v2.png"
         WindowStyle="None"
         AllowsTransparency="True"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -213,6 +213,9 @@
                         <ToggleButton x:Name="DebugToggle" Style="{StaticResource ToggleChip}" 
                                       Content="Debug Menu" IsChecked="{Binding DebugMode}" 
                                       Margin="0,0,8,8"/>
+                        <ToggleButton x:Name="OverlayToggle" Style="{StaticResource ToggleChip}" 
+                                      Content="In-Game Overlay" IsChecked="{Binding IsOverlayEnabled}" 
+                                      Margin="0,0,8,8"/>
                     </WrapPanel>
 
                 </StackPanel>
@@ -263,7 +266,15 @@
                         </Grid>
 
                         <TextBlock Text="Background Opacity" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,4,0,4"/>
-                        <Slider Value="{Binding CustomBackgroundOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01"/>
+                        <Slider Value="{Binding CustomBackgroundOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Background Stretch" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,4,0,4"/>
+                        <ComboBox SelectedIndex="{Binding CustomBackgroundStretch, Mode=TwoWay}" Style="{StaticResource FlatComboBox}" Margin="0,0,0,12">
+                            <ComboBoxItem Content="Untouched (None)"/>
+                            <ComboBoxItem Content="Stretch (Fill)"/>
+                            <ComboBoxItem Content="Adjusted (Uniform)"/>
+                            <ComboBoxItem Content="Adjusted (Uniform To Fill)"/>
+                        </ComboBox>
                     </StackPanel>
 
                     <TextBlock Text="OVERLAY APPEARANCE" Style="{StaticResource SectionHeader}"/>
@@ -335,6 +346,8 @@
                                       IsChecked="{Binding isNoStatsChecked}" Margin="0,0,8,8"/>
                         <ToggleButton Style="{StaticResource ToggleChip}" Content="Hide Segment Times" 
                                       IsChecked="{Binding isNoSegmentsTimerChecked}" Margin="0,0,8,8"/>
+                        <ToggleButton Style="{StaticResource ToggleChip}" Content="Classic Item Colors" 
+                                      IsChecked="{Binding IsLegacyItemHighlightEnabled}" Margin="0,0,8,8"/>
                     </WrapPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -619,7 +632,7 @@
             
             <!-- Overlay Position ComboBox -->
             <ComboBox x:Name="OverlayPosition">
-                <ComboBoxItem Content="Bottom-Right" IsSelected="True"/>  <!-- Index 0 -->
+                <ComboBoxItem Content="Bottom-Right"/>  <!-- Index 0 -->
                 <ComboBoxItem Content="Top-Right"/>                        <!-- Index 1 -->
                 <ComboBoxItem Content="Top-Left"/>                         <!-- Index 2 -->
                 <ComboBoxItem Content="Bottom-Left"/>                      <!-- Index 3 -->

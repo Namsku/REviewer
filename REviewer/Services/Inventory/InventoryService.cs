@@ -41,7 +41,7 @@ namespace REviewer.Services.Inventory
         private System.Collections.ObjectModel.ObservableCollection<Modules.SRT.ImageItem>? _inventoryImages;
         private System.Collections.Generic.List<Modules.RE.Common.Slot>? _inventory;
 
-        private IntPtr _virtualMemoryPointer;
+        private nint _virtualMemoryPointer;
         private Bio? _bio;
         private int _selectedGame;
         private bool _carlos;
@@ -49,7 +49,7 @@ namespace REviewer.Services.Inventory
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void Initialize(object bioObj, IntPtr virtualMemoryPointer, int selectedGame, Modules.RE.ItemIDs itemIds, bool carlos = false)
+        public void Initialize(object bioObj, nint virtualMemoryPointer, int selectedGame, Modules.RE.ItemIDs itemIds, bool carlos = false)
         {
             _virtualMemoryPointer = virtualMemoryPointer;
             _selectedGame = selectedGame;
@@ -73,7 +73,7 @@ namespace REviewer.Services.Inventory
                 // Assuming re-use, we should unregister old.
                 if (_itemBoxState != null) _monitor.UnregisterVariable("InventoryService.ItemBoxState");
 
-                _itemBoxState = new Modules.Utils.VariableData(Modules.Utils.Library.HexToInt(offset) + (int)_virtualMemoryPointer, bio.Player.ItemBoxState);
+                _itemBoxState = new Modules.Utils.VariableData(Modules.Utils.Library.HexToInt(offset) + _virtualMemoryPointer, bio.Player.ItemBoxState);
                 _monitor.RegisterVariable("InventoryService.ItemBoxState", _itemBoxState);
             }
         }
@@ -93,8 +93,8 @@ namespace REviewer.Services.Inventory
 
             if (_bio.Offsets != null && _bio.Offsets.ContainsKey(inventory_name_start) && _bio.Offsets.ContainsKey(inventory_name_end))
             {
-                int start = Modules.Utils.Library.HexToInt(_bio.Offsets[inventory_name_start]) + (int)_virtualMemoryPointer;
-                int end = Modules.Utils.Library.HexToInt(_bio.Offsets[inventory_name_end]) + (int)_virtualMemoryPointer;
+                nint start = (nint)Modules.Utils.Library.HexToInt(_bio.Offsets[inventory_name_start]) + _virtualMemoryPointer;
+                nint end = (nint)Modules.Utils.Library.HexToInt(_bio.Offsets[inventory_name_end]) + _virtualMemoryPointer;
                 
                 Inventory = Modules.RE.Common.Slot.GenerateSlots(start, end, _selectedGame);
             }

@@ -10,7 +10,7 @@ namespace REviewer.Services.Game
     public class GameStateService : IGameStateService
     {
         private Modules.RE.Json.Bio? _bio;
-        private IntPtr _virtualMemoryPointer;
+        private nint _virtualMemoryPointer;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? MonitoringInitialized;
@@ -43,7 +43,7 @@ namespace REviewer.Services.Game
             _bio = bio;
         }
 
-        public void InitMonitoring(IntPtr virtualMemoryPointer)
+        public void InitMonitoring(nint virtualMemoryPointer)
         {
             if (_bio == null) return;
             _virtualMemoryPointer = virtualMemoryPointer;
@@ -212,7 +212,7 @@ namespace REviewer.Services.Game
             if (_bio.Offsets.TryGetValue(key, out string? offset))
             {
                  // Assuming Library is accessible. If not, include REviewer.Modules.Utils
-                 return new Modules.Utils.VariableData(Modules.Utils.Library.HexToInt(offset) + (int)_virtualMemoryPointer, value);
+                 return new Modules.Utils.VariableData(Modules.Utils.Library.HexToInt(offset) + _virtualMemoryPointer, value);
             }
             return null;
         }

@@ -292,8 +292,8 @@ namespace REviewer.Modules.Utils
         {
             { "Bio", new List<string> { "Bio", "bio", "Biohazard", "biohazard" } },
             { "bio2 1.10", new List<string> { "Bio2 1.10", "bio2 1.10", "bio2 1.1", "bio2 1.10 - Skip", "bio2 1.10 - Super Skip", "bio2 1.10 - Supreme Skip", "bio2", "bio2 v1.1", "Leon And Claier", "BIO2The City of Despair", "bunny", "bunny2" , "perro2", "re2mm", "RE2MM", "REVisited", "Resident Evil 2.5 Dark Legacy", "UEv3", "toos_ver2_0_0", "toos(hard)_ver2_0_0" } },
-            { "bio2 chn claire", new List<string> { "CLAIRE", "claire", "bio2 chn claire" } },
-            { "bio2 chn leon", new List<string> {"LEON", "leon", "Irregular1.8", "bio2 chn leon" } },
+            { "bio2 chn claire", new List<string> { "CLAIRE", "Claire", "claire", "bio2 chn claire" } },
+            { "bio2 chn leon", new List<string> {"LEON", "Leon", "leon", "Irregular1.8", "bio2 chn leon" } },
             { "BIOHAZARD(R) 3 PC", new List<string> { "BIOHAZARD(R) 3 PC","biohazard(r) 3 pc","Bio3", "bio3", "The Lord of the Necropolis_1_1_0", "(English)The Lord of the Necropolis_1_1_0", "Nemesis Scenario" } },
             { "Bio3 CHN/TWN", new List<string> { "bio3", "Bio3", "bio3_pc", "Bio3_PC_Mercenaries", "KeTu-FE3", "Silent Hill P.T" } },
             { "CVX PS2 US", new List<string> { "pcsx2", "pcsx2-qt", "pcsx2-qtx64", "pcsx2-qtx64-avx2", "pcsx2x64", "pcsx2x64-avx2" } }
@@ -331,6 +331,10 @@ namespace REviewer.Modules.Utils
             { "UEv3", "Bio2 1.10" },
 
             { "CLAIRE", "Bio2 chn claire" },
+            { "Claire", "Bio2 chn claire" },
+            { "claire", "Bio2 chn claire" },
+            { "LEON", "Bio2 chn leon" },
+            { "Leon", "Bio2 chn leon" },
             { "leon", "Bio2 chn leon" },
             { "bio2 chn claire", "Bio2 chn claire" },
             { "bio2 chn leon", "Bio2 chn leon" },

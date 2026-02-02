@@ -104,6 +104,21 @@ namespace REviewer.ViewModels
             }
         }
 
+        private int _customBackgroundStretch = 3; // Default to UniformToFill
+        public int CustomBackgroundStretch
+        {
+            get => _customBackgroundStretch;
+            set
+            {
+                if (_customBackgroundStretch != value)
+                {
+                    _customBackgroundStretch = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("CustomBackgroundStretch", value.ToString());
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainWindowViewModel(ProcessWatcherService processWatcher, ConfigurationService configService, GameMemoryService gameMemory)
@@ -122,6 +137,7 @@ namespace REviewer.ViewModels
             _customBackgroundPath = Library.GetSetting("CustomBackgroundPath", "");
             _customBackgroundColor = Library.GetSetting("CustomBackgroundColor", "");
             _customBackgroundOpacity = Library.GetSetting("CustomBackgroundOpacity", 1.0);
+            _customBackgroundStretch = Library.GetSetting("CustomBackgroundStretch", 3);
             _overlayScale = Library.GetSetting("OverlayScale", 1.0);
             _timerColor = Library.GetSetting("TimerColor", "");
 
@@ -149,7 +165,10 @@ namespace REviewer.ViewModels
             _debugMode = config.GetValueOrDefault("DebugMode", false);
             _staticEnemyTrackerWindow = config.GetValueOrDefault("StaticEnemyTrackerWindow", false);
             _isDdrawChecked = config.GetValueOrDefault("Ddraw100", false);
+            _isLegacyItemHighlightEnabled = config.GetValueOrDefault("IsLegacyItemHighlightEnabled", false);
+            _isOverlayEnabled = config.GetValueOrDefault("IsOverlayEnabled", true);
         }
+
 
         public string StatusText
         {
@@ -389,6 +408,36 @@ namespace REviewer.ViewModels
                     _isNoKeyItemsChecked = value;
                     OnPropertyChanged();
                     Library.UpdateConfigFile("isNoKeyItemsChecked", _isNoKeyItemsChecked.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _isLegacyItemHighlightEnabled;
+        public bool IsLegacyItemHighlightEnabled
+        {
+            get { return _isLegacyItemHighlightEnabled; }
+            set
+            {
+                if (_isLegacyItemHighlightEnabled != value)
+                {
+                    _isLegacyItemHighlightEnabled = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("IsLegacyItemHighlightEnabled", _isLegacyItemHighlightEnabled.ToString().ToLower());
+                }
+            }
+        }
+
+        private bool _isOverlayEnabled;
+        public bool IsOverlayEnabled
+        {
+            get => _isOverlayEnabled;
+            set
+            {
+                if (_isOverlayEnabled != value)
+                {
+                    _isOverlayEnabled = value;
+                    OnPropertyChanged();
+                    Library.UpdateConfigFile("IsOverlayEnabled", _isOverlayEnabled.ToString().ToLower());
                 }
             }
         }
