@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,14 +61,22 @@ namespace REviewer
         }
 
         protected override void OnStartup(StartupEventArgs e)
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             var mainWindow = ServiceProvider?.GetRequiredService<MainWindow>();
             mainWindow?.Show();
         }
 
+        private static int _exceptionCount = 0;
+
         private void HandleException(Exception? ex, string source)
         {
+            // Only handle the first exception to avoid infinite message box loops from timers
+            if (System.Threading.Interlocked.Increment(ref _exceptionCount) > 1) return;
+
             try
             {
                 // Create logs directory if it doesn't exist
@@ -118,6 +126,10 @@ namespace REviewer
             catch
             {
                 // Swallow exceptions in crash logger to avoid recursion
+            }
+            finally
+            {
+                Environment.Exit(1);
             }
         }
     }

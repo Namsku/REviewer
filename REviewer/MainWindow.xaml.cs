@@ -1,4 +1,4 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using REviewer.Core.Configuration; // Added
 using REviewer.Core.Constants;
@@ -336,81 +336,96 @@ namespace REviewer
 
                         if (!_isProcessRunning && Process.GetProcessesByName(process_list[i]).Length > 0 && MD5 != null)
                         {
-                            var tmp_process = Process.GetProcessesByName(process_list[i])[0];
-                            if (tmp_process.ProcessName.ToLower() == GameConstants.DOLPHIN)
+                            try
                             {
-                                IntPtr pointer = IntPtr.Zero;
-
-                                _dolphin = _dolphin ?? new Dolphin.Memory.Access.Dolphin(tmp_process);
-                                _dolphin.TryGetBaseAddress(out pointer);
-
-                                VirtualMemoryPointer = pointer;
-                                ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x0);
-                            }
-                            else if (tmp_process.ProcessName.ToLower().StartsWith(GameConstants.PCSX2))
-                            {
-                                if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX2) // PCSX2 1.6 and earlier
+                                var processes = Process.GetProcessesByName(process_list[i]);
+                                if (processes.Length == 0) continue;
+                                
+                                var tmp_process = processes[0];
+                                if (tmp_process.ProcessName.ToLower() == GameConstants.DOLPHIN)
                                 {
-                                    VirtualMemoryPointer = new IntPtr(0x20000000);
-                                    ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00015B90);
+                                    IntPtr pointer = IntPtr.Zero;
+
+                                    _dolphin = _dolphin ?? new Dolphin.Memory.Access.Dolphin(tmp_process);
+                                    _dolphin.TryGetBaseAddress(out pointer);
+
+                                    VirtualMemoryPointer = pointer;
+                                    ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x0);
                                 }
-                                else // PCSX2 1.7+
+                                else if (tmp_process.ProcessName.ToLower().StartsWith(GameConstants.PCSX2))
                                 {
-                                    // https://forums.pcsx2.net/Thread-PCSX2-1-7-Cheat-Engine-Script-Compatibility
-                                    IntPtr process = NativeWrappers.LoadLibrary(tmp_process.MainModule.FileName);
-                                    IntPtr address = NativeWrappers.GetProcAddress(process, "EEmem");
+                                    if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX2) // PCSX2 1.6 and earlier
+                                    {
+                                        VirtualMemoryPointer = new IntPtr(0x20000000);
+                                        ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00015B90);
+                                    }
+                                    else // PCSX2 1.7+
+                                    {
+                                        // https://forums.pcsx2.net/Thread-PCSX2-1-7-Cheat-Engine-Script-Compatibility
+                                        IntPtr process = NativeWrappers.LoadLibrary(tmp_process.MainModule.FileName);
+                                        IntPtr address = NativeWrappers.GetProcAddress(process, "EEmem");
 
-                                    VirtualMemoryPointer = (IntPtr)tmp_process.ReadValue<long>(address);
+                                        VirtualMemoryPointer = (IntPtr)tmp_process.ReadValue<long>(address);
 
-                                    if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WX ||
-                                        tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WXAV)
-                                        ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x000155D0);
-                                    else
-                                        ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00012610);
+                                        if (tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WX ||
+                                            tmp_process.ProcessName.ToLower() == GameConstants.PCSX264WXAV)
+                                            ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x000155D0);
+                                        else
+                                            ProductPointer = IntPtr.Add(VirtualMemoryPointer, 0x00012610);
 
-                                    NativeWrappers.FreeLibrary(process);
+                                        NativeWrappers.FreeLibrary(process);
+                                    }
                                 }
+                                /*
+                                else // RPCS3
+                                {
+                                    Scanner scanner = new Scanner(tmp_process, tmp_process.MainModule);
+                                    PatternScanResult result = scanner.FindPattern("50 53 33 5F 47 41 4D 45 00 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 30 30");
+
+                                    IntPtr pointer = IntPtr.Add(tmp_process.MainModule.BaseAddress, result.Offset);
+                                    ProductPointer = result.Offset != 0 ? IntPtr.Add(pointer, -0xE0) : IntPtr.Zero;
+                                }
+                                */
+
+                                // The process is running
+                                _isProcessRunning = true;
+
+                                // Get the process
+                                _process = processes[0];
+                                string md5Hash = Library.GetProcessMD5Hash(_process);
+
+                                // Updating the hidden TextBlocks (for backward compatibility)
+                                Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
+                                Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
+
+                                // Update the new visible Status Monitor elements
+                                // MD5Status now shows the process name instead of MD5 hash
+                                MD5Status.Text = $"[ {process_list[i]} ]";
+                                MD5Status.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
+
+                                ProcessStatus.Text = "[ HOOKED ]";
+                                ProcessStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
+
+                                // Update status bar as well
+                                StatusMD5.Text = $"Process: {process_list[i]}";
+                                StatusProcess.Text = "Status: Hooked";
+
+                                // Set the Exited event handler
+                                _process.EnableRaisingEvents = true;
+                                _process.Exited += Process_Exited;
+
+                                // Log the event
+                                Logger.Instance.Info($"Process {process_list[i]} has been found");
                             }
-                            /*
-                            else // RPCS3
+                            catch (Exception ex)
                             {
-                                Scanner scanner = new Scanner(tmp_process, tmp_process.MainModule);
-                                PatternScanResult result = scanner.FindPattern("50 53 33 5F 47 41 4D 45 00 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 30 30");
-
-                                IntPtr pointer = IntPtr.Add(tmp_process.MainModule.BaseAddress, result.Offset);
-                                ProductPointer = result.Offset != 0 ? IntPtr.Add(pointer, -0xE0) : IntPtr.Zero;
+                                _isProcessRunning = false;
+                                _process = null;
+                                ProductPointer = IntPtr.Zero;
+                                VirtualMemoryPointer = IntPtr.Zero;
+                                Logger.Instance.Warn($"Process {process_list[i]} error during hooking: {ex.Message}");
+                                continue;
                             }
-                            */
-
-                            // The process is running
-                            _isProcessRunning = true;
-
-                            // Get the process
-                            _process = Process.GetProcessesByName(process_list[i])[0];
-                            string md5Hash = Library.GetProcessMD5Hash(_process);
-
-                            // Updating the hidden TextBlocks (for backward compatibility)
-                            Library.UpdateTextBlock(MD5, text: md5Hash, color: CustomColors.Black, isBold: false);
-                            Library.UpdateTextBlock(ProcessTextBlock, text: "Found", color: CustomColors.Green, isBold: true);
-
-                            // Update the new visible Status Monitor elements
-                            // MD5Status now shows the process name instead of MD5 hash
-                            MD5Status.Text = $"[ {process_list[i]} ]";
-                            MD5Status.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
-
-                            ProcessStatus.Text = "[ HOOKED ]";
-                            ProcessStatus.Foreground = (System.Windows.Media.SolidColorBrush)FindResource("Brush.Status.Success");
-
-                            // Update status bar as well
-                            StatusMD5.Text = $"Process: {process_list[i]}";
-                            StatusProcess.Text = "Status: Hooked";
-
-                            // Set the Exited event handler
-                            _process.EnableRaisingEvents = true;
-                            _process.Exited += Process_Exited;
-
-                            // Log the event
-                            Logger.Instance.Info($"Process {process_list[i]} has been found");
                         }
                     }
                 }
